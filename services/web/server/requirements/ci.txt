@@ -1,8 +1,0 @@
-# development mode
-# paths relative to location of setup.py
-.[test]
-
-../../../packages/s3wrapper/
-../../../packages/simcore-sdk/
-../../../packages/service-library/
-../../../packages/director-sdk/python
