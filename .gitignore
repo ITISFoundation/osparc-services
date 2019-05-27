@@ -27,6 +27,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+.pytype/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -143,3 +144,4 @@ itisfoundation.github.io/
 
 # pylint-profile output
 prof/
+!ops/**/build
