@@ -5,8 +5,6 @@ pip3 -V
 
 if [[ -v CREATE_DUMMY_TABLE ]];
 then
-    pushd $HOME/packages/simcore-sdk; pip3 install -r requirements-dev.txt; popd
-    pushd $HOME/packages/s3wrapper; pip3 install -r requirements-dev.txt; popd
     pushd $HOME/scripts/dy_services_helpers; pip3 install -r requirements.txt; popd
     # in dev mode, data located in mounted volume /test-data are uploaded to the S3 server
     # also a fake configuration is set in the DB to simulate the osparc platform

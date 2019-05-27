@@ -81,11 +81,6 @@ ENTRYPOINT ["/bin/bash", "../docker/boot.sh"]
 #-----------------Production----------------------
 FROM base AS production
 
-# install simcore packages
-COPY packages/simcore-sdk $HOME/packages/simcore-sdk
-COPY packages/s3wrapper $HOME/packages/s3wrapper
-COPY services/storage/client-sdk $HOME/services/storage/client-sdk
-
 ARG BRANCH_NAME
 RUN git clone https://github.com/ITISFoundation/raw.git --branch ${BRANCH_NAME}
 WORKDIR $HOME/raw
