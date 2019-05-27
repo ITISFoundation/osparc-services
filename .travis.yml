@@ -97,27 +97,28 @@ jobs:
 
     # build dy-modeling images ----------------------------------------------------------------------
     - stage: build / unit-testing
-      # in pull request we do not have credentials to push, so this is useless
-      if: NOT type = pull_request
-      name: build dy-modeling
-      before_install:
-        - sudo bash ops/travis/build/dy-modeling before_install
-      install:
-        - unbuffer bash ops/travis/build/dy-modeling install
-      before_script:
-        - unbuffer bash ops/travis/build/dy-modeling before_script
-      script:
-        - unbuffer bash ops/travis/build/dy-modeling script
-      after_success:
-        - unbuffer bash ops/travis/build/dy-modeling after_success
-      after_failure:
-        - unbuffer bash ops/travis/build/dy-modeling after_failure
-      deploy:
-        - provider: script
-          skip_cleanup: true
-          script: unbuffer bash ops/travis/build/dy-modeling deploy
-          on:
-            all_branches: true
+      allow_failures:
+        # in pull request we do not have credentials to push, so this is useless
+        if: NOT type = pull_request
+        name: build dy-modeling
+        before_install:
+          - sudo bash ops/travis/build/dy-modeling before_install
+        install:
+          - unbuffer bash ops/travis/build/dy-modeling install
+        before_script:
+          - unbuffer bash ops/travis/build/dy-modeling before_script
+        script:
+          - unbuffer bash ops/travis/build/dy-modeling script
+        after_success:
+          - unbuffer bash ops/travis/build/dy-modeling after_success
+        after_failure:
+          - unbuffer bash ops/travis/build/dy-modeling after_failure
+        deploy:
+          - provider: script
+            skip_cleanup: true
+            script: unbuffer bash ops/travis/build/dy-modeling deploy
+            on:
+              all_branches: true
     
     # build dy-2Dgraph images ----------------------------------------------------------------------
     - stage: dependent build
