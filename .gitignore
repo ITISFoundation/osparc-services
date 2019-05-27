@@ -112,13 +112,6 @@ node_modules/
 # IDEs config
 .vscode/
 
-# Manual overrides
-services/docker-compose.override.yml
-
-# swarm files
-services/docker-compose.swarm.yml
-services/docker-compose.stack.*.yml
-
 # mac
 .DS_Store
 
@@ -136,7 +129,6 @@ pytest.ini
 
 # Any output directory
 *output/
-itisfoundation.github.io/
 
 # backup files
 *~
