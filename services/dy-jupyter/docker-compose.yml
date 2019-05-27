@@ -33,7 +33,7 @@ services:
         #   {"name": "entry_point", "type": "string", "value": "?token=simcore"}]'
         org.label-schema.schema-version: "1.0"
         org.label-schema.build-date: "${BUILD_DATE}"
-        org.label-schema.vcs-url: "https://github.com/ITISFoundation/osparc-simcore"
+        org.label-schema.vcs-url: "${VCS_URL}"
         org.label-schema.vcs-ref: "${VCS_REF}"
     ports:
       - '8888:8888'
@@ -70,7 +70,7 @@ services:
         #   {"name": "entry_point", "type": "string", "value": "?token=${NOTEBOOK_TOKEN}"}]'
         org.label-schema.schema-version: "1.0"
         org.label-schema.build-date: "${BUILD_DATE}"
-        org.label-schema.vcs-url: "https://github.com/ITISFoundation/osparc-simcore"
+        org.label-schema.vcs-url: "${VCS_URL}"
         org.label-schema.vcs-ref: "${VCS_REF}"
     ports:
       - '8889:8888'
@@ -108,7 +108,7 @@ services:
         #   {"name": "entry_point", "type": "string", "value": "?token=${NOTEBOOK_TOKEN}"}]'
         org.label-schema.schema-version: "1.0"
         org.label-schema.build-date: "${BUILD_DATE}"
-        org.label-schema.vcs-url: "https://github.com/ITISFoundation/osparc-simcore"
+        org.label-schema.vcs-url: "${VCS_URL}"
         org.label-schema.vcs-ref: "${VCS_REF}"
     ports:
       - '8890:8888'

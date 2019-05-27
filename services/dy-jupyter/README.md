@@ -20,5 +20,5 @@ To run the services, apihub:latest and storage:latest shall be available on the 
 
 1. go to /service/dy-jupyter/
 2. execute `make build`, this build the service as "production" code
-3. in the __Makefile__ change the version of __SERVICES_VERSION__ accordingly
-4. execute `make push_service_images`, this will upload the created docker images to the registry
+3. in the __Makefile__ change the version of __VERSION__ accordingly
+4. execute `make push`, this will upload the created docker images to the registry

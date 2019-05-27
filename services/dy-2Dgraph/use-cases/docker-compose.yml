@@ -48,7 +48,7 @@ services:
         #   {"name": "entry_point", "type": "string", "value": "?token=simcore"}]'
         org.label-schema.schema-version: "1.0"
         org.label-schema.build-date: "${BUILD_DATE}"
-        org.label-schema.vcs-url: "https://github.com/ITISFoundation/osparc-simcore"
+        org.label-schema.vcs-url: "${VCS_URL}"
         org.label-schema.vcs-ref: "${VCS_REF}"
     ports:
       - '1234:8888'
@@ -83,7 +83,7 @@ services:
         #   {"name": "entry_point", "type": "string", "value": "?token=simcore"}]'
         org.label-schema.schema-version: "1.0"
         org.label-schema.build-date: "${BUILD_DATE}"
-        org.label-schema.vcs-url: "https://github.com/ITISFoundation/osparc-simcore"
+        org.label-schema.vcs-url: "${VCS_URL}"
         org.label-schema.vcs-ref: "${VCS_REF}"
     ports:
       - '1235:8888'
@@ -116,7 +116,7 @@ services:
         #   {"name": "entry_point", "type": "string", "value": "?token=simcore"}]'
         org.label-schema.schema-version: "1.0"
         org.label-schema.build-date: "${BUILD_DATE}"
-        org.label-schema.vcs-url: "https://github.com/ITISFoundation/osparc-simcore"
+        org.label-schema.vcs-url: "${VCS_URL}"
         org.label-schema.vcs-ref: "${VCS_REF}"
     ports:
       - '1236:8888'
@@ -151,7 +151,7 @@ services:
         #   {"name": "entry_point", "type": "string", "value": "?token=simcore"}]'
         org.label-schema.schema-version: "1.0"
         org.label-schema.build-date: "${BUILD_DATE}"
-        org.label-schema.vcs-url: "https://github.com/ITISFoundation/osparc-simcore"
+        org.label-schema.vcs-url: "${VCS_URL}"
         org.label-schema.vcs-ref: "${VCS_REF}"
     ports:
       - '1237:8888'
@@ -191,7 +191,7 @@ services:
         #   {"name": "entry_point", "type": "string", "value": "?token=simcore"}]'
         org.label-schema.schema-version: "1.0"
         org.label-schema.build-date: "${BUILD_DATE}"
-        org.label-schema.vcs-url: "https://github.com/ITISFoundation/osparc-simcore"
+        org.label-schema.vcs-url: "${VCS_URL}"
         org.label-schema.vcs-ref: "${VCS_REF}"
     ports:
       - '1238:8888'
