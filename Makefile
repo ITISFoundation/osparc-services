@@ -78,7 +78,8 @@ help:
 	@echo
 
 #TODO: remove these targets
-DYNAMIC_SERVICE_FOLDERS_LIST := services/dy-jupyter services/dy-2Dgraph/use-cases services/dy-3dvis services/dy-modeling
+DYNAMIC_SERVICE_FOLDERS_LIST := services/dy-jupyter services/dy-2Dgraph/use-cases services/dy-3dvis
+# services/dy-modeling disabled for the time being the qooxdoo part does not compile
 .PHONY: build push
 # target: build: – Builds all service images
 build:

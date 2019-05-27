@@ -52,6 +52,13 @@ ENV SIMCORE_NODE_UUID="-1" \
     POSTGRES_PASSWORD="-1" \
     POSTGRES_DB="-1"
 
+# ----------------------------------------------------------------
+# install simcore-sdk
+RUN export PATH="${PYENV_ROOT}/bin:$PATH" && \
+    eval "$(pyenv init -)" && \
+    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
+    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python
+
 #--------------------Development------------------
 FROM common AS development
 
@@ -72,17 +79,6 @@ CMD ["/bin/bash", "/home/node/docker/boot.sh"]
 #---------------------Production------------------
 FROM common AS production
 WORKDIR /home/node/
-
-# install simcore packages
-COPY packages/simcore-sdk /home/node/packages/simcore-sdk
-COPY packages/s3wrapper /home/node/packages/s3wrapper
-COPY services/storage/client-sdk /home/node/services/storage/client-sdk
-# install packages but beware we need to use python 3.6 through pyenv
-RUN export PATH="${PYENV_ROOT}/bin:$PATH" && \
-    eval "$(pyenv init -)" && \
-    pip install /home/node/packages/simcore-sdk &&\
-    pip install /home/node/packages/s3wrapper && \
-    pip install /home/node/services/storage/client-sdk/python
 
 COPY --from=dy-modeling_client:latest /home/scu/client/build-output source-output
 COPY services/dy-modeling/server/source /home/node/source

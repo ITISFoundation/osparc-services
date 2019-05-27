@@ -32,6 +32,11 @@ RUN apk add --no-cache \
 
 RUN pip3 install --upgrade pip wheel setuptools
 
+# ----------------------------------------------------------------
+# install simcore-sdk
+RUN pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
+    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python
+
 RUN npm install express
 
 # ----------------------------------------------------------------
@@ -80,10 +85,6 @@ FROM base AS production
 COPY packages/simcore-sdk $HOME/packages/simcore-sdk
 COPY packages/s3wrapper $HOME/packages/s3wrapper
 COPY services/storage/client-sdk $HOME/services/storage/client-sdk
-# install packages but beware we need to use python 3.6 through pyenv
-RUN pip3 install $HOME/packages/simcore-sdk &&\
-    pip3 install $HOME/packages/s3wrapper && \
-    pip3 install $HOME/services/storage/client-sdk/python
 
 ARG BRANCH_NAME
 RUN git clone https://github.com/ITISFoundation/raw.git --branch ${BRANCH_NAME}
