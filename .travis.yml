@@ -13,6 +13,8 @@ addons:
 stages:
   - name: build / unit-testing
     if: tag IS blank
+  - name: dependent build
+    if: tag IS blank
   - name: integration-testing
     if: tag IS blank
   - name: system-testing
@@ -46,25 +48,27 @@ jobs:
             all_branches: true
 
     # unit test 2D graphs ----------------------------------------------------------------------
-    - stage: build / unit-testing
-      name: 2D graphs
-      language: python
-      python:
-        - "3.6"
-      sudo: required
-      cache: pip
+    - stage: dependent build
+      if: NOT type = pull_request
+      name: build 2D graphs
       before_install:
-        - sudo bash ops/travis/unit-testing/webserver before_install
+        - sudo bash ops/travis/build/dy-2Dgraph before_install
       install:
-        - unbuffer bash ops/travis/unit-testing/webserver install
+        - unbuffer bash ops/travis/build/dy-2Dgraph install
       before_script:
-        - unbuffer bash ops/travis/unit-testing/webserver before_script
+        - unbuffer bash ops/travis/build/dy-2Dgraph before_script
       script:
-        - unbuffer bash ops/travis/unit-testing/webserver script
+        - unbuffer bash ops/travis/build/dy-2Dgraph script
       after_success:
-        - unbuffer bash ops/travis/unit-testing/webserver after_success
+        - unbuffer bash ops/travis/build/dy-2Dgraph after_success
       after_failure:
-        - unbuffer bash ops/travis/unit-testing/webserver after_failure
+        - unbuffer bash ops/travis/build/dy-2Dgraph after_failure
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          script: unbuffer bash ops/travis/build/dy-2Dgraph deploy
+          on:
+            all_branches: true
 
     # integration testing 2D graphs -------------------------------------------------------------
     - stage: integration-testing
