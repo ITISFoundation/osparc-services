@@ -17,24 +17,17 @@ export DOCKER=docker
 endif
 
 
+# using ?= will only set if absent
+export DOCKER_IMAGE_TAG ?= $(shell cat VERSION)
+$(info DOCKER_IMAGE_TAG set to ${DOCKER_IMAGE_TAG})
 
-DEFAULT_SERVICES_VERSION := 1.8.0
-DEFAULT_DOCKER_REGISTRY := masu.speag.com
-ifndef SERVICES_VERSION
-export SERVICES_VERSION = $(DEFAULT_SERVICES_VERSION)
-endif
-ifndef DOCKER_REGISTRY
-export DOCKER_REGISTRY = ${DEFAULT_DOCKER_REGISTRY}
-endif
+# default to local (no registry)
+export DOCKER_REGISTRY ?= itisfoundation
+$(info DOCKER_REGISTRY set to ${DOCKER_REGISTRY})
 
 export VCS_URL:=$(shell git config --get remote.origin.url)
 export VCS_REF=$(shell git rev-parse --short HEAD)
 export BUILD_DATE=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
-export SERVICE_BASE_PATH=simcore/services/dynamic/jupyter-base-notebook
-export SERVICE_SCIPY_PATH=simcore/services/dynamic/jupyter-scipy-notebook
-export SERVICE_R_PATH=simcore/services/dynamic/jupyter-r-notebook
-
-PY_FILES := $(strip $(shell find . -iname '*.py'))
 
 ## Tools ------------------------------------------------------------------------------------------------------
 #
@@ -58,15 +51,15 @@ endif
 
 .PHONY: build rebuild
 # target: build, rebuild: – Builds all service images. Use `rebuild` to build w/o cache.
-build: .check-env
+build: .env
 	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel
 
-rebuild: .check-env
+rebuild: .env
 	${DOCKER_COMPOSE} -f docker-compose.yml build --no-cache --parallel
 
 .PHONY: build-devel
 # target: build-devel: – Builds images of core services for development.
-build-devel: .check-env
+build-devel: .env
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml build --parallel
 
 .PHONY: up up-devel down
@@ -82,9 +75,9 @@ down:
 	${DOCKER_COMPOSE} -f docker-compose.yml down
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml down
 
-.PHONY: push_service_images
-# target: push_service_images – Pushes the the service images to ${DOCKER_REGISTRY}
-push_service_images: .check-env
+.PHONY: push
+# target: push – Pushes the the service images to ${DOCKER_REGISTRY}
+push: .env
 	${DOCKER} login ${DOCKER_REGISTRY}
 	${DOCKER_COMPOSE} -f docker-compose.yml push
 
@@ -93,20 +86,16 @@ push_service_images: .check-env
 
 .PHONY: info
 # target: info – Displays some parameters of makefile environments
-info: .check-env
+info: .env
 	@echo '+ VCS_* '
 	@echo '  - URL                : ${VCS_URL}'
 	@echo '  - REF                : ${VCS_REF}'
 	@echo '+ BUILD_DATE           : ${BUILD_DATE}'
 	@echo '+ VERSION              : ${VERSION}'
 	@echo '+ DOCKER_REGISTRY      : ${DOCKER_REGISTRY}'
-	@echo '+ SERVICES_VERSION     : ${SERVICES_VERSION}'
-	@echo '+ PY_FILES             : $(shell echo $(PY_FILES) | wc -w) files'
+	@echo '+ DOCKER_IMAGE_TAG     : ${DOCKER_IMAGE_TAG}'
 
-## -------------------------------
-# Virtual Environments
-PHONY: .check-env
-.check-env: .env
+PHONY: .env
 .env: .env-devel
 	# first check if file exists, copies it
 	@if [ ! -f $@ ]	; then \
@@ -118,6 +107,19 @@ PHONY: .check-env
 		false; \
 	fi
 
+.vscode/settings.json: .vscode-template/settings.json
+	$(info #####  $< is newer than $@ ####)
+	@diff -uN $@ $<
+	@false
+
+PHONY: setup-check
+# target: setup-check – Checks whether setup is in sync with templates (e.g. vscode settings or .env file)
+setup-check: .env .vscode/settings.json
+
+
+## -------------------------------
+# Virtual Environments
+PHONY: .venv
 .venv:
 # target: .venv – Creates a python virtual environment with dev tools (pip, pylint, ...)
 	python3 -m venv .venv

@@ -24,24 +24,24 @@ jobs:
     # build images ----------------------------------------------------------------------
     - stage: build / unit-testing
       # in pull request we do not have credentials to push, so this is useless
-      if: NOT type = pull_request AND tag IS blank
-      name: build services images
+      if: NOT type = pull_request
+      name: build jupyter notebooks
       before_install:
-        - sudo bash ops/travis/build/test-images before_install
+        - sudo bash ops/travis/build/dy-jupyter before_install
       install:
-        - unbuffer bash ops/travis/build/test-images install
+        - unbuffer bash ops/travis/build/dy-jupyter install
       before_script:
-        - unbuffer bash ops/travis/build/test-images before_script
+        - unbuffer bash ops/travis/build/dy-jupyter before_script
       script:
-        - unbuffer bash ops/travis/build/test-images script
+        - unbuffer bash ops/travis/build/dy-jupyter script
       after_success:
-        - unbuffer bash ops/travis/build/test-images after_success
+        - unbuffer bash ops/travis/build/dy-jupyter after_success
       after_failure:
-        - unbuffer bash ops/travis/build/test-images after_failure
+        - unbuffer bash ops/travis/build/dy-jupyter after_failure
       deploy:
         - provider: script
           skip_cleanup: true
-          script: unbuffer bash ops/travis/deploy/test-images
+          script: unbuffer bash ops/travis/deploy/dy-jupyter
           on:
             all_branches: true
 

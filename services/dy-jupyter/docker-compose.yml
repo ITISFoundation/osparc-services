@@ -1,7 +1,7 @@
 version: '3.6'
 services:
   jupyter-base-notebook:
-    image: ${DOCKER_REGISTRY}/${SERVICE_BASE_PATH}:${SERVICES_VERSION}
+    image: ${DOCKER_REGISTRY}/jupyter-base-notebook:${DOCKER_IMAGE_TAG}
     build:
       context: ../../
       dockerfile: services/dy-jupyter/Dockerfile
@@ -10,8 +10,8 @@ services:
         BASE_IMAGE: jupyter/base-notebook
         INSTALL_PYTHON2: 1
       labels:
-        io.simcore.key: '{"key": "${SERVICE_BASE_PATH}"}'
-        io.simcore.version: '{"version": "${SERVICES_VERSION}"}'
+        io.simcore.key: '{"key": "simcore/services/dynamic/jupyter-base-notebook"}'
+        io.simcore.version: '{"version": "${DOCKER_IMAGE_TAG}"}'
         io.simcore.type: '{"type": "dynamic"}'
         io.simcore.name: '{"name": "jupyter-base-notebook"}'
         io.simcore.description: '{"description": "Jupyter notebook"}'
@@ -38,7 +38,7 @@ services:
     ports:
       - '8888:8888'
   jupyter-scipy-notebook:
-    image: ${DOCKER_REGISTRY}/${SERVICE_SCIPY_PATH}:${SERVICES_VERSION}
+    image: ${DOCKER_REGISTRY}/jupyter-scipy-notebook:${DOCKER_IMAGE_TAG}
     build:
       context: ../../
       dockerfile: services/dy-jupyter/Dockerfile
@@ -47,8 +47,8 @@ services:
         BASE_IMAGE: jupyter/scipy-notebook
         INSTALL_PYTHON2: 1
       labels:
-        io.simcore.key: '{"key": "${SERVICE_SCIPY_PATH}"}'
-        io.simcore.version: '{"version": "${SERVICES_VERSION}"}'
+        io.simcore.key: '{"key": "simcore/services/dynamic/jupyter-scipy-notebook"}'
+        io.simcore.version: '{"version": "${DOCKER_IMAGE_TAG}"}'
         io.simcore.type: '{"type": "dynamic"}'
         io.simcore.name: '{"name": "jupyter-scipy-notebook"}'
         io.simcore.description: '{"description": "Jupyter scipy notebook"}'
@@ -76,7 +76,7 @@ services:
       - '8889:8888'
 
   jupyter-r-notebook:
-    image: ${DOCKER_REGISTRY}/${SERVICE_R_PATH}:${SERVICES_VERSION}
+    image: ${DOCKER_REGISTRY}/jupyter-r-notebook:${DOCKER_IMAGE_TAG}
     build:
       context: ../../
       dockerfile: services/dy-jupyter/Dockerfile
@@ -85,8 +85,8 @@ services:
         BASE_IMAGE: jupyter/r-notebook
         INSTALL_PYTHON2: 0
       labels:
-        io.simcore.key: '{"key": "${SERVICE_R_PATH}"}'
-        io.simcore.version: '{"version": "${SERVICES_VERSION}"}'
+        io.simcore.key: '{"key": "simcore/services/dynamic/jupyter-r-notebook"}'
+        io.simcore.version: '{"version": "${DOCKER_IMAGE_TAG}"}'
         io.simcore.type: '{"type": "dynamic"}'
         io.simcore.name: '{"name": "jupyter-r-notebook"}'
         io.simcore.description: '{"description": "Jupyter R notebook"}'

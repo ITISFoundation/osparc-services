@@ -1,7 +1,7 @@
 version: '3.4'
 services:
   cc-0d:
-    image: masu.speag.com/simcore/services/dynamic/cc-0d-viewer:${SERVICES_VERSION}
+    image: ${DOCKER_REGISTRY}/cc-0d-viewer:${SERVICES_VERSION}
     build:
       context: .
       dockerfile: cc/Dockerfile

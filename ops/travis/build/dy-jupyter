@@ -3,8 +3,6 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-export DOCKER_IMAGE_TAG=$(exec ops/travis/helpers/build_docker_image_tag)
-
 before_install() {
     bash ops/travis/helpers/install_docker_compose;
     bash ops/travis/helpers/show_system_versions;
@@ -20,6 +18,7 @@ before_script() {
 }
 
 script() {
+    pushd services/dy-jupyter
     make build
 }
 

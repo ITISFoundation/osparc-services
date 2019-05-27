@@ -16,8 +16,8 @@ USER root
 # the python2 conda environment.
 RUN if [ "x${INSTALL_PYTHON2}" = "1" ] ; then $CONDA_DIR/envs/python2/bin/python -m ipykernel install && \
 $CONDA_DIR/envs/python2/bin/kernda -o -y /usr/local/share/jupyter/kernels/python2/kernel.json ; fi
-RUN apt update &&\
-    apt install -y git
+RUN apt-get update &&\
+    apt-get install -y git
 USER $NB_USER
 # ----------------------------------------------------------------
 # set up oSparc env variables

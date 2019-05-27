@@ -83,24 +83,12 @@ DYNAMIC_SERVICE_FOLDERS_LIST := services/dy-jupyter services/dy-2Dgraph/use-case
 .PHONY: build push
 # target: build: – Builds all service images
 build:
-ifndef SERVICES_VERSION
-	$(error SERVICES_VERSION variable is undefined)
-endif
-ifndef DOCKER_REGISTRY
-	$(error DOCKER_REGISTRY variable is undefined)
-endif
 	for i in $(DYNAMIC_SERVICE_FOLDERS_LIST); do \
 		cd $$i && ${MAKE} build && cd -; \
 	done
 
 # target: push: – Builds images from services into registry
 push:
-ifndef SERVICES_VERSION
-	$(error SERVICES_VERSION variable is undefined)
-endif
-ifndef DOCKER_REGISTRY
-	$(error DOCKER_REGISTRY variable is undefined)
-endif
 	for i in $(DYNAMIC_SERVICE_FOLDERS_LIST); do \
 		cd $$i && ${MAKE} push_service_images; \
 	done
