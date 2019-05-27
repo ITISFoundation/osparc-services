@@ -36,6 +36,13 @@ RUN curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/py
     pyenv global 3.6.7 && \
     pip install --upgrade pip wheel setuptools
 
+# ----------------------------------------------------------------
+# install simcore-sdk
+RUN export PATH="${PYENV_ROOT}/bin:$PATH" && \
+    eval "$(pyenv init -)" && \
+    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
+    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python
+
 # get the patched visualizer
 COPY --from=visualizer /home/node/visualizer/dist /opt/paraview/install/share/paraview-5.5/web/visualizer/www
 WORKDIR /home/root
@@ -60,8 +67,6 @@ ENV SIMCORE_NODE_UUID="-1" \
 # special paraview variables
 ENV SERVER_PORT="-1"  \
     HOST_NAME="-1"
-# update pip
-RUN pip3 install --upgrade pip wheel setuptools
 
 # copy scripts
 COPY services/dy-3dvis/simcoreparaviewweb/docker /home/root/docker
@@ -88,16 +93,6 @@ ENV TEST_DATA_PATH="/test-data"
 ENTRYPOINT [ "/bin/bash", "docker/boot.sh" ]
 #------------------------------------------
 FROM common AS production
-# install simcore packages
-COPY packages/simcore-sdk /home/root/packages/simcore-sdk
-COPY packages/s3wrapper /home/root/packages/s3wrapper
-COPY services/storage/client-sdk /home/root/services/storage/client-sdk
-# install packages but beware we need to use python 3.6 through pyenv
-RUN export PATH="${PYENV_ROOT}/bin:$PATH" && \
-    eval "$(pyenv init -)" && \
-    pip install /home/root/packages/simcore-sdk &&\
-    pip install /home/root/packages/s3wrapper && \
-    pip install /home/root/services/storage/client-sdk/python
 # copy script to get the inputs inside the local file system
 COPY services/dy-3dvis/simcoreparaviewweb/cgi_scripts /home/root/cgi_scripts
 ENTRYPOINT [ "/bin/bash", "docker/boot.sh" ]
