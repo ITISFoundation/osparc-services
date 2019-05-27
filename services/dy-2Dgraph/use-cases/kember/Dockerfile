@@ -19,7 +19,6 @@ ARG NOTEBOOK_NAME
 ENV NOTEBOOK_URL=${NOTEBOOK_NAME}
 # -----------------------------------------------------------------------------
 FROM common AS development
-VOLUME /home/jovyan/packages
 VOLUME /home/jovyan/services
 VOLUME /home/jovyan/devel
 VOLUME /home/jovyan/devel-config

@@ -12,7 +12,6 @@ services:
     volumes:
       - ./server/source:/home/node/source
       - ./client/source-output:/home/node/source-output
-      - ../../packages:/home/node/packages
       - ../../services:/home/node/services
       - ../../scripts/dy_services_helpers:/home/node/scripts/dy_services_helpers
       - ./server/docker:/home/node/docker

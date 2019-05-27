@@ -54,7 +54,6 @@ ENV SIMCORE_NODE_UUID="-1" \
 #-----------------Development-----------------------
 FROM base as development
 
-VOLUME $HOME/packages
 VOLUME $HOME/scripts
 VOLUME $HOME/services/storage/client-sdk
 

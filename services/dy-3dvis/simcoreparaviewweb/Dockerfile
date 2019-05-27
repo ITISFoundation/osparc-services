@@ -78,7 +78,6 @@ RUN mkdir /home/root/trigger && \
 FROM common as development
 VOLUME /home/root/cgi_scripts
 VOLUME /home/root/devel
-VOLUME /home/root/packages
 VOLUME /home/root/services
 VOLUME /home/root/test-data
 VOLUME /home/root/scripts/dy_services_helpers

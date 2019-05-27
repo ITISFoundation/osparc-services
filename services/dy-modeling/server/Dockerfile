@@ -57,7 +57,6 @@ FROM common AS development
 
 VOLUME /home/node/devel
 VOLUME /home/node/docker
-VOLUME /home/node/packages
 VOLUME /home/node/services
 VOLUME /home/node/test-data
 VOLUME /home/node/scripts/dy_services_helpers

@@ -79,9 +79,9 @@ help:
 
 #TODO: remove these targets
 DYNAMIC_SERVICE_FOLDERS_LIST := services/dy-jupyter services/dy-2Dgraph/use-cases services/dy-3dvis services/dy-modeling
-.PHONY: build-dynamic-services push-dynamic-services
-# target: build-dynamic-services: – Builds all dynamic service images (i.e. non-core services)
-build-dynamic-services:
+.PHONY: build push
+# target: build: – Builds all service images
+build:
 ifndef SERVICES_VERSION
 	$(error SERVICES_VERSION variable is undefined)
 endif
@@ -92,8 +92,8 @@ endif
 		cd $$i && ${MAKE} build; \
 	done
 
-# target: push-dynamic-services: – Builds images from dynamic services (i.e. non-core services) into registry
-push-dynamic-services:
+# target: push: – Builds images from services into registry
+push:
 ifndef SERVICES_VERSION
 	$(error SERVICES_VERSION variable is undefined)
 endif

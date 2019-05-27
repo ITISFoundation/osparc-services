@@ -24,7 +24,6 @@ services:
     volumes:
       - ./simcoreparaviewweb/cgi_scripts:/home/root/cgi_scripts
       - ./simcoreparaviewweb/devel:/home/root/devel
-      - ../../packages:/home/root/packages
       - ../../services:/home/root/services
       - ../../scripts/dy_services_helpers:/home/root/scripts/dy_services_helpers
       - ./test-data:/home/root/test-data

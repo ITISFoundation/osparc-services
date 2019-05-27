@@ -21,7 +21,6 @@ services:
       - ../../../scripts/dy_services_helpers:/home/jovyan/scripts/dy_services_helpers
       - ./cc/cc-single-cell/notebooks:/home/jovyan/notebooks
       - ./cc/cc-single-cell/devel-config:/home/jovyan/devel-config
-      - ../../../packages:/home/jovyan/packages
       - ../../../services:/home/jovyan/services
     depends_on:
       - postgres
@@ -48,7 +47,6 @@ services:
       - ../../../scripts/dy_services_helpers:/home/jovyan/scripts/dy_services_helpers
       - ./cc/cc-oned/notebooks:/home/jovyan/notebooks
       - ./cc/cc-oned/devel-config:/home/jovyan/devel-config
-      - ../../../packages:/home/jovyan/packages
       - ../../../services:/home/jovyan/services
     depends_on:
       - postgres
@@ -75,7 +73,6 @@ services:
       - ../../../scripts/dy_services_helpers:/home/jovyan/scripts/dy_services_helpers
       - ./cc/cc-twod/notebooks:/home/jovyan/notebooks
       - ./cc/cc-twod/devel-config:/home/jovyan/devel-config
-      - ../../../packages:/home/jovyan/packages
       - ../../../services:/home/jovyan/services
     depends_on:
       - postgres
@@ -102,7 +99,6 @@ services:
       - ../../../scripts/dy_services_helpers:/home/jovyan/scripts/dy_services_helpers
       - ./kember/notebooks:/home/jovyan/notebooks
       - ./kember/devel-config:/home/jovyan/devel-config
-      - ../../../packages:/home/jovyan/packages
       - ../../../services:/home/jovyan/services
     depends_on:
       - postgres
@@ -131,7 +127,6 @@ services:
       - ./mattward/input:/home/jovyan/input
       - ./mattward/output:/home/jovyan/output
       - ./mattward/devel-config:/home/jovyan/devel-config
-      - ../../../packages:/home/jovyan/packages
       - ../../../services:/home/jovyan/services
     depends_on:
       - postgres

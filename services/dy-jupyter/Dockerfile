@@ -16,6 +16,8 @@ USER root
 # the python2 conda environment.
 RUN if [ "x${INSTALL_PYTHON2}" = "1" ] ; then $CONDA_DIR/envs/python2/bin/python -m ipykernel install && \
 $CONDA_DIR/envs/python2/bin/kernda -o -y /usr/local/share/jupyter/kernels/python2/kernel.json ; fi
+RUN apt update &&\
+    apt install -y git
 USER $NB_USER
 # ----------------------------------------------------------------
 # set up oSparc env variables
@@ -49,6 +51,10 @@ RUN pip install --upgrade pip && \
 # ----------------------------------------------------------------
 ENV PYTHONPATH=/home/jovyan/handlers
 COPY --chown=jovyan:users services/dy-jupyter/notebook-customisation/custom.js /home/jovyan/.jupyter/custom/custom.js
+# ----------------------------------------------------------------
+# install simcore-sdk
+RUN pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
+    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python
 
 ENV NOTEBOOK_URL="notebooks/notebook.ipynb"
 # ----------------------------------------------------------------
@@ -73,19 +79,9 @@ FROM base AS production
 # prepare for booting
 COPY --chown=jovyan:users services/dy-jupyter/docker /docker
 # install simcore packages. docker seems to set root:root permission to the implicitely created destination folders
-COPY --chown=jovyan:users packages/simcore-sdk /home/jovyan/packages/simcore-sdk
-COPY --chown=jovyan:users packages/s3wrapper /home/jovyan/packages/s3wrapper
-COPY --chown=jovyan:users services/storage/client-sdk /home/jovyan/services/storage/client-sdk
 COPY --chown=jovyan:users services/dy-jupyter/handlers/* /home/jovyan/handlers/
-USER root
-RUN chown -R jovyan:users /home/jovyan/packages && \
-    chown -R jovyan:users /home/jovyan/services
-USER $NB_USER
 # copy the default notebook
 COPY --chown=jovyan:users services/dy-jupyter/notebooks /home/jovyan/notebooks
-RUN pip install /home/jovyan/packages/s3wrapper && \
-    pip install /home/jovyan/services/storage/client-sdk/python && \
-    pip install /home/jovyan/packages/simcore-sdk
 # cleanup
 RUN rm -rf /home/jovyan/packages && \
     rm -rf /home/jovyan/services

@@ -27,7 +27,6 @@ services:
     ports:
       - '8888:8888'
     volumes:
-      - ../../packages/:/home/jovyan/packages
       - ../../services/:/home/jovyan/services
       - ./handlers:/home/jovyan/handlers
       - ./devel:/home/jovyan/devel
@@ -62,7 +61,6 @@ services:
     ports:
       - '8889:8888'
     volumes:
-      - ../../packages/:/home/jovyan/packages
       - ../../services/:/home/jovyan/services
       - ./handlers:/home/jovyan/handlers
       - ./devel:/home/jovyan/devel
@@ -97,7 +95,6 @@ services:
     ports:
       - '8890:8888'
     volumes:
-      - ../../packages/:/home/jovyan/packages
       - ../../services/:/home/jovyan/services
       - ./handlers:/home/jovyan/handlers
       - ./devel:/home/jovyan/devel
