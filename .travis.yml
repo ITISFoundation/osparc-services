@@ -23,11 +23,11 @@ stages:
 
 jobs:
   include:
-    # build images ----------------------------------------------------------------------
+    # build dy-jupyter images ----------------------------------------------------------------------
     - stage: build / unit-testing
       # in pull request we do not have credentials to push, so this is useless
       if: NOT type = pull_request
-      name: build jupyter notebooks
+      name: build dy-jupyter
       before_install:
         - sudo bash ops/travis/build/dy-jupyter before_install
       install:
@@ -47,10 +47,82 @@ jobs:
           on:
             all_branches: true
 
-    # unit test 2D graphs ----------------------------------------------------------------------
+    # build dy-3dvis images ----------------------------------------------------------------------
+    - stage: build / unit-testing
+      # in pull request we do not have credentials to push, so this is useless
+      if: NOT type = pull_request
+      name: build dy-3dvis
+      before_install:
+        - sudo bash ops/travis/build/dy-3dvis before_install
+      install:
+        - unbuffer bash ops/travis/build/dy-3dvis install
+      before_script:
+        - unbuffer bash ops/travis/build/dy-3dvis before_script
+      script:
+        - unbuffer bash ops/travis/build/dy-3dvis script
+      after_success:
+        - unbuffer bash ops/travis/build/dy-3dvis after_success
+      after_failure:
+        - unbuffer bash ops/travis/build/dy-3dvis after_failure
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          script: unbuffer bash ops/travis/build/dy-3dvis deploy
+          on:
+            all_branches: true
+    
+    # build dy-raw-graphs images ----------------------------------------------------------------------
+    - stage: build / unit-testing
+      # in pull request we do not have credentials to push, so this is useless
+      if: NOT type = pull_request
+      name: build dy-raw-graphs
+      before_install:
+        - sudo bash ops/travis/build/dy-raw-graphs before_install
+      install:
+        - unbuffer bash ops/travis/build/dy-raw-graphs install
+      before_script:
+        - unbuffer bash ops/travis/build/dy-raw-graphs before_script
+      script:
+        - unbuffer bash ops/travis/build/dy-raw-graphs script
+      after_success:
+        - unbuffer bash ops/travis/build/dy-raw-graphs after_success
+      after_failure:
+        - unbuffer bash ops/travis/build/dy-raw-graphs after_failure
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          script: unbuffer bash ops/travis/build/dy-raw-graphs deploy
+          on:
+            all_branches: true
+
+    # build dy-modeling images ----------------------------------------------------------------------
+    - stage: build / unit-testing
+      # in pull request we do not have credentials to push, so this is useless
+      if: NOT type = pull_request
+      name: build dy-modeling
+      before_install:
+        - sudo bash ops/travis/build/dy-modeling before_install
+      install:
+        - unbuffer bash ops/travis/build/dy-modeling install
+      before_script:
+        - unbuffer bash ops/travis/build/dy-modeling before_script
+      script:
+        - unbuffer bash ops/travis/build/dy-modeling script
+      after_success:
+        - unbuffer bash ops/travis/build/dy-modeling after_success
+      after_failure:
+        - unbuffer bash ops/travis/build/dy-modeling after_failure
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          script: unbuffer bash ops/travis/build/dy-modeling deploy
+          on:
+            all_branches: true
+    
+    # build dy-2Dgraph images ----------------------------------------------------------------------
     - stage: dependent build
       if: NOT type = pull_request
-      name: build 2D graphs
+      name: build d2-2Dgraph
       before_install:
         - sudo bash ops/travis/build/dy-2Dgraph before_install
       install:
@@ -69,27 +141,6 @@ jobs:
           script: unbuffer bash ops/travis/build/dy-2Dgraph deploy
           on:
             all_branches: true
-
-    # integration testing 2D graphs -------------------------------------------------------------
-    - stage: integration-testing
-      name: simcore-sdk in swarm
-      language: python
-      python:
-        - "3.6"
-      sudo: required
-      cache: pip
-      before_install:
-        - sudo bash ops/travis/integration-testing/simcore-sdk before_install
-      install:
-        - unbuffer bash ops/travis/integration-testing/simcore-sdk install
-      before_script:
-        - unbuffer bash ops/travis/integration-testing/simcore-sdk before_script
-      script:
-        - unbuffer bash ops/travis/integration-testing/simcore-sdk script
-      after_success:
-        - unbuffer bash ops/travis/integration-testing/simcore-sdk after_success
-      after_failure:
-        - unbuffer bash ops/travis/integration-testing/simcore-sdk after_failure
 
     # deployment -------------------------------------------------------------------------------
     - stage: deployment

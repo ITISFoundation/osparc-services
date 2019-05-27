@@ -14,36 +14,54 @@ export DOCKER_COMPOSE=docker-compose
 export DOCKER=docker
 endif
 
+# using ?= will only set if absent
+export DOCKER_IMAGE_TAG ?= $(shell cat VERSION)
+$(info DOCKER_IMAGE_TAG set to ${DOCKER_IMAGE_TAG})
 
-# export SERVICES_VERSION=1.0.5
-export VCS_REF=$(shell git rev-parse --short HEAD) 
-export BUILD_DATE=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
-export SERVICE_PATH=simcore/services/dynamic/3d-viewer
-all:
-	@echo 'run `make build-devel` to build your dev environment'
-	@echo 'run `make up-devel` to start your dev environment.'
-	@echo 'see Makefile for further targets'
+# default to local (no registry)
+export DOCKER_REGISTRY ?= itisfoundation
+$(info DOCKER_REGISTRY set to ${DOCKER_REGISTRY})
 
-check-env:
-ifndef SERVICES_VERSION
-	$(error SERVICES_VERSION variable is undefined)
+export VCS_URL:=$(shell git config --get remote.origin.url)
+export VCS_REF:=$(shell git rev-parse --short HEAD)
+export BUILD_DATE:=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+## Tools ------------------------------------------------------------------------------------------------------
+#
+tools =
+
+ifeq ($(shell uname -s),Darwin)
+	SED = gsed
+else
+	SED = sed
 endif
-ifndef DOCKER_REGISTRY
-	$(error DOCKER_REGISTRY variable is undefined)
+
+ifeq ($(shell which ${SED}),)
+	tools += $(SED)
 endif
 
-build: check-env
-	${DOCKER_COMPOSE} -f docker-compose.yml build
+.PHONY: all
+all: help info
+ifdef tools
+	$(error "Can't find tools:${tools}")
+endif
 
-rebuild: check-env
-	${DOCKER_COMPOSE} -f docker-compose.yml build --no-cache
+.PHONY: build rebuild
+# target: build, rebuild: – Builds all service images. Use `rebuild` to build w/o cache.
+build: .env
+	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel
 
-build-devel: .env check-env
-	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml build
+rebuild: .env
+	${DOCKER_COMPOSE} -f docker-compose.yml build --no-cache --parallel
 
-rebuild-devel: .env check-env
-	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml build --no-cache
+.PHONY: build-devel
+# target: build-devel: – Builds images of core services for development.
+build-devel: .env
+	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml build --parallel
 
+.PHONY: up up-devel down
+# target: up, down: – starts/stops service
+# target: up-devel: – deploys service in devel mode together with minimal swarm-like environment
 up:
 	${DOCKER_COMPOSE} -f docker-compose.yml up
 
@@ -54,11 +72,66 @@ down:
 	${DOCKER_COMPOSE} -f docker-compose.yml down
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml down
 
-push_service_images: check-env
+.PHONY: push
+# target: push – Pushes the the service images to ${DOCKER_REGISTRY}
+push: .env
 	${DOCKER} login ${DOCKER_REGISTRY}
-	${DOCKER} push ${DOCKER_REGISTRY}/${SERVICE_PATH}:${SERVICES_VERSION}
+	${DOCKER_COMPOSE} -f docker-compose.yml push
 
+## -------------------------------
+# Tools
+
+.PHONY: info
+# target: info – Displays some parameters of makefile environments
+info: .env
+	@echo '+ VCS_* '
+	@echo '  - URL                : ${VCS_URL}'
+	@echo '  - REF                : ${VCS_REF}'
+	@echo '+ BUILD_DATE           : ${BUILD_DATE}'
+	@echo '+ VERSION              : ${VERSION}'
+	@echo '+ DOCKER_REGISTRY      : ${DOCKER_REGISTRY}'
+	@echo '+ DOCKER_IMAGE_TAG     : ${DOCKER_IMAGE_TAG}'
+
+PHONY: .env
 .env: .env-devel
+	# first check if file exists, copies it
+	@if [ ! -f $@ ]	; then \
+		echo "##### $@ does not exist, copying $< ############"; \
+		cp $< $@; \
+	else \
+		echo "#####  $< is newer than $@ ####"; \
+		diff -uN $@ $<; \
+		false; \
+	fi
+
+.vscode/settings.json: .vscode-template/settings.json
 	$(info #####  $< is newer than $@ ####)
 	@diff -uN $@ $<
 	@false
+
+## -------------------------------
+# Virtual Environments
+.venv:
+# target: .venv – Creates a python virtual environment with dev tools (pip, pylint, ...)
+	python3 -m venv .venv
+	.venv/bin/pip3 install --upgrade pip wheel setuptools
+	.venv/bin/pip3 install pylint autopep8 virtualenv
+	@echo "To activate the venv, execute 'source .venv/bin/activate' or '.venv/bin/activate.bat' (WIN)"
+
+## -------------------------------
+# Auxiliary targets.
+
+.PHONY: clean
+# target: clean – Cleans all unversioned files in project
+clean:
+	@git clean -dxf -e .vscode/
+
+
+.PHONY: help
+# target: help – Display all callable targets
+help:
+	@echo "Make targets in osparc-simcore:"
+	@echo
+	@egrep "^\s*#\s*target\s*:\s*" [Mm]akefile \
+	| $(SED) -r "s/^\s*#\s*target\s*:\s*//g"
+	@echo

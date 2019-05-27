@@ -28,6 +28,7 @@ $(info DOCKER_REGISTRY set to ${DOCKER_REGISTRY})
 export VCS_URL:=$(shell git config --get remote.origin.url)
 export VCS_REF:=$(shell git rev-parse --short HEAD)
 export BUILD_DATE:=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
+
 export BASE_IMAGE:=${DOCKER_REGISTRY}/jupyter-base-notebook:${DOCKER_IMAGE_TAG}
 
 ## Tools ------------------------------------------------------------------------------------------------------

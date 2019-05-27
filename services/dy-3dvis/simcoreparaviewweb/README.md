@@ -18,5 +18,5 @@ It brings the paraview visualizer application as an example of how easy one can 
 
 1. go to /service/dy-3dvis/simcoreparaviewweb/
 2. execute `make build`, this build the service as "production" code
-3. in the __Makefile__ change the version of __SERVICES_VERSION__ accordingly
-4. execute `make push_service_images`, this will upload the created docker images to the registry
+3. in the __Makefile__ change the version of __VERSION__ accordingly
+4. execute `make push`, this will upload the created docker images to the registry

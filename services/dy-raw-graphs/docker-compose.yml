@@ -1,15 +1,15 @@
 version: '3.6'
 services:
   raw-graphs-table:
-    image: ${DOCKER_REGISTRY}/${SERVICE_BASE_PATH_TABLE}:${SERVICES_VERSION}
+    image: ${DOCKER_REGISTRY}/raw-graphs-table:${DOCKER_IMAGE_TAG}
     build:
       context: ../../
       dockerfile: services/dy-raw-graphs/Dockerfile
       args: 
         BRANCH_NAME: master-osparc-table
       labels:
-        io.simcore.key: '{"key": "${SERVICE_BASE_PATH_TABLE}"}'
-        io.simcore.version: '{"version": "${SERVICES_VERSION}"}'
+        io.simcore.key: '{"key": "simcore/services/dynamic/raw-graphs-table"}'
+        io.simcore.version: '{"version": "${DOCKER_IMAGE_TAG}"}'
         io.simcore.type: '{"type": "dynamic"}'
         io.simcore.name: '{"name": "Table view"}'
         io.simcore.description: '{"description": "Table view powered by RAW Graphs"}'
@@ -20,7 +20,7 @@ services:
         simcore.service.settings: '[{"name": "resources", "type": "Resources", "value": {"mem_limit":17179869184, "cpu_limit": 4000000000}}, {"name": "ports", "type": "int", "value": 4000}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
         org.label-schema.schema-version: "1.0"
         org.label-schema.build-date: "${BUILD_DATE}"
-        org.label-schema.vcs-url: "https://github.com/ITISFoundation/osparc-simcore"
+        org.label-schema.vcs-url: "${VCS_URL}"
         org.label-schema.vcs-ref: "${VCS_REF}"
     environment: 
       - SIMCORE_NODE_BASEPATH=${SIMCORE_NODE_BASEPATH}
@@ -28,15 +28,15 @@ services:
     ports:
       - '4001:4000'
   raw-graphs:
-    image: ${DOCKER_REGISTRY}/${SERVICE_BASE_PATH}:${SERVICES_VERSION}
+    image: ${DOCKER_REGISTRY}/raw-graphs:${DOCKER_IMAGE_TAG}
     build:
       context: ../../
       dockerfile: services/dy-raw-graphs/Dockerfile
       args: 
         BRANCH_NAME: master-osparc
       labels:
-        io.simcore.key: '{"key": "${SERVICE_BASE_PATH}"}'
-        io.simcore.version: '{"version": "${SERVICES_VERSION}"}'
+        io.simcore.key: '{"key": "simcore/services/dynamic/raw-graphs"}'
+        io.simcore.version: '{"version": "${DOCKER_IMAGE_TAG}"}'
         io.simcore.type: '{"type": "dynamic"}'
         io.simcore.name: '{"name": "2D plot"}'
         io.simcore.description: '{"description": "2D plots powered by RAW Graphs"}'
@@ -47,7 +47,7 @@ services:
         simcore.service.settings: '[{"name": "resources", "type": "Resources", "value": {"mem_limit":17179869184, "cpu_limit": 4000000000}}, {"name": "ports", "type": "int", "value": 4000}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
         org.label-schema.schema-version: "1.0"
         org.label-schema.build-date: "${BUILD_DATE}"
-        org.label-schema.vcs-url: "https://github.com/ITISFoundation/osparc-simcore"
+        org.label-schema.vcs-url: "${VCS_URL}"
         org.label-schema.vcs-ref: "${VCS_REF}"
     environment: 
       - SIMCORE_NODE_BASEPATH=${SIMCORE_NODE_BASEPATH}
