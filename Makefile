@@ -76,3 +76,30 @@ help:
 	@egrep "^\s*#\s*target\s*:\s*" [Mm]akefile \
 	| $(SED) -r "s/^\s*#\s*target\s*:\s*//g"
 	@echo
+
+#TODO: remove these targets
+DYNAMIC_SERVICE_FOLDERS_LIST := services/dy-jupyter services/dy-2Dgraph/use-cases services/dy-3dvis services/dy-modeling
+.PHONY: build-dynamic-services push-dynamic-services
+# target: build-dynamic-services: – Builds all dynamic service images (i.e. non-core services)
+build-dynamic-services:
+ifndef SERVICES_VERSION
+	$(error SERVICES_VERSION variable is undefined)
+endif
+ifndef DOCKER_REGISTRY
+	$(error DOCKER_REGISTRY variable is undefined)
+endif
+	for i in $(DYNAMIC_SERVICE_FOLDERS_LIST); do \
+		cd $$i && ${MAKE} build; \
+	done
+
+# target: push-dynamic-services: – Builds images from dynamic services (i.e. non-core services) into registry
+push-dynamic-services:
+ifndef SERVICES_VERSION
+	$(error SERVICES_VERSION variable is undefined)
+endif
+ifndef DOCKER_REGISTRY
+	$(error DOCKER_REGISTRY variable is undefined)
+endif
+	for i in $(DYNAMIC_SERVICE_FOLDERS_LIST); do \
+		cd $$i && ${MAKE} push_service_images; \
+	done
