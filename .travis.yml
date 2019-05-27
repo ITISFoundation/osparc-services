@@ -122,7 +122,7 @@ jobs:
     # build dy-2Dgraph images ----------------------------------------------------------------------
     - stage: dependent build
       if: NOT type = pull_request
-      name: build d2-2Dgraph
+      name: build dy-2Dgraph
       before_install:
         - sudo bash ops/travis/build/dy-2Dgraph before_install
       install:
