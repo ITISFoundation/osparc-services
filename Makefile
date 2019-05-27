@@ -89,7 +89,7 @@ ifndef DOCKER_REGISTRY
 	$(error DOCKER_REGISTRY variable is undefined)
 endif
 	for i in $(DYNAMIC_SERVICE_FOLDERS_LIST); do \
-		cd $$i && ${MAKE} build; \
+		cd $$i && ${MAKE} build && cd -; \
 	done
 
 # target: push: – Builds images from services into registry
