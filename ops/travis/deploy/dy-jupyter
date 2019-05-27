@@ -3,8 +3,6 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-export DOCKER_IMAGE_TAG=$(exec ops/travis/helpers/build_docker_image_tag)
-
 # show current images on system
 docker images
 
@@ -12,4 +10,5 @@ docker images
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 # push the local images
+pushd services/dy-jupyter
 make push

@@ -18,7 +18,7 @@ before_script() {
 }
 
 script() {
-    pushd services/dy-jupyter
+    cd services/dy-jupyter
     make build
 }
 
@@ -30,6 +30,16 @@ after_failure() {
     echo "build failed"
     env
     docker images
+}
+
+deploy() {
+    # show current images on system
+    docker images
+    # these variable must be available securely from travis
+    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    # push the local images
+    cd services/dy-jupyter
+    make push
 }
 
 # Check if the function exists (bash specific)

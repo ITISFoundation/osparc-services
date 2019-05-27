@@ -41,7 +41,7 @@ jobs:
       deploy:
         - provider: script
           skip_cleanup: true
-          script: unbuffer bash ops/travis/deploy/dy-jupyter
+          script: unbuffer bash ops/travis/build/dy-jupyter deploy
           on:
             all_branches: true
 
