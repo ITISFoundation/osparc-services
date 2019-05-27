@@ -7,13 +7,6 @@ export VCS_REF:=$(shell git rev-parse --short HEAD)
 export VCS_STATUS_CLIENT:=$(if $(shell git status -s),'modified/untracked','clean')
 export BUILD_DATE:=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 
-# using ?= will only set if absent
-export DOCKER_IMAGE_TAG ?= latest
-$(info DOCKER_IMAGE_TAG set to ${DOCKER_IMAGE_TAG})
-# default to local (no registry)
-export DOCKER_REGISTRY ?= itisfoundation
-$(info DOCKER_REGISTRY set to ${DOCKER_REGISTRY})
-
 
 ## Tools ------------------------------------------------------------------------------------------------------
 #
@@ -76,19 +69,3 @@ help:
 	@egrep "^\s*#\s*target\s*:\s*" [Mm]akefile \
 	| $(SED) -r "s/^\s*#\s*target\s*:\s*//g"
 	@echo
-
-#TODO: remove these targets
-DYNAMIC_SERVICE_FOLDERS_LIST := services/dy-jupyter services/dy-2Dgraph/use-cases services/dy-3dvis
-# services/dy-modeling disabled for the time being the qooxdoo part does not compile
-.PHONY: build push
-# target: build: – Builds all service images
-build:
-	for i in $(DYNAMIC_SERVICE_FOLDERS_LIST); do \
-		cd $$i && ${MAKE} build && cd -; \
-	done
-
-# target: push: – Builds images from services into registry
-push:
-	for i in $(DYNAMIC_SERVICE_FOLDERS_LIST); do \
-		cd $$i && ${MAKE} push_service_images; \
-	done
