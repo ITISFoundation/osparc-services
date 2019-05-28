@@ -1,0 +1,154 @@
+dist: xenial
+env:
+  global:
+    - DOCKER_COMPOSE_VERSION=1.23.2
+services:
+  - docker
+addons:
+  apt:
+    packages:
+      - docker-ce
+      - expect-dev # for unbuffer: brings color back into travis logs
+
+stages:
+  - name: build / unit-testing
+    if: tag IS blank
+  - name: dependent build
+    if: tag IS blank
+  - name: integration-testing
+    if: tag IS blank
+  - name: system-testing
+    if: tag IS blank
+  - deployment
+
+jobs:
+  include:
+    # build dy-jupyter images ----------------------------------------------------------------------
+    - stage: build / unit-testing
+      # in pull request we do not have credentials to push, so this is useless
+      if: NOT type = pull_request
+      name: build dy-jupyter
+      sudo: required
+      before_install:
+        - sudo bash ops/travis/build/dy-jupyter before_install
+      install:
+        - unbuffer bash ops/travis/build/dy-jupyter install
+      before_script:
+        - unbuffer bash ops/travis/build/dy-jupyter before_script
+      script:
+        - unbuffer bash ops/travis/build/dy-jupyter script
+      after_success:
+        - unbuffer bash ops/travis/build/dy-jupyter after_success
+      after_failure:
+        - unbuffer bash ops/travis/build/dy-jupyter after_failure
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          script: unbuffer bash ops/travis/build/dy-jupyter deploy
+          on:
+            all_branches: true
+
+    # build dy-3dvis images ----------------------------------------------------------------------
+    - stage: build / unit-testing
+      # in pull request we do not have credentials to push, so this is useless
+      if: NOT type = pull_request
+      name: build dy-3dvis
+      sudo: required
+      before_install:
+        - sudo bash ops/travis/build/dy-3dvis before_install
+      install:
+        - unbuffer bash ops/travis/build/dy-3dvis install
+      before_script:
+        - unbuffer bash ops/travis/build/dy-3dvis before_script
+      script:
+        - unbuffer bash ops/travis/build/dy-3dvis script
+      after_success:
+        - unbuffer bash ops/travis/build/dy-3dvis after_success
+      after_failure:
+        - unbuffer bash ops/travis/build/dy-3dvis after_failure
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          script: unbuffer bash ops/travis/build/dy-3dvis deploy
+          on:
+            all_branches: true
+
+    # build dy-raw-graphs images ----------------------------------------------------------------------
+    - stage: build / unit-testing
+      # in pull request we do not have credentials to push, so this is useless
+      if: NOT type = pull_request
+      name: build dy-raw-graphs
+      sudo: required
+      before_install:
+        - sudo bash ops/travis/build/dy-raw-graphs before_install
+      install:
+        - unbuffer bash ops/travis/build/dy-raw-graphs install
+      before_script:
+        - unbuffer bash ops/travis/build/dy-raw-graphs before_script
+      script:
+        - unbuffer bash ops/travis/build/dy-raw-graphs script
+      after_success:
+        - unbuffer bash ops/travis/build/dy-raw-graphs after_success
+      after_failure:
+        - unbuffer bash ops/travis/build/dy-raw-graphs after_failure
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          script: unbuffer bash ops/travis/build/dy-raw-graphs deploy
+          on:
+            all_branches: true
+
+    # FIXME: modeling currently fails in building client code
+    # build dy-modeling images ----------------------------------------------------------------------
+    # - stage: build / unit-testing
+    #   # in pull request we do not have credentials to push, so this is useless
+    #   if: NOT type = pull_request
+    #   name: build dy-modeling
+    #   sudo: required
+    #   before_install:
+    #     - sudo bash ops/travis/build/dy-modeling before_install
+    #   install:
+    #     - unbuffer bash ops/travis/build/dy-modeling install
+    #   before_script:
+    #     - unbuffer bash ops/travis/build/dy-modeling before_script
+    #   script:
+    #     - unbuffer bash ops/travis/build/dy-modeling script
+    #   after_success:
+    #     - unbuffer bash ops/travis/build/dy-modeling after_success
+    #   after_failure:
+    #     - unbuffer bash ops/travis/build/dy-modeling after_failure
+    #   deploy:
+    #     - provider: script
+    #       skip_cleanup: true
+    #       script: unbuffer bash ops/travis/build/dy-modeling deploy
+    #       on:
+    #         all_branches: true
+
+    # build dy-2Dgraph images ----------------------------------------------------------------------
+    - stage: dependent build
+      if: NOT type = pull_request
+      name: build dy-2Dgraph
+      sudo: required
+      before_install:
+        - sudo bash ops/travis/build/dy-2Dgraph before_install
+      install:
+        - unbuffer bash ops/travis/build/dy-2Dgraph install
+      before_script:
+        - unbuffer bash ops/travis/build/dy-2Dgraph before_script
+      script:
+        - unbuffer bash ops/travis/build/dy-2Dgraph script
+      after_success:
+        - unbuffer bash ops/travis/build/dy-2Dgraph after_success
+      after_failure:
+        - unbuffer bash ops/travis/build/dy-2Dgraph after_failure
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          script: unbuffer bash ops/travis/build/dy-2Dgraph deploy
+          on:
+            all_branches: true
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always

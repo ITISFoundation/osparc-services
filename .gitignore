@@ -1,3 +1,6 @@
+# Ansible files
+*.retry
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -8,6 +11,7 @@ __pycache__/
 
 # Distribution / packaging
 .Python
+env/
 build/
 develop-eggs/
 dist/
@@ -23,7 +27,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
+.pytype/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -46,7 +50,6 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
-
 # Translations
 *.mo
 *.pot
@@ -54,7 +57,6 @@ coverage.xml
 # Django stuff:
 *.log
 local_settings.py
-db.sqlite3
 
 # Flask stuff:
 instance/
@@ -81,14 +83,14 @@ celerybeat-schedule
 # SageMath parsed files
 *.sage.py
 
-# Environments
+# dotenv
 .env
+
+# virtualenv
+.venv27
 .venv
-env/
 venv/
 ENV/
-env.bak/
-venv.bak/
 
 # Spyder project settings
 .spyderproject
@@ -102,3 +104,36 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# node
+# Dependency directories
+node_modules/
+
+# IDEs config
+.vscode/
+
+# mac
+.DS_Store
+
+# key-words in filename to ignore them
+*secret*
+*ignore*
+!.dockerignore
+
+# Any generated output folder (e.g. codegen, build, ...)
+out/
+tmp/
+
+# See .vscode-template
+pytest.ini
+
+# Any output directory
+*output/
+
+# backup files
+*~
+*.bak
+
+# pylint-profile output
+prof/
+!ops/**/build
