@@ -14,7 +14,7 @@ install() {
 }
 
 before_script() {
-    echo "pull some cache maybe?"
+    make pull || true
 }
 
 script() {
