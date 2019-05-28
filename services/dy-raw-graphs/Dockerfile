@@ -14,28 +14,25 @@ EXPOSE 4000
 
 WORKDIR $HOME
 
-RUN apk update && \
-    apk add python3 && \
-    apk add bash && \
-    apk add git && \
-    apk add postgresql-dev && \
-    apk add py-pip
+RUN apk update &&\
+    apk add --no-cache \
+    python3 \
+    bash
 
-# TODO: Move the devel specific packages to develoment stage
-RUN apk add --no-cache \
-    gcc \
-    subversion \
-    g++ \
-    libc-dev \
-    libffi-dev \
-    python3-dev
 
 RUN pip3 install --upgrade pip wheel setuptools
 
 # ----------------------------------------------------------------
 # install simcore-sdk
-RUN pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
-    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python
+RUN apk add --no-cache --virtual .build-deps \
+    g++ \
+    git \
+    python3-dev \
+    postgresql-dev && \
+    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
+    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python &&\
+    apk del --no-cache .build-deps
+
 
 RUN npm install express
 
@@ -60,10 +57,13 @@ ENV SIMCORE_NODE_UUID="-1" \
 FROM base AS production
 
 ARG BRANCH_NAME
-RUN git clone https://github.com/ITISFoundation/raw.git --branch ${BRANCH_NAME}
-WORKDIR $HOME/raw
-RUN npm install -g bower
-RUN bower install --force --allow-root
+RUN apk add --no-cache --virtual .build-deps \
+    git &&\
+    git clone https://github.com/ITISFoundation/raw.git --branch ${BRANCH_NAME} &&\
+    cd raw &&\
+    npm install -g bower &&\
+    bower install --force --allow-root &&\
+    apk del --no-cache .build-deps
 
 WORKDIR $HOME
 COPY --chown=scu:scu services/dy-raw-graphs/docker $HOME/docker

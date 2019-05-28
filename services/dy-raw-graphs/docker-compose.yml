@@ -5,7 +5,8 @@ services:
     build:
       context: ../../
       dockerfile: services/dy-raw-graphs/Dockerfile
-      args: 
+      target: production
+      args:
         BRANCH_NAME: master-osparc-table
       labels:
         io.simcore.key: '{"key": "simcore/services/dynamic/raw-graphs-table"}'
@@ -22,7 +23,7 @@ services:
         org.label-schema.build-date: "${BUILD_DATE}"
         org.label-schema.vcs-url: "${VCS_URL}"
         org.label-schema.vcs-ref: "${VCS_REF}"
-    environment: 
+    environment:
       - SIMCORE_NODE_BASEPATH=${SIMCORE_NODE_BASEPATH}
       - RAWGRAPHS_INPUT_PATH=${RAWGRAPHS_INPUT_PATH}
     ports:
@@ -32,7 +33,8 @@ services:
     build:
       context: ../../
       dockerfile: services/dy-raw-graphs/Dockerfile
-      args: 
+      target: production
+      args:
         BRANCH_NAME: master-osparc
       labels:
         io.simcore.key: '{"key": "simcore/services/dynamic/raw-graphs"}'
@@ -49,7 +51,7 @@ services:
         org.label-schema.build-date: "${BUILD_DATE}"
         org.label-schema.vcs-url: "${VCS_URL}"
         org.label-schema.vcs-ref: "${VCS_REF}"
-    environment: 
+    environment:
       - SIMCORE_NODE_BASEPATH=${SIMCORE_NODE_BASEPATH}
       - RAWGRAPHS_INPUT_PATH=${RAWGRAPHS_INPUT_PATH}
     ports:
