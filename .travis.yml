@@ -143,30 +143,6 @@ jobs:
           on:
             all_branches: true
 
-    # deployment -------------------------------------------------------------------------------
-    - stage: deployment
-      name: master
-      if: branch = master
-      git:
-        depth: false
-      script: echo "Deploy master"
-      deploy:
-        - provider: script
-          script: unbuffer bash ops/travis/deploy/master
-          on:
-            branch: master
-    - stage: deployment
-      name: staging
-      if: branch = staging
-      git:
-        depth: false
-      script: echo "Deploy staging"
-      deploy:
-        - provider: script
-          script: unbuffer bash ops/travis/deploy/staging
-          on:
-            branch: staging
-
 notifications:
   email:
     on_success: never
