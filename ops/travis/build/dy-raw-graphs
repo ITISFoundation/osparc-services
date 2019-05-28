@@ -3,9 +3,6 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-# these variable must be available securely from travis
-echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-
 before_install() {
     bash ops/travis/helpers/install_docker_compose;
     bash ops/travis/helpers/show_system_versions;
@@ -38,6 +35,8 @@ after_failure() {
 deploy() {
     # show current images on system
     docker images
+    # these variable must be available securely from travis
+    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     # push the local images
     cd services/dy-raw-graphs
     make push
