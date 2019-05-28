@@ -19,7 +19,7 @@ before_script() {
 
 script() {
     cd services/dy-raw-graphs
-    make build
+    make build-travis
 }
 
 after_success() {
@@ -39,7 +39,7 @@ deploy() {
     echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     # push the local images
     cd services/dy-raw-graphs
-    make push
+    make push-travis
 }
 
 # Check if the function exists (bash specific)
