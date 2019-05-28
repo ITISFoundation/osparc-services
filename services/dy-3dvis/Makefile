@@ -74,8 +74,7 @@ down:
 
 .PHONY: push
 # target: push – Pushes the the service images to ${DOCKER_REGISTRY}
-push: .env
-	${DOCKER} login ${DOCKER_REGISTRY}
+push:
 	${DOCKER_COMPOSE} -f docker-compose.yml push
 
 ## -------------------------------
