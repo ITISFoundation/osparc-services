@@ -56,6 +56,22 @@ ENV SIMCORE_NODE_UUID="-1" \
     POSTGRES_PASSWORD="-1" \
     POSTGRES_DB="-1"
 
+#-----------------Production----------------------
+FROM base AS production
+
+ARG BRANCH_NAME
+RUN git clone https://github.com/ITISFoundation/raw.git --branch ${BRANCH_NAME}
+WORKDIR $HOME/raw
+RUN npm install -g bower
+RUN bower install --force --allow-root
+
+WORKDIR $HOME
+COPY --chown=scu:scu services/dy-raw-graphs/docker $HOME/docker
+COPY --chown=scu:scu services/dy-raw-graphs/server $HOME/server
+
+WORKDIR $HOME/raw
+CMD ["/bin/bash", "../docker/boot.sh"]
+
 #-----------------Development-----------------------
 FROM base as development
 
@@ -77,19 +93,3 @@ ENV INIT_OPTIONS="50 6 1 tab"
 
 WORKDIR $HOME/raw
 ENTRYPOINT ["/bin/bash", "../docker/boot.sh"]
-
-#-----------------Production----------------------
-FROM base AS production
-
-ARG BRANCH_NAME
-RUN git clone https://github.com/ITISFoundation/raw.git --branch ${BRANCH_NAME}
-WORKDIR $HOME/raw
-RUN npm install -g bower
-RUN bower install --force --allow-root
-
-WORKDIR $HOME
-COPY --chown=scu:scu services/dy-raw-graphs/docker $HOME/docker
-COPY --chown=scu:scu services/dy-raw-graphs/server $HOME/server
-
-WORKDIR $HOME/raw
-CMD ["/bin/bash", "../docker/boot.sh"]
