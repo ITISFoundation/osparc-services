@@ -28,6 +28,7 @@ jobs:
       # in pull request we do not have credentials to push, so this is useless
       if: NOT type = pull_request
       name: build dy-jupyter
+      sudo: required
       before_install:
         - sudo bash ops/travis/build/dy-jupyter before_install
       install:
@@ -52,6 +53,7 @@ jobs:
       # in pull request we do not have credentials to push, so this is useless
       if: NOT type = pull_request
       name: build dy-3dvis
+      sudo: required
       before_install:
         - sudo bash ops/travis/build/dy-3dvis before_install
       install:
@@ -76,6 +78,7 @@ jobs:
       # in pull request we do not have credentials to push, so this is useless
       if: NOT type = pull_request
       name: build dy-raw-graphs
+      sudo: required
       before_install:
         - sudo bash ops/travis/build/dy-raw-graphs before_install
       install:
@@ -101,6 +104,7 @@ jobs:
     #   # in pull request we do not have credentials to push, so this is useless
     #   if: NOT type = pull_request
     #   name: build dy-modeling
+    #   sudo: required
     #   before_install:
     #     - sudo bash ops/travis/build/dy-modeling before_install
     #   install:
@@ -124,6 +128,7 @@ jobs:
     - stage: dependent build
       if: NOT type = pull_request
       name: build dy-2Dgraph
+      sudo: required
       before_install:
         - sudo bash ops/travis/build/dy-2Dgraph before_install
       install:
