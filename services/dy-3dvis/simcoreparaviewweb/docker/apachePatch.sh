@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+IFS=$'\n\t'
+
 # in order to access env variables in apache cgi scripts they need to be explicitely added
 # also cgi scripts are run as www-data user in Ubuntu (from apache2 specs), meaning the env
 # variables must be available to all users.
