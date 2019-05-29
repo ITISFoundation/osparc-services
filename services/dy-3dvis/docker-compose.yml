@@ -6,7 +6,10 @@ services:
       context: ../../
       dockerfile: services/dy-3dvis/simcoreparaviewweb/Dockerfile
       target: production
-      labels: 
+      args:
+        BASE_IMAGE: kitware/paraviewweb:pvw-osmesa-demo-v5.6.0
+        VISUALIZER_VERSION: v3.1.10
+      labels:
         io.simcore.key: '{"key": "simcore/services/dynamic/3d-viewer"}'
         io.simcore.version: '{"version": "${DOCKER_IMAGE_TAG}"}'
         io.simcore.type: '{"type": "dynamic"}'
@@ -22,7 +25,7 @@ services:
         org.label-schema.build-date: "${BUILD_DATE}"
         org.label-schema.vcs-url: "${VCS_URL}"
         org.label-schema.vcs-ref: "${VCS_REF}"
-        
+
     ports:
-      - '8777:80'        
+      - '8777:80'
   #--------------------------------------------------------------------

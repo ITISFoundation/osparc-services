@@ -1,7 +1,10 @@
+# this must be the first line
+ARG BASE_IMAGE=kitware/paraviewweb:pvw-visualizer-osmesa-master
 # apply patch to visualizer
 FROM node:8.12.0 AS visualizer
 WORKDIR /home/node
-RUN git clone --branch v3.1.6 https://github.com/Kitware/visualizer.git
+ARG VISUALIZER_VERSION=v3.1.10
+RUN git clone --branch ${VISUALIZER_VERSION} https://github.com/Kitware/visualizer.git
 WORKDIR /home/node/visualizer
 COPY services/dy-3dvis/simcoreparaviewweb/rebrand-osparc/to-be-copied .
 COPY services/dy-3dvis/simcoreparaviewweb/rebrand-osparc/rebrand-osparc.patch rebrand-osparc.patch
@@ -12,7 +15,7 @@ RUN git apply rebrand-osparc.patch && \
     cp src/*.png dist
 # ----------------------------------------------------------------
 # build visualizer service
-FROM kitware/paraviewweb:pvw-visualizer-osmesa-master  AS common
+FROM ${BASE_IMAGE}  AS common
 
 LABEL maintainer="sanderegg"
 ENV PARAVIEW_INPUT_PATH="/data"
