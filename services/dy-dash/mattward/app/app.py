@@ -7,6 +7,17 @@ import dash_html_components as html
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
+tabs_styles = {
+	'height': '44px'
+}
+tab_style = {
+	'padding': '5px'
+}
+
+tab_selected_style = {
+	'padding': '5px'
+}
+
 app.layout = html.Div(children=[
 	html.H1(
 		children='MattWard solver',
@@ -74,7 +85,7 @@ app.layout = html.Div(children=[
 					}
 				}
 			)
-		], style={'width': '38%', 'float': 'left'}),
+		], style={'width': '42%', 'float': 'left'}),
 
 
 		# Controls in the middle
@@ -91,8 +102,7 @@ app.layout = html.Div(children=[
 						{'label': 'Subject 2: Cervical Vagus', 'value': 'Subject 2: Cervical Vagus'},
 						{'label': 'Subject 2: Gastric Vagus', 'value': 'Subject 2: Gastric Vagus'}
 					],
-					value='Subject 1: Cervical Vagus'
-				),
+					value='Subject 1: Cervical Vagus'),
 
 				html.Label('Plot Options'),
 				dcc.Checklist(
@@ -105,19 +115,24 @@ app.layout = html.Div(children=[
 				),
 
 				html.Button('Load', id='load-input-button'),
-				html.Div(id='output-container-button',
-								children='Enter a value and press submit')
+				html.Div(
+					id='output-container-button',
+					children='Enter a value and press submit')
 			], style={'border': '1px solid', 'border-radius': '5px'}),
 
 			html.Div([
 				html.H5('Output options'),
-				dcc.Tabs(id="sweep-pulse-tabs", value='current', children=[
-					dcc.Tab(label='Sweep Pulse Current', value='current'),
-					dcc.Tab(label='Sweep Pulse Duration', value='duration'),
-				]),
+				dcc.Tabs(
+					id="sweep-pulse-tabs", 
+					value='current',
+					children=[
+						dcc.Tab(label='Sweep Pulse Current', value='current', style=tab_style, selected_style=tab_selected_style),
+						dcc.Tab(label='Sweep Pulse Duration', value='duration', style=tab_style, selected_style=tab_selected_style),
+					],
+				),
 				html.Div(id='tabs-content')
 			], style={'border': '1px solid', 'border-radius': '5px'})
-		], style={'width': '24%', 'float': 'left', 'min-width': '410px'}),
+		], style={'width': '15%', 'float': 'left', 'max-width': '340px', 'min-width': '210px'}),
 
 		# Two output graphs on the right
 		html.Div([
@@ -148,7 +163,7 @@ app.layout = html.Div(children=[
 					}
 				}
 			)
-		], style={'width': '38%', 'float': 'left'}),
+		], style={'width': '42%', 'float': 'left'}),
 	], style={'margin': '5px 0'})
 ])
 
