@@ -37,5 +37,5 @@ sed -i -e '/CustomLog/r config/apache.conf' /etc/apache2/sites-available/001-pvw
 # configure apache to use "dynamic content" (https://httpd.apache.org/docs/2.4/howto/cgi.html)
 a2enmod cgid
 # create a folder accessible by any user inside the docker container where paraview loads its data from (default /data)
-mkdir /data
+mkdir -p /data
 chmod 777 /data/

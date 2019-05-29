@@ -13,6 +13,7 @@ pip -V
 
 if [[ -v CREATE_DUMMY_TABLE ]];
 then
+    pushd /home/root/scripts/dy_services_helpers; pip3 install -r requirements.txt; popd
     # in dev mode, data located in mounted volume /test-data are uploaded to the S3 server
     # also a fake configuration is set in the DB to simulate the osparc platform
     echo "development mode, creating dummy tables..."
@@ -24,6 +25,7 @@ then
     echo "Received result node uuid of ${array[1]}";
     # the fake SIMCORE_NODE_UUID is exported to be available to the service
     export SIMCORE_NODE_UUID="${array[1]}";
+    export SIMCORE_PROJECT_ID="${array[0]}"
 fi
 
 echo "modifying apache configuration..."
