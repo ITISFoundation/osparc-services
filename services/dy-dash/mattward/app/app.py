@@ -52,6 +52,7 @@ app.layout = html.Div(children=[
 			dcc.Graph(id='graph-in2'),
 			dcc.Graph(id='graph-in3'),
 			dcc.Graph(id='graph-in4')
+
 		], style={'width': '41%', 'float': 'left'}),
 
 
@@ -85,9 +86,7 @@ app.layout = html.Div(children=[
 				),
 
 				html.Button('Load', id='load-input-button'),
-				html.Div(
-					id='output-container-button',
-					children='Enter a value and press submit')
+				html.Div(id='output-container-button')
 			], style={'border': '1px solid', 'border-radius': '5px'}),
 
 			html.Div([
@@ -96,46 +95,81 @@ app.layout = html.Div(children=[
 					id="sweep-pulse-tabs", 
 					value='current',
 					children=[
-						dcc.Tab(label='Sweep Pulse Current', value='current', style=tab_style, selected_style=tab_selected_style),
-						dcc.Tab(label='Sweep Pulse Duration', value='duration', style=tab_style, selected_style=tab_selected_style),
+						dcc.Tab(
+							label='Sweep Pulse Current',
+							value='current',
+							style=tab_style,
+							selected_style=tab_selected_style,
+							children=[
+								html.Div([
+									html.Label('Starting Ist (mA):'),
+									dcc.Input(
+										placeholder='Enter a value...',
+										type='number',
+										value=0
+									)
+								], style={'float': 'left'}),
+
+								html.Div([
+									html.Label('Ending Ist (mA):'),
+									dcc.Input(
+										placeholder='Enter a value...',
+										type='number',
+										value=1
+									)
+								], style={'float': 'left'}),
+
+								html.Div([
+									html.Label('Step Size (mA):'),
+									dcc.Input(
+										placeholder='Enter a value...',
+										type='number',
+										value=0.01
+									)
+								], style={'float': 'left'}),
+
+								html.Div([
+									html.Label('Fixed tst (ms):'),
+									dcc.Input(
+										placeholder='Enter a value...',
+										type='number',
+										value=0.4
+									)
+								], style={'float': 'left'}),
+
+								html.Button('Predict CNAPs', id='predict-current-button'),
+							]
+						),
+						dcc.Tab(
+							label='Sweep Pulse Duration',
+							value='duration',
+							style=tab_style,
+							selected_style=tab_selected_style,
+							children=[
+								html.H3('Duration props'),
+								html.Button('Predict CNAPs', id='predict-duration-button'),
+							]
+						)
 					],
 				),
 				html.Div(id='tabs-content')
 			], style={'border': '1px solid', 'border-radius': '5px'})
 		], style={'width': '15%', 'float': 'left', 'max-width': '340px', 'min-width': '220px'}),
 
+
 		# Two output graphs on the right
 		html.Div([
 			html.H4(
-				children='Outputs',
+				children='Predicted Compund Nerve Action Potentials',
 				style=centered_text
 			),
+			
+			# Hidden div inside the app that stores the output data
+			html.Div(id='output-data', style={'display': 'none'}),
 
-			dcc.Graph(
-				id='graph-out1',
-				figure={
-					'data': [
-						{'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
-						{'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': u'Montréal'},
-					],
-					'layout': {
-						'title': 'Graph output 1'
-					}
-				}
-			),
+			dcc.Graph(id='graph-out1'),
+			dcc.Graph(id='graph-out2')
 
-			dcc.Graph(
-				id='graph-out2',
-				figure={
-					'data': [
-						{'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
-						{'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': u'Montréal'},
-					],
-					'layout': {
-						'title': 'Graph output 2'
-					}
-				}
-			)
 		], style={'width': '41%', 'float': 'left'}),
 	], style={'margin': '5px 0'})
 ])
@@ -160,7 +194,6 @@ def read_input_file(n_clicks):
 		}
 	}
 
-
 @app.callback(
 	Output('graph-in1', 'figure'),
 	[Input('input-data', 'children')]
@@ -178,7 +211,6 @@ def build_graph_1(data):
 			)
 		]
 	}
-
 
 @app.callback(
 	Output('graph-in2', 'figure'),
@@ -198,7 +230,6 @@ def build_graph_2(data):
 		]
 	}
 
-
 @app.callback(
 	Output('graph-in3', 'figure'),
 	[Input('input-data', 'children')]
@@ -216,7 +247,6 @@ def build_graph_3(data):
 			)
 		]
 	}
-
 
 @app.callback(
 	Output('graph-in4', 'figure'),
@@ -252,52 +282,79 @@ def load_input(n_clicks, input_nerve_profile, input_plot_options):
 	)
 
 
-@app.callback(Output('tabs-content', 'children'),
-							[Input('sweep-pulse-tabs', 'value')])
-def render_content(tab):
-	if tab == 'current':
-		return html.Div(children=[
-			html.Div([
-				html.Label('Starting Ist (mA):'),
-				dcc.Input(
-					placeholder='Enter a value...',
-					name='balh',
-					type='number',
-					value=0
-				)
-			], style={'float': 'left'}),
+# When pressing 'Predict' this callback will be triggered.
+# Also, its output will trigger the rebuilding of the four input graphs.
+@app.callback(
+	Output('output-data', 'children'),
+	[Input('predict-current-button', 'n_clicks')]
+)
+def predict_current(n_clicks):
+	return {
+		"3d_data": {
+			"x_axis": [1, 2, 3, 4],
+			"y_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
+			"z_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
+		},
+		"histogram": {
+			"x_axis": [1, 2, 3, 4],
+			"y_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
+		}
+	}
+'''
+# When pressing 'Predict_duration' this callback will be triggered.
+# Also, its output will trigger the rebuilding of the four input graphs.
+@app.callback(
+	Output('output-data', 'children'),
+	[Input('predict-duration-button', 'n_clicks')]
+)
+def predict_duration(n_clicks):
+	return {
+		"3d_data": {
+			"x_axis": [1, 2, 3, 4],
+			"y_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
+			"z_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
+		},
+		"histogram": {
+			"x_axis": [1, 2, 3, 4],
+			"y_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
+		}
+	}
+'''
+@app.callback(
+	Output('graph-out1', 'figure'),
+	[Input('output-data', 'children')]
+)
+def build_graph_out_1(data):
+	return {
+		'layout': {
+			'title': 'tau_SD(ms)'
+		},
+		'data': [
+			go.Scatter(
+				x=data["3d_data"]["x_axis"],
+				y=data["3d_data"]["y_axis"],
+				mode='lines+markers'
+			)
+		]
+	}
 
-			html.Div([
-				html.Label('Ending Ist (mA):'),
-				dcc.Input(
-					placeholder='Enter a value...',
-					type='number',
-					value=1
-				)
-			], style={'float': 'left'}),
-
-			html.Div([
-				html.Label('Step Size (mA):'),
-				dcc.Input(
-					placeholder='Enter a value...',
-					type='number',
-					value=0.01
-				)
-			], style={'float': 'left'}),
-
-			html.Div([
-				html.Label('Fixed tst (ms):'),
-				dcc.Input(
-					placeholder='Enter a value...',
-					type='number',
-					value=0.4
-				)
-			], style={'float': 'left'})
-		])
-	else:
-		return html.Div([
-			html.H3('Duration props')
-		])
+@app.callback(
+	Output('graph-out2', 'figure'),
+	[Input('output-data', 'children')]
+)
+def build_graph_out_2(data):
+	return {
+		'layout': {
+			'title': 'tau_SD(ms)'
+		},
+		'data': [
+			go.Scatter(
+				x=data["histogram"]["x_axis"],
+				y=data["histogram"]["y_axis"],
+				mode='lines+markers'
+			)
+		]
+	}
 
 
 
