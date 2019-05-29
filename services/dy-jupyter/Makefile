@@ -75,10 +75,14 @@ down:
 	${DOCKER_COMPOSE} -f docker-compose.yml down
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml down
 
-.PHONY: push
-# target: push – Pushes the the service images to ${DOCKER_REGISTRY}
+.PHONY: push pull
+# target: push – Pushes the service images to ${DOCKER_REGISTRY}
+# target: pull - Pulls the service images from ${DOCKER_REGISTRY}
 push:
 	${DOCKER_COMPOSE} -f docker-compose.yml push
+
+pull:
+	${DOCKER_COMPOSE} -f docker-compose.yml pull
 
 ## -------------------------------
 # Tools
