@@ -7,8 +7,8 @@ services:
       dockerfile: services/dy-3dvis/simcoreparaviewweb/Dockerfile
       target: production
       args:
-        BASE_IMAGE: kitware/paraviewweb:pvw-osmesa-demo-v5.6.0
-        VISUALIZER_VERSION: v3.1.10
+        BASE_IMAGE: kitware/paraviewweb:pvw-visualizer-osmesa-master
+        VISUALIZER_VERSION: v3.1.6
       labels:
         io.simcore.key: '{"key": "simcore/services/dynamic/3d-viewer"}'
         io.simcore.version: '{"version": "${DOCKER_IMAGE_TAG}"}'
