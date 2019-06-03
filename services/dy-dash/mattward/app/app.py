@@ -8,6 +8,7 @@ import random
 # import pandas as pd
 # import matplotlib.pyplot as plt
 import plotly.graph_objs as go
+from plotly import tools
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -44,14 +45,11 @@ app.layout = html.Div(children=[
 				children='Learned Model Input Parameters',
 				style=centered_text
 			),
-			
+
 			# Hidden div inside the app that stores the input data
 			html.Div(id='input-data', style={'display': 'none'}),
 
-			dcc.Graph(id='graph-in1'),
-			dcc.Graph(id='graph-in2'),
-			dcc.Graph(id='graph-in3'),
-			dcc.Graph(id='graph-in4')
+			dcc.Graph(id='graph-ins')
 		], style={'width': '41%', 'float': 'left'}),
 
 
@@ -193,77 +191,60 @@ def read_input_file(n_clicks):
 	}
 
 @app.callback(
-	Output('graph-in1', 'figure'),
+	Output('graph-ins', 'figure'),
 	[Input('input-data', 'children')]
 )
-def build_graph_1(data):
-	return {
-		'layout': {
-			'title': 'Vmax(uV)'
-		},
-		'data': [
-			go.Scatter(
-				x=data["x_axis"],
-				y=data["y_axis"]["Vmax"],
-				mode='lines+markers'
-			)
-		]
-	}
-
-@app.callback(
-	Output('graph-in2', 'figure'),
-	[Input('input-data', 'children')]
-)
-def build_graph_2(data):
-	return {
-		'layout': {
-			'title': 'M coeff'
-		},
-		'data': [
-			go.Scatter(
-				x=data["x_axis"],
-				y=data["y_axis"]["M_mod"],
-				mode='lines+markers'
-			)
-		]
-	}
-
-@app.callback(
-	Output('graph-in3', 'figure'),
-	[Input('input-data', 'children')]
-)
-def build_graph_3(data):
-	return {
-		'layout': {
-			'title': 'B coeff (mA)'
-		},
-		'data': [
-			go.Scatter(
-				x=data["x_axis"],
-				y=data["y_axis"]["B_mod"],
-				mode='lines+markers'
-			)
-		]
-	}
-
-@app.callback(
-	Output('graph-in4', 'figure'),
-	[Input('input-data', 'children')]
-)
-def build_graph_4(data):
-	return {
-		'layout': {
-			'title': 'tau_SD(ms)'
-		},
-		'data': [
-			go.Scatter(
-				x=data["x_axis"],
-				y=data["y_axis"]["tauSD"],
-				mode='lines+markers'
-			)
-		]
-	}
-
+def build_input_graphs(data):
+	trace1 = go.Scatter(
+		x=data["x_axis"],
+		y=data["y_axis"]["Vmax"],
+		mode='lines+markers'
+	)
+	trace2 = go.Scatter(
+		x=data["x_axis"],
+		y=data["y_axis"]["M_mod"],
+		mode='lines+markers'
+	)
+	trace3 = go.Scatter(
+		x=data["x_axis"],
+		y=data["y_axis"]["B_mod"],
+		mode='lines+markers'
+	)
+	trace4 = go.Scatter(
+		x=data["x_axis"],
+		y=data["y_axis"]["tauSD"],
+		mode='lines+markers'
+	)
+	fig = tools.make_subplots(rows=4,
+														cols=1,
+														# specs=[[{}], [{}], [{}], [{}]],
+														shared_xaxes=True,
+														# shared_yaxes=True,
+														vertical_spacing=0.05
+	)
+	fig.append_trace(trace1, 1, 1)
+	fig.append_trace(trace2, 2, 1)
+	fig.append_trace(trace3, 3, 1)
+	fig.append_trace(trace4, 4, 1)
+	fig['layout']['xaxis'].update(title='Time (ms)')
+	fig['layout']['yaxis'].update(title='Vmax(uV)')
+	fig['layout']['yaxis2'].update(title='M coeff')
+	fig['layout']['yaxis3'].update(title='B coeff (mA)')
+	fig['layout']['yaxis4'].update(title='tau_SD(ms)')
+	margin = 10
+	label_padding = 30
+	fig['layout']['margin'].update(
+		l=margin+label_padding,
+		r=margin,
+		b=margin+label_padding,
+		t=margin
+	)
+	fig['layout'].update(height=800,
+											# width=600,
+											# title='Learned Model Input Parameters'
+											showlegend=False
+	)
+	return fig
 
 @app.callback(
 	Output('output-container-button', 'children'),
@@ -357,4 +338,4 @@ def build_graph_out_2(data):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8051)
+	app.run_server(debug=True, port=8051)
