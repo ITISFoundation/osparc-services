@@ -52,7 +52,6 @@ app.layout = html.Div(children=[
 			dcc.Graph(id='graph-in2'),
 			dcc.Graph(id='graph-in3'),
 			dcc.Graph(id='graph-in4')
-
 		], style={'width': '41%', 'float': 'left'}),
 
 
@@ -169,7 +168,6 @@ app.layout = html.Div(children=[
 
 			dcc.Graph(id='graph-out1'),
 			dcc.Graph(id='graph-out2')
-
 		], style={'width': '41%', 'float': 'left'}),
 	], style={'margin': '5px 0'})
 ])
