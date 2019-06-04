@@ -282,6 +282,7 @@ app.layout = html.Div(children=[
 	], style=three_columns)
 ], style=osparc_style)
 
+
 # When pressing 'Load' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the four input graphs.
 @app.callback(
@@ -384,19 +385,8 @@ def build_input_graphs(data):
 	return fig
 
 
-# When pressing 'Predict' this callback will be triggered.
-# Also, its output will trigger the rebuilding of the four input graphs.
-@app.callback(
-	Output('output-data', 'children'),
-	[Input('predict-current-button', 'n_clicks')],
-	state=[
-		State(component_id='current_in_1', component_property='value'),
-		State(component_id='current_in_2', component_property='value'),
-		State(component_id='current_in_3', component_property='value'),
-		State(component_id='current_in_4', component_property='value')
-	]
-)
-def predict_current(n_clicks, in1, in2, in3, in4):
+def predict_current(in1, in2, in3, in4):
+	print('current', in1, in2, in3, in4)
 	return {
 		"3d_data": {
 			"x_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
@@ -410,32 +400,54 @@ def predict_current(n_clicks, in1, in2, in3, in4):
 		}
 	}
 
-'''
-# When pressing 'Predict_duration' this callback will be triggered.
-# Also, its output will trigger the rebuilding of the four input graphs.
-@app.callback(
-	Output('output-data', 'children'),
-	[Input('predict-duration-button', 'n_clicks')],
-	state=[
-		State(component_id='pulse_in_1', component_property='value'),
-		State(component_id='pulse_in_2', component_property='value'),
-		State(component_id='pulse_in_3', component_property='value'),
-		State(component_id='pulse_in_4', component_property='value')
-	]
-)
-def predict_duration(n_clicks, in1, in2, in3, in4):
+def predict_duration(in1, in2, in3, in4):
+	print('duration', in1, in2, in3, in4)
 	return {
 		"3d_data": {
-			"x_axis": [1, 2, 3, 4],
+			"x_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
 			"y_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
 			"z_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
 		},
 		"histogram": {
-			"x_axis": [1, 2, 3, 4],
+			"x_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
 			"y_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
+			"z_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
 		}
 	}
-'''
+
+# When pressing 'Predict' this callback will be triggered.
+# Also, its output will trigger the rebuilding of the four input graphs.
+@app.callback(
+	Output('output-data', 'children'),
+	[
+		Input('predict-current-button', 'n_clicks_timestamp'),
+		Input('predict-duration-button', 'n_clicks_timestamp')
+	],
+	state=[
+		State(component_id='current_in_1', component_property='value'),
+		State(component_id='current_in_2', component_property='value'),
+		State(component_id='current_in_3', component_property='value'),
+		State(component_id='current_in_4', component_property='value'),
+		State(component_id='duration_in_1', component_property='value'),
+		State(component_id='duration_in_2', component_property='value'),
+		State(component_id='duration_in_3', component_property='value'),
+		State(component_id='duration_in_4', component_property='value')
+	]
+)
+def predict(
+	button_current_ts, button_duration_ts,
+	current_1, current_2, current_3, current_4,
+	duration_1, duration_2, duration_3, duration_4):
+	if button_current_ts is None:
+		button_current_ts = 0
+	if button_duration_ts is None:
+		button_duration_ts = 0
+	if button_current_ts>button_duration_ts:
+		return predict_current(current_1, current_2, current_3, current_4)
+	else:
+		return predict_duration(duration_1, duration_2, duration_3, duration_4)
+
+
 @app.callback(
 	Output('graph-out1', 'figure'),
 	[Input('output-data', 'children')]
@@ -499,6 +511,7 @@ def build_graph_out_1(data):
 		'data': lines,
 		'layout': layout
 	}
+
 
 @app.callback(
 	Output('graph-out2', 'figure'),
