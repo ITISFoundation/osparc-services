@@ -48,7 +48,7 @@ input_output_plots_layout = {
 options_layout = {
 	# 'border': '1px solid',
 	# 'border-radius': '5px',
-	'margin-bottom': '10px'
+	'margin-top': '20px'
 }
 controls_layout = {
 	'width': '15%',
@@ -69,7 +69,14 @@ dcc_input_label = {
 	'float': 'left'
 }
 dcc_input = {
-	'width': '100px'
+	'color': osparc_style['color'],
+	'backgroundColor': osparc_style['gridColor']
+}
+dcc_input_number = {
+	'height': '30px',
+	'width': '100px',
+	'color': dcc_input['color'],
+	'backgroundColor': dcc_input['backgroundColor']
 }
 dcc_input_pair = {
 	'overflow': 'hidden',
@@ -115,7 +122,9 @@ app.layout = html.Div(children=[
 						{'label': 'Subject 2: Cervical Vagus', 'value': 'Subject 2: Cervical Vagus'},
 						{'label': 'Subject 2: Gastric Vagus', 'value': 'Subject 2: Gastric Vagus'}
 					],
-					value='Subject 1: Cervical Vagus'),
+					value='Subject 1: Cervical Vagus',
+					style=dcc_input
+				),
 
 				html.Label('Plot Options'),
 				dcc.Checklist(
@@ -127,8 +136,7 @@ app.layout = html.Div(children=[
 					values=['Plot against Charge-Phase']
 				),
 
-				html.Button('Load', id='load-input-button'),
-				html.Div(id='output-container-button')
+				html.Button('Load', id='load-input-button', style=dcc_input)
 			], style=options_layout),
 
 			html.Div([
@@ -150,7 +158,7 @@ app.layout = html.Div(children=[
 									dcc.Input(
 										type='number',
 										value=0,
-										style=dcc_input
+										style=dcc_input_number
 									)
 								], style=dcc_input_pair),
 
@@ -161,7 +169,7 @@ app.layout = html.Div(children=[
 									dcc.Input(
 										type='number',
 										value=1,
-										style=dcc_input
+										style=dcc_input_number
 									)
 								], style=dcc_input_pair),
 
@@ -172,7 +180,7 @@ app.layout = html.Div(children=[
 									dcc.Input(
 										type='number',
 										value=0.01,
-										style=dcc_input
+										style=dcc_input_number
 									)
 								], style=dcc_input_pair),
 
@@ -183,11 +191,11 @@ app.layout = html.Div(children=[
 									dcc.Input(
 										type='number',
 										value=0.4,
-										style=dcc_input
+										style=dcc_input_number
 									)
 								], style=dcc_input_pair),
 
-								html.Button('Predict CNAPs', id='predict-current-button'),
+								html.Button('Predict CNAPs', id='predict-current-button', style=dcc_input),
 							]
 						),
 						dcc.Tab(
@@ -197,7 +205,7 @@ app.layout = html.Div(children=[
 							selected_style=tab_style,
 							children=[
 								html.H3('Duration props'),
-								html.Button('Predict CNAPs', id='predict-duration-button'),
+								html.Button('Predict CNAPs', id='predict-duration-button', style=dcc_input),
 							]
 						)
 					],
@@ -227,9 +235,13 @@ app.layout = html.Div(children=[
 # Also, its output will trigger the rebuilding of the four input graphs.
 @app.callback(
 	Output('input-data', 'children'),
-	[Input('load-input-button', 'n_clicks')]
+	[Input('load-input-button', 'n_clicks')],
+	state=[
+		State(component_id='input-nerve-profile', component_property='value'),
+		State(component_id='input-plot-options', component_property='values')
+	]
 )
-def read_input_file(n_clicks):
+def read_input_file(n_clicks, input_nerve_profile, input_plot_options):
 	# column_names = ['t_ms', 'CV', 'Vmax','M_mod', 'B_mod', 'tauSD']
 	# data = pd.read_csv(path, sep=',', names=column_names)
 	# return [random.randint(1,10), random.randint(1,10), random.randint(1,10)]
@@ -319,20 +331,6 @@ def build_input_graphs(data):
 		)
 	)
 	return fig
-
-@app.callback(
-	Output('output-container-button', 'children'),
-	[Input('load-input-button', 'n_clicks')],
-	state=[
-		State(component_id='input-nerve-profile', component_property='value'),
-		State(component_id='input-plot-options', component_property='values')
-	]
-)
-def load_input(n_clicks, input_nerve_profile, input_plot_options):
-	return 'Input options: {} in1 {} in2'.format(
-		input_nerve_profile,
-		input_plot_options
-	)
 
 
 # When pressing 'Predict' this callback will be triggered.
