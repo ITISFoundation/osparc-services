@@ -94,41 +94,48 @@ app.layout = html.Div(children=[
 							selected_style=tab_selected_style,
 							children=[
 								html.Div([
-									html.Label('Starting Ist (mA):'),
+									html.Div([
+										html.Label('Starting Ist (mA):')
+									], style={'width': '120px', 'float': 'left'}),
 									dcc.Input(
-										placeholder='Enter a value...',
 										type='number',
 										value=0,
-										style={'float': 'left'}
+										style={'width': '120px'}
 									)
-								], style={'float': 'left'}),
+								], style={'overflow': 'hidden'}),
 
 								html.Div([
-									html.Label('Ending Ist (mA):'),
+									html.Div([
+										html.Label('Ending Ist (mA):'),
+									], style={'width': '120px', 'float': 'left'}),
 									dcc.Input(
-										placeholder='Enter a value...',
 										type='number',
-										value=1
+										value=1,
+										style={'width': '120px'}
 									)
-								], style={'float': 'left'}),
+								], style={'overflow': 'hidden'}),
 
 								html.Div([
-									html.Label('Step Size (mA):'),
+									html.Div([
+										html.Label('Step Size (mA):')
+									], style={'width': '120px', 'float': 'left'}),
 									dcc.Input(
-										placeholder='Enter a value...',
 										type='number',
-										value=0.01
+										value=0.01,
+										style={'width': '120px'}
 									)
-								], style={'float': 'left'}),
+								], style={'overflow': 'hidden'}),
 
 								html.Div([
-									html.Label('Fixed tst (ms):'),
+									html.Div([
+										html.Label('Fixed tst (ms):')
+									], style={'width': '120px', 'float': 'left'}),
 									dcc.Input(
-										placeholder='Enter a value...',
 										type='number',
-										value=0.4
+										value=0.4,
+										style={'width': '120px'}
 									)
-								], style={'float': 'left'}),
+								], style={'overflow': 'hidden'}),
 
 								html.Button('Predict CNAPs', id='predict-current-button'),
 							]
