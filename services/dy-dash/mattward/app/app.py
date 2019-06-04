@@ -273,13 +273,14 @@ def load_input(n_clicks, input_nerve_profile, input_plot_options):
 def predict_current(n_clicks):
 	return {
 		"3d_data": {
-			"x_axis": [1, 2, 3, 4],
+			"x_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
 			"y_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
 			"z_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
 		},
 		"histogram": {
-			"x_axis": [1, 2, 3, 4],
+			"x_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
 			"y_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
+			"z_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
 		}
 	}
 '''
@@ -350,14 +351,11 @@ def build_graph_out_2(data):
 			'title': 'tau_SD(ms)'
 		},
 		'data': [
-			go.Scatter(
-				x=data["histogram"]["x_axis"],
-				y=data["histogram"]["y_axis"],
-				mode='lines+markers'
-			)
+			go.Heatmap(z=[data["histogram"]["x_axis"],
+										data["histogram"]["y_axis"],
+										data["histogram"]["z_axis"]])
 		]
 	}
-
 
 
 if __name__ == '__main__':
