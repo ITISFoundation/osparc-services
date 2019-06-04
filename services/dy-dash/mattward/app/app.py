@@ -53,9 +53,8 @@ options_layout = {
 controls_layout = {
 	'width': '15%',
 	'float': 'left',
-	'max-width':
-	'340px', 
-	'min-width': '230px',
+	'max-width': '220px', 
+	'min-width': '220px',
 	'color': osparc_style['color'],
 	'backgroundColor': osparc_style['backgroundColor']
 }
@@ -65,7 +64,7 @@ hidden = {
 }
 
 dcc_input_label = {
-	'width': '120px',
+	'width': '110px',
 	'float': 'left'
 }
 dcc_input = {
@@ -74,7 +73,7 @@ dcc_input = {
 }
 dcc_input_number = {
 	'height': '30px',
-	'width': '100px',
+	'width': '110px',
 	'color': dcc_input['color'],
 	'backgroundColor': dcc_input['backgroundColor']
 }
@@ -140,13 +139,13 @@ app.layout = html.Div(children=[
 			], style=options_layout),
 
 			html.Div([
-				html.H5('Output options'),
+				html.H5('Sweep Pulse'),
 				dcc.Tabs(
 					id="sweep-pulse-tabs", 
 					value='current',
 					children=[
 						dcc.Tab(
-							label='Sweep Pulse Current',
+							label='Current',
 							value='current',
 							style=tab_style,
 							selected_style=tab_style,
@@ -199,7 +198,7 @@ app.layout = html.Div(children=[
 							]
 						),
 						dcc.Tab(
-							label='Sweep Pulse Duration',
+							label='Duration',
 							value='duration',
 							style=tab_style,
 							selected_style=tab_style,
@@ -396,24 +395,24 @@ def build_graph_out_1(data):
 		scene=dict(
 			xaxis=dict(
 				title='CV (m/s)',
-				gridcolor='rgb(255, 255, 255)',
+				gridcolor=osparc_style['gridColor'],
 				zerolinecolor='rgb(255, 255, 255)',
 				showbackground=True,
-				backgroundcolor='rgb(230, 230,230)'
+				backgroundcolor=osparc_style['backgroundColor']
 			),
 			yaxis=dict(
 				title='I_st (mA)',
-				gridcolor='rgb(255, 255, 255)',
+				gridcolor=osparc_style['gridColor'],
 				zerolinecolor='rgb(255, 255, 255)',
 				showbackground=True,
-				backgroundcolor='rgb(230, 230,230)'
+				backgroundcolor=osparc_style['backgroundColor']
 			),
 			zaxis=dict(
 				title='V_pred (uV)',
-				gridcolor='rgb(255, 255, 255)',
+				gridcolor=osparc_style['gridColor'],
 				zerolinecolor='rgb(255, 255, 255)',
 				showbackground=True,
-				backgroundcolor='rgb(230, 230,230)'
+				backgroundcolor=osparc_style['backgroundColor']
 			)
 		),
 		showlegend=False,
