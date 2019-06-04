@@ -165,7 +165,7 @@ app.layout = html.Div(children=[
 
 								html.Div([
 									html.Div([
-										html.Label('Ending tst  (mA):'),
+										html.Label('Ending tst (mA):'),
 									], style=dcc_input_label),
 									dcc.Input(
 										id='current_in_2',
