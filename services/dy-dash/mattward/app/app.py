@@ -13,8 +13,10 @@ from plotly import tools
 import pandas as pd
 import numpy as np
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__)
+app.css.append_css({
+	"external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"
+})
 
 osparc_style = {
 	'backgroundColor': '#444', #202020
