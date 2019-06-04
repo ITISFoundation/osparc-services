@@ -45,7 +45,7 @@ app.layout = html.Div(children=[
 			html.Div(id='input-data', style={'display': 'none'}),
 
 			dcc.Graph(id='graph-ins')
-		], style={'width': '41%', 'float': 'left'}),
+		], style={'width': '42%', 'float': 'left'}),
 
 
 		# Controls in the middle
@@ -100,7 +100,7 @@ app.layout = html.Div(children=[
 									dcc.Input(
 										type='number',
 										value=0,
-										style={'width': '120px'}
+										style={'width': '100px'}
 									)
 								], style={'overflow': 'hidden'}),
 
@@ -111,7 +111,7 @@ app.layout = html.Div(children=[
 									dcc.Input(
 										type='number',
 										value=1,
-										style={'width': '120px'}
+										style={'width': '100px'}
 									)
 								], style={'overflow': 'hidden'}),
 
@@ -122,7 +122,7 @@ app.layout = html.Div(children=[
 									dcc.Input(
 										type='number',
 										value=0.01,
-										style={'width': '120px'}
+										style={'width': '100px'}
 									)
 								], style={'overflow': 'hidden'}),
 
@@ -133,7 +133,7 @@ app.layout = html.Div(children=[
 									dcc.Input(
 										type='number',
 										value=0.4,
-										style={'width': '120px'}
+										style={'width': '100px'}
 									)
 								], style={'overflow': 'hidden'}),
 
@@ -154,7 +154,7 @@ app.layout = html.Div(children=[
 				),
 				html.Div(id='tabs-content')
 			], style={'border': '1px solid', 'border-radius': '5px'})
-		], style={'width': '15%', 'float': 'left', 'max-width': '340px', 'min-width': '220px'}),
+		], style={'width': '15%', 'float': 'left', 'max-width': '340px', 'min-width': '230px'}),
 
 
 		# Two output graphs on the right
@@ -169,7 +169,7 @@ app.layout = html.Div(children=[
 
 			dcc.Graph(id='graph-out1'),
 			dcc.Graph(id='graph-out2')
-		], style={'width': '41%', 'float': 'left'}),
+		], style={'width': '42%', 'float': 'left'}),
 	])
 ])
 
