@@ -422,11 +422,12 @@ def build_input_graphs(data):
 		gridcolor=osparc_style['gridColor']
 	)
 	margin = 10
-	label_padding = 30
+	y_label_padding = 50
+	x_label_padding = 30
 	fig['layout']['margin'].update(
-		l=margin+label_padding,
+		l=margin+y_label_padding,
 		r=margin,
-		b=margin+label_padding,
+		b=margin+x_label_padding,
 		t=margin,
 	)
 	fig['layout'].update(
