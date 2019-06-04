@@ -24,6 +24,20 @@ osparc_style = {
 	'gridColor': '#444',
 }
 
+three_columns = {
+	'display': 'flex'
+}
+input_output_plots_layout = {
+	'flex': 1,
+	'min-width': 0
+}
+controls_layout = {
+	'flex': 0,
+	'min-width': '220px',
+	'color': osparc_style['color'],
+	'backgroundColor': osparc_style['backgroundColor']
+}
+
 centered_text = {
 	'text-align': 'center',
 	'color': osparc_style['color'],
@@ -40,23 +54,10 @@ tab_style = {
 	'color': osparc_style['color'],
 	'backgroundColor': osparc_style['backgroundColor']
 }
-
-input_output_plots_layout = {
-	'width': '42%',
-	'float': 'left'
-}
 options_layout = {
 	# 'border': '1px solid',
 	# 'border-radius': '5px',
 	'margin-top': '20px'
-}
-controls_layout = {
-	'width': '15%',
-	'float': 'left',
-	'max-width': '220px', 
-	'min-width': '220px',
-	'color': osparc_style['color'],
-	'backgroundColor': osparc_style['backgroundColor']
 }
 
 hidden = {
@@ -227,7 +228,7 @@ app.layout = html.Div(children=[
 			dcc.Graph(id='graph-out1'),
 			dcc.Graph(id='graph-out2')
 		], style=input_output_plots_layout),
-	])
+	], style=three_columns)
 ], style=osparc_style)
 
 # When pressing 'Load' this callback will be triggered.
@@ -319,8 +320,8 @@ def build_input_graphs(data):
 		t=margin,
 	)
 	fig['layout'].update(
+		autosize=True,
 		height=800,
-		# width=600,
 		# title='Learned Model Input Parameters',
 		showlegend=False,
 		plot_bgcolor=osparc_style['backgroundColor'],
