@@ -309,13 +309,33 @@ def predict_duration(n_clicks):
 def build_graph_out_1(data):
 	return {
 		'layout': {
-			'title': 'tau_SD(ms)'
+			'title': '3D Graph',
+			'scene': {
+				'xaxis': {
+					'title': 'x axis'
+				},
+				'yaxis': {
+					'title': 'y axis'
+				},
+				'zaxis': {
+					'title': 'z axis'
+				}
+			}
 		},
 		'data': [
-			go.Scatter(
+			go.Scatter3d(
 				x=data["3d_data"]["x_axis"],
 				y=data["3d_data"]["y_axis"],
-				mode='lines+markers'
+				z=data["3d_data"]["z_axis"],
+				mode='markers',
+				marker=dict(
+					size=4,
+					opacity=0.7,
+					line=dict(
+						color='rgb(128, 128, 128)',
+						width=0.1
+					)
+				)
 			)
 		]
 	}
