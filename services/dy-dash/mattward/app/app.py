@@ -323,8 +323,10 @@ def build_graph_out_1(data):
 	for i, j, k in zip(xGrid, yGrid, z):
 		lines.append(go.Scatter3d(x=i, y=j, z=k, mode='lines', line=line_marker))
 
+	margin = 10
+	label_padding = 30
 	layout = go.Layout(
-		title='Wireframe Plot',
+		# title='Wireframe Plot',
 		scene=dict(
 			xaxis=dict(
 				title='CV (m/s)',
@@ -349,11 +351,18 @@ def build_graph_out_1(data):
 			)
 		),
 		showlegend=False,
+		margin=dict(
+			l=margin+label_padding,
+			r=margin,
+			b=margin+label_padding,
+			t=margin
+		),
+		height=390
 	)
 
 	return {
-		'layout': layout,
-		'data': lines
+		'data': lines,
+		'layout': layout
 	}
 
 @app.callback(
@@ -361,15 +370,26 @@ def build_graph_out_1(data):
 	[Input('output-data', 'children')]
 )
 def build_graph_out_2(data):
+	data = go.Heatmap(z=[data["histogram"]["x_axis"],
+											data["histogram"]["y_axis"],
+											data["histogram"]["z_axis"]])
+
+	margin = 10
+	label_padding = 30
+	layout = go.Layout(
+		# title='Heatmap Plot',
+		margin=dict(
+			l=margin+label_padding,
+			r=margin,
+			b=margin+label_padding,
+			t=margin+label_padding
+		),
+		height=390
+	)
+
 	return {
-		'layout': {
-			'title': 'tau_SD(ms)'
-		},
-		'data': [
-			go.Heatmap(z=[data["histogram"]["x_axis"],
-										data["histogram"]["y_axis"],
-										data["histogram"]["z_axis"]])
-		]
+		'data': [data],
+		'layout': layout
 	}
 
 
