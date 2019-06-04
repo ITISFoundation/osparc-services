@@ -7,3 +7,8 @@ body {
 	color: var(--color);
 	background-color: var(--background-color)
 }
+
+/* needed for hiding undo/redo buttons in plotly graphs */
+._dash-undo-redo {
+	display: none;
+}
