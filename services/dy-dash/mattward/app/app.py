@@ -30,6 +30,17 @@ tab_selected_style = {
 	'padding': '5px'
 }
 
+dcc_input_label = {
+	'width': '120px',
+	'float': 'left'
+}
+dcc_input = {
+	'width': '100px'
+}
+dcc_input_pair = {
+	'overflow': 'hidden'
+}
+
 app.layout = html.Div(children=[
 	html.H1(
 		children='MattWard solver',
@@ -99,46 +110,46 @@ app.layout = html.Div(children=[
 								html.Div([
 									html.Div([
 										html.Label('Starting Ist (mA):')
-									], style={'width': '120px', 'float': 'left'}),
+									], style=dcc_input_label),
 									dcc.Input(
 										type='number',
 										value=0,
-										style={'width': '100px'}
+										style=dcc_input
 									)
-								], style={'overflow': 'hidden'}),
+								], style=dcc_input_pair),
 
 								html.Div([
 									html.Div([
 										html.Label('Ending Ist (mA):'),
-									], style={'width': '120px', 'float': 'left'}),
+									], style=dcc_input_label),
 									dcc.Input(
 										type='number',
 										value=1,
-										style={'width': '100px'}
+										style=dcc_input
 									)
-								], style={'overflow': 'hidden'}),
+								], style=dcc_input_pair),
 
 								html.Div([
 									html.Div([
 										html.Label('Step Size (mA):')
-									], style={'width': '120px', 'float': 'left'}),
+									], style=dcc_input_label),
 									dcc.Input(
 										type='number',
 										value=0.01,
-										style={'width': '100px'}
+										style=dcc_input
 									)
-								], style={'overflow': 'hidden'}),
+								], style=dcc_input_pair),
 
 								html.Div([
 									html.Div([
 										html.Label('Fixed tst (ms):')
-									], style={'width': '120px', 'float': 'left'}),
+									], style=dcc_input_label),
 									dcc.Input(
 										type='number',
 										value=0.4,
-										style={'width': '100px'}
+										style=dcc_input
 									)
-								], style={'overflow': 'hidden'}),
+								], style=dcc_input_pair),
 
 								html.Button('Predict CNAPs', id='predict-current-button'),
 							]
