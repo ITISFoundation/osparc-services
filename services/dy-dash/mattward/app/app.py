@@ -282,6 +282,30 @@ app.layout = html.Div(children=[
 	], style=three_columns)
 ], style=osparc_style)
 
+def create_learned_model_input(path, plot_vs_tcnap):
+	column_names = ['t_ms', 'CV', 'Vmax','M_mod', 'B_mod', 'tauSD']
+	data = pd.read_csv(path, sep=',', names=column_names)
+
+	# dpi = 96
+	# height = 1024
+	# width = 1024
+	# fontsize = 16
+	# plt.figure(figsize=(width / dpi, height / dpi), dpi=dpi)
+
+	x_axis = data.CV
+	if plot_vs_tcnap:
+		x_axis = data.t_ms
+
+	return {
+		"plot_vs_tcnap": plot_vs_tcnap,
+		"x_axis": x_axis,
+		"y_axis": {
+			"Vmax": [i*-1e12 for i in data.Vmax],
+			"M_mod": data.M_mod,
+			"B_mod": data.B_mod,
+			"tauSD": data.tauSD,
+		}
+	}
 
 # When pressing 'Load' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the four input graphs.
@@ -294,43 +318,66 @@ app.layout = html.Div(children=[
 	]
 )
 def read_input_file(n_clicks, input_nerve_profile, input_plot_options):
-	# column_names = ['t_ms', 'CV', 'Vmax','M_mod', 'B_mod', 'tauSD']
-	# data = pd.read_csv(path, sep=',', names=column_names)
-	# return [random.randint(1,10), random.randint(1,10), random.randint(1,10)]
-	return {
-		"x_axis": [1, 2, 3, 4],
-		"y_axis": {
-			"Vmax": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-			"M_mod": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-			"B_mod": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-			"tauSD": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-		}
-	}
+	# TODO: MaG
+	# print("Load clicked.", nerve_profile.value)
+	# model_id = nerve_profile.index + 1
+	# !execute_cnap.sh $model_id 0 0.0 1.0 0.5 0.4
+	# path = '/home/jovyan/outputs/input.csv'
+	path = 'input.csv'
+	return create_learned_model_input(path, input_plot_options)
+
 
 @app.callback(
 	Output('graph-ins', 'figure'),
 	[Input('input-data', 'children')]
 )
 def build_input_graphs(data):
+	marker_size = 2
+	line_width = 1
+	plot_vs_tcnap = data["plot_vs_tcnap"]
 	trace1 = go.Scatter(
 		x=data["x_axis"],
 		y=data["y_axis"]["Vmax"],
-		mode='lines+markers'
+		mode='lines+markers',
+		marker = dict(
+			size = marker_size
+		),
+		line = dict(
+			width = line_width
+		)
 	)
 	trace2 = go.Scatter(
 		x=data["x_axis"],
 		y=data["y_axis"]["M_mod"],
-		mode='lines+markers'
+		mode='lines+markers',
+		marker = dict(
+			size = marker_size
+		),
+		line = dict(
+			width = line_width
+		)
 	)
 	trace3 = go.Scatter(
 		x=data["x_axis"],
 		y=data["y_axis"]["B_mod"],
-		mode='lines+markers'
+		mode='lines+markers',
+		marker = dict(
+			size = marker_size
+		),
+		line = dict(
+			width = line_width
+		)
 	)
 	trace4 = go.Scatter(
 		x=data["x_axis"],
 		y=data["y_axis"]["tauSD"],
-		mode='lines+markers'
+		mode='lines+markers',
+		marker = dict(
+			size = marker_size
+		),
+		line = dict(
+			width = line_width
+		)
 	)
 	fig = tools.make_subplots(rows=4,
 														cols=1,
@@ -343,8 +390,19 @@ def build_input_graphs(data):
 	fig.append_trace(trace2, 2, 1)
 	fig.append_trace(trace3, 3, 1)
 	fig.append_trace(trace4, 4, 1)
+
+	if (plot_vs_tcnap):
+		fig['layout']['xaxis'].update(
+			range=[0, max(data["x_axis"])]
+		)
+	else:
+		fig['layout']['xaxis'].update(
+			range=[min(data.CV), 100],
+			type='log'
+		)
+
 	fig['layout']['xaxis'].update(
-		title='Time (ms)',
+		title='Conduction Velocity (m/s)',
 		gridcolor=osparc_style['gridColor']
 	)
 	fig['layout']['yaxis'].update(
@@ -442,7 +500,21 @@ def predict(
 		button_current_ts = 0
 	if button_duration_ts is None:
 		button_duration_ts = 0
+
 	if button_current_ts>button_duration_ts:
+		model_id = nerve_profile.index + 1
+		# sweep_param = 1
+		# with out2:
+		# 	print("Current clicked.", charge_phase_cb.value, time_cb.value, start_ist.value, end_ist.value, step_size_current.value, fixed_tst.value)
+		# 	!execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
+		# 	cv_path='/home/jovyan/outputs/CV_plot.csv'
+		# 	t_path='/home/jovyan/outputs/t_plot.csv'
+		# 	ist_path='/home/jovyan/outputs/Ist_plot.csv'
+		# 	tst_path='/home/jovyan/outputs/tst_plot.csv'
+		# 	qst_path='/home/jovyan/outputs/CAP_plot.csv'
+		# 	vpred_path='/home/jovyan/outputs/V_pred_plot.csv'
+		# 	lpred_path='/home/jovyan/outputs/Lpred_plot.csv'
+		# 	create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=True, plot_vs_qst=charge_phase_cb.value, plot_vs_tCNAP=time_cb.value), 
 		return predict_current(current_1, current_2, current_3, current_4)
 	else:
 		return predict_duration(duration_1, duration_2, duration_3, duration_4)
