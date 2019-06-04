@@ -19,8 +19,9 @@ app.css.append_css({
 })
 
 osparc_style = {
-	'backgroundColor': '#444', #202020
-	'color': '#bfbfbf'
+	'color': '#bfbfbf',
+	'backgroundColor': '#202020',
+	'gridColor': '#444',
 }
 
 centered_text = {
@@ -45,8 +46,8 @@ input_output_plots_layout = {
 	'float': 'left'
 }
 options_layout = {
-	'border': '1px solid',
-	'border-radius': '5px',
+	# 'border': '1px solid',
+	# 'border-radius': '5px',
 	'margin-bottom': '10px'
 }
 controls_layout = {
@@ -278,11 +279,26 @@ def build_input_graphs(data):
 	fig.append_trace(trace2, 2, 1)
 	fig.append_trace(trace3, 3, 1)
 	fig.append_trace(trace4, 4, 1)
-	fig['layout']['xaxis'].update(title='Time (ms)')
-	fig['layout']['yaxis'].update(title='Vmax(uV)')
-	fig['layout']['yaxis2'].update(title='M coeff')
-	fig['layout']['yaxis3'].update(title='B coeff (mA)')
-	fig['layout']['yaxis4'].update(title='tau_SD(ms)')
+	fig['layout']['xaxis'].update(
+		title='Time (ms)',
+		gridcolor=osparc_style['gridColor']
+	)
+	fig['layout']['yaxis'].update(
+		title='Vmax(uV)',
+		gridcolor=osparc_style['gridColor']
+	)
+	fig['layout']['yaxis2'].update(
+		title='M coeff',
+		gridcolor=osparc_style['gridColor']
+	)
+	fig['layout']['yaxis3'].update(
+		title='B coeff (mA)',
+		gridcolor=osparc_style['gridColor']
+	)
+	fig['layout']['yaxis4'].update(
+		title='tau_SD(ms)',
+		gridcolor=osparc_style['gridColor']
+	)
 	margin = 10
 	label_padding = 30
 	fig['layout']['margin'].update(
