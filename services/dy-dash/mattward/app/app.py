@@ -16,18 +16,49 @@ import numpy as np
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-centered_text = {
-	'text-align': 'center'
-}
-tabs_styles = {
-	'height': '44px'
-}
-tab_style = {
-	'padding': '5px'
+osparc_style = {
+	'backgroundColor': '#444', #202020
+	'color': '#bfbfbf'
 }
 
-tab_selected_style = {
-	'padding': '5px'
+centered_text = {
+	'text-align': 'center',
+	'color': osparc_style['color'],
+	'backgroundColor': osparc_style['backgroundColor']
+}
+
+tabs_styles = {
+	'height': '44px',
+	'color': osparc_style['color'],
+	'backgroundColor': osparc_style['backgroundColor']
+}
+tab_style = {
+	'padding': '5px',
+	'color': osparc_style['color'],
+	'backgroundColor': osparc_style['backgroundColor']
+}
+
+input_output_plots_layout = {
+	'width': '42%',
+	'float': 'left'
+}
+options_layout = {
+	'border': '1px solid',
+	'border-radius': '5px',
+	'margin-bottom': '10px'
+}
+controls_layout = {
+	'width': '15%',
+	'float': 'left',
+	'max-width':
+	'340px', 
+	'min-width': '230px',
+	'color': osparc_style['color'],
+	'backgroundColor': osparc_style['backgroundColor']
+}
+
+hidden = {
+	'display': 'none'
 }
 
 dcc_input_label = {
@@ -38,7 +69,9 @@ dcc_input = {
 	'width': '100px'
 }
 dcc_input_pair = {
-	'overflow': 'hidden'
+	'overflow': 'hidden',
+	'color': osparc_style['color'],
+	'backgroundColor': osparc_style['backgroundColor']
 }
 
 app.layout = html.Div(children=[
@@ -56,10 +89,10 @@ app.layout = html.Div(children=[
 			),
 
 			# Hidden div inside the app that stores the input data
-			html.Div(id='input-data', style={'display': 'none'}),
+			html.Div(id='input-data', style=hidden),
 
 			dcc.Graph(id='graph-ins')
-		], style={'width': '42%', 'float': 'left'}),
+		], style=input_output_plots_layout),
 
 
 		# Controls in the middle
@@ -93,7 +126,7 @@ app.layout = html.Div(children=[
 
 				html.Button('Load', id='load-input-button'),
 				html.Div(id='output-container-button')
-			], style={'border': '1px solid', 'border-radius': '5px', 'margin-bottom': '10px'}),
+			], style=options_layout),
 
 			html.Div([
 				html.H5('Output options'),
@@ -105,7 +138,7 @@ app.layout = html.Div(children=[
 							label='Sweep Pulse Current',
 							value='current',
 							style=tab_style,
-							selected_style=tab_selected_style,
+							selected_style=tab_style,
 							children=[
 								html.Div([
 									html.Div([
@@ -158,7 +191,7 @@ app.layout = html.Div(children=[
 							label='Sweep Pulse Duration',
 							value='duration',
 							style=tab_style,
-							selected_style=tab_selected_style,
+							selected_style=tab_style,
 							children=[
 								html.H3('Duration props'),
 								html.Button('Predict CNAPs', id='predict-duration-button'),
@@ -167,8 +200,8 @@ app.layout = html.Div(children=[
 					],
 				),
 				html.Div(id='tabs-content')
-			], style={'border': '1px solid', 'border-radius': '5px'})
-		], style={'width': '15%', 'float': 'left', 'max-width': '340px', 'min-width': '230px'}),
+			], style=options_layout)
+		], style=controls_layout),
 
 
 		# Two output graphs on the right
@@ -179,13 +212,13 @@ app.layout = html.Div(children=[
 			),
 			
 			# Hidden div inside the app that stores the output data
-			html.Div(id='output-data', style={'display': 'none'}),
+			html.Div(id='output-data', style=hidden),
 
 			dcc.Graph(id='graph-out1'),
 			dcc.Graph(id='graph-out2')
-		], style={'width': '42%', 'float': 'left'}),
+		], style=input_output_plots_layout),
 	])
-])
+], style=osparc_style)
 
 # When pressing 'Load' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the four input graphs.
@@ -254,12 +287,18 @@ def build_input_graphs(data):
 		l=margin+label_padding,
 		r=margin,
 		b=margin+label_padding,
-		t=margin
+		t=margin,
 	)
-	fig['layout'].update(height=800,
-											# width=600,
-											# title='Learned Model Input Parameters'
-											showlegend=False
+	fig['layout'].update(
+		height=800,
+		# width=600,
+		# title='Learned Model Input Parameters',
+		showlegend=False,
+		plot_bgcolor=osparc_style['backgroundColor'],
+		paper_bgcolor=osparc_style['backgroundColor'],
+		font=dict(
+			color=osparc_style['color']
+		)
 	)
 	return fig
 
@@ -365,10 +404,15 @@ def build_graph_out_1(data):
 		margin=dict(
 			l=margin+label_padding,
 			r=margin,
-			b=margin+label_padding,
+			b=margin,
 			t=margin
 		),
-		height=390
+		height=400,
+		plot_bgcolor=osparc_style['backgroundColor'],
+		paper_bgcolor=osparc_style['backgroundColor'],
+		font=dict(
+			color=osparc_style['color']
+		)
 	)
 
 	return {
@@ -393,9 +437,14 @@ def build_graph_out_2(data):
 			l=margin+label_padding,
 			r=margin,
 			b=margin+label_padding,
-			t=margin+label_padding
+			t=margin
 		),
-		height=390
+		height=400,
+		plot_bgcolor=osparc_style['backgroundColor'],
+		paper_bgcolor=osparc_style['backgroundColor'],
+		font=dict(
+			color=osparc_style['color']
+		)
 	)
 
 	return {
