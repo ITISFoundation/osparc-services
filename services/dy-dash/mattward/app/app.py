@@ -65,7 +65,7 @@ hidden = {
 }
 
 dcc_input_label = {
-	'width': '110px',
+	'width': '120px',
 	'float': 'left'
 }
 dcc_input = {
@@ -74,7 +74,7 @@ dcc_input = {
 }
 dcc_input_number = {
 	'height': '30px',
-	'width': '110px',
+	'width': '100px',
 	'color': dcc_input['color'],
 	'backgroundColor': dcc_input['backgroundColor']
 }
@@ -153,9 +153,10 @@ app.layout = html.Div(children=[
 							children=[
 								html.Div([
 									html.Div([
-										html.Label('Starting Ist (mA):')
+										html.Label('Starting tst (mA):')
 									], style=dcc_input_label),
 									dcc.Input(
+										id='current_in_1',
 										type='number',
 										value=0,
 										style=dcc_input_number
@@ -164,9 +165,10 @@ app.layout = html.Div(children=[
 
 								html.Div([
 									html.Div([
-										html.Label('Ending Ist (mA):'),
+										html.Label('Ending tst  (mA):'),
 									], style=dcc_input_label),
 									dcc.Input(
+										id='current_in_2',
 										type='number',
 										value=1,
 										style=dcc_input_number
@@ -178,6 +180,7 @@ app.layout = html.Div(children=[
 										html.Label('Step Size (mA):')
 									], style=dcc_input_label),
 									dcc.Input(
+										id='current_in_3',
 										type='number',
 										value=0.01,
 										style=dcc_input_number
@@ -186,9 +189,10 @@ app.layout = html.Div(children=[
 
 								html.Div([
 									html.Div([
-										html.Label('Fixed tst (ms):')
+										html.Label('Fixed Ist (ms):')
 									], style=dcc_input_label),
 									dcc.Input(
+										id='current_in_4',
 										type='number',
 										value=0.4,
 										style=dcc_input_number
@@ -204,7 +208,54 @@ app.layout = html.Div(children=[
 							style=tab_style,
 							selected_style=tab_style,
 							children=[
-								html.H3('Duration props'),
+								html.Div([
+									html.Div([
+										html.Label('Starting Ist (mA):')
+									], style=dcc_input_label),
+									dcc.Input(
+										id='duration_in_1',
+										type='number',
+										value=0,
+										style=dcc_input_number
+									)
+								], style=dcc_input_pair),
+
+								html.Div([
+									html.Div([
+										html.Label('Ending Ist (mA):'),
+									], style=dcc_input_label),
+									dcc.Input(
+										id='duration_in_2',
+										type='number',
+										value=1,
+										style=dcc_input_number
+									)
+								], style=dcc_input_pair),
+
+								html.Div([
+									html.Div([
+										html.Label('Step Size (mA):')
+									], style=dcc_input_label),
+									dcc.Input(
+										id='duration_in_3',
+										type='number',
+										value=0.01,
+										style=dcc_input_number
+									)
+								], style=dcc_input_pair),
+
+								html.Div([
+									html.Div([
+										html.Label('Fixed tst (ms):')
+									], style=dcc_input_label),
+									dcc.Input(
+										id='duration_in_4',
+										type='number',
+										value=0.4,
+										style=dcc_input_number
+									)
+								], style=dcc_input_pair),
+
 								html.Button('Predict CNAPs', id='predict-duration-button', style=dcc_input),
 							]
 						)
@@ -337,9 +388,15 @@ def build_input_graphs(data):
 # Also, its output will trigger the rebuilding of the four input graphs.
 @app.callback(
 	Output('output-data', 'children'),
-	[Input('predict-current-button', 'n_clicks')]
+	[Input('predict-current-button', 'n_clicks')],
+	state=[
+		State(component_id='current_in_1', component_property='value'),
+		State(component_id='current_in_2', component_property='value'),
+		State(component_id='current_in_3', component_property='value'),
+		State(component_id='current_in_4', component_property='value')
+	]
 )
-def predict_current(n_clicks):
+def predict_current(n_clicks, in1, in2, in3, in4):
 	return {
 		"3d_data": {
 			"x_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
@@ -352,14 +409,21 @@ def predict_current(n_clicks):
 			"z_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
 		}
 	}
+
 '''
 # When pressing 'Predict_duration' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the four input graphs.
 @app.callback(
 	Output('output-data', 'children'),
-	[Input('predict-duration-button', 'n_clicks')]
+	[Input('predict-duration-button', 'n_clicks')],
+	state=[
+		State(component_id='pulse_in_1', component_property='value'),
+		State(component_id='pulse_in_2', component_property='value'),
+		State(component_id='pulse_in_3', component_property='value'),
+		State(component_id='pulse_in_4', component_property='value')
+	]
 )
-def predict_duration(n_clicks):
+def predict_duration(n_clicks, in1, in2, in3, in4):
 	return {
 		"3d_data": {
 			"x_axis": [1, 2, 3, 4],
