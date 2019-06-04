@@ -15,6 +15,7 @@ echo "setting up system-variables..."
 echo "export SIMCORE_NODE_UUID=${SIMCORE_NODE_UUID}" >> /etc/environment
 echo "export SIMCORE_PROJECT_ID=${SIMCORE_PROJECT_ID}" >> /etc/environment
 echo "export SIMCORE_USER_ID=${SIMCORE_USER_ID}" >> /etc/environment
+echo "export SIMCORE_NODE_APP_STATE_PATH=${SIMCORE_NODE_APP_STATE_PATH}" >> /etc/environment
 echo "export STORAGE_ENDPOINT=${STORAGE_ENDPOINT}" >> /etc/environment
 echo "export S3_ENDPOINT=${S3_ENDPOINT}" >> /etc/environment
 echo "export S3_ACCESS_KEY=${S3_ACCESS_KEY}" >> /etc/environment
