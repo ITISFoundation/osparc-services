@@ -33,11 +33,6 @@ app.layout = html.Div(children=[
 		style=centered_text
 	),
 
-	html.Div(
-		children='Minimal description of how the solver works.',
-		style=centered_text
-	),
-
 	html.Div([
 		# Four input graphs on the left
 		html.Div([
@@ -55,8 +50,8 @@ app.layout = html.Div(children=[
 
 		# Controls in the middle
 		html.Div([
-			html.H4(
-				children='Controls',
+			html.Div(
+				children='Minimal description of how the solver works.',
 				style=centered_text
 			),
 
@@ -84,7 +79,7 @@ app.layout = html.Div(children=[
 
 				html.Button('Load', id='load-input-button'),
 				html.Div(id='output-container-button')
-			], style={'border': '1px solid', 'border-radius': '5px'}),
+			], style={'border': '1px solid', 'border-radius': '5px', 'margin-bottom': '10px'}),
 
 			html.Div([
 				html.H5('Output options'),
@@ -103,7 +98,8 @@ app.layout = html.Div(children=[
 									dcc.Input(
 										placeholder='Enter a value...',
 										type='number',
-										value=0
+										value=0,
+										style={'float': 'left'}
 									)
 								], style={'float': 'left'}),
 
@@ -167,7 +163,7 @@ app.layout = html.Div(children=[
 			dcc.Graph(id='graph-out1'),
 			dcc.Graph(id='graph-out2')
 		], style={'width': '41%', 'float': 'left'}),
-	], style={'margin': '5px 0'})
+	])
 ])
 
 # When pressing 'Load' this callback will be triggered.
