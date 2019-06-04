@@ -10,6 +10,9 @@ import random
 import plotly.graph_objs as go
 from plotly import tools
 
+import pandas as pd
+import numpy as np
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
@@ -308,37 +311,49 @@ def predict_duration(n_clicks):
 	[Input('output-data', 'children')]
 )
 def build_graph_out_1(data):
-	return {
-		'layout': {
-			'title': '3D Graph',
-			'scene': {
-				'xaxis': {
-					'title': 'x axis'
-				},
-				'yaxis': {
-					'title': 'y axis'
-				},
-				'zaxis': {
-					'title': 'z axis'
-				}
-			}
-		},
-		'data': [
-			go.Scatter3d(
-				x=data["3d_data"]["x_axis"],
-				y=data["3d_data"]["y_axis"],
-				z=data["3d_data"]["z_axis"],
-				mode='markers',
-				marker=dict(
-					size=4,
-					opacity=0.7,
-					line=dict(
-						color='rgb(128, 128, 128)',
-						width=0.1
-					)
-				)
+	x = np.linspace(-5, 5, 50)
+	y = np.linspace(-5, 5, 50)
+	xGrid, yGrid = np.meshgrid(y, x)
+	R = np.sqrt(xGrid ** 2 + yGrid ** 2)
+	z = np.sin(R)
+
+	# Creating the plot
+	lines = []
+	line_marker = dict(color='#0066FF', width=2)
+	for i, j, k in zip(xGrid, yGrid, z):
+		lines.append(go.Scatter3d(x=i, y=j, z=k, mode='lines', line=line_marker))
+
+	layout = go.Layout(
+		title='Wireframe Plot',
+		scene=dict(
+			xaxis=dict(
+				title='CV (m/s)',
+				gridcolor='rgb(255, 255, 255)',
+				zerolinecolor='rgb(255, 255, 255)',
+				showbackground=True,
+				backgroundcolor='rgb(230, 230,230)'
+			),
+			yaxis=dict(
+				title='I_st (mA)',
+				gridcolor='rgb(255, 255, 255)',
+				zerolinecolor='rgb(255, 255, 255)',
+				showbackground=True,
+				backgroundcolor='rgb(230, 230,230)'
+			),
+			zaxis=dict(
+				title='V_pred (uV)',
+				gridcolor='rgb(255, 255, 255)',
+				zerolinecolor='rgb(255, 255, 255)',
+				showbackground=True,
+				backgroundcolor='rgb(230, 230,230)'
 			)
-		]
+		),
+		showlegend=False,
+	)
+
+	return {
+		'layout': layout,
+		'data': lines
 	}
 
 @app.callback(
