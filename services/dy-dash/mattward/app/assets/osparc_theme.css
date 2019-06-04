@@ -5,7 +5,7 @@
 
 body {
 	color: var(--color);
-	background-color: var(--background-color)
+	background-color: var(--background-color);
 }
 
 /* needed for hiding undo/redo buttons in plotly graphs */
