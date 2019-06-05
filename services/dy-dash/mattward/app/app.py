@@ -272,6 +272,7 @@ app.layout = html.Div(children=[
 		# Two output graphs on the right
 		html.Div([
 			html.H4(
+				id='output-label',
 				children='Predicted Compund Nerve Action Potentials',
 				style=centered_text
 			),
@@ -479,6 +480,26 @@ def predict_duration(in1, in2, in3, in4):
 
 # When pressing 'Predict' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the four input graphs.
+@app.callback(
+	Output('output-label', 'children'),
+	[
+		Input('predict-current-button', 'n_clicks_timestamp'),
+		Input('predict-duration-button', 'n_clicks_timestamp')
+	]
+)
+def update_output_label(button_current_ts, button_duration_ts):
+	if button_current_ts is None:
+		button_current_ts = 0
+	if button_duration_ts is None:
+		button_duration_ts = 0
+
+	base_text = 'Predicted Compund Nerve Action Potentials'
+	if button_current_ts<button_duration_ts:
+		return base_text + ' (Duration)'
+	else:
+		return base_text + ' (Current)'
+
+
 @app.callback(
 	Output('output-data', 'children'),
 	[
