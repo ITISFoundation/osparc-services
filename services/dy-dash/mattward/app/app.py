@@ -121,11 +121,11 @@ app.layout = html.Div(children=[
 				dcc.Dropdown(
 					id='input-nerve-profile',
 					options=[
-						{'label': 'Subject 1: Cervical Vagus', 'value': 'Subject 1: Cervical Vagus'},
-						{'label': 'Subject 2: Cervical Vagus', 'value': 'Subject 2: Cervical Vagus'},
-						{'label': 'Subject 2: Gastric Vagus', 'value': 'Subject 2: Gastric Vagus'}
+						{'label': 'Subject 1: Cervical Vagus', 'value': 0},
+						{'label': 'Subject 2: Cervical Vagus', 'value': 1},
+						{'label': 'Subject 2: Gastric Vagus', 'value': 2}
 					],
-					value='Subject 1: Cervical Vagus',
+					value=0,
 					style=dcc_input
 				),
 
@@ -285,6 +285,7 @@ app.layout = html.Div(children=[
 		], style=input_output_plots_layout),
 	], style=three_columns)
 ], style=osparc_style)
+
 
 def create_learned_model_input(path, plot_vs_tcnap):
 	column_names = ['t_ms', 'CV', 'Vmax','M_mod', 'B_mod', 'tauSD']
