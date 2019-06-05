@@ -35,6 +35,7 @@ echo "restarting the apache service..."
 service apache2 restart
 
 # try to pull data from S3
+echo "trying to download previous state..."
 python docker/state_puller.py ${SIMCORE_NODE_APP_STATE_PATH} --silent
 
 # echo "modifying wslink launcher configuration"
