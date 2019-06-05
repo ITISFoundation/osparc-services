@@ -449,7 +449,7 @@ def build_input_graphs(data):
 	return fig
 
 
-def predict_current(in1, in2, in3, in4):
+def create_predicted_compound_nerve_action(in1, in2, in3, in4):
 	print('current', in1, in2, in3, in4)
 	return {
 		"3d_data": {
@@ -464,20 +464,6 @@ def predict_current(in1, in2, in3, in4):
 		}
 	}
 
-def predict_duration(in1, in2, in3, in4):
-	print('duration', in1, in2, in3, in4)
-	return {
-		"3d_data": {
-			"x_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-			"y_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-			"z_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-		},
-		"histogram": {
-			"x_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-			"y_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-			"z_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-		}
-	}
 
 # When pressing 'Predict' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the four input graphs.
@@ -550,7 +536,7 @@ def predict(
 		# lpred_path='/home/jovyan/outputs/Lpred_plot.csv'
 		print(input_plot_options)
 		# create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=True, plot_vs_qst=charge_phase_cb.value, plot_vs_tCNAP=time_cb.value), 
-		return predict_current(current_1, current_2, current_3, current_4)
+		return create_predicted_compound_nerve_action(current_1, current_2, current_3, current_4)
 	else:
 		# model_id = nerve_profile.index + 1
 		# sweep_param = 0
@@ -562,7 +548,7 @@ def predict(
 		sweep_param = 0
 		print("Duration clicked.", model_id, sweep_param, duration_1, duration_2, duration_3, duration_4)
 		print(input_plot_options)
-		return predict_duration(duration_1, duration_2, duration_3, duration_4)
+		return create_predicted_compound_nerve_action(duration_1, duration_2, duration_3, duration_4)
 
 
 @app.callback(
