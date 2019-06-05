@@ -259,7 +259,7 @@ app.layout = html.Div(children=[
 									)
 								], style=dcc_input_pair),
 
-								html.Button('Predict CNAPs', id='predict-duration-button', style=dcc_input),
+								html.Button('Predict CNAPs', id='predict-duration-button', style=dcc_input_button),
 							]
 						)
 					],
@@ -324,8 +324,8 @@ def create_learned_model_input(path, plot_vs_tcnap):
 )
 def read_input_file(n_clicks, input_nerve_profile, input_plot_options):
 	# TODO: MaG
-	# print("Load clicked.", nerve_profile.value)
-	# model_id = nerve_profile.index + 1
+	model_id = input_nerve_profile + 1
+	print("Load clicked.", model_id, )
 	# !execute_cnap.sh $model_id 0 0.0 1.0 0.5 0.4
 	# path = '/home/jovyan/outputs/input.csv'
 	path = 'input.csv'
@@ -508,6 +508,8 @@ def update_output_label(button_current_ts, button_duration_ts):
 		Input('predict-duration-button', 'n_clicks_timestamp')
 	],
 	state=[
+		State(component_id='input-nerve-profile', component_property='value'),
+		State(component_id='input-plot-options', component_property='values'),
 		State(component_id='current_in_1', component_property='value'),
 		State(component_id='current_in_2', component_property='value'),
 		State(component_id='current_in_3', component_property='value'),
@@ -520,6 +522,8 @@ def update_output_label(button_current_ts, button_duration_ts):
 )
 def predict(
 	button_current_ts, button_duration_ts,
+	input_nerve_profile,
+	input_plot_options,
 	current_1, current_2, current_3, current_4,
 	duration_1, duration_2, duration_3, duration_4):
 	if button_current_ts is None:
@@ -528,21 +532,36 @@ def predict(
 		button_duration_ts = 0
 
 	if button_current_ts>button_duration_ts:
-		model_id = nerve_profile.index + 1
+		# model_id = nerve_profile.index + 1
 		# sweep_param = 1
-		# with out2:
-		# 	print("Current clicked.", charge_phase_cb.value, time_cb.value, start_ist.value, end_ist.value, step_size_current.value, fixed_tst.value)
-		# 	!execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
-		# 	cv_path='/home/jovyan/outputs/CV_plot.csv'
-		# 	t_path='/home/jovyan/outputs/t_plot.csv'
-		# 	ist_path='/home/jovyan/outputs/Ist_plot.csv'
-		# 	tst_path='/home/jovyan/outputs/tst_plot.csv'
-		# 	qst_path='/home/jovyan/outputs/CAP_plot.csv'
-		# 	vpred_path='/home/jovyan/outputs/V_pred_plot.csv'
-		# 	lpred_path='/home/jovyan/outputs/Lpred_plot.csv'
-		# 	create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=True, plot_vs_qst=charge_phase_cb.value, plot_vs_tCNAP=time_cb.value), 
+		# print(\"Current clicked.\", charge_phase_cb.value, time_cb.value, start_ist.value, end_ist.value, step_size_current.value, fixed_tst.value)
+		# !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
+		# create_predicted_compound_nerve_action(cv_path='/home/jovyan/outputs/CV_plot.csv', t_path='/home/jovyan/outputs/t_plot.csv',  ist_path='/home/jovyan/outputs/Ist_plot.csv', tst_path='/home/jovyan/outputs/tst_plot.csv', qst_path='/home/jovyan/outputs/CAP_plot.csv', vpred_path='/home/jovyan/outputs/V_pred_plot.csv', lpred_path='/home/jovyan/outputs/Lpred_plot.csv', fixed_tst=True, plot_vs_qst=charge_phase_cb.value, plot_vs_tCNAP=time_cb.value)
+
+		model_id = input_nerve_profile + 1
+		sweep_param = 1
+		print("Current clicked.", model_id, sweep_param, current_1, current_2, current_3, current_4)
+		# cv_path='/home/jovyan/outputs/CV_plot.csv'
+		# t_path='/home/jovyan/outputs/t_plot.csv'
+		# ist_path='/home/jovyan/outputs/Ist_plot.csv'
+		# tst_path='/home/jovyan/outputs/tst_plot.csv'
+		# qst_path='/home/jovyan/outputs/CAP_plot.csv'
+		# vpred_path='/home/jovyan/outputs/V_pred_plot.csv'
+		# lpred_path='/home/jovyan/outputs/Lpred_plot.csv'
+		print(input_plot_options)
+		# create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=True, plot_vs_qst=charge_phase_cb.value, plot_vs_tCNAP=time_cb.value), 
 		return predict_current(current_1, current_2, current_3, current_4)
 	else:
+		# model_id = nerve_profile.index + 1
+		# sweep_param = 0
+		# print("Time clicked.", charge_phase_cb.value, time_cb.value, start_tst.value, end_tst.value, step_size_duration.value, fixed_ist.value)
+		# !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
+		# create_predicted_compound_nerve_action(cv_path='/home/jovyan/outputs/CV_plot.csv', t_path='/home/jovyan/outputs/t_plot.csv',  ist_path='/home/jovyan/outputs/Ist_plot.csv', tst_path='/home/jovyan/outputs/tst_plot.csv', qst_path='/home/jovyan/outputs/CAP_plot.csv', vpred_path='/home/jovyan/outputs/V_pred_plot.csv', lpred_path='/home/jovyan/outputs/Lpred_plot.csv', fixed_tst=False, plot_vs_qst=charge_phase_cb.value, plot_vs_tCNAP=time_cb.value), 
+
+		model_id = input_nerve_profile + 1
+		sweep_param = 0
+		print("Duration clicked.", model_id, sweep_param, duration_1, duration_2, duration_3, duration_4)
+		print(input_plot_options)
 		return predict_duration(duration_1, duration_2, duration_3, duration_4)
 
 
