@@ -44,11 +44,6 @@ centered_text = {
 	'backgroundColor': osparc_style['backgroundColor']
 }
 
-tabs_styles = {
-	'height': '44px',
-	'color': osparc_style['color'],
-	'backgroundColor': osparc_style['backgroundColor']
-}
 tab_style = {
 	'padding': '5px',
 	'color': osparc_style['color'],
@@ -57,20 +52,26 @@ tab_style = {
 options_layout = {
 	# 'border': '1px solid',
 	# 'border-radius': '5px',
-	'margin-top': '20px'
+	'margin-top': '50px'
 }
 
 hidden = {
 	'display': 'none'
 }
 
-dcc_input_label = {
-	'width': '120px',
-	'float': 'left'
-}
 dcc_input = {
 	'color': osparc_style['color'],
 	'backgroundColor': osparc_style['gridColor']
+}
+dcc_input_button = {
+	'height': '40px',
+	'width': '100%',
+	'color': dcc_input['color'],
+	'backgroundColor': dcc_input['backgroundColor']
+}
+dcc_input_label = {
+	'width': '120px',
+	'float': 'left'
 }
 dcc_input_number = {
 	'height': '30px',
@@ -80,6 +81,8 @@ dcc_input_number = {
 }
 dcc_input_pair = {
 	'overflow': 'hidden',
+	'margin-top': '2px',
+	'margin-bottom': '2px',
 	'color': osparc_style['color'],
 	'backgroundColor': osparc_style['backgroundColor']
 }
@@ -136,7 +139,7 @@ app.layout = html.Div(children=[
 					values=['Plot against Charge-Phase']
 				),
 
-				html.Button('Load', id='load-input-button', style=dcc_input)
+				html.Button('Load', id='load-input-button', style=dcc_input_button)
 			], style=options_layout),
 
 			html.Div([
@@ -199,7 +202,7 @@ app.layout = html.Div(children=[
 									)
 								], style=dcc_input_pair),
 
-								html.Button('Predict CNAPs', id='predict-current-button', style=dcc_input),
+								html.Button('Predict CNAPs', id='predict-current-button', style=dcc_input_button),
 							]
 						),
 						dcc.Tab(
