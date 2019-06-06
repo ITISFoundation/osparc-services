@@ -9,6 +9,7 @@ import random
 # import matplotlib.pyplot as plt
 import plotly.graph_objs as go
 from plotly import tools
+import subprocess
 
 import pandas as pd
 import numpy as np
@@ -542,11 +543,17 @@ def predict(
         sweep_param = 1
         print("Current clicked.", model_id, sweep_param, selected_cb[0], selected_cb[1], current_1, current_2, current_3, current_4)
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
+        args = [model_id, sweep_param, selected_cb[0], selected_cb[1], current_1, current_2, current_3, current_4]
+        argsstr = [str(e) for e in args]
+        subprocess.call(["execute_cnap.sh", argsstr])
         return create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=True, plot_vs_qst=selected_cb[0], plot_vs_tCNAP=selected_cb[1]), 
     else:
         sweep_param = 0
         print("Duration clicked.", model_id, sweep_param, selected_cb[0], selected_cb[1], duration_1, duration_2, duration_3, duration_4)
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
+        args = [model_id, sweep_param, selected_cb[0], selected_cb[1], duration_1, duration_2, duration_3, duration_4]
+        argsstr = [str(e) for e in args]
+        subprocess.call(["execute_cnap.sh", argsstr])
         return create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=False, plot_vs_qst=selected_cb[0], plot_vs_tCNAP=selected_cb[1]), 
 
 
@@ -653,4 +660,4 @@ def build_graph_out_2(data):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8051)
+    app.run_server(debug=False, port=8888, host="0.0.0.0")
