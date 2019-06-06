@@ -91,6 +91,7 @@ FROM common AS production
 # copy scripts
 COPY services/dy-3dvis/simcoreparaviewweb/docker /home/root/docker
 COPY services/dy-3dvis/simcoreparaviewweb/config /home/root/config
+COPY services/dy-3dvis/simcoreparaviewweb/handlers/*.rpy /opt/paraview/share/paraview-5.6/web/visualizer/www/
 # copy script to get the inputs inside the local file system
 COPY services/dy-3dvis/simcoreparaviewweb/cgi_scripts /home/root/cgi_scripts
 ENTRYPOINT [ "/bin/bash", "docker/boot.sh" ]

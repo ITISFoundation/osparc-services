@@ -31,6 +31,7 @@ services:
       - ./visualizer-data:/data
       - ./simcoreparaviewweb/docker:/home/root/docker
       - ./simcoreparaviewweb/config:/home/root/config
+      - ./simcoreparaviewweb/handlers:/home/root/handlers
   #--------------------------------------------------------------------
   apihub:
     image: itisfoundation/apihub:staging-latest

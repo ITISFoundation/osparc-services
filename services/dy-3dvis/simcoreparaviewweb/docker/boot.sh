@@ -46,6 +46,7 @@ then
     # in dev mode we know already what the host/port are
     host_name=${HOST_NAME}
     server_port=${SERVER_PORT}
+    cp handlers/*.rpy /opt/paraview/share/paraview-5.6/web/visualizer/www/
 else
     # the service waits until the calling client transfers the service externally published port/hostname
     # this is currently necessary due to some unknown reason with regard to how paraviewweb
@@ -57,7 +58,7 @@ else
     echo "Host name decoded as ${array[0]}";
     echo "Port decoded as ${array[1]}";
     host_name=${array[0]}
-    server_port=${array[1]}
+    server_port=${array[1]}    
 fi
 
 
