@@ -1,7 +1,7 @@
 #!/pyenv/versions/3.6.7/bin/python
 # Note: this shebang is the one where the python 3.6 interpreter is installed by pyenv
-import cgitb
-cgitb.enable()
+# import cgitb
+# cgitb.enable()
 # this MUST come first
 
 import asyncio
@@ -18,8 +18,8 @@ log = logging.getLogger(__name__)
 
 # necessary for CGI scripting compatiblity
 # https://docs.python.org/3/library/cgi.html
-print("Content-Type: text/html;charset=utf-8")
-print()
+# print("Content-Type: text/html;charset=utf-8")
+# print()
 
 _STATE_PATH = os.environ.get("SIMCORE_NODE_APP_STATE_PATH", "undefined")
 
