@@ -352,7 +352,7 @@ def read_input_file(_n_clicks, input_nerve_profile, input_plot_options):
     print("Load clicked.", model_id, )
     # !execute_cnap.sh $model_id 0 0.0 1.0 0.5 0.4
     # path = '/home/jovyan/outputs/input.csv'
-    path = 'input.csv'
+    path = '../input/input.csv'
     return create_learned_model_input(path, input_plot_options)
 
 
