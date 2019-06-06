@@ -133,10 +133,10 @@ app.layout = html.Div(children=[
                 dcc.Checklist(
                     id='input-plot-options',
                     options=[
-                        {'label': 'Plot against Charge-Phase', 'value': 'Plot against Charge-Phase'},
-                        {'label': 'Plot CNAP versus Time (ms)', 'value': 'Plot CNAP versus Time (ms)'}
+                        {'label': 'Plot against Charge-Phase', 'value': 'charge_phase_cb'},
+                        {'label': 'Plot CNAP versus Time (ms)', 'value': 'time_cb'}
                     ],
-                    values=['Plot against Charge-Phase']
+                    values=['charge_phase_cb']
                 ),
 
                 html.Button('Load', id='load-input-button', style=dcc_input_button)
@@ -287,6 +287,15 @@ app.layout = html.Div(children=[
 ], style=osparc_style)
 
 
+def get_selected_checkboxes(string_from_components):
+    checked = [0, 0]
+    if ('charge_phase_cb' in string_from_components):
+        checked[0] = 1
+    if ('time_cb' in string_from_components):
+        checked[1] = 1
+    return checked
+
+
 def create_learned_model_input(path, plot_vs_tcnap):
     column_names = ['t_ms', 'CV', 'Vmax','M_mod', 'B_mod', 'tauSD']
     data = pd.read_csv(path, sep=',', names=column_names)
@@ -311,6 +320,23 @@ def create_learned_model_input(path, plot_vs_tcnap):
             "tauSD": data.tauSD,
         }
     }
+
+
+def create_predicted_compound_nerve_action(in1, in2, in3, in4):
+    print('current', in1, in2, in3, in4)
+    return {
+        "3d_data": {
+            "x_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
+            "y_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
+            "z_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
+        },
+        "histogram": {
+            "x_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
+            "y_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
+            "z_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
+        }
+    }
+
 
 # When pressing 'Load' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the four input graphs.
@@ -449,22 +475,6 @@ def build_input_graphs(data):
     return fig
 
 
-def create_predicted_compound_nerve_action(in1, in2, in3, in4):
-    print('current', in1, in2, in3, in4)
-    return {
-        "3d_data": {
-            "x_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-            "y_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-            "z_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-        },
-        "histogram": {
-            "x_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-            "y_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-            "z_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-        }
-    }
-
-
 # When pressing 'Predict' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the four input graphs.
 @app.callback(
@@ -517,6 +527,8 @@ def predict(
     if button_duration_ts is None:
         button_duration_ts = 0
 
+    model_id = input_nerve_profile + 1
+    selected_cb = get_selected_checkboxes(input_plot_options)
     if button_current_ts>button_duration_ts:
         # model_id = nerve_profile.index + 1
         # sweep_param = 1
@@ -524,9 +536,8 @@ def predict(
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
         # create_predicted_compound_nerve_action(cv_path='/home/jovyan/outputs/CV_plot.csv', t_path='/home/jovyan/outputs/t_plot.csv',  ist_path='/home/jovyan/outputs/Ist_plot.csv', tst_path='/home/jovyan/outputs/tst_plot.csv', qst_path='/home/jovyan/outputs/CAP_plot.csv', vpred_path='/home/jovyan/outputs/V_pred_plot.csv', lpred_path='/home/jovyan/outputs/Lpred_plot.csv', fixed_tst=True, plot_vs_qst=charge_phase_cb.value, plot_vs_tCNAP=time_cb.value)
 
-        model_id = input_nerve_profile + 1
         sweep_param = 1
-        print("Current clicked.", model_id, sweep_param, current_1, current_2, current_3, current_4)
+        print("Current clicked.", model_id, sweep_param, selected_cb[0], selected_cb[1], current_1, current_2, current_3, current_4)
         # cv_path='/home/jovyan/outputs/CV_plot.csv'
         # t_path='/home/jovyan/outputs/t_plot.csv'
         # ist_path='/home/jovyan/outputs/Ist_plot.csv'
@@ -534,7 +545,6 @@ def predict(
         # qst_path='/home/jovyan/outputs/CAP_plot.csv'
         # vpred_path='/home/jovyan/outputs/V_pred_plot.csv'
         # lpred_path='/home/jovyan/outputs/Lpred_plot.csv'
-        print(input_plot_options)
         # create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=True, plot_vs_qst=charge_phase_cb.value, plot_vs_tCNAP=time_cb.value), 
         return create_predicted_compound_nerve_action(current_1, current_2, current_3, current_4)
     else:
@@ -544,10 +554,8 @@ def predict(
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
         # create_predicted_compound_nerve_action(cv_path='/home/jovyan/outputs/CV_plot.csv', t_path='/home/jovyan/outputs/t_plot.csv',  ist_path='/home/jovyan/outputs/Ist_plot.csv', tst_path='/home/jovyan/outputs/tst_plot.csv', qst_path='/home/jovyan/outputs/CAP_plot.csv', vpred_path='/home/jovyan/outputs/V_pred_plot.csv', lpred_path='/home/jovyan/outputs/Lpred_plot.csv', fixed_tst=False, plot_vs_qst=charge_phase_cb.value, plot_vs_tCNAP=time_cb.value), 
 
-        model_id = input_nerve_profile + 1
         sweep_param = 0
-        print("Duration clicked.", model_id, sweep_param, duration_1, duration_2, duration_3, duration_4)
-        print(input_plot_options)
+        print("Duration clicked.", model_id, sweep_param, selected_cb[0], selected_cb[1], duration_1, duration_2, duration_3, duration_4)
         return create_predicted_compound_nerve_action(duration_1, duration_2, duration_3, duration_4)
 
 
