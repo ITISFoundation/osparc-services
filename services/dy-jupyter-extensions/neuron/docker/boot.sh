@@ -9,5 +9,5 @@ echo "  Workdir :`pwd`"
 
 # start the notebook now
 echo "Setting theme ..."
-jt -t oceans16 -f ubuntu -fs 12 -T -N -cellw 90%
+jt -t grade3 -f ubuntu -fs 12 -T -N -cellw 90%
 /docker/boot_notebook.sh #--NotebookApp.default_url=/notebooks/${NOTEBOOK_URL}

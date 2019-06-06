@@ -54,19 +54,15 @@ RUN mkdir /opt/conda/neuron && \
 # nrnivmodl
 ENV PATH /opt/conda/neuron/x86_64/bin:$PATH 
 
-# needed for netpyne
-RUN pip install pyneuroml
-
 # install netpyne
-RUN git clone https://github.com/Neurosim-lab/netpyne.git && \  
-  cd netpyne && git checkout development && pip install -e . 
+# RUN git clone https://github.com/Neurosim-lab/netpyne.git && \  
+#   cd netpyne && git checkout development && pip install -e . 
 
 # 
 # install requirements --------------------------------------------------------
-COPY --chown=jovyan:users requirements.txt .
-# TODO: tmp workaround for https://github.com/pypa/pip/issues/6197
-RUN pip --cache-dir=/tmp/.pipcache install -r requirements.txt &&\
-     rm -rf /tmp/.pipcache
+COPY --chown=jovyan:users ./requirements/prod.txt requirements.txt
+RUN pip --no-cache install -r requirements.txt
+
 # prepare for booting ---------------------------------------------------------
 COPY --chown=jovyan:users docker /docker
 # copy some helper scripts-----------------------------------------------------

@@ -73,6 +73,8 @@ rebuild:
 # target: build-devel: – Builds images of core services for development.
 build-devel: .env
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml build
+build-devel: .env
+	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml build --no-cache
 
 .PHONY: up up-devel down
 # target: up, down: – starts/stops service
@@ -130,7 +132,7 @@ PHONY: .env
 # target: .venv – Creates a python virtual environment with dev tools (pip, pylint, ...)
 	python3 -m venv .venv
 	.venv/bin/pip3 install --upgrade pip wheel setuptools
-	.venv/bin/pip3 install pylint autopep8 virtualenv
+	.venv/bin/pip3 install pylint autopep8 virtualenv pip-tools
 	@echo "To activate the venv, execute 'source .venv/bin/activate' or '.venv/bin/activate.bat' (WIN)"
 
 ## -------------------------------
