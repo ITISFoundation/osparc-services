@@ -321,7 +321,7 @@ def create_learned_model_input(path, plot_vs_tcnap):
         }
     }
 
-def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, qst_path, vpred_path, lpred_path, fixed_tst, plot_vs_qst, plot_vs_tCNAP)
+def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, qst_path, vpred_path, lpred_path, fixed_tst, plot_vs_qst, plot_vs_tCNAP):
     return {
         "3d_data": {
             "x_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
@@ -525,6 +525,10 @@ def predict(
     if button_duration_ts is None:
         button_duration_ts = 0
 
+    if button_current_ts == 0 & button_duration_ts == 0:
+        print('out')
+        return
+
     model_id = input_nerve_profile + 1
     selected_cb = get_selected_checkboxes(input_plot_options)
     cv_path='/home/jovyan/outputs/CV_plot.csv'
@@ -550,7 +554,9 @@ def predict(
     Output('graph-out1', 'figure'),
     [Input('output-data', 'children')]
 )
-def build_graph_out_1(_data):
+def build_graph_out_1(data):
+    if not data:
+        return
     x = np.linspace(-5, 5, 50)
     y = np.linspace(-5, 5, 50)
     xGrid, yGrid = np.meshgrid(y, x)
@@ -616,9 +622,11 @@ def build_graph_out_1(_data):
     [Input('output-data', 'children')]
 )
 def build_graph_out_2(data):
+    if not data:
+        return
     data = go.Heatmap(z=[data["histogram"]["x_axis"],
-                                            data["histogram"]["y_axis"],
-                                            data["histogram"]["z_axis"]])
+                        data["histogram"]["y_axis"],
+                        data["histogram"]["z_axis"]])
 
     margin = 10
     label_padding = 30
