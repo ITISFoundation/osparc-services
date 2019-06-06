@@ -1,5 +1,5 @@
 # this must be the first line
-ARG BASE_IMAGE=kitware/paraviewweb:pvw-visualizer-osmesa-master
+ARG BASE_IMAGE=kitware/paraviewweb:pv-v5.6.0-osmesa
 # apply patch to visualizer
 FROM node:8.12.0 AS visualizer
 WORKDIR /home/node
@@ -20,6 +20,7 @@ FROM ${BASE_IMAGE}  AS common
 LABEL maintainer="sanderegg"
 ENV PARAVIEW_INPUT_PATH="/data"
 
+USER root
 # install git, pip
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -28,6 +29,8 @@ RUN apt-get update && \
 
 # install python 3.6 for root and also for www-data
 ENV PYENV_ROOT=/pyenv
+# necessary to prevent some dependencies to ask questions while installing
+ENV DEBIAN_FRONTEND=noninteractive
 RUN curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash && \
     export PATH="${PYENV_ROOT}/bin:$PATH" && \
     eval "$(pyenv init -)" && \
@@ -55,7 +58,7 @@ RUN export PATH="${PYENV_ROOT}/bin:$PATH" && \
     pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python
 
 # get the patched visualizer
-COPY --from=visualizer /home/node/visualizer/dist /opt/paraview/install/share/paraview-5.5/web/visualizer/www
+COPY --from=visualizer /home/node/visualizer/dist /opt/paraview/share/paraview-5.6/web/visualizer/www
 WORKDIR /home/root
 # ----------------------------------------------------------------
 COPY scripts/docker/healthcheck_curl_host.py /healthcheck/healthcheck_curl_host.py
