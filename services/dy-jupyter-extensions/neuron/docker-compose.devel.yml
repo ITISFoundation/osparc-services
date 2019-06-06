@@ -1,7 +1,7 @@
 version: '3.4'
 services:
-  neuron:
-    image: neuron-dev
+  jupyter-neuron:
+    image: jupyter-neuron-dev
     build:
       target: development
     environment:
@@ -14,13 +14,10 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
-      - USE_CASE_CONFIG_FILE=devel-config/port_config.json
-      - INIT_OPTIONS=5000 200 20 tab
       - SIMCORE_NODE_BASEPATH=${SIMCORE_NODE_BASEPATH}
     volumes:
       - ../../../scripts/dy_services_helpers:/home/jovyan/scripts/dy_services_helpers
       - ./notebooks:/home/jovyan/notebooks
-      #- ../../../services:/home/jovyan/services
     depends_on:
       - postgres
       - minio 

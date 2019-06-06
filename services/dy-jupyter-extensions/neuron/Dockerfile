@@ -28,8 +28,8 @@ RUN apt-get update &&\
 USER $NB_USER
 
 # install NEURON from github
-RUN mkdir /opt/conda/neuron &&\
-  npm config set package-lock 0 &&\
+RUN mkdir /opt/conda/neuron && \
+  npm config set package-lock 0 && \
   cd /tmp &&\
   git clone --depth 1 -b 7.6.7 https://github.com/neuronsimulator/nrn &&\
   cd nrn &&\
@@ -61,8 +61,6 @@ RUN pip install pyneuroml
 RUN git clone https://github.com/Neurosim-lab/netpyne.git && \  
   cd netpyne && git checkout development && pip install -e . 
 
-
-
 # 
 # install requirements --------------------------------------------------------
 COPY --chown=jovyan:users requirements.txt .
@@ -77,6 +75,9 @@ ENV PYTHONPATH=/scripts:$PYTHONPATH
 # set of arguments to copy the right notebook ---------------------------------
 ARG NOTEBOOK_NAME
 ENV NOTEBOOK_URL=${NOTEBOOK_NAME}
+
+ENV INPUTS_FOLDER /home/jovyan/notebooks/_inputs
+ENV OUTPUTS_FOLDER /home/jovyan/notebooks/_outputs
 # -----------------------------------------------------------------------------
 FROM common AS development
 VOLUME /home/jovyan/services
@@ -95,5 +96,5 @@ FROM common AS production
 ARG NOTEBOOK_NAME
 ARG NOTEBOOK_FOLDER_NAME
 # copy the notebook in the image
-COPY --chown=jovyan:users ${NOTEBOOK_FOLDER_NAME}/${NOTEBOOK_NAME} notebooks/${NOTEBOOK_NAME}
+COPY --chown=jovyan:users ${NOTEBOOK_FOLDER_NAME} notebooks
 ENTRYPOINT [ "/bin/bash", "/docker/boot.sh" ]

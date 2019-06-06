@@ -56,23 +56,23 @@ endif
 
 # 
 build-travis:
-	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel neuron
+	${DOCKER_COMPOSE} -f docker-compose.yml build
 push-travis:
-	${DOCKER_COMPOSE} -f docker-compose.yml push neuron
+	${DOCKER_COMPOSE} -f docker-compose.yml push
 ##################
 
 .PHONY: build rebuild
 # target: build, rebuild: – Builds all service images. Use `rebuild` to build w/o cache.
 build:
-	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel
+	${DOCKER_COMPOSE} -f docker-compose.yml build
 
 rebuild:
-	${DOCKER_COMPOSE} -f docker-compose.yml build --no-cache --parallel
+	${DOCKER_COMPOSE} -f docker-compose.yml build --no-cache
 
 .PHONY: build-devel
 # target: build-devel: – Builds images of core services for development.
 build-devel: .env
-	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml build --parallel
+	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml build
 
 .PHONY: up up-devel down
 # target: up, down: – starts/stops service
