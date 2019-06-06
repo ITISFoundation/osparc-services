@@ -1,0 +1,32 @@
+version: '3.4'
+services:
+  neuron:
+    image: ${DOCKER_REGISTRY}/neuron:${DOCKER_IMAGE_TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+      args:
+        BASE_IMAGE: ${BASE_IMAGE}
+        NOTEBOOK_NAME: neuron.ipynb
+        NOTEBOOK_FOLDER_NAME: notebooks
+      labels:
+        io.simcore.key: '{"key": "simcore/services/dynamic/neuron"}'
+        io.simcore.version: '{"version": "${DOCKER_IMAGE_TAG}"}'
+        io.simcore.type: '{"type": "dynamic"}'
+        io.simcore.name: '{"name": "neuron"}'
+        io.simcore.description: '{"description": "Jupyter notebook with preinstalled neuron modules"}'
+        io.simcore.authors: '{"authors": [{"name": "guidon", "email": "guidon@itis.swiss", "affiliation": "ITIS Foundation"}]}'
+        io.simcore.contact: '{"contact": "guidon@itis.swiss"}'
+        simcore.service.settings: '[
+          {"name": "ports", "type": "int", "value": 8888},
+          {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
+        
+        org.label-schema.schema-version: "1.0"
+        org.label-schema.build-date: "${BUILD_DATE}"
+        org.label-schema.vcs-url: "${VCS_URL}"
+        org.label-schema.vcs-ref: "${VCS_REF}"
+    ports:
+      - '14000:8888'
+  #--------------------------------------------------------------------
+  
