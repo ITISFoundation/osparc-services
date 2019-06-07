@@ -307,13 +307,12 @@ def create_learned_model_input(path, plot_vs_tcnap):
     # fontsize = 16
     # plt.figure(figsize=(width / dpi, height / dpi), dpi=dpi)
 
-    x_axis = data.CV
-    if plot_vs_tcnap:
-        x_axis = data.t_ms
-
     return {
         "plot_vs_tcnap": plot_vs_tcnap,
-        "x_axis": x_axis,
+        "x_axis": {
+            "t_ms": data.t_ms,
+            "CV": data.CV
+        },
         "y_axis": {
             "Vmax": [i*-1e12 for i in data.Vmax],
             "M_mod": data.M_mod,
@@ -349,11 +348,11 @@ def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, 
 )
 def read_input_file(_n_clicks, input_nerve_profile, input_plot_options):
     model_id = input_nerve_profile + 1
-    print("Load clicked.", model_id, )
     # !execute_cnap.sh $model_id 0 0.0 1.0 0.5 0.4
-    subprocess.call(["execute_cnap.sh", str(model_id), "0", "0.0", "1.0", "0.5", "0.4"])
-    path = '/home/jovyan/outputs/input.csv'
-    return create_learned_model_input(path, input_plot_options)
+    subprocess.call(["execute_cnap.sh", str(model_id), "0", "0.0", "1.0", "0.5", "0.4"], cwd="/home/jovyan/output")
+    path = '/home/jovyan/output/input.csv'
+    selected_cb = get_selected_checkboxes(input_plot_options)
+    return create_learned_model_input(path, selected_cb[1])
 
 
 @app.callback(
@@ -364,8 +363,12 @@ def build_input_graphs(data):
     marker_size = 2
     line_width = 1
     plot_vs_tcnap = data["plot_vs_tcnap"]
+    if (plot_vs_tcnap):
+        x_data = data["x_axis"]["t_ms"]
+    else:
+        x_data = data["x_axis"]["CV"]
     trace1 = go.Scatter(
-        x=data["x_axis"],
+        x=x_data,
         y=data["y_axis"]["Vmax"],
         mode='lines+markers',
         marker = dict(
@@ -376,7 +379,7 @@ def build_input_graphs(data):
         )
     )
     trace2 = go.Scatter(
-        x=data["x_axis"],
+        x=x_data,
         y=data["y_axis"]["M_mod"],
         mode='lines+markers',
         marker = dict(
@@ -387,7 +390,7 @@ def build_input_graphs(data):
         )
     )
     trace3 = go.Scatter(
-        x=data["x_axis"],
+        x=x_data,
         y=data["y_axis"]["B_mod"],
         mode='lines+markers',
         marker = dict(
@@ -398,7 +401,7 @@ def build_input_graphs(data):
         )
     )
     trace4 = go.Scatter(
-        x=data["x_axis"],
+        x=x_data,
         y=data["y_axis"]["tauSD"],
         mode='lines+markers',
         marker = dict(
@@ -409,11 +412,11 @@ def build_input_graphs(data):
         )
     )
     fig = tools.make_subplots(rows=4,
-                                                        cols=1,
-                                                        # specs=[[{}], [{}], [{}], [{}]],
-                                                        shared_xaxes=True,
-                                                        # shared_yaxes=True,
-                                                        vertical_spacing=0.05
+                            cols=1,
+                            # specs=[[{}], [{}], [{}], [{}]],
+                            shared_xaxes=True,
+                            # shared_yaxes=True,
+                            vertical_spacing=0.05
     )
     fig.append_trace(trace1, 1, 1)
     fig.append_trace(trace2, 2, 1)
@@ -422,12 +425,12 @@ def build_input_graphs(data):
 
     if (plot_vs_tcnap):
         fig['layout']['xaxis'].update(
-            range=[0, max(data["x_axis"])]
+            autorange=True
         )
     else:
         fig['layout']['xaxis'].update(
-            range=[min(data.CV), 100],
-            type='log'
+            type='log',
+            autorange=True
         )
 
     fig['layout']['xaxis'].update(
@@ -526,23 +529,22 @@ def predict(
         button_duration_ts = 0
 
     if button_current_ts == 0 & button_duration_ts == 0:
-        print('out')
         return
 
     model_id = input_nerve_profile + 1
     selected_cb = get_selected_checkboxes(input_plot_options)
-    cv_path='/home/jovyan/outputs/CV_plot.csv'
-    t_path='/home/jovyan/outputs/t_plot.csv'
-    ist_path='/home/jovyan/outputs/Ist_plot.csv'
-    tst_path='/home/jovyan/outputs/tst_plot.csv'
-    qst_path='/home/jovyan/outputs/CAP_plot.csv'
-    vpred_path='/home/jovyan/outputs/V_pred_plot.csv'
-    lpred_path='/home/jovyan/outputs/Lpred_plot.csv'
+    cv_path='/home/jovyan/output/CV_plot.csv'
+    t_path='/home/jovyan/output/t_plot.csv'
+    ist_path='/home/jovyan/output/Ist_plot.csv'
+    tst_path='/home/jovyan/output/tst_plot.csv'
+    qst_path='/home/jovyan/output/CAP_plot.csv'
+    vpred_path='/home/jovyan/output/V_pred_plot.csv'
+    lpred_path='/home/jovyan/output/Lpred_plot.csv'
     if button_current_ts>button_duration_ts:
         sweep_param = 1
         print("Current clicked.", model_id, sweep_param, selected_cb[0], selected_cb[1], current_1, current_2, current_3, current_4)
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
-        subprocess.call(["execute_cnap.sh", str(model_id), str(sweep_param), str(current_1), str(current_2), str(current_3), str(current_4))
+        subprocess.call(["execute_cnap.sh", str(model_id), str(sweep_param), str(current_1), str(current_2), str(current_3), str(current_4)])
         return create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=True, plot_vs_qst=selected_cb[0], plot_vs_tCNAP=selected_cb[1]), 
     else:
         sweep_param = 0
