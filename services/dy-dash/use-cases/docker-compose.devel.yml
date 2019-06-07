@@ -68,12 +68,12 @@ services:
     ports:
       - "5432:5432"
   #--------------------------------------------------------------------
-  # adminer:
-  #   image: adminer
-  #   ports:
-  #     - 18080:8080
-  #   depends_on:
-  #     - postgres
+  adminer:
+    image: adminer
+    ports:
+      - 18080:8080
+    depends_on:
+       - postgres
   #--------------------------------------------------------------------
   minio:
     image: minio/minio
