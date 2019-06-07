@@ -89,7 +89,7 @@ dcc_input_pair = {
 }
 
 
-def get_graph_input_layout():
+def get_input_graph_layout():
     fig = tools.make_subplots(rows=4,
                             cols=1,
                             # specs=[[{}], [{}], [{}], [{}]],
@@ -141,7 +141,7 @@ def get_graph_input_layout():
     return fig
 
 
-empty_graph_input = get_graph_input_layout()
+empty_input_graph = get_input_graph_layout()
 
 app.layout = html.Div(children=[
     html.H1(
@@ -160,7 +160,7 @@ app.layout = html.Div(children=[
             # Hidden div inside the app that stores the input data
             html.Div(id='input-data', style=hidden),
 
-            dcc.Graph(id='graph-ins', figure=empty_graph_input)
+            dcc.Graph(id='graph-ins', figure=empty_input_graph)
         ], style=input_output_plots_layout),
 
 
@@ -467,7 +467,7 @@ def build_input_graphs(data):
         )
     )
 
-    fig = get_graph_input_layout()
+    fig = get_input_graph_layout()
     fig.append_trace(trace1, 1, 1)
     fig.append_trace(trace2, 2, 1)
     fig.append_trace(trace3, 3, 1)
