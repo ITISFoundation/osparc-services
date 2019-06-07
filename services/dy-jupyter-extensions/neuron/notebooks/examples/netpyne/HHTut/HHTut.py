@@ -1,5 +1,5 @@
 """
-HHTut.py 
+HHTut.py
 
 netParams is a dict containing a set of network parameters using a standardized structure
 
@@ -25,7 +25,7 @@ simConfig = specs.SimConfig()   # object of class SimConfig to store the simulat
 ###############################################################################
 
 # Population parameters
-netParams.popParams['PYR'] = {'cellModel': 'HH', 'cellType': 'PYR', 'numCells': 200} # add dict with params for this pop 
+netParams.popParams['PYR'] = {'cellModel': 'HH', 'cellType': 'PYR', 'numCells': 200} # add dict with params for this pop
 
 
 # Cell parameters
@@ -65,10 +65,10 @@ simConfig.dt = 0.025 # Internal integration timestep to use
 simConfig.seeds = {'conn': 1, 'stim': 1, 'loc': 1} # Seeds for randomizers (connectivity, input stimulation and cell locations)
 simConfig.createNEURONObj = 1  # create HOC objects when instantiating network
 simConfig.createPyStruct = 1  # create Python structure (simulator-independent) when instantiating network
-simConfig.verbose = False  # show detailed messages 
+simConfig.verbose = False  # show detailed messages
 simConfig.hParams = {'v_init': -75}
 
-# Recording 
+# Recording
 simConfig.recordCells = []  # which cells to record from
 simConfig.recordTraces = {'Vsoma':{'sec':'soma','loc':0.5,'var':'v'}}
 simConfig.recordStim = True  # record spikes of cell stims
@@ -79,8 +79,7 @@ simConfig.filename = 'HHTut'  # Set file output name
 simConfig.saveFileStep = 1000 # step size in ms to save data to disk
 simConfig.savePickle = False # Whether or not to write spikes etc. to a .mat file
 
-# Analysis and plotting 
+# Analysis and plotting
 simConfig.analysis['plotRaster'] = {'saveData':'temp.json', 'saveFig': 'raster.png', 'showFig':False}# True  # Plot raster
 simConfig.analysis['plotTraces'] = {'include': [2]}  # Plot raster
 simConfig.analysis['plot2Dnet'] = True  # Plot 2D net cells and connections
-
