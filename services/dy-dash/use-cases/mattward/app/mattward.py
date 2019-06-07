@@ -639,8 +639,10 @@ def predict(
     [Input('output-data', 'children')]
 )
 def build_graph_out_1(data):
+    fig = get_empty_output_1_graph()
     if not data:
-        return
+        return fig
+    print(data["3d"])
     x = np.linspace(-5, 5, 50)
     y = np.linspace(-5, 5, 50)
     xGrid, yGrid = np.meshgrid(y, x)
@@ -653,7 +655,6 @@ def build_graph_out_1(data):
     for i, j, k in zip(xGrid, yGrid, z):
         lines.append(go.Scatter3d(x=i, y=j, z=k, mode='lines', line=line_marker))
 
-    fig = get_empty_output_1_graph()
     fig['data'] = lines
     return fig
 
@@ -663,9 +664,10 @@ def build_graph_out_1(data):
     [Input('output-data', 'children')]
 )
 def build_graph_out_2(data):
+    fig = get_empty_output_2_graph()
     if not data:
-        return
-    fig = get_empty_output_2_graph
+        return fig
+    print(data["histogram"])
     data = go.Heatmap(z=[data["histogram"]["x_axis"],
                         data["histogram"]["y_axis"],
                         data["histogram"]["z_axis"]])
