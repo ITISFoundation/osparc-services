@@ -24,7 +24,6 @@ osparc_style = {
     'backgroundColor': '#202020',
     'gridColor': '#444',
 }
-
 three_columns = {
     'display': 'flex'
 }
@@ -38,13 +37,11 @@ controls_layout = {
     'color': osparc_style['color'],
     'backgroundColor': osparc_style['backgroundColor']
 }
-
 centered_text = {
     'text-align': 'center',
     'color': osparc_style['color'],
     'backgroundColor': osparc_style['backgroundColor']
 }
-
 tab_style = {
     'padding': '5px',
     'color': osparc_style['color'],
@@ -55,11 +52,9 @@ options_layout = {
     # 'border-radius': '5px',
     'margin-top': '50px'
 }
-
 hidden = {
     'display': 'none'
 }
-
 dcc_input = {
     'color': osparc_style['color'],
     'backgroundColor': osparc_style['gridColor']
