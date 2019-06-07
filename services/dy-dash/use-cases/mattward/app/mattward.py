@@ -89,7 +89,7 @@ dcc_input_pair = {
 }
 
 
-def get_input_graph_layout():
+def get_empty_input_graph():
     fig = tools.make_subplots(rows=4,
                             cols=1,
                             # specs=[[{}], [{}], [{}], [{}]],
@@ -140,8 +140,81 @@ def get_input_graph_layout():
     )
     return fig
 
+def get_empty_output_1_graph():
+    margin = 10
+    label_padding = 30
+    layout = go.Layout(
+        # title='Wireframe Plot',
+        scene=dict(
+            xaxis=dict(
+                title='CV (m/s)',
+                gridcolor=osparc_style['gridColor'],
+                zerolinecolor='rgb(255, 255, 255)',
+                showbackground=True,
+                backgroundcolor=osparc_style['backgroundColor']
+            ),
+            yaxis=dict(
+                title='I_st (mA)',
+                gridcolor=osparc_style['gridColor'],
+                zerolinecolor='rgb(255, 255, 255)',
+                showbackground=True,
+                backgroundcolor=osparc_style['backgroundColor']
+            ),
+            zaxis=dict(
+                title='V_pred (uV)',
+                gridcolor=osparc_style['gridColor'],
+                zerolinecolor='rgb(255, 255, 255)',
+                showbackground=True,
+                backgroundcolor=osparc_style['backgroundColor']
+            )
+        ),
+        showlegend=False,
+        margin=dict(
+            l=margin+label_padding,
+            r=margin,
+            b=margin,
+            t=margin
+        ),
+        height=400,
+        plot_bgcolor=osparc_style['backgroundColor'],
+        paper_bgcolor=osparc_style['backgroundColor'],
+        font=dict(
+            color=osparc_style['color']
+        )
+    )
+    fig = {
+        'layout': layout,
+        'data': []
+    }
+    return fig
 
-empty_input_graph = get_input_graph_layout()
+def get_empty_output_2_graph():
+    margin = 10
+    label_padding = 30
+    layout = go.Layout(
+        # title='Heatmap Plot',
+        margin=dict(
+            l=margin+label_padding,
+            r=margin,
+            b=margin+label_padding,
+            t=margin
+        ),
+        height=400,
+        plot_bgcolor=osparc_style['backgroundColor'],
+        paper_bgcolor=osparc_style['backgroundColor'],
+        font=dict(
+            color=osparc_style['color']
+        )
+    )
+
+    return {
+        'layout': layout,
+        'data': []
+    }
+
+empty_input_graph = get_empty_input_graph()
+empty_output_1_graph = get_empty_output_1_graph()
+empty_output_2_graph = get_empty_output_2_graph()
 
 app.layout = html.Div(children=[
     html.H1(
@@ -336,8 +409,8 @@ app.layout = html.Div(children=[
             # Hidden div inside the app that stores the output data
             html.Div(id='output-data', style=hidden),
 
-            dcc.Graph(id='graph-out1'),
-            dcc.Graph(id='graph-out2')
+            dcc.Graph(id='graph-out1', figure=empty_output_1_graph),
+            dcc.Graph(id='graph-out2', figure=empty_output_2_graph)
         ], style=input_output_plots_layout),
     ], style=three_columns)
 ], style=osparc_style)
@@ -467,7 +540,7 @@ def build_input_graphs(data):
         )
     )
 
-    fig = get_input_graph_layout()
+    fig = get_empty_input_graph()
     fig.append_trace(trace1, 1, 1)
     fig.append_trace(trace2, 2, 1)
     fig.append_trace(trace3, 3, 1)
@@ -583,52 +656,9 @@ def build_graph_out_1(data):
     for i, j, k in zip(xGrid, yGrid, z):
         lines.append(go.Scatter3d(x=i, y=j, z=k, mode='lines', line=line_marker))
 
-    margin = 10
-    label_padding = 30
-    layout = go.Layout(
-        # title='Wireframe Plot',
-        scene=dict(
-            xaxis=dict(
-                title='CV (m/s)',
-                gridcolor=osparc_style['gridColor'],
-                zerolinecolor='rgb(255, 255, 255)',
-                showbackground=True,
-                backgroundcolor=osparc_style['backgroundColor']
-            ),
-            yaxis=dict(
-                title='I_st (mA)',
-                gridcolor=osparc_style['gridColor'],
-                zerolinecolor='rgb(255, 255, 255)',
-                showbackground=True,
-                backgroundcolor=osparc_style['backgroundColor']
-            ),
-            zaxis=dict(
-                title='V_pred (uV)',
-                gridcolor=osparc_style['gridColor'],
-                zerolinecolor='rgb(255, 255, 255)',
-                showbackground=True,
-                backgroundcolor=osparc_style['backgroundColor']
-            )
-        ),
-        showlegend=False,
-        margin=dict(
-            l=margin+label_padding,
-            r=margin,
-            b=margin,
-            t=margin
-        ),
-        height=400,
-        plot_bgcolor=osparc_style['backgroundColor'],
-        paper_bgcolor=osparc_style['backgroundColor'],
-        font=dict(
-            color=osparc_style['color']
-        )
-    )
-
-    return {
-        'data': lines,
-        'layout': layout
-    }
+    fig = get_empty_output_1_graph()
+    fig['data'] = lines
+    return fig
 
 
 @app.callback(
@@ -638,32 +668,13 @@ def build_graph_out_1(data):
 def build_graph_out_2(data):
     if not data:
         return
+    fig = get_empty_output_2_graph
     data = go.Heatmap(z=[data["histogram"]["x_axis"],
                         data["histogram"]["y_axis"],
                         data["histogram"]["z_axis"]])
 
-    margin = 10
-    label_padding = 30
-    layout = go.Layout(
-        # title='Heatmap Plot',
-        margin=dict(
-            l=margin+label_padding,
-            r=margin,
-            b=margin+label_padding,
-            t=margin
-        ),
-        height=400,
-        plot_bgcolor=osparc_style['backgroundColor'],
-        paper_bgcolor=osparc_style['backgroundColor'],
-        font=dict(
-            color=osparc_style['color']
-        )
-    )
-
-    return {
-        'data': [data],
-        'layout': layout
-    }
+    fig['data'] = [data]
+    return fig
 
 
 if __name__ == '__main__':
