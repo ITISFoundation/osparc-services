@@ -443,16 +443,47 @@ def create_learned_model_input(path, plot_vs_tcnap):
     }
 
 def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, qst_path, vpred_path, lpred_path, fixed_tst, plot_vs_qst, plot_vs_tCNAP):
+    data_cv = pd.read_csv(cv_path, sep=',', header=None)
+    data_tcnap = pd.read_csv(t_path, sep=',', header=None)
+    data_ist = None
+    data_tst = None
+    if fixed_tst:
+        data_ist = pd.read_csv(ist_path, sep=',', header=None)
+    else:
+        data_tst = pd.read_csv(tst_path, sep=',', header=None)
+    data_CAP = pd.read_csv(qst_path, sep=',', header=None)
+    data_vpred = pd.read_csv(vpred_path, sep=',', header=None)
+    data_lpred = pd.read_csv(lpred_path, sep=',', header=None)
+
+    # dpi = 96
+    # height = 1024
+    # width = 800
+    # fontsize = 16
+
+    data_cv[data_cv>100] = None
+    x_axis = data_cv
+    if plot_vs_tCNAP:
+        x_axis = data_tcnap
+
+    y_axis = data_ist
+    if not fixed_tst:
+        y_axis = data_tst
+    if plot_vs_qst:
+        y_axis = data_CAP
+
     return {
-        "3d_data": {
+        "3d": {
+            # "x_axis": x_axis,
+            # "y_axis": y_axis,
+            # "z_axis": data_vpred,
             "x_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
             "y_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
             "z_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
         },
-        "histogram": {
-            "x_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-            "y_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-            "z_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
+        "heatmap": {
+            # "y": np.nan_to_num(x_axis.values[:,0]),
+            # "x": y_axis.values[0,:],
+            "z": data_lpred.values.T,
         }
     }
 
@@ -623,14 +654,14 @@ def predict(
         fixed_tst=False
         print("Current clicked.", model_id, sweep_param, plot_vs_qst, plot_vs_tCNAP, current_1, current_2, current_3, current_4)
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
-        subprocess.call(["execute_cnap.sh", str(model_id), str(sweep_param), str(current_1), str(current_2), str(current_3), str(current_4)])
+        subprocess.call(["execute_cnap.sh", str(model_id), str(sweep_param), str(current_1), str(current_2), str(current_3), str(current_4)], cwd="/home/jovyan/output")
         return create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
     else:
         sweep_param = 0
         fixed_tst=True
         print("Duration clicked.", model_id, sweep_param, plot_vs_qst, plot_vs_tCNAP, duration_1, duration_2, duration_3, duration_4)
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
-        subprocess.call(["execute_cnap.sh", str(model_id), str(sweep_param), str(duration_1), str(duration_2), str(duration_3), str(duration_4)])
+        subprocess.call(["execute_cnap.sh", str(model_id), str(sweep_param), str(duration_1), str(duration_2), str(duration_3), str(duration_4)], cwd="/home/jovyan/output")
         return create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
 
 
@@ -642,7 +673,6 @@ def build_graph_out_1(data):
     fig = get_empty_output_1_graph()
     if not data:
         return fig
-    print(data["3d"])
     x = np.linspace(-5, 5, 50)
     y = np.linspace(-5, 5, 50)
     xGrid, yGrid = np.meshgrid(y, x)
@@ -667,10 +697,7 @@ def build_graph_out_2(data):
     fig = get_empty_output_2_graph()
     if not data:
         return fig
-    print(data["histogram"])
-    data = go.Heatmap(z=[data["histogram"]["x_axis"],
-                        data["histogram"]["y_axis"],
-                        data["histogram"]["z_axis"]])
+    data = go.Heatmap(**data["heatmap"])
 
     fig['data'] = [data]
     return fig
