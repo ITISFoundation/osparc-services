@@ -88,6 +88,61 @@ dcc_input_pair = {
     'backgroundColor': osparc_style['backgroundColor']
 }
 
+
+def get_graph_input_layout():
+    fig = tools.make_subplots(rows=4,
+                            cols=1,
+                            # specs=[[{}], [{}], [{}], [{}]],
+                            shared_xaxes=True,
+                            # shared_yaxes=True,
+                            vertical_spacing=0.05
+    )
+
+    fig['layout']['xaxis'].update(
+        title='Conduction Velocity (m/s)',
+        gridcolor=osparc_style['gridColor']
+    )
+    fig['layout']['yaxis'].update(
+        title='Vmax(uV)',
+        gridcolor=osparc_style['gridColor']
+    )
+    fig['layout']['yaxis2'].update(
+        title='M coeff',
+        gridcolor=osparc_style['gridColor']
+    )
+    fig['layout']['yaxis3'].update(
+        title='B coeff (mA)',
+        gridcolor=osparc_style['gridColor']
+    )
+    fig['layout']['yaxis4'].update(
+        title='tau_SD(ms)',
+        gridcolor=osparc_style['gridColor']
+    )
+    margin = 10
+    y_label_padding = 50
+    x_label_padding = 30
+    fig['layout']['margin'].update(
+        l=margin+y_label_padding,
+        r=margin,
+        b=margin+x_label_padding,
+        t=margin,
+    )
+
+    fig['layout'].update(
+        autosize=True,
+        height=800,
+        showlegend=False,
+        plot_bgcolor=osparc_style['backgroundColor'],
+        paper_bgcolor=osparc_style['backgroundColor'],
+        font=dict(
+            color=osparc_style['color']
+        )
+    )
+    return fig
+
+
+empty_graph_input = get_graph_input_layout()
+
 app.layout = html.Div(children=[
     html.H1(
         children='MattWard solver',
@@ -105,7 +160,7 @@ app.layout = html.Div(children=[
             # Hidden div inside the app that stores the input data
             html.Div(id='input-data', style=hidden),
 
-            dcc.Graph(id='graph-ins')
+            dcc.Graph(id='graph-ins', figure=empty_graph_input)
         ], style=input_output_plots_layout),
 
 
@@ -411,13 +466,8 @@ def build_input_graphs(data):
             width = line_width
         )
     )
-    fig = tools.make_subplots(rows=4,
-                            cols=1,
-                            # specs=[[{}], [{}], [{}], [{}]],
-                            shared_xaxes=True,
-                            # shared_yaxes=True,
-                            vertical_spacing=0.05
-    )
+
+    fig = get_graph_input_layout()
     fig.append_trace(trace1, 1, 1)
     fig.append_trace(trace2, 2, 1)
     fig.append_trace(trace3, 3, 1)
@@ -433,46 +483,6 @@ def build_input_graphs(data):
             autorange=True
         )
 
-    fig['layout']['xaxis'].update(
-        title='Conduction Velocity (m/s)',
-        gridcolor=osparc_style['gridColor']
-    )
-    fig['layout']['yaxis'].update(
-        title='Vmax(uV)',
-        gridcolor=osparc_style['gridColor']
-    )
-    fig['layout']['yaxis2'].update(
-        title='M coeff',
-        gridcolor=osparc_style['gridColor']
-    )
-    fig['layout']['yaxis3'].update(
-        title='B coeff (mA)',
-        gridcolor=osparc_style['gridColor']
-    )
-    fig['layout']['yaxis4'].update(
-        title='tau_SD(ms)',
-        gridcolor=osparc_style['gridColor']
-    )
-    margin = 10
-    y_label_padding = 50
-    x_label_padding = 30
-    fig['layout']['margin'].update(
-        l=margin+y_label_padding,
-        r=margin,
-        b=margin+x_label_padding,
-        t=margin,
-    )
-    fig['layout'].update(
-        autosize=True,
-        height=800,
-        # title='Learned Model Input Parameters',
-        showlegend=False,
-        plot_bgcolor=osparc_style['backgroundColor'],
-        paper_bgcolor=osparc_style['backgroundColor'],
-        font=dict(
-            color=osparc_style['color']
-        )
-    )
     return fig
 
 
