@@ -9,7 +9,9 @@
 import argparse
 import asyncio
 import logging
+import os
 import sys
+import time
 from enum import IntEnum
 from pathlib import Path
 
@@ -23,25 +25,35 @@ class ExitCode(IntEnum):
     SUCCESS = 0
     FAIL = 1
 
+def state_path() -> Path:
+    path = os.environ.get("SIMCORE_NODE_APP_STATE_PATH", "undefined")
+    assert path != "undefined", "SIMCORE_NODE_APP_STATE_PATH is not defined!"
+    return Path(path)
+
 def main(args = None) -> int:
     try:
         parser = argparse.ArgumentParser(description=__doc__)
-        parser.add_argument("path", help="The folder or file to get for the node", type=Path)
+        parser.add_argument("--path", help="The folder or file to get for the node", type=Path, default=state_path(), required=False)
         parser.add_argument("--silent", help="The script will silently fail if the flag is on", default=False, const=True, action="store_const", required=False)
+        parser.add_argument("type", help="push or pull", choices=["push", "pull"])
         options = parser.parse_args(args)
-
+        
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(data_manager.pull(options.path))
+
+        start_time = time.time()
+        loop.run_until_complete(getattr(data_manager, options.type)(options.path))
+        end_time = time.time()
+        print("time to {}: {} seconds".format(options.type, end_time - start_time))
         return ExitCode.SUCCESS
 
     except exceptions.S3InvalidPathError:
         if options.silent:
-            log.warning("Could not retrieve state from S3 for %s", options.path)
+            log.warning("Could not %s state from S3 for %s", options.type, options.path)
             return ExitCode.SUCCESS
-        log.exception("Could not retrieve state from S3 for %s", options.path)
+        log.exception("Could not %s state from S3 for %s", options.type, options.path)
         return ExitCode.FAIL
     except: # pylint: disable=bare-except
-        log.exception("Unexpected error when retrieving state from S3 for %s", options.path)
+        log.exception("Unexpected error when %s state from/to S3 for %s", options.type, options.path)
         return ExitCode.FAIL
 
 if __name__ == "__main__":
