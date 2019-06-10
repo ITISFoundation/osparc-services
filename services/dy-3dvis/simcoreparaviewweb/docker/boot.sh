@@ -28,18 +28,12 @@ then
     export SIMCORE_PROJECT_ID="${array[0]}"
 fi
 
-# echo "modifying apache configuration..."
-# . docker/apachePatch.sh
-
-# echo "restarting the apache service..."
-# service apache2 restart
-
 # try to pull data from S3
 echo "trying to download previous state..."
-python docker/state_puller.py ${SIMCORE_NODE_APP_STATE_PATH} --silent
+python docker/state_manager.py pull --path ${SIMCORE_NODE_APP_STATE_PATH} --silent
 
 # echo "modifying wslink launcher configuration..."
-# . docker/visualizer_launcher_patch.sh
+# docker/visualizer_launcher_patch.sh
 
 if [[ -v CREATE_DUMMY_TABLE ]];
 then
@@ -67,9 +61,6 @@ fi
 # as seen from the client side (if in local development mode, this would be typically localhost and
 # whatever port is being published outside the docker container)
 echo "starting paraview using hostname ${host_name} and websocket port $server_port..."
-# /opt/paraviewweb/scripts/start.sh "ws://${host_name}:$server_port"
-
-# cp docker/example.rpy /opt/paraview/share/paraview-5.6/web/visualizer/www/
 # modify wslink to allow use of .rpy files in the twisted server
 sed -i '/^from twisted.web .*/a from twisted.web import script' /opt/paraview/lib/python2.7/site-packages/wslink/server.py
 sed -i 's/^\(.*\)\(root = File(options.content).*$\)/\1root = File(options.content, ignoredExts=(".rpy",))\n\1root.processors = {".rpy": script.ResourceScript}/' /opt/paraview/lib/python2.7/site-packages/wslink/server.py
