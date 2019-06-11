@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import os
+
 import dash
 from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
@@ -11,6 +13,9 @@ import subprocess
 
 import pandas as pd
 import numpy as np
+
+HOME = '/home/jovyan'
+# HOME = os.path.dirname(os.path.realpath(__file__))
 
 app = dash.Dash(__name__)
 app.css.append_css({
@@ -501,8 +506,8 @@ def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, 
 def read_input_file(_n_clicks, input_nerve_profile, input_plot_options):
     model_id = input_nerve_profile + 1
     # !execute_cnap.sh $model_id 0 0.0 1.0 0.5 0.4
-    subprocess.call(["execute_cnap.sh", str(model_id), "0", "0.0", "1.0", "0.5", "0.4"], cwd="/home/jovyan/output")
-    path = '/home/jovyan/output/input.csv'
+    subprocess.call(["execute_cnap.sh", str(model_id), "0", "0.0", "1.0", "0.5", "0.4"], cwd=HOME+'/output')
+    path = HOME+'/output/input.csv'
     selected_cb = get_selected_checkboxes(input_plot_options)
     return create_learned_model_input(path, selected_cb[1])
 
@@ -642,26 +647,26 @@ def predict(
     selected_cb = get_selected_checkboxes(input_plot_options)
     plot_vs_qst = selected_cb[0]
     plot_vs_tCNAP = selected_cb[1]
-    cv_path='/home/jovyan/output/CV_plot.csv'
-    t_path='/home/jovyan/output/t_plot.csv'
-    ist_path='/home/jovyan/output/Ist_plot.csv'
-    tst_path='/home/jovyan/output/tst_plot.csv'
-    qst_path='/home/jovyan/output/CAP_plot.csv'
-    vpred_path='/home/jovyan/output/V_pred_plot.csv'
-    lpred_path='/home/jovyan/output/Lpred_plot.csv'
+    cv_path= HOME+'/output/CV_plot.csv'
+    t_path= HOME+'/output/t_plot.csv'
+    ist_path= HOME+'/output/Ist_plot.csv'
+    tst_path= HOME+'/output/tst_plot.csv'
+    qst_path= HOME+'/output/CAP_plot.csv'
+    vpred_path= HOME+'/output/V_pred_plot.csv'
+    lpred_path= HOME+'/output/Lpred_plot.csv'
     if button_current_ts>button_duration_ts:
         sweep_param = 1
         fixed_tst=False
         print("Current clicked.", model_id, sweep_param, plot_vs_qst, plot_vs_tCNAP, current_1, current_2, current_3, current_4)
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
-        subprocess.call(["execute_cnap.sh", str(model_id), str(sweep_param), str(current_1), str(current_2), str(current_3), str(current_4)], cwd="/home/jovyan/output")
+        subprocess.call(["execute_cnap.sh", str(model_id), str(sweep_param), str(current_1), str(current_2), str(current_3), str(current_4)], cwd=HOME+'/output')
         return create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
     else:
         sweep_param = 0
         fixed_tst=True
         print("Duration clicked.", model_id, sweep_param, plot_vs_qst, plot_vs_tCNAP, duration_1, duration_2, duration_3, duration_4)
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
-        subprocess.call(["execute_cnap.sh", str(model_id), str(sweep_param), str(duration_1), str(duration_2), str(duration_3), str(duration_4)], cwd="/home/jovyan/output")
+        subprocess.call(["execute_cnap.sh", str(model_id), str(sweep_param), str(duration_1), str(duration_2), str(duration_3), str(duration_4)], cwd=HOME+'/output')
         return create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
 
 
