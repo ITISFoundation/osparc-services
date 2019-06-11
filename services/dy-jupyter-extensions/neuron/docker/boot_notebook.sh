@@ -10,7 +10,7 @@ python /docker/state_puller.py ${SIMCORE_NODE_APP_STATE_PATH} --silent
 # the notebooks in the folder shall be trusted by default
 #jupyter trust ${SIMCORE_NODE_APP_STATE_PATH}/*
 
-# Trus all notebooks in the notbooks folder
+# Trust all notebooks in the notbooks folder
 find ${SIMCORE_NODE_APP_STATE_PATH} -name '*.ipynb' | xargs jupyter trust
 
 # call the notebook with the basic parameters
