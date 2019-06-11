@@ -119,7 +119,7 @@ jobs:
       deploy:
         - provider: script
           skip_cleanup: true
-          script: unbuffer bash ops/travis/builddy-jupyter-extensions deploy
+          script: unbuffer bash ops/travis/build/dy-jupyter-extensions deploy
           on:
             all_branches: true
 
