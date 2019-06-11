@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+from pathlib import Path
 
 import dash
 from dash.dependencies import Input, Output, State
@@ -14,8 +15,8 @@ import subprocess
 import pandas as pd
 import numpy as np
 
-WORKDIR = '/home/jovyan'
-# WORKDIR = os.path.dirname(os.path.realpath(__file__))
+# WORKDIR = '/home/jovyan'
+WORKDIR = str(Path(os.path.dirname(os.path.realpath(__file__))).parent)
 
 app = dash.Dash(__name__)
 app.css.append_css({
