@@ -14,8 +14,8 @@ import subprocess
 import pandas as pd
 import numpy as np
 
-HOME = '/home/jovyan'
-# HOME = os.path.dirname(os.path.realpath(__file__))
+WORKDIR = '/home/jovyan'
+# WORKDIR = os.path.dirname(os.path.realpath(__file__))
 
 app = dash.Dash(__name__)
 app.css.append_css({
