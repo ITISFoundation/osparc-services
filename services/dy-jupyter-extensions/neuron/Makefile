@@ -54,7 +54,7 @@ ifdef tools
 	$(error "Can't find tools:${tools}")
 endif
 
-# 
+#
 build-travis:
 	${DOCKER_COMPOSE} -f docker-compose.yml build
 push-travis:
@@ -73,7 +73,8 @@ rebuild:
 # target: build-devel: – Builds images of core services for development.
 build-devel: .env
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml build
-build-devel: .env
+
+rebuild-devel: .env
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml build --no-cache
 
 .PHONY: up up-devel down
