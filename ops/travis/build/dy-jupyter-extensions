@@ -18,7 +18,7 @@ before_script() {
 }
 
 script() {
-    cd services/dy-jupyter
+    cd services/dy-jupyter-extensions/neuron
     make build
 }
 
