@@ -52,13 +52,13 @@ RUN mkdir /opt/conda/neuron && \
   conda clean -tipsy
 
 # nrnivmodl
-ENV PATH /opt/conda/neuron/x86_64/bin:$PATH 
+ENV PATH /opt/conda/neuron/x86_64/bin:$PATH
 
 # install netpyne
-# RUN git clone https://github.com/Neurosim-lab/netpyne.git && \  
-#   cd netpyne && git checkout development && pip install -e . 
+# RUN git clone https://github.com/Neurosim-lab/netpyne.git && \
+#   cd netpyne && git checkout development && pip install -e .
 
-# 
+#
 # install requirements --------------------------------------------------------
 COPY --chown=jovyan:users ./requirements/prod.txt requirements.txt
 RUN pip --no-cache install -r requirements.txt
@@ -66,7 +66,6 @@ RUN pip --no-cache install -r requirements.txt
 # prepare for booting ---------------------------------------------------------
 COPY --chown=jovyan:users docker /docker
 # copy some helper scripts-----------------------------------------------------
-COPY --chown=jovyan:users scripts /scripts
 ENV PYTHONPATH=/scripts:$PYTHONPATH
 # set of arguments to copy the right notebook ---------------------------------
 ARG NOTEBOOK_NAME
