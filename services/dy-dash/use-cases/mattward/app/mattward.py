@@ -15,8 +15,12 @@ import subprocess
 import pandas as pd
 import numpy as np
 
-# WORKDIR = '/home/jovyan'
-WORKDIR = str(Path(os.path.dirname(os.path.realpath(__file__))).parent)
+LOCALHOST = False
+if LOCALHOST:
+    WORKDIR = str(Path(os.path.dirname(os.path.realpath(__file__))).parent)
+else:
+    WORKDIR = '/home/jovyan'
+
 
 app = dash.Dash(__name__)
 app.css.append_css({
@@ -494,6 +498,8 @@ def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, 
     }
 
 def run_cnap(*args):
+    if LOCALHOST:
+        return
     subprocess.call(["execute_cnap.sh", *args], cwd=WORKDIR+'/output')
 
 # When pressing 'Load' this callback will be triggered.
@@ -659,14 +665,14 @@ def predict(
     lpred_path= WORKDIR+'/output/Lpred_plot.csv'
     if button_current_ts>button_duration_ts:
         sweep_param = 1
-        fixed_tst=False
+        fixed_tst=True
         print("Current clicked.", model_id, sweep_param, plot_vs_qst, plot_vs_tCNAP, current_1, current_2, current_3, current_4)
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
         run_cnap("execute_cnap.sh", str(model_id), str(sweep_param), str(current_1), str(current_2), str(current_3), str(current_4))
         return create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
     else:
         sweep_param = 0
-        fixed_tst=True
+        fixed_tst=False
         print("Duration clicked.", model_id, sweep_param, plot_vs_qst, plot_vs_tCNAP, duration_1, duration_2, duration_3, duration_4)
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
         run_cnap("execute_cnap.sh", str(model_id), str(sweep_param), str(duration_1), str(duration_2), str(duration_3), str(duration_4))
@@ -712,4 +718,4 @@ def build_graph_out_2(data):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=False, port=8888, host="0.0.0.0")
+    app.run_server(debug=LOCALHOST, port=8888, host="0.0.0.0")
