@@ -69,7 +69,7 @@ COPY scripts/docker/healthcheck_curl_host.py /healthcheck/healthcheck_curl_host.
 ENV SIMCORE_NODE_UUID="-1" \
     SIMCORE_USER_ID="-1" \
     SIMCORE_NODE_BASEPATH="" \
-    SIMCORE_NODE_APP_STATE_PATH="/data" \
+    SIMCORE_NODE_APP_STATE_PATH=${PARAVIEW_INPUT_PATH} \
     STORAGE_ENDPOINT="=1" \
     S3_ENDPOINT="=1" \
     S3_ACCESS_KEY="-1" \
@@ -82,7 +82,8 @@ ENV SIMCORE_NODE_UUID="-1" \
 
 # special paraview variables
 ENV SERVER_PORT="-1"  \
-    HOST_NAME="-1"
+    HOST_NAME="-1" \    
+    SIMCORE_STATE_FILE="simcore-state.pvsm"
 
 RUN mkdir /home/root/trigger && \
     chmod 777 /home/root/trigger
@@ -102,6 +103,7 @@ VOLUME /home/root/scripts/dy_services_helpers
 VOLUME /home/root/docker
 VOLUME /home/root/config
 ENV CREATE_DUMMY_TABLE 1
+ENV DEBUG 1
 ENV USE_CASE_CONFIG_FILE="devel/port_config.json"
 ENV TEST_DATA_PATH="/test-data"
 # Need to use entrypoint as base image's entrypoint must be overriden

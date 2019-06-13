@@ -29,11 +29,11 @@ then
 fi
 
 # try to pull data from S3
+echo
 echo "trying to download previous state..."
 python docker/state_manager.py pull --path ${SIMCORE_NODE_APP_STATE_PATH} --silent
-
-# echo "modifying wslink launcher configuration..."
-# docker/visualizer_launcher_patch.sh
+echo "...DONE"
+echo
 
 if [[ -v CREATE_DUMMY_TABLE ]];
 then
@@ -60,15 +60,33 @@ fi
 # its websockets are setup "ws://HOSTNAME:PORT" hostname and port must be the hostname and port
 # as seen from the client side (if in local development mode, this would be typically localhost and
 # whatever port is being published outside the docker container)
+echo
 echo "starting paraview using hostname ${host_name} and websocket port $server_port..."
 # modify wslink to allow use of .rpy files in the twisted server
 sed -i '/^from twisted.web .*/a from twisted.web import script' /opt/paraview/lib/python2.7/site-packages/wslink/server.py
 sed -i 's/^\(.*\)\(root = File(options.content).*$\)/\1root = File(options.content, ignoredExts=(".rpy",))\n\1root.processors = {".rpy": script.ResourceScript}/' /opt/paraview/lib/python2.7/site-packages/wslink/server.py
 
-/opt/paraview/bin/pvpython /opt/paraview/share/paraview-5.6/web/visualizer/server/pvw-visualizer.py \
-    --content /opt/paraview/share/paraview-5.6/web/visualizer/www/ \
-    --data /data \
+# set default parameters
+parameters = --content /opt/paraview/share/paraview-5.6/web/visualizer/www/ \
+    --data ${PARAVIEW_INPUT_PATH} \
     --host ${host_name} \
     --port $server_port \
-    --timeout 20000 \
-    --debug
+    --no-built-in-palette \
+    --color-palette-file /home/root/config/s4lColorMap.json \
+    --timeout 20000
+
+# set auto load state if available
+if [ -f "${PARAVIEW_INPUT_PATH}/${SIMCORE_STATE_FILE}" ]; then
+    $parameters = $parameters \
+        --load-file "${SIMCORE_STATE_FILE}"
+fi
+
+# show additional debugging parameters on demand
+if [[ -v DEBUG ]]; then
+    $parameters = $parameters \
+                --debug
+fi
+
+# start server
+/opt/paraview/bin/pvpython \
+    /opt/paraview/share/paraview-5.6/web/visualizer/server/pvw-visualizer.py $parameters

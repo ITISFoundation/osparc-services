@@ -24,7 +24,7 @@ class MyResource(Resource):
     def render_GET(self, request):
         log.info("getting data from previous node...")
         cmd = "/home/root/docker/input-retriever.py"
-        return call_python3(cmd)
+        return call_python3(cmd, request)
 
 
 resource = MyResource()
