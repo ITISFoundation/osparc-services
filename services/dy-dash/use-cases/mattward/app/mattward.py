@@ -16,7 +16,7 @@ import plotly.graph_objs as go
 from plotly import tools
 
 
-LOCALHOST = False
+LOCALHOST = True
 if LOCALHOST:
     WORKDIR = str(Path(os.path.dirname(os.path.realpath(__file__))).parent)
 else:
@@ -147,15 +147,17 @@ def get_empty_input_graph():
 def get_empty_output_1_graph():
     margin = 10
     label_padding = 30
+
     layout = go.Layout(
-        # title='Wireframe Plot',
         scene=dict(
             xaxis=dict(
                 title='CV (m/s)',
                 gridcolor=osparc_style['gridColor'],
                 zerolinecolor='rgb(255, 255, 255)',
                 showbackground=True,
-                backgroundcolor=osparc_style['backgroundColor']
+                backgroundcolor=osparc_style['backgroundColor'],
+                type='log',
+                autorange=True
             ),
             yaxis=dict(
                 title='I_st (mA)',
@@ -194,13 +196,23 @@ def get_empty_output_1_graph():
 
 def get_empty_output_2_graph():
     margin = 10
-    label_padding = 30
+    y_label_padding = 50
+    x_label_padding = 30
     layout = go.Layout(
-        # title='Heatmap Plot',
+        scene=dict(
+            xaxis=dict(
+                title='CV (m/s)',
+                type='log',
+                autorange=True
+            ),
+            yaxis=dict(
+                title='I_st (mA)'
+            )
+        ),
         margin=dict(
-            l=margin+label_padding,
+            l=margin+y_label_padding,
             r=margin,
-            b=margin+label_padding,
+            b=margin+x_label_padding,
             t=margin
         ),
         height=400,
@@ -269,7 +281,7 @@ app.layout = html.Div(children=[
                         {'label': 'Plot against Charge-Phase', 'value': 'charge_phase_cb'},
                         {'label': 'Plot CNAP versus Time (ms)', 'value': 'time_cb'}
                     ],
-                    values=['charge_phase_cb']
+                    values=[]
                 ),
 
                 html.Button('Load', id='load-input-button', style=dcc_input_button)
@@ -387,7 +399,7 @@ app.layout = html.Div(children=[
                                     dcc.Input(
                                         id='duration_in_4',
                                         type='number',
-                                        value=0.4,
+                                        value=0.6,
                                         style=dcc_input_number
                                     )
                                 ], style=dcc_input_pair),
@@ -483,15 +495,20 @@ def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, 
         y_axis = data_CAP
 
     return {
+        "fixed_tst": fixed_tst,
+        "plot_vs_qst": plot_vs_qst,
+        "plot_vs_tCNAP": plot_vs_tCNAP,
         "3d": {
-            "x": x_axis.values,
-            "y": y_axis.values,
-            "z": data_vpred.values,
+            "x": x_axis.values[:,0],
+            "y": y_axis.values[0,:],
+            "z": data_vpred.values.T,
+            # "z": data_vpred.values,
         },
         "heatmap": {
-            "x": x_axis.values,
-            "y": y_axis.values,
-            "z": data_lpred.values,
+            "x": x_axis.values[:,0],
+            "y": y_axis.values[0,:],
+            "z": data_lpred.values.T,
+            # "z": data_lpred.values,
         }
     }
 
@@ -677,6 +694,24 @@ def predict(
         return create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
 
 
+def update_out_graph_layout(fig, fixed_tst, plot_vs_qst, plot_vs_tCNAP):
+    print('update_out_graph_layout', fixed_tst, plot_vs_qst, plot_vs_tCNAP)
+    if plot_vs_tCNAP:
+        fig['layout']['xaxis'].update(
+            title='t_CNAP (ms)',
+            type='linear'
+        )
+
+    if not fixed_tst:
+        fig['layout']['yaxis'].update(
+            title='t_st (mA)'
+        )
+    if plot_vs_qst:
+        print('Q_st (nC)')
+        fig['layout']['yaxis'].update(
+            title='Q_st (nC)'
+        )
+
 @app.callback(
     Output('graph-out1', 'figure'),
     [Input('output-data', 'children')]
@@ -685,7 +720,10 @@ def build_graph_out_1(data):
     fig = get_empty_output_1_graph()
     if not data:
         return fig
-    dummy_wireframe = True
+
+    update_out_graph_layout(fig, data["fixed_tst"], data["plot_vs_qst"], data["plot_vs_tCNAP"])
+
+    dummy_wireframe = False
     if dummy_wireframe:
         x = np.linspace(-5, 5, 50)
         y = np.linspace(-5, 5, 50)
@@ -703,8 +741,9 @@ def build_graph_out_1(data):
         return fig
 
     data_3d = data["3d"]
-    xGrid = data_3d["x"]
-    yGrid = data_3d["y"]
+    x = data_3d["x"]
+    y = data_3d["y"]
+    xGrid, yGrid = np.meshgrid(y, x)
     z = data_3d["z"]
     # Creating the plot
     lines = []
@@ -724,10 +763,13 @@ def build_graph_out_2(data):
     fig = get_empty_output_2_graph()
     if not data:
         return fig
+
+    update_out_graph_layout(fig, data["fixed_tst"], data["plot_vs_qst"], data["plot_vs_tCNAP"])
+
     data_heatmap = data["heatmap"]
-    x = data_heatmap["x"][:,0]
-    y = data_heatmap["y"][0,:]
-    z = data_heatmap["z"].T
+    x = data_heatmap["x"]
+    y = data_heatmap["y"]
+    z = data_heatmap["z"]
     data = go.Heatmap(x=x, y=y, z=z)
 
     fig['data'] = [data]
