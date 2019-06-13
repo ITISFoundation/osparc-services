@@ -144,7 +144,7 @@ def get_empty_input_graph():
     )
     return fig
 
-def get_empty_output_1_graph():
+def get_empty_output_1_graph(fixed_tst=True, plot_vs_qst=False, plot_vs_tCNAP=False):
     margin = 10
     label_padding = 30
 
@@ -188,13 +188,29 @@ def get_empty_output_1_graph():
             color=osparc_style['color']
         )
     )
+
+    if plot_vs_tCNAP:
+        layout['scene']['xaxis'].update(
+            title='t_CNAP (ms)',
+            type='linear'
+        )
+
+    if not fixed_tst:
+        layout['scene']['yaxis'].update(
+            title='t_st (mA)'
+        )
+    if plot_vs_qst:
+        layout['scene']['yaxis'].update(
+            title='Q_st (nC)'
+        )
+
     fig = {
         'layout': layout,
         'data': []
     }
     return fig
 
-def get_empty_output_2_graph():
+def get_empty_output_2_graph(fixed_tst=True, plot_vs_qst=False, plot_vs_tCNAP=False):
     margin = 10
     y_label_padding = 50
     x_label_padding = 30
@@ -222,6 +238,21 @@ def get_empty_output_2_graph():
             color=osparc_style['color']
         )
     )
+
+    if plot_vs_tCNAP:
+        layout['scene']['xaxis'].update(
+            title='t_CNAP (ms)',
+            type='linear'
+        )
+
+    if not fixed_tst:
+        layout['scene']['yaxis'].update(
+            title='t_st (mA)'
+        )
+    if plot_vs_qst:
+        layout['scene']['yaxis'].update(
+            title='Q_st (nC)'
+        )
 
     return {
         'layout': layout,
@@ -494,21 +525,22 @@ def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, 
     if plot_vs_qst:
         y_axis = data_CAP
 
+    x_axis = x_axis.values[:,0]
+    y_axis = y_axis.values[0,:]
+
     return {
         "fixed_tst": fixed_tst,
         "plot_vs_qst": plot_vs_qst,
         "plot_vs_tCNAP": plot_vs_tCNAP,
         "3d": {
-            "x": y_axis.values[0,:],
-            "y": x_axis.values[:,0],
+            "x": y_axis,
+            "y": x_axis,
             "z": data_vpred.values.T,
-            # "z": data_vpred.values,
         },
         "heatmap": {
-            "x": x_axis.values[:,0],
-            "y": y_axis.values[0,:],
+            "x": x_axis,
+            "y": y_axis,
             "z": data_lpred.values.T,
-            # "z": data_lpred.values,
         }
     }
 
@@ -678,39 +710,23 @@ def predict(
     qst_path= WORKDIR+'/output/CAP_plot.csv'
     vpred_path= WORKDIR+'/output/V_pred_plot.csv'
     lpred_path= WORKDIR+'/output/Lpred_plot.csv'
+    data = None
     if button_current_ts>button_duration_ts:
         sweep_param = 1
         fixed_tst=True
         print("Current clicked.", model_id, sweep_param, plot_vs_qst, plot_vs_tCNAP, current_1, current_2, current_3, current_4)
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
         run_cnap(str(model_id), str(sweep_param), str(current_1), str(current_2), str(current_3), str(current_4))
-        return create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
+        data = create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
     else:
         sweep_param = 0
         fixed_tst=False
         print("Duration clicked.", model_id, sweep_param, plot_vs_qst, plot_vs_tCNAP, duration_1, duration_2, duration_3, duration_4)
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
         run_cnap(str(model_id), str(sweep_param), str(duration_1), str(duration_2), str(duration_3), str(duration_4))
-        return create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
+        data = create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
+    return data
 
-
-def update_out_graph_layout(fig, fixed_tst, plot_vs_qst, plot_vs_tCNAP):
-    print('update_out_graph_layout', fixed_tst, plot_vs_qst, plot_vs_tCNAP)
-    if plot_vs_tCNAP:
-        fig['layout']['xaxis'].update(
-            title='t_CNAP (ms)',
-            type='linear'
-        )
-
-    if not fixed_tst:
-        fig['layout']['yaxis'].update(
-            title='t_st (mA)'
-        )
-    if plot_vs_qst:
-        print('Q_st (nC)')
-        fig['layout']['yaxis'].update(
-            title='Q_st (nC)'
-        )
 
 @app.callback(
     Output('graph-out1', 'figure'),
@@ -720,8 +736,7 @@ def build_graph_out_1(data):
     fig = get_empty_output_1_graph()
     if not data:
         return fig
-
-    update_out_graph_layout(fig, data["fixed_tst"], data["plot_vs_qst"], data["plot_vs_tCNAP"])
+    fig = get_empty_output_1_graph(data["fixed_tst"], data["plot_vs_qst"], data["plot_vs_tCNAP"])
 
     dummy_wireframe = False
     if dummy_wireframe:
@@ -763,8 +778,7 @@ def build_graph_out_2(data):
     fig = get_empty_output_2_graph()
     if not data:
         return fig
-
-    update_out_graph_layout(fig, data["fixed_tst"], data["plot_vs_qst"], data["plot_vs_tCNAP"])
+    fig = get_empty_output_2_graph(data["fixed_tst"], data["plot_vs_qst"], data["plot_vs_tCNAP"])
 
     data_heatmap = data["heatmap"]
     x = data_heatmap["x"]
