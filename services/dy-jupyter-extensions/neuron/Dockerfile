@@ -6,7 +6,7 @@ USER root
 
 # NEURON requirements
 RUN apt-get update &&\
-  apt-get install -y \
+  apt-get install --no-install-recommends -y \
     automake \
     bison \
     bzip2 \
@@ -64,13 +64,8 @@ COPY --chown=jovyan:users ./requirements/prod.txt requirements.txt
 RUN pip --no-cache install -r requirements.txt
 
 # prepare for booting ---------------------------------------------------------
-COPY --chown=jovyan:users docker /docker
-# copy some helper scripts-----------------------------------------------------
-ENV PYTHONPATH=/scripts:$PYTHONPATH
-# set of arguments to copy the right notebook ---------------------------------
-ARG NOTEBOOK_NAME
-ENV NOTEBOOK_URL=${NOTEBOOK_NAME}
-
+# COPY --chown=jovyan:users docker /docker
+# where to put the inputs outputs
 ENV INPUTS_FOLDER /home/jovyan/notebooks/_inputs
 ENV OUTPUTS_FOLDER /home/jovyan/notebooks/_outputs
 # -----------------------------------------------------------------------------
@@ -79,17 +74,11 @@ VOLUME /home/jovyan/services
 VOLUME /home/jovyan/scripts/dy_services_helpers
 VOLUME /home/jovyan/devel-config
 VOLUME /home/jovyan/notebooks
-ENV USE_CASE_CONFIG_FILE="node_configuration_file.json"
-ENV INIT_OPTIONS="5000 200 20 tab"
-ENV CREATE_DUMMY_TABLE=1
 # switch off the default entrypoint
 ENTRYPOINT []
 CMD [ "/bin/bash", "/docker/boot.sh" ]
 # -----------------------------------------------------------------------------
 FROM common AS production
-# set of arguments to copy the right notebook
-ARG NOTEBOOK_NAME
-ARG NOTEBOOK_FOLDER_NAME
-# copy the notebook in the image
+# copy the notebooks in the image
 COPY --chown=jovyan:users ${NOTEBOOK_FOLDER_NAME} notebooks
 ENTRYPOINT [ "/bin/bash", "/docker/boot.sh" ]

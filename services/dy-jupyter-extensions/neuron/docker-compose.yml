@@ -8,8 +8,6 @@ services:
       target: production
       args:
         BASE_IMAGE: ${BASE_IMAGE}
-        NOTEBOOK_NAME: neuron.ipynb
-        NOTEBOOK_FOLDER_NAME: notebooks
       labels:
         io.simcore.key: '{"key": "simcore/services/dynamic/jupyter-neuron"}'
         io.simcore.version: '{"version": "${DOCKER_IMAGE_TAG}"}'
@@ -21,7 +19,7 @@ services:
         simcore.service.settings: '[
           {"name": "ports", "type": "int", "value": 8888},
           {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
-        
+
         org.label-schema.schema-version: "1.0"
         org.label-schema.build-date: "${BUILD_DATE}"
         org.label-schema.vcs-url: "${VCS_URL}"
@@ -29,4 +27,3 @@ services:
     ports:
       - '14000:8888'
   #--------------------------------------------------------------------
-  
