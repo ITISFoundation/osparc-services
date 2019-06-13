@@ -57,7 +57,7 @@ mv /opt/paraview/share/paraview-5.6/web/visualizer/www/*.* /opt/paraview/share/p
 # set default parameters (note that port is the server local port, and host is used for the websocket location)
 visualizer_options=(--content /opt/paraview/share/paraview-5.6/web/visualizer/www/ \
                     --data ${PARAVIEW_INPUT_PATH} \
-                    # --host ${SIMCORE_HOST_NAME}:${SERVER_PORT}${SIMCORE_NODE_BASEPATH} \
+                    --host ${SIMCORE_HOST_NAME}:${SERVER_PORT}${SIMCORE_NODE_BASEPATH} \
                     --port ${SERVER_PORT} \
                     --timeout 20000 \
                     --no-built-in-palette \
