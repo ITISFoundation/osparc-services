@@ -85,3 +85,10 @@ services:
     runtime: nvidia
     ports:
       - '8778:8778'
+  simcore-paraviewweb-gpu2:
+    image: ${DOCKER_REGISTRY}/3d-viewer-gpu:${DOCKER_IMAGE_TAG}    
+    runtime: nvidia
+    ports:
+      - '8779:8779'
+    depends_on: 
+      - simcore-paraviewweb-gpu
