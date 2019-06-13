@@ -29,14 +29,7 @@ services:
                               "description": "Any paraview compatible dataset. Any number can be compressed in a zip file.", 
                               "type": "data:*/*"}}
                             }'
-        io.simcore.outputs: '{"outputs": {
-                              "dataset": 
-                                {"label": "Any dataset", "displayOrder": 0, 
-                                "description": "Any paraview compatible dataset", "type": "data:*/*" },
-                              "screenshot":
-                                {"label": "A screenshot from paraview", "displayOrder": 0, 
-                                "description": "A paraview-generated screenshot", "type": "data:*/*" },
-                            }}'
+        io.simcore.outputs: '{"outputs": {}}'
         simcore.service.settings: '[
                                     {"name": "ports", "type": "int", "value": 8777}, 
                                     {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}
