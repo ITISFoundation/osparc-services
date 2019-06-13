@@ -13,8 +13,9 @@ from pathlib import Path
 
 from simcore_sdk import node_ports
 
-log = logging.getLogger(__file__ if __name__ == "__main__" else __name__)
 logging.basicConfig(level=logging.INFO)
+log = logging.getLogger(__file__ if __name__ == "__main__" else __name__)
+
 
 
 class ExitCode(IntEnum):
@@ -36,29 +37,30 @@ async def retrieve_data():
             continue
         # collect coroutines
         download_tasks.append(node_input.get())
-
+    log.info("retrieving %s data", len(download_tasks))
 
     if download_tasks:
         downloaded_files = await asyncio.gather(*download_tasks)
-        print("downloaded {} files /tmp <br>".format(len(download_tasks)))
+        log.info("completed download, extracting/moving data to final folder...")
         for local_path in downloaded_files:
             if local_path is None:
                 continue
-            # log.debug("Completed download of %s in local path %s", node_input.value, local_path)
-            if local_path.exists():
-                if zipfile.is_zipfile(str(local_path)):
-                    zip_ref = zipfile.ZipFile(str(local_path), 'r')
-                    zip_ref.extractall(str(input_path()))
-                    zip_ref.close()
-                    log.debug("Unzipped")
-                    print("unzipped {file} to {path}<br>".format(file=str(local_path), path=str(input_path())))
-                else:
-                    log.debug("Start moving %s to input path %s", local_path, input_path())
-                    shutil.move(str(local_path), str(input_path() / local_path.name))
-                    log.debug("Move completed")
-                    print("moved {file} to {path}<br>".format(file=str(local_path), path=str(input_path())))
-            end_time = time.time()
-        print("time to download: {} seconds".format(end_time - start_time))
+
+            if not local_path.exists():
+                continue
+
+            if zipfile.is_zipfile(str(local_path)):
+                log.info("extracting %s to %s", local_path, input_path())
+                zip_ref = zipfile.ZipFile(str(local_path), 'r')
+                zip_ref.extractall(str(input_path()))
+                zip_ref.close()
+                log.info("extraction completed")
+            else:
+                log.info("moving %s to input path %s", local_path, input_path())
+                shutil.move(str(local_path), str(input_path() / local_path.name))
+                log.info("move completed")
+        end_time = time.time()
+        log.info("retrieval complete: took %sseconds", end_time - start_time)
 
 
 
@@ -69,7 +71,7 @@ def main(args = None) -> int:
 
         if not input_path().exists():
             input_path().mkdir()
-            log.debug("Created input folder at %s", input_path())
+            log.info("Created input folder at %s", input_path())
 
         loop = asyncio.get_event_loop()
         loop.run_until_complete(retrieve_data())
