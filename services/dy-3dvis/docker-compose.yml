@@ -15,12 +15,33 @@ services:
         io.simcore.type: '{"type": "dynamic"}'
         io.simcore.name: '{"name": "3d-viewer"}'
         io.simcore.description: '{"description": "Paraview Web-based Visualizer"}'
-        io.simcore.authors: '{"authors": [{"name": "Sylvain Anderegg", "email": "anderegg@itis.swiss", "affiliation": "ITIS Foundation"}]}'
+        io.simcore.authors: '{"authors": [
+                              {"name": "Sylvain Anderegg", "email": "anderegg@itis.swiss", 
+                              "affiliation": "ITIS Foundation"}
+                            ]}'
         io.simcore.contact: '{"contact": "anderegg@itis.swiss"}'
-        io.simcore.inputs: '{"inputs": {"A":{"displayOrder":1, "label": "some 3D dataset", "description": "A mesh, volume data", "type": "data:*/*"}, "B":{"displayOrder":2, "label": "some 3D dataset", "description": "A mesh, volume data", "type": "data:*/*"}}}'
-        io.simcore.outputs: '{"outputs": {}}'
-        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 80}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
-        simcore.service.bootsettings: '[{"name": "entry_point", "type": "string", "value": "visualizer"}, {"name": "published_host", "type": "string", "value": "setport"}]'
+        io.simcore.inputs: '{"inputs": {
+                              "A": 
+                                {"displayOrder":1, "label": "1 dataset or n dataset in a zip", 
+                                "description": "Any paraview compatible dataset. Any number can be compressed in a zip file.", 
+                                "type": "data:*/*"}, 
+                              "B":{"displayOrder":2, "label": "1 dataset or n dataset in a zip", 
+                              "description": "Any paraview compatible dataset. Any number can be compressed in a zip file.", 
+                              "type": "data:*/*"}}
+                            }'
+        io.simcore.outputs: '{"outputs": {
+                              "dataset": 
+                                {"label": "Any dataset", "displayOrder": 0, 
+                                "description": "Any paraview compatible dataset", "type": "data:*/*" },
+                              "screenshot":
+                                {"label": "A screenshot from paraview", "displayOrder": 0, 
+                                "description": "A paraview-generated screenshot", "type": "data:*/*" },
+                            }}'
+        simcore.service.settings: '[
+                                    {"name": "ports", "type": "int", "value": 8777}, 
+                                    {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}
+                                  ]'
+        simcore.service.bootsettings: '[{"name": "published_host", "type": "string", "value": "setport"}]'
         org.label-schema.schema-version: "1.0"
         org.label-schema.build-date: "${BUILD_DATE}"
         org.label-schema.vcs-url: "${VCS_URL}"
