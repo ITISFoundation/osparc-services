@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 import os
 from pathlib import Path
+import subprocess
+
+# import random
+import numpy as np
+import pandas as pd
 
 import dash
 from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
 
-import random
 import plotly.graph_objs as go
 from plotly import tools
-import subprocess
 
-import pandas as pd
-import numpy as np
 
 LOCALHOST = False
 if LOCALHOST:
@@ -483,17 +484,14 @@ def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, 
 
     return {
         "3d": {
-            # "x_axis": x_axis,
-            # "y_axis": y_axis,
-            # "z_axis": data_vpred,
-            "x_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-            "y_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
-            "z_axis": [random.randint(1,10), random.randint(1,10), random.randint(1,10), random.randint(1,10)],
+            "x": x_axis.values,
+            "y": y_axis.values,
+            "z": data_vpred.values,
         },
         "heatmap": {
-            # "y": np.nan_to_num(x_axis.values[:,0]),
-            # "x": y_axis.values[0,:],
-            "z": data_lpred.values.T,
+            "x": x_axis.values,
+            "y": y_axis.values,
+            "z": data_lpred.values,
         }
     }
 
@@ -668,14 +666,14 @@ def predict(
         fixed_tst=True
         print("Current clicked.", model_id, sweep_param, plot_vs_qst, plot_vs_tCNAP, current_1, current_2, current_3, current_4)
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
-        run_cnap("execute_cnap.sh", str(model_id), str(sweep_param), str(current_1), str(current_2), str(current_3), str(current_4))
+        run_cnap(str(model_id), str(sweep_param), str(current_1), str(current_2), str(current_3), str(current_4))
         return create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
     else:
         sweep_param = 0
         fixed_tst=False
         print("Duration clicked.", model_id, sweep_param, plot_vs_qst, plot_vs_tCNAP, duration_1, duration_2, duration_3, duration_4)
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
-        run_cnap("execute_cnap.sh", str(model_id), str(sweep_param), str(duration_1), str(duration_2), str(duration_3), str(duration_4))
+        run_cnap(str(model_id), str(sweep_param), str(duration_1), str(duration_2), str(duration_3), str(duration_4))
         return create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
 
 
@@ -687,12 +685,27 @@ def build_graph_out_1(data):
     fig = get_empty_output_1_graph()
     if not data:
         return fig
-    x = np.linspace(-5, 5, 50)
-    y = np.linspace(-5, 5, 50)
-    xGrid, yGrid = np.meshgrid(y, x)
-    R = np.sqrt(xGrid ** 2 + yGrid ** 2)
-    z = np.sin(R)
+    dummy_wireframe = True
+    if dummy_wireframe:
+        x = np.linspace(-5, 5, 50)
+        y = np.linspace(-5, 5, 50)
+        xGrid, yGrid = np.meshgrid(y, x)
+        R = np.sqrt(xGrid ** 2 + yGrid ** 2)
+        z = np.sin(R)
 
+        # Creating the plot
+        lines = []
+        line_marker = dict(color='#0066FF', width=2)
+        for i, j, k in zip(xGrid, yGrid, z):
+            lines.append(go.Scatter3d(x=i, y=j, z=k, mode='lines', line=line_marker))
+
+        fig['data'] = lines
+        return fig
+
+    data_3d = data["3d"]
+    xGrid = data_3d["x"]
+    yGrid = data_3d["y"]
+    z = data_3d["z"]
     # Creating the plot
     lines = []
     line_marker = dict(color='#0066FF', width=2)
@@ -711,7 +724,11 @@ def build_graph_out_2(data):
     fig = get_empty_output_2_graph()
     if not data:
         return fig
-    data = go.Heatmap(**data["heatmap"])
+    data_heatmap = data["heatmap"]
+    x = data_heatmap["x"][:,0]
+    y = data_heatmap["y"][0,:]
+    z = data_heatmap["z"].T
+    data = go.Heatmap(x=x, y=y, z=z)
 
     fig['data'] = [data]
     return fig
