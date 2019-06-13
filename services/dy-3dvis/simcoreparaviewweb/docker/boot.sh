@@ -49,8 +49,7 @@ docker/patch_paraview.sh
 # its websockets are setup "ws://HOSTNAME:PORT" hostname and port must be the hostname and port
 # as seen from the client side (if in local development mode, this would be typically localhost and
 # whatever port is being published outside the docker container)
-echo
-echo "starting paraview using hostname ${HOST_NAME} and websocket port ${SERVER_PORT}..."
+
 # set default parameters
 visualizer_options=(--content /opt/paraview/share/paraview-5.6/web/visualizer/www/ \
                     --data ${PARAVIEW_INPUT_PATH} \
@@ -70,12 +69,14 @@ if [ -f "${PARAVIEW_INPUT_PATH}/${SIMCORE_STATE_FILE}" ]; then
 fi
 
 # show additional debugging parameters on demand
-if [[ -v DEBUG ]]; then
+if [[ ${PARAVIEW_DEBUG} != 0 ]]; then
     echo
-    echo "setting debug mode on"
+    echo "setting paraview debug mode on"
     visualizer_options+=(--debug)
 fi
 
 # start server
+echo
+echo "starting paraview on ${HOST_NAME}:${SERVER_PORT}..."
 /opt/paraview/bin/pvpython \
     /opt/paraview/share/paraview-5.6/web/visualizer/server/pvw-visualizer.py "${visualizer_options[@]}"
