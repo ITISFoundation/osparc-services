@@ -50,10 +50,14 @@ docker/patch_paraview.sh
 # as seen from the client side (if in local development mode, this would be typically localhost and
 # whatever port is being published outside the docker container)
 
+# move base path to expected node base path (sic)
+mkdir -p /opt/paraview/share/paraview-5.6/web/visualizer/www${SIMCORE_NODE_BASEPATH}
+mv /opt/paraview/share/paraview-5.6/web/visualizer/www/*.* /opt/paraview/share/paraview-5.6/web/visualizer/www${SIMCORE_NODE_BASEPATH}
+
 # set default parameters
 visualizer_options=(--content /opt/paraview/share/paraview-5.6/web/visualizer/www/ \
                     --data ${PARAVIEW_INPUT_PATH} \
-                    --host ${HOST_NAME} \
+                    --host ${HOST_NAME}:${SERVER_PORT}${SIMCORE_NODE_BASEPATH} \
                     --port ${SERVER_PORT} \
                     --timeout 20000 \
                     --no-built-in-palette \
@@ -77,6 +81,6 @@ fi
 
 # start server
 echo
-echo "starting paraview on ${HOST_NAME}:${SERVER_PORT}..."
+echo "starting paraview on ${HOST_NAME}:${SERVER_PORT}${SIMCORE_NODE_BASEPATH}..."
 /opt/paraview/bin/pvpython \
     /opt/paraview/share/paraview-5.6/web/visualizer/server/pvw-visualizer.py "${visualizer_options[@]}"
