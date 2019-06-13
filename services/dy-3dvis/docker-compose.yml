@@ -34,7 +34,7 @@ services:
                                     {"name": "ports", "type": "int", "value": 8777}, 
                                     {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}
                                   ]'
-        simcore.service.bootsettings: '[{"name": "published_host", "type": "string", "value": "setport"}]'
+        simcore.service.bootsettings: '[]'
         org.label-schema.schema-version: "1.0"
         org.label-schema.build-date: "${BUILD_DATE}"
         org.label-schema.vcs-url: "${VCS_URL}"
