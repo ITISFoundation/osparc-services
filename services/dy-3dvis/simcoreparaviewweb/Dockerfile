@@ -70,7 +70,8 @@ ENV SIMCORE_NODE_UUID="-1" \
     SIMCORE_USER_ID="-1" \
     SIMCORE_NODE_BASEPATH="" \
     SIMCORE_NODE_APP_STATE_PATH=${PARAVIEW_INPUT_PATH} \
-    STORAGE_ENDPOINT="=1" \
+    SIMCORE_HOST_NAME="localhost" \
+    STORAGE_ENDPOINT="=1" \    
     S3_ENDPOINT="=1" \
     S3_ACCESS_KEY="-1" \
     S3_SECRET_KEY="-1" \
@@ -81,8 +82,7 @@ ENV SIMCORE_NODE_UUID="-1" \
     POSTGRES_DB="-1"
 
 # special paraview variables
-ENV SERVER_PORT="-1"  \
-    HOST_NAME="-1" \    
+ENV SERVER_PORT="8777"  \
     SIMCORE_STATE_FILE="simcore-state.pvsm" \
     PARAVIEW_DEBUG=0
 

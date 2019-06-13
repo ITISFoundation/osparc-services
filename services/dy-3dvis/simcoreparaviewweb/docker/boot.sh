@@ -45,8 +45,8 @@ echo
 echo "patching paraviewweb to allow for rpy scripts to run"
 docker/patch_paraview.sh
 
-# to start the paraviewweb visualizer it needs as parameter something to do with the way
-# its websockets are setup "ws://HOSTNAME:PORT" hostname and port must be the hostname and port
+# the paraviewweb visualizer needs as host parameter the final endpoint of the client to establish the
+# websocket. the endpoint must be the hostname and port
 # as seen from the client side (if in local development mode, this would be typically localhost and
 # whatever port is being published outside the docker container)
 
@@ -54,10 +54,10 @@ docker/patch_paraview.sh
 mkdir -p /opt/paraview/share/paraview-5.6/web/visualizer/www${SIMCORE_NODE_BASEPATH}
 mv /opt/paraview/share/paraview-5.6/web/visualizer/www/*.* /opt/paraview/share/paraview-5.6/web/visualizer/www${SIMCORE_NODE_BASEPATH}
 
-# set default parameters
+# set default parameters (note that port is the server local port, and host is used for the websocket location)
 visualizer_options=(--content /opt/paraview/share/paraview-5.6/web/visualizer/www/ \
                     --data ${PARAVIEW_INPUT_PATH} \
-                    --host ${HOST_NAME}:${SERVER_PORT}${SIMCORE_NODE_BASEPATH} \
+                    # --host ${SIMCORE_HOST_NAME}:${SERVER_PORT}${SIMCORE_NODE_BASEPATH} \
                     --port ${SERVER_PORT} \
                     --timeout 20000 \
                     --no-built-in-palette \
@@ -81,6 +81,7 @@ fi
 
 # start server
 echo
-echo "starting paraview on ${HOST_NAME}:${SERVER_PORT}${SIMCORE_NODE_BASEPATH}..."
-/opt/paraview/bin/pvpython \
+echo "starting paraview on ${SIMCORE_HOST_NAME}:${SERVER_PORT}${SIMCORE_NODE_BASEPATH}..."
+echo "using ${visualizer_options[@]}"
+/opt/paraview/bin/pvpython -dr --mpi \
     /opt/paraview/share/paraview-5.6/web/visualizer/server/pvw-visualizer.py "${visualizer_options[@]}"
