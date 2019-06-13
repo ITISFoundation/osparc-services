@@ -17,19 +17,20 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__file__ if __name__ == "__main__" else __name__)
 
 
-
 class ExitCode(IntEnum):
     SUCCESS = 0
     FAIL = 1
+
 
 def input_path() -> Path:
     path = os.environ.get("PARAVIEW_INPUT_PATH", "undefined")
     assert path != "undefined", "PARAVIEW_INPUT_PATH is not defined!"
     return Path(path)
 
+
 async def retrieve_data():
     # get all files in the local system and copy them to the input folder
-    start_time = time.time()
+    start_time = time.clock()
     PORTS = node_ports.ports()
     download_tasks = []
     for node_input in PORTS.inputs:
@@ -56,15 +57,16 @@ async def retrieve_data():
                 zip_ref.close()
                 log.info("extraction completed")
             else:
-                log.info("moving %s to input path %s", local_path, input_path())
-                shutil.move(str(local_path), str(input_path() / local_path.name))
+                log.info("moving %s to input path %s",
+                         local_path, input_path())
+                shutil.move(str(local_path), str(
+                    input_path() / local_path.name))
                 log.info("move completed")
-        end_time = time.time()
-        log.info("retrieval complete: took %sseconds", end_time - start_time)
+        end_time = time.clock()
+        log.info("retrieval complete: took %.2fseconds", end_time - start_time)
 
 
-
-def main(args = None) -> int:
+def main(args=None) -> int:
     try:
         parser = argparse.ArgumentParser(description=__doc__)
         parser.parse_args(args)
@@ -76,9 +78,10 @@ def main(args = None) -> int:
         loop = asyncio.get_event_loop()
         loop.run_until_complete(retrieve_data())
         return ExitCode.SUCCESS
-    except: # pylint: disable=bare-except
+    except:  # pylint: disable=bare-except
         log.exception("Unexpected error when retrievin data")
         return ExitCode.FAIL
+
 
 if __name__ == "__main__":
     sys.exit(main())
