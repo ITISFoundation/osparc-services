@@ -83,7 +83,8 @@ ENV SIMCORE_NODE_UUID="-1" \
 # special paraview variables
 ENV SERVER_PORT="-1"  \
     HOST_NAME="-1" \    
-    SIMCORE_STATE_FILE="simcore-state.pvsm"
+    SIMCORE_STATE_FILE="simcore-state.pvsm" \
+    PARAVIEW_DEBUG=0
 
 RUN mkdir /home/root/trigger && \
     chmod 777 /home/root/trigger
@@ -103,7 +104,6 @@ VOLUME /home/root/scripts/dy_services_helpers
 VOLUME /home/root/docker
 VOLUME /home/root/config
 ENV CREATE_DUMMY_TABLE 1
-ENV PARAVIEW_DEBUG 0
 ENV USE_CASE_CONFIG_FILE="devel/port_config.json"
 ENV TEST_DATA_PATH="/test-data"
 # Need to use entrypoint as base image's entrypoint must be overriden
