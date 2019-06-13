@@ -16,8 +16,8 @@ import plotly.graph_objs as go
 from plotly import tools
 
 
-LOCALHOST = True
-if LOCALHOST:
+DEVEL_MODE = False
+if DEVEL_MODE:
     WORKDIR = str(Path(os.path.dirname(os.path.realpath(__file__))).parent)
 else:
     WORKDIR = '/home/jovyan'
@@ -545,7 +545,7 @@ def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, 
     }
 
 def run_cnap(*args):
-    if LOCALHOST:
+    if DEVEL_MODE:
         return
     subprocess.call(["execute_cnap.sh", *args], cwd=WORKDIR+'/output')
 
@@ -791,4 +791,4 @@ def build_graph_out_2(data):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=LOCALHOST, port=8888, host="0.0.0.0")
+    app.run_server(debug=DEVEL_MODE, port=8888, host="0.0.0.0")
