@@ -167,6 +167,7 @@ def get_input_neuron_tab_form(id):
                 id='input_neuron_weight_'+str(id),
                 type='number',
                 value=0.02,
+                step=0.02,
                 min=0,
                 max=1,
                 style=dcc_input_number
