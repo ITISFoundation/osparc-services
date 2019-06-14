@@ -21,6 +21,7 @@ if DEVEL_MODE:
     WORKDIR = str(Path(os.path.dirname(os.path.realpath(__file__))).parent)
 else:
     WORKDIR = '/home/jovyan'
+OUTPUT_DIR = WORKDIR + '/output'
 
 
 app = dash.Dash(__name__)
@@ -547,7 +548,8 @@ def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, 
 def run_cnap(*args):
     if DEVEL_MODE:
         return
-    subprocess.call(["execute_cnap.sh", *args], cwd=WORKDIR+'/output')
+
+    subprocess.call(["execute_cnap.sh", *args], cwd=OUTPUT_DIR)
 
 # When pressing 'Load' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the four input graphs.
@@ -563,7 +565,7 @@ def read_input_file(_n_clicks, input_nerve_profile, input_plot_options):
     model_id = input_nerve_profile + 1
     # !execute_cnap.sh $model_id 0 0.0 1.0 0.5 0.4
     run_cnap(str(model_id), "0", "0.0", "1.0", "0.5", "0.4")
-    path = WORKDIR+'/output/input.csv'
+    path = OUTPUT_DIR+'/input.csv'
     selected_cb = get_selected_checkboxes(input_plot_options)
     return create_learned_model_input(path, selected_cb[1])
 
@@ -703,13 +705,13 @@ def predict(
     selected_cb = get_selected_checkboxes(input_plot_options)
     plot_vs_qst = selected_cb[0]
     plot_vs_tCNAP = selected_cb[1]
-    cv_path= WORKDIR+'/output/CV_plot.csv'
-    t_path= WORKDIR+'/output/t_plot.csv'
-    ist_path= WORKDIR+'/output/Ist_plot.csv'
-    tst_path= WORKDIR+'/output/tst_plot.csv'
-    qst_path= WORKDIR+'/output/CAP_plot.csv'
-    vpred_path= WORKDIR+'/output/V_pred_plot.csv'
-    lpred_path= WORKDIR+'/output/Lpred_plot.csv'
+    cv_path= OUTPUT_DIR+'/CV_plot.csv'
+    t_path= OUTPUT_DIR+'/t_plot.csv'
+    ist_path= OUTPUT_DIR+'/Ist_plot.csv'
+    tst_path= OUTPUT_DIR+'/tst_plot.csv'
+    qst_path= OUTPUT_DIR+'/CAP_plot.csv'
+    vpred_path= OUTPUT_DIR+'/V_pred_plot.csv'
+    lpred_path= OUTPUT_DIR+'/Lpred_plot.csv'
     data = None
     if button_current_ts>button_duration_ts:
         sweep_param = 1
