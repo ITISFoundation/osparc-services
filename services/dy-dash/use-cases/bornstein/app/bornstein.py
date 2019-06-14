@@ -177,18 +177,18 @@ def get_input_neuron_tab_form(id):
         html.Div([
             html.Div([
                 html.Label('Transmitter:')
-            ], style=dcc_input_label),
-            dcc.Dropdown(
-                id='input_neuron_transmitter_'+str(id),
-                options=[
-                    {'label': 'gaba a', 'value': 0},
-                    {'label': 'gaba c', 'value': 1},
-                    {'label': 'alpha', 'value': 2}
-                ],
-                value=0,
-                style=dcc_input
-            )
-        ], style=dcc_input_pair)
+            ], style=dcc_input_label)
+        ], style=dcc_input_pair),
+        dcc.Dropdown(
+            id='input_neuron_transmitter_'+str(id),
+            options=[
+                {'label': 'gaba a', 'value': 0},
+                {'label': 'gaba c', 'value': 1},
+                {'label': 'alpha', 'value': 2}
+            ],
+            value=0,
+            style=dcc_input
+        )
     ])
 
 empty_graphs = get_empty_graphs(3)
