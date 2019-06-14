@@ -37,10 +37,10 @@ osparc_style = {
     'backgroundColor': '#202020',
     'gridColor': '#444',
 }
-three_columns = {
+flex_columns = {
     'display': 'flex'
 }
-input_output_plots_layout = {
+flex_column = {
     'flex': 1,
     'min-width': 0
 }
@@ -285,7 +285,7 @@ app.layout = html.Div(children=[
             html.Div(id='input-data', style=hidden),
 
             dcc.Graph(id='graph-ins', figure=empty_input_graph)
-        ], style=input_output_plots_layout),
+        ], style=flex_column),
 
 
         # Controls in the middle
@@ -462,8 +462,8 @@ app.layout = html.Div(children=[
 
             dcc.Graph(id='graph-out1', figure=empty_output_1_graph),
             dcc.Graph(id='graph-out2', figure=empty_output_2_graph)
-        ], style=input_output_plots_layout),
-    ], style=three_columns)
+        ], style=flex_column),
+    ], style=flex_columns)
 ], style=osparc_style)
 
 
