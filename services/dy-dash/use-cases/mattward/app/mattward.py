@@ -44,7 +44,7 @@ flex_column = {
     'flex': 1,
     'min-width': 0
 }
-controls_layout = {
+unflex_column = {
     'flex': 0,
     'min-width': '220px',
     'color': osparc_style['color'],
@@ -446,7 +446,7 @@ app.layout = html.Div(children=[
                 ),
                 html.Div(id='tabs-content')
             ], style=options_layout)
-        ], style=controls_layout),
+        ], style=unflex_column),
 
 
         # Two output graphs on the right
@@ -548,7 +548,7 @@ def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, 
         }
     }
 
-def run_cnap(*args):
+def run_solver(*args):
     if DEVEL_MODE:
         return
 
@@ -580,7 +580,7 @@ def run_cnap(*args):
 def read_input_file(_n_clicks, input_nerve_profile, input_plot_options):
     model_id = input_nerve_profile + 1
     # !execute_cnap.sh $model_id 0 0.0 1.0 0.5 0.4
-    run_cnap(str(model_id), "0", "0.0", "1.0", "0.5", "0.4")
+    run_solver(str(model_id), "0", "0.0", "1.0", "0.5", "0.4")
     path = OUTPUT_DIR+'/input.csv'
     selected_cb = get_selected_checkboxes(input_plot_options)
     return create_learned_model_input(path, selected_cb[1])
@@ -734,14 +734,14 @@ def predict(
         fixed_tst=True
         print("Current clicked.", model_id, sweep_param, plot_vs_qst, plot_vs_tCNAP, current_1, current_2, current_3, current_4)
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
-        run_cnap(str(model_id), str(sweep_param), str(current_1), str(current_2), str(current_3), str(current_4))
+        run_solver(str(model_id), str(sweep_param), str(current_1), str(current_2), str(current_3), str(current_4))
         data = create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
     else:
         sweep_param = 0
         fixed_tst=False
         print("Duration clicked.", model_id, sweep_param, plot_vs_qst, plot_vs_tCNAP, duration_1, duration_2, duration_3, duration_4)
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
-        run_cnap(str(model_id), str(sweep_param), str(duration_1), str(duration_2), str(duration_3), str(duration_4))
+        run_solver(str(model_id), str(sweep_param), str(duration_1), str(duration_2), str(duration_3), str(duration_4))
         data = create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
     return data
 
