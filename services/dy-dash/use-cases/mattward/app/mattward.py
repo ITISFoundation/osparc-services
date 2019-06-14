@@ -15,6 +15,9 @@ import dash_html_components as html
 import plotly.graph_objs as go
 from plotly import tools
 
+from simcore_sdk import node_ports
+PORTS = node_ports.ports()
+
 
 DEVEL_MODE = False
 if DEVEL_MODE:
@@ -550,6 +553,19 @@ def run_cnap(*args):
         return
 
     subprocess.call(["execute_cnap.sh", *args], cwd=OUTPUT_DIR)
+
+    input_path= OUTPUT_DIR+'/input.csv'
+    cv_path= OUTPUT_DIR+'/CV_plot.csv'
+    t_path= OUTPUT_DIR+'/t_plot.csv'
+    ist_path= OUTPUT_DIR+'/Ist_plot.csv'
+    tst_path= OUTPUT_DIR+'/tst_plot.csv'
+    qst_path= OUTPUT_DIR+'/CAP_plot.csv'
+    vpred_path= OUTPUT_DIR+'/V_pred_plot.csv'
+    lpred_path= OUTPUT_DIR+'/Lpred_plot.csv'
+    output_files = [input_path, cv_path, t_path, ist_path, tst_path, qst_path, vpred_path, lpred_path]
+    for idx, path in enumerate(output_files):
+        if (os.path.isfile(path)):
+            await PORTS.outputs[idx].set(path)
 
 # When pressing 'Load' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the four input graphs.
