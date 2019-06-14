@@ -15,7 +15,7 @@
             "output": {
                 "label": "Output data",
                 "displayOrder": 1,
-                "description": "Output time data csv",
+                "description": "Output data csv",
                 "type": "data:text/csv",
                 "fileToKeyMap": {
                     "output.csv": "output"

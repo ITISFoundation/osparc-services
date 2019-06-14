@@ -3,7 +3,7 @@ FROM itisfoundation/jupyter-neuron:latest AS common
 LABEL maintainer="maiz"
 
 # install requirements --------------------------------------------------------
-COPY --chown=jovyan:users mattward/requirements.txt .
+COPY --chown=jovyan:users bornstein/requirements.txt .
 # TODO: tmp workaround for https://github.com/pypa/pip/issues/6197
 RUN pip --cache-dir=/tmp/.pipcache install -r requirements.txt &&\
     rm -rf /tmp/.pipcache
@@ -36,5 +36,5 @@ FROM common AS production
 ARG APP_NAME
 # copy the app in the image
 WORKDIR /home/jovyan/app
-COPY --chown=jovyan:users mattward/app/${APP_NAME} ${APP_NAME}
+COPY --chown=jovyan:users bornstein/app/${APP_NAME} ${APP_NAME}
 ENTRYPOINT [ "/bin/bash", "/docker/boot.sh" ]

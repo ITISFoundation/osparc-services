@@ -53,9 +53,9 @@ endif
 
 # FIXME: currently the mattward requires a specific image that is not on dockerhub
 build-travis:
-	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel mattward-dash
+	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel mattward-dash bornstein
 push-travis:
-	${DOCKER_COMPOSE} -f docker-compose.yml push mattward-dash
+	${DOCKER_COMPOSE} -f docker-compose.yml push mattward-dash bornstein
 ##################
 
 .PHONY: build rebuild
