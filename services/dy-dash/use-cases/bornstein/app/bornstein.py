@@ -4,7 +4,6 @@ from pathlib import Path
 import subprocess
 
 import pandas as pd
-import matplotlib.pyplot as plt
 
 import dash
 from dash.dependencies import Input, Output, State
