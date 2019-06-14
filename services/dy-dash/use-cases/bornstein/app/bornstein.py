@@ -134,95 +134,7 @@ def get_empty_graphs(n_inputs=3):
     )
     return fig
 
-empty_graphs = get_empty_graphs(3)
-
-
-app.layout = html.Div(children=[
-    html.Div([
-        # Controls on the left side
-        html.Div([
-            html.H1(
-                children='Bornstein solver',
-                style=centered_text
-            ),
-            html.Div(
-                children='Minimal description of how the solver works.',
-                style=centered_text
-            ),
-
-            html.Div([
-                html.Div([
-                    html.Div([
-                        html.Label('max conductance Kv 7-2  channel:')
-                    ], style=dcc_input_label),
-                    dcc.Input(
-                        id='max_conductance',
-                        type='number',
-                        value=0.15,
-                        style=dcc_input_number
-                    )
-                ], style=dcc_input_pair),
-            ], style=options_layout),
-
-            html.Div([
-                html.Div([
-                    html.Div([
-                        html.Label('Number of input neurons:')
-                    ], style=dcc_input_label),
-                    dcc.Input(
-                        id='n_input_neurons',
-                        type='number',
-                        value=3,
-                        style=[dcc_input_number]
-                    )
-                ], style=dcc_input_pair),
-                html.Div([
-                    dcc.Tabs(
-                        id="input_neurons",
-                        value='input_neuron_1',
-                        children=[
-                            dcc.Tab(
-                                label='Neuron 1',
-                                value='input_neuron_1',
-                                style=tab_style,
-                                selected_style=tab_style
-                            ),
-                            dcc.Tab(
-                                label='Neuron 2',
-                                value='input_neuron_2',
-                                style=tab_style,
-                                selected_style=tab_style
-                            ),
-                            dcc.Tab(
-                                label='Neuron 3',
-                                value='input_neuron_3',
-                                style=tab_style,
-                                selected_style=tab_style
-                            ),
-                        ]
-                    ),
-                    html.Div(id='tabs-content')
-                ]),
-            ], style=options_layout),
-            
-            html.Div([
-                html.Button('Run', id='run-button', style=dcc_input_button)
-            ], style=options_layout)
-        ], style=unflex_column),
-
-        # Four graphs on the right
-        html.Div([
-            html.H4(
-                children='Output and Inputs',
-                style=centered_text
-            ),
-
-            dcc.Graph(id='graphs', figure=empty_graphs)
-        ], style=flex_column)
-    ], style=flex_columns)
-], style=osparc_style)
-
-def get_input_neuron_form(id):
+def get_input_neuron_tab_form(id):
     return html.Div([
         html.Div([
             html.Div([
@@ -279,16 +191,96 @@ def get_input_neuron_form(id):
         ], style=dcc_input_pair)
     ])
 
-@app.callback(Output('tabs-content', 'children'),
-              [Input('input_neurons', 'value')])
-def render_content(tab):
-    if tab == 'input_neuron_1':
-        return get_input_neuron_form(0)
-    elif tab == 'input_neuron_2':
-        return get_input_neuron_form(1)
-    elif tab == 'input_neuron_3':
-        return get_input_neuron_form(2)
+empty_graphs = get_empty_graphs(3)
 
+app.layout = html.Div(children=[
+    html.Div([
+        # Controls on the left side
+        html.Div([
+            html.H1(
+                children='Bornstein solver',
+                style=centered_text
+            ),
+            html.Div(
+                children='Minimal description of how the solver works.',
+                style=centered_text
+            ),
+
+            html.Div([
+                html.Div([
+                    html.Div([
+                        html.Label('max conductance Kv 7-2  channel:')
+                    ], style=dcc_input_label),
+                    dcc.Input(
+                        id='max_conductance',
+                        type='number',
+                        value=0.15,
+                        style=dcc_input_number
+                    )
+                ], style=dcc_input_pair),
+            ], style=options_layout),
+
+            html.Div([
+                html.Div([
+                    html.Div([
+                        html.Label('Number of input neurons:')
+                    ], style=dcc_input_label),
+                    dcc.Input(
+                        id='n_input_neurons',
+                        type='number',
+                        value=3,
+                        disabled=True,
+                        style=dcc_input_number
+                    )
+                ], style=dcc_input_pair),
+                html.Div([
+                    dcc.Tabs(
+                        id="input_neurons",
+                        value='input_neuron_1',
+                        children=[
+                            dcc.Tab(
+                                label='Neuron 1',
+                                value='input_neuron_1',
+                                style=tab_style,
+                                selected_style=tab_style,
+                                children=[get_input_neuron_tab_form(0)]
+                            ),
+                            dcc.Tab(
+                                label='Neuron 2',
+                                value='input_neuron_2',
+                                style=tab_style,
+                                selected_style=tab_style,
+                                children=[get_input_neuron_tab_form(1)]
+                            ),
+                            dcc.Tab(
+                                label='Neuron 3',
+                                value='input_neuron_3',
+                                style=tab_style,
+                                selected_style=tab_style,
+                                children=[get_input_neuron_tab_form(2)]
+                            ),
+                        ]
+                    ),
+                    html.Div(id='tabs-content')
+                ]),
+            ], style=options_layout),
+            
+            html.Div([
+                html.Button('Run', id='run-button', style=dcc_input_button)
+            ], style=options_layout)
+        ], style=unflex_column),
+
+        # Four graphs on the right
+        html.Div([
+            html.H4(
+                children='Output and Inputs',
+                style=centered_text
+            ),
+
+            dcc.Graph(id='graphs', figure=empty_graphs)
+        ], style=flex_column)
+    ], style=flex_columns)
+], style=osparc_style)
 
 def run_solver(*args):
     if DEVEL_MODE:
