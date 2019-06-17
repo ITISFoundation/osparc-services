@@ -49,6 +49,7 @@ CMD [ "/bin/bash", "/docker/boot.sh" ]
 # -----------------------------------------------------------------------------
 FROM common AS production
 ENV SC_BUILD_TARGET=production
+RUN mkdir -p /home/jovyan/output
 # set of arguments to copy the right app
 ARG APP_NAME
 # copy the app in the image
