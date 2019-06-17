@@ -31,6 +31,7 @@ export BUILD_DATE:=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 ifndef DOCKER_REGISTRY
 export DOCKER_REGISTRY=itisfoundation
 endif
+$(info DOCKER_REGISTRY set to ${DOCKER_REGISTRY})
 
 
 
@@ -107,7 +108,7 @@ check-pull:
 	@${DOCKER} login ${DOCKER_REGISTRY};\
 	SERVICE_VERSION=$$(cat VERSION);\
 	${DOCKER} pull \
-		${DOCKER_REGISTRY}/simcore/services/comp/mattward-dash:$$SERVICE_VERSION; \
+		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:$$SERVICE_VERSION; \
 	if [ $$? -eq 0 ] ; then \
 		echo "image already in registry ${DOCKER_REGISTRY}";\
 		false;\
@@ -132,17 +133,17 @@ push:
 	${DOCKER} login ${DOCKER_REGISTRY};\
 	SERVICE_VERSION=$$(cat VERSION);\
 	${DOCKER} tag \
-		${DOCKER_REGISTRY}/simcore/services/comp/mattward-dash:latest \
-		${DOCKER_REGISTRY}/simcore/services/comp/mattward-dash:$$SERVICE_VERSION;\
+		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:latest \
+		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:$$SERVICE_VERSION;\
 	${DOCKER} push \
-		${DOCKER_REGISTRY}/simcore/services/comp/mattward-dash:$$SERVICE_VERSION;\
+		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:$$SERVICE_VERSION;\
 	${DOCKER} push \
-		${DOCKER_REGISTRY}/simcore/services/comp/mattward-dash:latest;
+		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:latest;
 
 pull:
 	# pull latest service version if available
 	${DOCKER} pull \
-		${DOCKER_REGISTRY}/simcore/services/comp/mattward-dash:latest || true;
+		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:latest || true;
 
 # basic checks -------------------------------------
 .env: .env-devel
