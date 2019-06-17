@@ -33,6 +33,8 @@ services:
       - postgres
       - minio
       - adminer
+    ports:
+      - '1238:8888'
   #--------------------------------------------------------------------
   apihub:
     image: itisfoundation/apihub:staging-latest
