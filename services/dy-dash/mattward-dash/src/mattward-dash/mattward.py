@@ -4,10 +4,9 @@ from pathlib import Path
 import subprocess
 import asyncio
 
-# import random
 import numpy as np
 import pandas as pd
-
+import flask
 import dash
 from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
@@ -17,7 +16,6 @@ import plotly.graph_objs as go
 from plotly import tools
 
 from simcore_sdk import node_ports
-PORTS = node_ports.ports()
 
 
 DEVEL_MODE = False
@@ -27,8 +25,12 @@ else:
     WORKDIR = '/home/jovyan'
 OUTPUT_DIR = WORKDIR + '/output'
 
-
-app = dash.Dash(__name__)
+path = os.environ.get('SIMCORE_NODE_BASEPATH')
+if not path.endswith("/"):
+    path = path + "/"
+app = dash.Dash(__name__,
+    url_base_pathname=path if path else "/"
+)
 app.css.append_css({
     "external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"
 })
@@ -559,6 +561,7 @@ def push_output_data():
     qst_path= OUTPUT_DIR+'/CAP_plot.csv'
     vpred_path= OUTPUT_DIR+'/V_pred_plot.csv'
     lpred_path= OUTPUT_DIR+'/Lpred_plot.csv'
+    PORTS = node_ports.ports()
     output_files = [input_path, cv_path, t_path, ist_path, tst_path, qst_path, vpred_path, lpred_path]
     loop = asyncio.get_event_loop()
     for idx, path in enumerate(output_files):
@@ -827,5 +830,6 @@ class AnyThreadEventLoopPolicy(asyncio.DefaultEventLoopPolicy):
             return loop
 
 if __name__ == '__main__':
+    # the following line is needed for async calls
     asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
     app.run_server(debug=DEVEL_MODE, port=8888, host="0.0.0.0")
