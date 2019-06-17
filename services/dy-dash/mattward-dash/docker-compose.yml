@@ -1,0 +1,51 @@
+services:
+  mattward-dash:
+    build:
+      context: ./
+      dockerfile: src/Dockerfile
+      args:
+        APP_NAME: mattward.py
+      labels:
+        io.simcore.authors: '{"authors": [{"name": "Odei Maiz", "email": "maiz@itis.swiss",
+          "affiliation": "IT''IS Foundation"}]}'
+        io.simcore.contact: '{"contact": "maiz@itis.swiss"}'
+        io.simcore.description: '{"description": "MattWard-Dash"}'
+        io.simcore.inputs: '{"inputs": {}}'
+        io.simcore.key: '{"key": "simcore/services/dynamic/mattward-dash"}'
+        io.simcore.name: '{"name": "MattWard-Dash"}'
+        io.simcore.outputs: '{"outputs": {"input": {"label": "Input data", "displayOrder":
+          0, "description": "Input data csv", "type": "data:text/csv", "fileToKeyMap":
+          {"input.csv": "input"}}, "t_plot": {"label": "Output time", "displayOrder":
+          1, "description": "Output time data csv", "type": "data:text/csv", "fileToKeyMap":
+          {"t_plot.csv": "t_plot"}}, "CV_plot": {"label": "Output conductivity", "displayOrder":
+          2, "description": "Output conductivity data csv", "type": "data:text/csv",
+          "fileToKeyMap": {"CV_plot.csv": "CV_plot"}}, "Ist_plot": {"label": "Output
+          Ist", "displayOrder": 3, "description": "Output Ist data csv", "type": "data:text/csv",
+          "fileToKeyMap": {"Ist_plot.csv": "Ist_plot"}}, "tst_plot": {"label": "Output
+          tst", "displayOrder": 4, "description": "Output tst data csv", "type": "data:text/csv",
+          "fileToKeyMap": {"tst_plot.csv": "tst_plot"}}, "CAP_plot": {"label": "Output
+          CAP", "displayOrder": 5, "description": "Output CAP data csv", "type": "data:text/csv",
+          "fileToKeyMap": {"CAP_plot.csv": "CAP_plot"}}, "Vpred_plot": {"label": "Output
+          V pred", "displayOrder": 6, "description": "Output V pred data csv", "type":
+          "data:text/csv", "fileToKeyMap": {"V_pred_plot.csv": "Vpred_plot"}}, "Lpred_plot":
+          {"label": "Output L pred", "displayOrder": 7, "description": "Output L pred
+          data csv", "type": "data:text/csv", "fileToKeyMap": {"Lpred_plot.csv": "Lpred_plot"}}}}'
+        io.simcore.type: '{"type": "dynamic"}'
+        io.simcore.version: '{"version": "0.1.0"}'
+        org.label-schema.build-date: ${BUILD_DATE}
+        org.label-schema.schema-version: '1.0'
+        org.label-schema.vcs-ref: ${VCS_REF}
+        org.label-schema.vcs-url: https://github.com/odeimaiz/osparc-services
+      target: production
+    environment:
+    - INPUT_FOLDER=/input
+    - OUTPUT_FOLDER=/output
+    - LOG_FOLDER=/log
+    image: ${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:latest
+    volumes:
+    - ./validation/input:/input
+    - ./tmp/output:/output
+    - ./tmp/log:/log
+    ports:
+      - '1238:8888'
+version: '3.6'
