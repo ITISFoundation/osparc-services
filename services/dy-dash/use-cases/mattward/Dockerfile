@@ -1,6 +1,6 @@
 #ARG BASE_IMAGE
 FROM masu.speag.com/simcore/base-images/cnap-dy-jupyter:latest AS common
-LABEL maintainer="maiz"
+LABEL maintainer=odeimaiz
 
 # install requirements --------------------------------------------------------
 COPY --chown=jovyan:users mattward/requirements.txt .
@@ -21,7 +21,7 @@ FROM common AS development
 VOLUME /home/jovyan/services
 VOLUME /home/jovyan/devel
 VOLUME /home/jovyan/devel-config
-VOLUME /home/jovyan/app
+VOLUME /home/jovyan/src
 VOLUME /home/jovyan/input
 VOLUME /home/jovyan/output
 ENV USE_CASE_CONFIG_FILE="node_configuration_file.json"
@@ -35,6 +35,6 @@ FROM common AS production
 # set of arguments to copy the right app
 ARG APP_NAME
 # copy the app in the image
-WORKDIR /home/jovyan/app
-COPY --chown=jovyan:users mattward/app/${APP_NAME} ${APP_NAME}
+WORKDIR /home/jovyan/src
+COPY --chown=jovyan:users mattward/src/${APP_NAME} ${APP_NAME}
 ENTRYPOINT [ "/bin/bash", "/docker/boot.sh" ]
