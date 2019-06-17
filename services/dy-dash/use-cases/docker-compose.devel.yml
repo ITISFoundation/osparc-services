@@ -19,7 +19,7 @@ services:
       - SIMCORE_NODE_BASEPATH=${SIMCORE_NODE_BASEPATH}
     volumes:
       - ../../../scripts/dy_services_helpers:/home/jovyan/scripts/dy_services_helpers
-      - ./mattward/app:/home/jovyan/app
+      - ./mattward/src:/home/jovyan/src
       - ./mattward/input:/home/jovyan/input
       - ./mattward/output:/home/jovyan/output
       - ./mattward/devel-config:/home/jovyan/devel-config
