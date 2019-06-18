@@ -25,16 +25,16 @@ else:
     WORKDIR = '/home/jovyan'
 OUTPUT_DIR = WORKDIR + '/output'
 
-path = os.environ.get('SIMCORE_NODE_BASEPATH', "/")
-if not path.endswith("/"):
-    path = path + "/"
-if not path.startswith("/"):
-    path = "/" + path
-print('url_base_pathname', path)
+base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', "/")
+if not base_pathname.endswith("/"):
+    base_pathname = base_pathname + "/"
+if not base_pathname.startswith("/"):
+    base_pathname = "/" + base_pathname
+print('url_base_pathname', base_pathname)
 server = flask.Flask(__name__)
 app = dash.Dash(__name__,
     server=server,
-    url_base_pathname=path
+    url_base_pathname=base_pathname
 )
 app.css.append_css({
     "external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"
