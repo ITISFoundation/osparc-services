@@ -41,7 +41,7 @@ services:
     - INPUT_FOLDER=/input
     - OUTPUT_FOLDER=/output
     - LOG_FOLDER=/log
-    image: ${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:latest
+    image: ${DOCKER_REGISTRY}/mattward-dash:latest
     ports:
     - 1238:8888
     volumes:
