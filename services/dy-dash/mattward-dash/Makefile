@@ -23,16 +23,14 @@ export DOCKER=docker
 export PYTHON3=python3
 endif
 
+# default to local (no registry)
+export DOCKER_REGISTRY ?= itisfoundation
+$(info DOCKER_REGISTRY set to ${DOCKER_REGISTRY})
+
 export VCS_URL:=$(shell git config --get remote.origin.url)
 export VCS_REF:=$(shell git rev-parse --short HEAD)
 export VCS_STATUS_CLIENT:=$(if $(shell git status -s),'modified/untracked','clean')
 export BUILD_DATE:=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
-
-ifndef DOCKER_REGISTRY
-export DOCKER_REGISTRY=itisfoundation
-endif
-$(info DOCKER_REGISTRY set to ${DOCKER_REGISTRY})
-
 
 
 ## Tools ------------------------------------------------------------------------------------------------------
