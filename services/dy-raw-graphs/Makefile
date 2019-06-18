@@ -51,10 +51,10 @@ endif
 
 .PHONY: build rebuild
 # target: build, rebuild: – Builds all service images. Use `rebuild` to build w/o cache.
-build: .env
+build:
 	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel
 
-rebuild: .env
+rebuild:
 	${DOCKER_COMPOSE} -f docker-compose.yml build --no-cache --parallel
 
 .PHONY: build-devel
@@ -65,20 +65,24 @@ build-devel: .env
 .PHONY: up up-devel down
 # target: up, down: – starts/stops service
 # target: up-devel: – deploys service in devel mode together with minimal swarm-like environment
-up:
+up: .env
 	${DOCKER_COMPOSE} -f docker-compose.yml up
 
-up-devel:
+up-devel: .env
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml up
 
 down:
 	${DOCKER_COMPOSE} -f docker-compose.yml down
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml down
 
-.PHONY: push
-# target: push – Pushes the the service images to ${DOCKER_REGISTRY}
+.PHONY: push pull
+# target: push – Pushes the service images to ${DOCKER_REGISTRY}
+# target: pull - Pulls the service images from ${DOCKER_REGISTRY}
 push:
 	${DOCKER_COMPOSE} -f docker-compose.yml push
+
+pull:
+	${DOCKER_COMPOSE} -f docker-compose.yml pull
 
 ## -------------------------------
 # Tools
