@@ -41,7 +41,7 @@ services:
     - INPUT_FOLDER=/input
     - OUTPUT_FOLDER=/output
     - LOG_FOLDER=/log
-    image: ${DOCKER_REGISTRY}/mattward-dash:latest
+    image: ${DOCKER_REGISTRY}/mattward-dash:${DOCKER_IMAGE_TAG}
     ports:
     - 1238:8888
     volumes:

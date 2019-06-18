@@ -23,6 +23,9 @@ export DOCKER=docker
 export PYTHON3=python3
 endif
 
+# using ?= will only set if absent
+export DOCKER_IMAGE_TAG ?= $(shell cat VERSION)
+$(info DOCKER_IMAGE_TAG set to ${DOCKER_IMAGE_TAG})
 # default to local (no registry)
 export DOCKER_REGISTRY ?= itisfoundation
 $(info DOCKER_REGISTRY set to ${DOCKER_REGISTRY})
@@ -58,11 +61,11 @@ endif
 
 .PHONY: build
 # target: build: – Builds all service images.
-build: pull update_compose_labels update_run_script
+build: update_compose_labels
 	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel
 
 .PHONY: build-devel
-build-devel: pull update_compose_labels update_run_script
+build-devel: update_compose_labels
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml build --parallel
 
 .PHONY: up down
@@ -127,21 +130,10 @@ check-release:
 
 
 push:
-	# push both latest and :$$SERVICE_VERSION tags
-	${DOCKER} login ${DOCKER_REGISTRY};\
-	SERVICE_VERSION=$$(cat VERSION);\
-	${DOCKER} tag \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:latest \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:$$SERVICE_VERSION;\
-	${DOCKER} push \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:$$SERVICE_VERSION;\
-	${DOCKER} push \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:latest;
+	${DOCKER_COMPOSE} -f docker-compose.yml push
 
-pull:
-	# pull latest service version if available
-	${DOCKER} pull \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:latest || true;
+tag:
+	${DOCKER} tag ${DOCKER_REGISTRY}/mattward-dash:${DOCKER_IMAGE_TAG} ${DOCKER_NEW_REGISTRY}/simcore/services/dynamic/mattward-dash:${DOCKER_IMAGE_TAG}
 
 # basic checks -------------------------------------
 .env: .env-devel
@@ -155,13 +147,10 @@ pull:
 		false; \
 	fi
 
-.PHONY: update_compose_labels update_run_script
+.PHONY: update_compose_labels
 update_compose_labels:
 	pip install -r tools/requirements.txt
 	${PYTHON3} tools/update_compose_labels.py --compose docker-compose.yml --input docker/labels
-
-update_run_script:
-	${PYTHON3} tools/run_creator.py --folder docker/labels --runscript service.cli/do_run
 
 .PHONY: info
 # target: info – Displays some parameters of makefile environments
