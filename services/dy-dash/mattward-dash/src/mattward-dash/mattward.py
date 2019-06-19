@@ -276,11 +276,6 @@ empty_output_1_graph = get_empty_output_1_graph()
 empty_output_2_graph = get_empty_output_2_graph()
 
 app.layout = html.Div(children=[
-    html.H1(
-        children='MattWard solver',
-        style=centered_text
-    ),
-
     html.Div([
         # Four input graphs on the left
         html.Div([

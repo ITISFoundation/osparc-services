@@ -197,10 +197,6 @@ app.layout = html.Div(children=[
     html.Div([
         # Controls on the left side
         html.Div([
-            html.H1(
-                children='Bornstein solver',
-                style=centered_text
-            ),
             html.Div(
                 children='Minimal description of how the solver works.',
                 style=centered_text
