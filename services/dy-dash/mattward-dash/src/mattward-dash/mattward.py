@@ -25,12 +25,14 @@ else:
     WORKDIR = '/home/jovyan'
 OUTPUT_DIR = WORKDIR + '/output'
 
+
 base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', "/")
 if not base_pathname.endswith("/"):
     base_pathname = base_pathname + "/"
 if not base_pathname.startswith("/"):
     base_pathname = "/" + base_pathname
 print('url_base_pathname', base_pathname)
+
 server = flask.Flask(__name__)
 app = dash.Dash(__name__,
     server=server,
@@ -39,6 +41,7 @@ app = dash.Dash(__name__,
 app.css.append_css({
     "external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"
 })
+
 
 osparc_style = {
     'color': '#bfbfbf',
@@ -72,9 +75,6 @@ options_layout = {
     # 'border': '1px solid',
     # 'border-radius': '5px',
     'margin-top': '50px'
-}
-hidden = {
-    'display': 'none'
 }
 dcc_input = {
     'color': osparc_style['color'],
@@ -289,9 +289,6 @@ app.layout = html.Div(children=[
                 style=centered_text
             ),
 
-            # Hidden div inside the app that stores the input data
-            html.Div(id='input-data', style=hidden),
-
             dcc.Graph(id='graph-ins', figure=empty_input_graph)
         ], style=flex_column),
 
@@ -464,9 +461,6 @@ app.layout = html.Div(children=[
                 children='Predicted Compund Nerve Action Potentials',
                 style=centered_text
             ),
-            
-            # Hidden div inside the app that stores the output data
-            html.Div(id='output-data', style=hidden),
 
             dcc.Graph(id='graph-out1', figure=empty_output_1_graph),
             dcc.Graph(id='graph-out2', figure=empty_output_2_graph)
@@ -580,30 +574,12 @@ def run_solver(*args):
     subprocess.call(["execute_cnap.sh", *args], cwd=OUTPUT_DIR)
     push_output_data()
 
-
-# When pressing 'Load' this callback will be triggered.
-# Also, its output will trigger the rebuilding of the four input graphs.
-@app.callback(
-    Output('input-data', 'children'),
-    [Input('load-input-button', 'n_clicks')],
-    state=[
-        State(component_id='input-nerve-profile', component_property='value'),
-        State(component_id='input-plot-options', component_property='values')
-    ]
-)
-def read_input_file(_n_clicks, input_nerve_profile, input_plot_options):
-    model_id = input_nerve_profile + 1
+def create_input_files(model_id, plot_vs_tCNAP):
     # !execute_cnap.sh $model_id 0 0.0 1.0 0.5 0.4
     run_solver(str(model_id), "0", "0.0", "1.0", "0.5", "0.4")
     path = OUTPUT_DIR+'/input.csv'
-    selected_cb = get_selected_checkboxes(input_plot_options)
-    return create_learned_model_input(path, selected_cb[1])
+    return create_learned_model_input(path, plot_vs_tCNAP)
 
-
-@app.callback(
-    Output('graph-ins', 'figure'),
-    [Input('input-data', 'children')]
-)
 def build_input_graphs(data):
     marker_size = 2
     line_width = 1
@@ -675,6 +651,22 @@ def build_input_graphs(data):
 
     return fig
 
+# When pressing 'Load' this callback will be triggered.
+# Also, its output will trigger the rebuilding of the four input graphs.
+@app.callback(
+    Output('graph-ins', 'figure'),
+    [Input('load-input-button', 'n_clicks')],
+    state=[
+        State(component_id='input-nerve-profile', component_property='value'),
+        State(component_id='input-plot-options', component_property='values')
+    ]
+)
+def read_input_file(_n_clicks, input_nerve_profile, input_plot_options):
+    model_id = input_nerve_profile + 1
+    selected_cb = get_selected_checkboxes(input_plot_options)
+    data = create_input_files(model_id, selected_cb[1])
+    return build_input_graphs(data)
+
 
 # When pressing 'Predict' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the two output graphs.
@@ -698,72 +690,6 @@ def update_output_label(button_current_ts, button_duration_ts):
         return base_text + ' (Current)'
 
 
-@app.callback(
-    Output('output-data', 'children'),
-    [
-        Input('predict-current-button', 'n_clicks_timestamp'),
-        Input('predict-duration-button', 'n_clicks_timestamp')
-    ],
-    state=[
-        State(component_id='input-nerve-profile', component_property='value'),
-        State(component_id='input-plot-options', component_property='values'),
-        State(component_id='current_in_1', component_property='value'),
-        State(component_id='current_in_2', component_property='value'),
-        State(component_id='current_in_3', component_property='value'),
-        State(component_id='current_in_4', component_property='value'),
-        State(component_id='duration_in_1', component_property='value'),
-        State(component_id='duration_in_2', component_property='value'),
-        State(component_id='duration_in_3', component_property='value'),
-        State(component_id='duration_in_4', component_property='value')
-    ]
-)
-def predict(
-    button_current_ts, button_duration_ts,
-    input_nerve_profile,
-    input_plot_options,
-    current_1, current_2, current_3, current_4,
-    duration_1, duration_2, duration_3, duration_4):
-    if button_current_ts is None:
-        button_current_ts = 0
-    if button_duration_ts is None:
-        button_duration_ts = 0
-
-    if button_current_ts == 0 & button_duration_ts == 0:
-        return
-
-    model_id = input_nerve_profile + 1
-    selected_cb = get_selected_checkboxes(input_plot_options)
-    plot_vs_qst = selected_cb[0]
-    plot_vs_tCNAP = selected_cb[1]
-    cv_path= OUTPUT_DIR+'/CV_plot.csv'
-    t_path= OUTPUT_DIR+'/t_plot.csv'
-    ist_path= OUTPUT_DIR+'/Ist_plot.csv'
-    tst_path= OUTPUT_DIR+'/tst_plot.csv'
-    qst_path= OUTPUT_DIR+'/CAP_plot.csv'
-    vpred_path= OUTPUT_DIR+'/V_pred_plot.csv'
-    lpred_path= OUTPUT_DIR+'/Lpred_plot.csv'
-    data = None
-    if button_current_ts>button_duration_ts:
-        sweep_param = 1
-        fixed_tst=True
-        print("Current clicked.", model_id, sweep_param, plot_vs_qst, plot_vs_tCNAP, current_1, current_2, current_3, current_4)
-        # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
-        run_solver(str(model_id), str(sweep_param), str(current_1), str(current_2), str(current_3), str(current_4))
-        data = create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
-    else:
-        sweep_param = 0
-        fixed_tst=False
-        print("Duration clicked.", model_id, sweep_param, plot_vs_qst, plot_vs_tCNAP, duration_1, duration_2, duration_3, duration_4)
-        # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
-        run_solver(str(model_id), str(sweep_param), str(duration_1), str(duration_2), str(duration_3), str(duration_4))
-        data = create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
-    return data
-
-
-@app.callback(
-    Output('graph-out1', 'figure'),
-    [Input('output-data', 'children')]
-)
 def build_graph_out_1(data):
     fig = get_empty_output_1_graph()
     if not data:
@@ -801,11 +727,6 @@ def build_graph_out_1(data):
     fig['data'] = lines
     return fig
 
-
-@app.callback(
-    Output('graph-out2', 'figure'),
-    [Input('output-data', 'children')]
-)
 def build_graph_out_2(data):
     fig = get_empty_output_2_graph()
     if not data:
@@ -820,6 +741,73 @@ def build_graph_out_2(data):
 
     fig['data'] = [data]
     return fig
+
+@app.callback(
+    [
+        Output('graph-out1', 'figure'),
+        Output('graph-out2', 'figure'),
+    ],
+    [
+        Input('predict-current-button', 'n_clicks_timestamp'),
+        Input('predict-duration-button', 'n_clicks_timestamp')
+    ],
+    state=[
+        State(component_id='input-nerve-profile', component_property='value'),
+        State(component_id='input-plot-options', component_property='values'),
+        State(component_id='current_in_1', component_property='value'),
+        State(component_id='current_in_2', component_property='value'),
+        State(component_id='current_in_3', component_property='value'),
+        State(component_id='current_in_4', component_property='value'),
+        State(component_id='duration_in_1', component_property='value'),
+        State(component_id='duration_in_2', component_property='value'),
+        State(component_id='duration_in_3', component_property='value'),
+        State(component_id='duration_in_4', component_property='value')
+    ]
+)
+def predict(
+    button_current_ts, button_duration_ts,
+    input_nerve_profile,
+    input_plot_options,
+    current_1, current_2, current_3, current_4,
+    duration_1, duration_2, duration_3, duration_4):
+    if button_current_ts is None:
+        button_current_ts = 0
+    if button_duration_ts is None:
+        button_duration_ts = 0
+
+    if button_current_ts == 0 & button_duration_ts == 0:
+        return [get_empty_output_1_graph(), get_empty_output_2_graph()]
+
+    model_id = input_nerve_profile + 1
+    selected_cb = get_selected_checkboxes(input_plot_options)
+    plot_vs_qst = selected_cb[0]
+    plot_vs_tCNAP = selected_cb[1]
+    cv_path= OUTPUT_DIR+'/CV_plot.csv'
+    t_path= OUTPUT_DIR+'/t_plot.csv'
+    ist_path= OUTPUT_DIR+'/Ist_plot.csv'
+    tst_path= OUTPUT_DIR+'/tst_plot.csv'
+    qst_path= OUTPUT_DIR+'/CAP_plot.csv'
+    vpred_path= OUTPUT_DIR+'/V_pred_plot.csv'
+    lpred_path= OUTPUT_DIR+'/Lpred_plot.csv'
+    data = None
+    if button_current_ts>button_duration_ts:
+        sweep_param = 1
+        fixed_tst=True
+        print("Current clicked.", model_id, sweep_param, plot_vs_qst, plot_vs_tCNAP, current_1, current_2, current_3, current_4)
+        # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
+        run_solver(str(model_id), str(sweep_param), str(current_1), str(current_2), str(current_3), str(current_4))
+        data = create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
+    else:
+        sweep_param = 0
+        fixed_tst=False
+        print("Duration clicked.", model_id, sweep_param, plot_vs_qst, plot_vs_tCNAP, duration_1, duration_2, duration_3, duration_4)
+        # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
+        run_solver(str(model_id), str(sweep_param), str(duration_1), str(duration_2), str(duration_3), str(duration_4))
+        data = create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
+
+    graph1 = build_graph_out_1(data)
+    graph2 = build_graph_out_2(data)
+    return [graph1, graph2]
 
 
 class AnyThreadEventLoopPolicy(asyncio.DefaultEventLoopPolicy):
