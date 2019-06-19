@@ -1,0 +1,28 @@
+{
+    "version": "0.1",
+    "schema": {
+        "inputs": {},
+        "outputs": {
+            "pkl": {
+                "label": "Input data",
+                "displayOrder": 0,
+                "description": "Input data pkl",
+                "type": "data:pkl",
+                "fileToKeyMap": {
+                    "traces.pkl": "traces"
+                }
+            },
+            "output": {
+                "label": "Output data",
+                "displayOrder": 1,
+                "description": "Output data csv",
+                "type": "data:text/csv",
+                "fileToKeyMap": {
+                    "output.csv": "output"
+                }
+            }
+        }
+    },
+    "inputs": {},
+    "outputs": {}
+}
