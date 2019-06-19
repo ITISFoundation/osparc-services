@@ -31,6 +31,10 @@ ENV SIMCORE_NODE_UUID="-1" \
     POSTGRES_USER="-1" \
     POSTGRES_PASSWORD="-1" \
     POSTGRES_DB="-1"
+# ----------------------------------------------------------------
+COPY --chown=jovyan:users /docker/scripts/healthcheck_curl_host.py /healthcheck/healthcheck_curl_host.py
+# will start to run after interval every interval. fails after timeout. fail do not count if during start-period. will do # retries
+HEALTHCHECK --interval=10s --timeout=30s --start-period=1s --retries=3 CMD [ "python3", "/healthcheck/healthcheck_curl_host.py", "http://localhost:8888" ]
 # -----------------------------------------------------------------------------
 FROM common AS development
 ENV SC_BUILD_TARGET=development
@@ -54,5 +58,6 @@ RUN mkdir -p /home/jovyan/output
 ARG APP_NAME
 # copy the app in the image
 WORKDIR /home/jovyan/src
-COPY --chown=jovyan:users src/mattward-dash/${APP_NAME} ${APP_NAME}
+# COPY --chown=jovyan:users src/mattward-dash/${APP_NAME} ${APP_NAME}
+COPY --chown=jovyan:users src/mattward-dash .
 ENTRYPOINT [ "/bin/bash", "/docker/boot.sh" ]
