@@ -133,7 +133,8 @@ push:
 	${DOCKER_COMPOSE} -f docker-compose.yml push
 
 tag:
-	${DOCKER} tag ${DOCKER_REGISTRY}/mattward-dash:${DOCKER_IMAGE_TAG} ${DOCKER_NEW_REGISTRY}/simcore/services/dynamic/mattward-dash:${DOCKER_IMAGE_TAG}
+	${DOCKER} tag ${DOCKER_REGISTRY}/mattward-dash:${DOCKER_IMAGE_TAG} ${DOCKER_NEW_REGISTRY}/simcore/services/dynamic/mattward-dash:${DOCKER_IMAGE_TAG} 
+	${DOCKER} tag ${DOCKER_REGISTRY}/mattward-dash:${DOCKER_IMAGE_TAG} ${DOCKER_NEW_REGISTRY}/simcore/services/dynamic/mattward-dash:latest
 
 # basic checks -------------------------------------
 .env: .env-devel
