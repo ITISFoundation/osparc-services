@@ -1,7 +1,10 @@
+# this must be the first line
+ARG BASE_IMAGE=kitware/paraviewweb:pv-v5.6.0-osmesa
 # apply patch to visualizer
 FROM node:8.12.0 AS visualizer
 WORKDIR /home/node
-RUN git clone --branch v3.1.6 https://github.com/Kitware/visualizer.git
+ARG VISUALIZER_VERSION=v3.1.10
+RUN git clone --branch ${VISUALIZER_VERSION} https://github.com/Kitware/visualizer.git
 WORKDIR /home/node/visualizer
 COPY services/dy-3dvis/simcoreparaviewweb/rebrand-osparc/to-be-copied .
 COPY services/dy-3dvis/simcoreparaviewweb/rebrand-osparc/rebrand-osparc.patch rebrand-osparc.patch
@@ -12,29 +15,40 @@ RUN git apply rebrand-osparc.patch && \
     cp src/*.png dist
 # ----------------------------------------------------------------
 # build visualizer service
-FROM kitware/paraviewweb:pvw-visualizer-osmesa-master  AS common
+FROM ${BASE_IMAGE}  AS common
 
 LABEL maintainer="sanderegg"
 ENV PARAVIEW_INPUT_PATH="/data"
 
+USER root
 # install git, pip
 RUN apt-get update && \
-    apt-get install -y \
-    python3-pip && \
-    python3 -V
+    apt-get install -y --no-install-recommends \
+    python3-pip &&\
+    rm -rf /var/lib/apt/lists/*
 
 # install python 3.6 for root and also for www-data
 ENV PYENV_ROOT=/pyenv
+# necessary to prevent some dependencies to ask questions while installing
+ENV DEBIAN_FRONTEND=noninteractive
 RUN curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash && \
     export PATH="${PYENV_ROOT}/bin:$PATH" && \
     eval "$(pyenv init -)" && \
     eval "$(pyenv virtualenv-init -)" && \
-    apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+    make build-essential libssl-dev zlib1g-dev libbz2-dev \
     libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
     xz-utils tk-dev libffi-dev liblzma-dev && \
     pyenv install 3.6.7 && \
     pyenv global 3.6.7 && \
-    pip install --upgrade pip wheel setuptools
+    pip install --upgrade pip wheel setuptools &&\
+    apt-get remove -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
+    libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+    xz-utils tk-dev libffi-dev liblzma-dev &&\
+    apt-get autoremove -y &&\
+    apt-get clean -y &&\
+    rm -rf /var/lib/apt/lists/*
 
 # ----------------------------------------------------------------
 # install simcore-sdk
@@ -44,7 +58,7 @@ RUN export PATH="${PYENV_ROOT}/bin:$PATH" && \
     pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python
 
 # get the patched visualizer
-COPY --from=visualizer /home/node/visualizer/dist /opt/paraview/install/share/paraview-5.5/web/visualizer/www
+COPY --from=visualizer /home/node/visualizer/dist /opt/paraview/share/paraview-5.6/web/visualizer/www
 WORKDIR /home/root
 # ----------------------------------------------------------------
 COPY scripts/docker/healthcheck_curl_host.py /healthcheck/healthcheck_curl_host.py
@@ -54,7 +68,10 @@ COPY scripts/docker/healthcheck_curl_host.py /healthcheck/healthcheck_curl_host.
 # set up oSparc env variables
 ENV SIMCORE_NODE_UUID="-1" \
     SIMCORE_USER_ID="-1" \
-    STORAGE_ENDPOINT="=1" \
+    SIMCORE_NODE_BASEPATH="" \
+    SIMCORE_NODE_APP_STATE_PATH=${PARAVIEW_INPUT_PATH} \
+    SIMCORE_HOST_NAME="localhost" \
+    STORAGE_ENDPOINT="=1" \    
     S3_ENDPOINT="=1" \
     S3_ACCESS_KEY="-1" \
     S3_SECRET_KEY="-1" \
@@ -65,34 +82,30 @@ ENV SIMCORE_NODE_UUID="-1" \
     POSTGRES_DB="-1"
 
 # special paraview variables
-ENV SERVER_PORT="-1"  \
-    HOST_NAME="-1"
+ENV SERVER_PORT="8777"  \
+    SIMCORE_STATE_FILE="simcore-state.pvsm" \
+    PARAVIEW_DEBUG=0
 
+RUN mkdir /home/root/trigger && \
+    chmod 777 /home/root/trigger
+#------------------------------------------
+FROM common AS production
 # copy scripts
 COPY services/dy-3dvis/simcoreparaviewweb/docker /home/root/docker
 COPY services/dy-3dvis/simcoreparaviewweb/config /home/root/config
-
-# RUN chmod +x docker/boot.sh
-# apply apache config changer script
-# RUN chmod +x docker/apachePatch.sh
-RUN mkdir /home/root/trigger && \
-    chmod 777 /home/root/trigger
-# apply paraview launcher modifier script
-# RUN chmod +x docker/visualizer_launcher_patch.sh
+COPY services/dy-3dvis/simcoreparaviewweb/handlers/*.rpy /opt/paraview/share/paraview-5.6/web/visualizer/www/
+ENTRYPOINT [ "/bin/bash", "docker/boot.sh" ]
 #------------------------------------------
 FROM common as development
-VOLUME /home/root/cgi_scripts
 VOLUME /home/root/devel
 VOLUME /home/root/services
 VOLUME /home/root/test-data
 VOLUME /home/root/scripts/dy_services_helpers
+VOLUME /home/root/docker
+VOLUME /home/root/config
 ENV CREATE_DUMMY_TABLE 1
 ENV USE_CASE_CONFIG_FILE="devel/port_config.json"
 ENV TEST_DATA_PATH="/test-data"
 # Need to use entrypoint as base image's entrypoint must be overriden
 ENTRYPOINT [ "/bin/bash", "docker/boot.sh" ]
-#------------------------------------------
-FROM common AS production
-# copy script to get the inputs inside the local file system
-COPY services/dy-3dvis/simcoreparaviewweb/cgi_scripts /home/root/cgi_scripts
-ENTRYPOINT [ "/bin/bash", "docker/boot.sh" ]
+
