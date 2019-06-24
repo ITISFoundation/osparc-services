@@ -25,7 +25,9 @@ def docker_client() -> docker.DockerClient:
 
 @pytest.fixture
 def docker_image_key(docker_client: docker.DockerClient) -> str:
-    image_key = "simcore/services/comp/mattward-dash:latest"
+    docker_registry = os.environ.get("DOCKER_REGISTRY", "itisfoundation")
+    docker_image_tag = os.environ.get("DOCKER_IMAGE_TAG", "latest")
+    image_key = "{}/mattward-dash:{}".format(docker_registry, docker_image_tag)
     docker_images = [image for image in docker_client.images.list() if any(image_key in tag for tag in image.tags)]
     return docker_images[0].tags[0]
 
