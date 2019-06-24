@@ -325,7 +325,7 @@ app.layout = html.Div(children=[
             html.Div([
                 html.H5('Sweep Pulse'),
                 dcc.Tabs(
-                    id="sweep-pulse-tabs", 
+                    id="sweep-pulse-tabs",
                     value='current',
                     children=[
                         dcc.Tab(
@@ -497,7 +497,7 @@ def create_learned_model_input(path, plot_vs_tcnap):
         }
     }
 
-def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, qst_path, vpred_path, lpred_path, fixed_tst, plot_vs_qst, plot_vs_tCNAP):
+def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, qst_path, vpred_path, lpred_path, fixed_tst, plot_vs_qst, plot_vs_tCNAP): # pylint:disable=too-many-arguments
     data_cv = pd.read_csv(cv_path, sep=',', header=None)
     data_tcnap = pd.read_csv(t_path, sep=',', header=None)
     data_ist = None
@@ -681,8 +681,7 @@ def update_output_label(button_current_ts, button_duration_ts):
     base_text = 'Predicted Compund Nerve Action Potentials'
     if button_current_ts<button_duration_ts:
         return base_text + ' (Duration)'
-    else:
-        return base_text + ' (Current)'
+    return base_text + ' (Current)'
 
 
 def build_graph_out_1(data):
@@ -759,7 +758,7 @@ def build_graph_out_2(data):
         State(component_id='duration_in_4', component_property='value')
     ]
 )
-def predict(
+def predict( # pylint:disable=too-many-arguments
     button_current_ts, button_duration_ts,
     input_nerve_profile,
     input_plot_options,
