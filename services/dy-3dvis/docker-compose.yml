@@ -75,7 +75,25 @@ services:
         io.simcore.outputs: '{"outputs": {}}'
         simcore.service.settings: '[
                                     {"name": "ports", "type": "int", "value": 8777},
-                                    {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}
+                                    {"name": "constraints", "type": "string", "value": [
+                                      "node.platform.os == linux"
+                                      ]},
+                                    {"name": "Resources", "type": "Resources", "value":
+                                      {
+                                      "Limits": {},
+                                      "Reservations":
+                                        {
+                                          "GenericResources": [
+                                            {
+                                               "DiscreteResourceSpec": {
+                                                "Kind": "gpu",
+                                                "Value": 1
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    }
                                   ]'
         simcore.service.bootsettings: '[]'
         org.label-schema.schema-version: "1.0"
