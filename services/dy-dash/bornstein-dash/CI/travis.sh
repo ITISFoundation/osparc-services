@@ -22,6 +22,7 @@ script() {
     cd services/dy-dash/bornstein-dash
     make build
     make unit-test
+    make integration-test
 }
 
 after_success() {
