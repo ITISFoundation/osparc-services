@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import shutil
 import tarfile
 import tempfile
@@ -8,13 +9,15 @@ from pathlib import Path
 
 from notebook.base.handlers import IPythonHandler
 from notebook.utils import url_path_join
+
 from simcore_sdk import node_ports
 
 logger = logging.getLogger(__name__)
 
 
-_INPUTS_FOLDER = "~/inputs"
-_OUTPUTS_FOLDER = "~/outputs"
+_INPUTS_FOLDER =  os.environ.get("INPUTS_FOLDER", "~/inputs")
+_OUTPUTS_FOLDER = os.environ.get("OUTPUTS_FOLDER", "~/outputs")
+
 _FILE_TYPE_PREFIX = "data:"
 _KEY_VALUE_FILE_NAME = "key_values.json"
 

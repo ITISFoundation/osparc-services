@@ -40,5 +40,5 @@ FROM common AS production
 ARG NOTEBOOK_NAME
 ARG NOTEBOOK_FOLDER_NAME
 # copy the notebook in the image
-COPY --chown=jovyan:users cc/${NOTEBOOK_FOLDER_NAME}/${NOTEBOOK_NAME} ${NOTEBOOK_NAME}
+COPY --chown=jovyan:users cc/${NOTEBOOK_FOLDER_NAME}/${NOTEBOOK_NAME} notebooks/${NOTEBOOK_NAME}
 ENTRYPOINT [ "/bin/bash", "/docker/boot.sh" ]
