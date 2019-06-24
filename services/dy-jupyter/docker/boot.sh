@@ -11,7 +11,7 @@ echo "  Workdir :`pwd`"
 if test "${CREATE_DUMMY_TABLE}" = "1"
 then
     pip install -r /home/jovyan/devel/requirements.txt
-    pushd /home/jovyan/packages/simcore-sdk; pip install -r requirements-dev.txt; popd
+    pushd /home/jovyan/scripts/dy_services_helpers; pip3 install -r requirements.txt; popd
 
     echo "Creating dummy tables ... using ${USE_CASE_CONFIG_FILE}"
     result="$(python scripts/dy_services_helpers/platform_initialiser_csv_files.py ${USE_CASE_CONFIG_FILE} ${INIT_OPTIONS})"
