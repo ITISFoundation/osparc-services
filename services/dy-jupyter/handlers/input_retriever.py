@@ -1,15 +1,16 @@
+import asyncio
 import json
 import logging
 import os
 import shutil
 import tarfile
 import tempfile
+import time
 import zipfile
 from pathlib import Path
 
 from notebook.base.handlers import IPythonHandler
 from notebook.utils import url_path_join
-
 from simcore_sdk import node_ports
 
 logger = logging.getLogger(__name__)
@@ -62,21 +63,28 @@ def _no_relative_path_zip(members: zipfile.ZipFile):
 
 async def download_data():
     logger.info("retrieving data from simcore...")
+    start_time = time.perf_counter()
     PORTS = node_ports.ports()
     inputs_path = Path(_INPUTS_FOLDER).expanduser()
-    values = {}
-    for port in PORTS.inputs:
-        if not port or port.value is None:
+    data = {}
+
+    # let's gather all the data, this downloads files or gather data from simcore
+    download_tasks = [port.get() for port in PORTS.inputs if port and port.value]
+    results = await asyncio.gather(*download_tasks)
+    for idx, port in enumerate(PORTS.inputs):
+        if not port or not port.value:
             continue
-        logger.debug("downloading data from port '%s' with value '%s'...", port.key, port.value)
-        value = await port.get()
-        values[port.key] = {"key": port.key, "value": value}
+        value = results[idx]
+        data[port.key] = {"key": port.key, "value": value}
+        if not value:
+            # this happens when a link is done but no file is on the other end
+            continue
 
         if _FILE_TYPE_PREFIX in port.type:
+            # in case of valid file, it is either uncompressed and/or moved to the final directory
             dest_path = inputs_path / port.key
             dest_path.mkdir(exist_ok=True, parents=True)
-            values[port.key] = {"key": port.key, "value": str(dest_path)}
-
+            data[port.key] = {"key": port.key, "value": str(dest_path)}
             # clean up destination directory
             for path in dest_path.iterdir():
                 if path.is_file():
@@ -94,14 +102,18 @@ async def download_data():
                 dest_path = dest_path / Path(value).name
                 shutil.move(value, dest_path)
 
-    values_file = inputs_path / _KEY_VALUE_FILE_NAME
-    values_file.write_text(json.dumps(values))
-    logger.info("all data retrieved from simcore: %s", values)
+    data_file = inputs_path / _KEY_VALUE_FILE_NAME
+    data_file.write_text(json.dumps(data))
+    stop_time = time.perf_counter()
+    logger.info("all data retrieved from simcore in %sseconds: %s", stop_time - start_time, data)
 
 async def upload_data():
     logger.info("uploading data to simcore...")
+    start_time = time.perf_counter()
     PORTS = node_ports.ports()
     outputs_path = Path(_OUTPUTS_FOLDER).expanduser()
+    upload_tasks = []
+    temp_files = []
     for port in PORTS.outputs:
         logger.debug("uploading data to port '%s' with value '%s'...", port.key, port.value)
         if _FILE_TYPE_PREFIX in port.type:
@@ -109,7 +121,7 @@ async def upload_data():
             list_files = list(src_folder.glob("*"))
             if len(list_files) == 1:
                 # special case, direct upload
-                await port.set(list_files[0])
+                upload_tasks.append(port.set(list_files[0]))
                 continue
             # generic case let's create an archive
             if len(list_files) > 1:
@@ -119,19 +131,23 @@ async def upload_data():
                     with tarfile.open(temp_file.name, mode='w:gz') as tar_ptr:
                         for file_path in list_files:
                             tar_ptr.add(str(file_path), arcname=file_path.name, recursive=False)
-                try:
-                    await port.set(temp_file.name)
-                finally:
-                    #clean up
-                    Path(temp_file.name).unlink()
+                temp_files.append(temp_file.name)
+                upload_tasks.append(port.set(temp_file.name))
         else:
-            values_file = outputs_path / _KEY_VALUE_FILE_NAME
-            if values_file.exists():
-                values = json.loads(values_file.read_text())
-                if port.key in values and values[port.key] is not None:
-                    await port.set(values[port.key])
+            data_file = outputs_path / _KEY_VALUE_FILE_NAME
+            if data_file.exists():
+                data = json.loads(data_file.read_text())
+                if port.key in data and data[port.key] is not None:
+                    upload_tasks.append(port.set(data[port.key]))
 
-    logger.info("all data uploaded to simcore")
+        try:
+            await asyncio.gather(*upload_tasks)
+        finally:
+            # clean up possible compressed files
+            for file_path in temp_files:
+                Path(file_path).unlink()
+    stop_time = time.perf_counter()
+    logger.info("all data uploaded to simcore in %sseconds", stop_time-start_time)
 
 class RetrieveHandler(IPythonHandler):
     def initialize(self): #pylint: disable=no-self-use
@@ -141,10 +157,13 @@ class RetrieveHandler(IPythonHandler):
 
     async def get(self):
         try:
-            await download_data()
-            await upload_data()
+            await asyncio.gather(download_data(), upload_data())
             self.set_status(200)
         except node_ports.exceptions.NodeportsException as exc:
+            logger.exception("Unexpected problem when processing retrieve call")
+            self.set_status(500, reason=str(exc))
+        except: #pylint: disable=bare-except
+            logger.exception("Unexpected problem when processing retrieve call")
             self.set_status(500, reason=str(exc))
         finally:
             self.finish('completed retrieve!')
