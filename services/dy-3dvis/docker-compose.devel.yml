@@ -68,7 +68,7 @@ services:
       - ./simcoreparaviewweb/handlers:/home/root/handlers
   #--------------------------------------------------------------------
   apihub:
-    image: itisfoundation/apihub:staging-latest
+    image: itisfoundation/apihub:latest
     ports:
       - '8043:8043'
   #--------------------------------------------------------------------
