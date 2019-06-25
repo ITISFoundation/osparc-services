@@ -12,8 +12,12 @@ from pathlib import Path
 from notebook.base.handlers import IPythonHandler
 from notebook.utils import url_path_join
 from simcore_sdk import node_ports
+# from simcore_sdk.node_ports import filemanager
+# from simcore_sdk.node_ports import log as node_logger
 
 logger = logging.getLogger(__name__)
+# node_logger.setLevel(logging.DEBUG)
+# filemanager.CHUNK_SIZE = 16*1024*1024
 
 
 _INPUTS_FOLDER =  os.environ.get("INPUTS_FOLDER", "~/inputs")
