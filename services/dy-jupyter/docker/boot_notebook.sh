@@ -1,14 +1,19 @@
 #!/bin/bash
-
-set -e
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+IFS=$'\n\t'
 
 # try to pull data from S3
+echo
+echo "trying to restore state..."
 python /docker/state_puller.py ${SIMCORE_NODE_APP_STATE_PATH} --silent
 
 # the notebooks in the folder shall be trusted by default
 # jupyter trust ${SIMCORE_NODE_APP_STATE_PATH}/*
 
 # Trust all notebooks in the notbooks folder
+echo
+echo "trust all notebooks in path..."
 find ${SIMCORE_NODE_APP_STATE_PATH} -name '*.ipynb' | xargs jupyter trust
 
 # call the notebook with the basic parameters
