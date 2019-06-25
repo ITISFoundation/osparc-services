@@ -59,7 +59,7 @@ rebuild:
 
 .PHONY: build-devel
 # target: build-devel: – Builds images of core services for development.
-build-devel: .env
+build-devel:
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml build --parallel
 
 .PHONY: up up-devel down
