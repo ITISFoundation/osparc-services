@@ -65,6 +65,17 @@ def _no_relative_path_zip(members: zipfile.ZipFile):
             continue
         yield zipinfo.filename
 
+async def time_wrapped(func, *args, **kwargs):
+    logger.info("transfer started")
+    start_time = time.perf_counter()
+    ret = await func(*args, **kwargs)
+    elapsed_time = time.perf_counter() - start_time
+    logger.info("transfer completed in %ss", elapsed_time)
+    if isinstance(ret, Path):
+        size_mb = ret.stat().st_size / 1024 / 1024
+        logger.info("%s: data size: %sMB, transfer rate %sMB/s", ret.name, size_mb, size_mb / elapsed_time)
+    return ret
+
 async def download_data():
     logger.info("retrieving data from simcore...")
     start_time = time.perf_counter()
@@ -72,39 +83,42 @@ async def download_data():
     inputs_path = Path(_INPUTS_FOLDER).expanduser()
     data = {}
 
-    # let's gather all the data, this downloads files or gather data from simcore
-    download_tasks = [port.get() for port in PORTS.inputs if port and port.value]
+    # let's gather all the data
+    download_tasks = [time_wrapped(port.get) for port in PORTS.inputs if port and port.value]
     results = await asyncio.gather(*download_tasks)
+    logger.info("completed download")
+    # if there are files, move them to the final destination
+    # if data, copy it to a json file
     for idx, port in enumerate(PORTS.inputs):
         if not port or not port.value:
             continue
         value = results[idx]
         data[port.key] = {"key": port.key, "value": value}
-        if not value:
-            # this happens when a link is done but no file is on the other end
-            continue
 
         if _FILE_TYPE_PREFIX in port.type:
-            # in case of valid file, it is either uncompressed and/or moved to the final directory
+            downloaded_file = value
             dest_path = inputs_path / port.key
+            # first cleanup
+            logger.info("removing %s", dest_path)
+            shutil.rmtree(dest_path)
+            if not downloaded_file:
+                # the link may be empty
+                continue
+            # in case of valid file, it is either uncompressed and/or moved to the final directory
+            logger.info("creating directory %s", dest_path)
             dest_path.mkdir(exist_ok=True, parents=True)
             data[port.key] = {"key": port.key, "value": str(dest_path)}
-            # clean up destination directory
-            for path in dest_path.iterdir():
-                if path.is_file():
-                    path.unlink()
-                elif path.is_dir():
-                    shutil.rmtree(path)
-            # check if value is a compressed file
-            if tarfile.is_tarfile(value):
-                with tarfile.open(value) as tar_file:
-                    tar_file.extractall(dest_path, members=list(_no_relative_path_tar(tar_file)))
-            elif zipfile.is_zipfile(value):
-                with zipfile.ZipFile(value) as zip_file:
+
+            if zipfile.is_zipfile(downloaded_file):
+                logger.info("unzipping %s", downloaded_file)
+                with zipfile.ZipFile(downloaded_file) as zip_file:
                     zip_file.extractall(dest_path, members=_no_relative_path_zip(zip_file))
+                logger.info("all unzipped in %s", dest_path)
             else:
-                dest_path = dest_path / Path(value).name
-                shutil.move(value, dest_path)
+                logger.info("moving %s", downloaded_file)
+                dest_path = dest_path / Path(downloaded_file).name
+                shutil.move(downloaded_file, dest_path)
+                logger.info("all moved to %s", dest_path)
 
     data_file = inputs_path / _KEY_VALUE_FILE_NAME
     data_file.write_text(json.dumps(data))
@@ -125,7 +139,7 @@ async def upload_data():
             list_files = list(src_folder.glob("*"))
             if len(list_files) == 1:
                 # special case, direct upload
-                upload_tasks.append(port.set(list_files[0]))
+                upload_tasks.append(time_wrapped(port.set, list_files[0]))
                 continue
             # generic case let's create an archive
             if len(list_files) > 1:
@@ -136,13 +150,13 @@ async def upload_data():
                         for file_path in list_files:
                             tar_ptr.add(str(file_path), arcname=file_path.name, recursive=False)
                 temp_files.append(temp_file.name)
-                upload_tasks.append(port.set(temp_file.name))
+                upload_tasks.append(time_wrapped(port.set, temp_file.name))
         else:
             data_file = outputs_path / _KEY_VALUE_FILE_NAME
             if data_file.exists():
                 data = json.loads(data_file.read_text())
                 if port.key in data and data[port.key] is not None:
-                    upload_tasks.append(port.set(data[port.key]))
+                    upload_tasks.append(time_wrapped(port.set, data[port.key]))
 
         try:
             await asyncio.gather(*upload_tasks)
@@ -152,6 +166,7 @@ async def upload_data():
                 Path(file_path).unlink()
     stop_time = time.perf_counter()
     logger.info("all data uploaded to simcore in %sseconds", stop_time-start_time)
+
 
 class RetrieveHandler(IPythonHandler):
     def initialize(self): #pylint: disable=no-self-use
@@ -166,9 +181,9 @@ class RetrieveHandler(IPythonHandler):
         except node_ports.exceptions.NodeportsException as exc:
             logger.exception("Unexpected problem when processing retrieve call")
             self.set_status(500, reason=str(exc))
-        except: #pylint: disable=bare-except
+        except Exception: #pylint: disable=broad-except
             logger.exception("Unexpected problem when processing retrieve call")
-            self.set_status(500, reason=str(exc))
+            self.set_status(500)
         finally:
             self.finish('completed retrieve!')
 
