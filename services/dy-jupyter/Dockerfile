@@ -70,7 +70,7 @@ COPY --chown=jovyan:users services/dy-jupyter/devel/requirements.txt /home/jovya
 RUN pip install -r /home/jovyan/devel/requirements.txt
 ENV CREATE_DUMMY_TABLE=1
 ENV USE_CASE_CONFIG_FILE="devel/port_config.json"
-ENV INIT_OPTIONS="100 12 23 space"
+ENV TEST_DATA_PATH="/test-data"
 
 CMD [ "/bin/bash", "/docker/boot.sh" ]
 

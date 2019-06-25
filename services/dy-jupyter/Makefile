@@ -69,6 +69,9 @@ up: .env
 	${DOCKER_COMPOSE} -f docker-compose.yml up
 
 up-devel: .env
+	@mkdir -p notebook-inputs
+	@mkdir -p notebook-outputs
+	@mkdir -p retrieval-data
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml up
 
 down: .env

@@ -15,7 +15,7 @@ then
     pushd /home/jovyan/scripts/dy_services_helpers; pip3 install -r requirements.txt; popd
 
     echo "Creating dummy tables ... using ${USE_CASE_CONFIG_FILE}"
-    result="$(python scripts/dy_services_helpers/platform_initialiser_csv_files.py ${USE_CASE_CONFIG_FILE} ${INIT_OPTIONS})"
+    result="$(python scripts/dy_services_helpers/platform_initialiser.py ${USE_CASE_CONFIG_FILE} --folder ${TEST_DATA_PATH})"
     echo "Received result of $result";
     IFS=, read -a array <<< "$result";
     echo "Received result pipeline id of ${array[0]}";

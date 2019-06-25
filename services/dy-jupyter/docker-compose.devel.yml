@@ -19,7 +19,7 @@ services:
       - APIHUB_HOST=${APIHUB_HOST}
       - APIHUB_PORT=${APIHUB_PORT}
       - USE_CASE_CONFIG_FILE=devel/port_config.json
-      - INIT_OPTIONS=10 60 2 space
+      - TEST_DATA_PATH=/home/jovyan/test-data
       - SIMCORE_NODE_BASEPATH=${SIMCORE_NODE_BASEPATH}
     depends_on:
       - storage
@@ -33,6 +33,9 @@ services:
       - ../../scripts/dy_services_helpers:/home/jovyan/scripts/dy_services_helpers
       - ./notebooks:/home/jovyan/notebooks
       - ./docker:/docker
+      - ./retrieval-data:/home/jovyan/test-data
+      - ./notebook-inputs:/home/jovyan/inputs
+      - ./notebook-outputs:/home/jovyan/outputs
   # --------------------------------------------------------------------
   jupyter-scipy-notebook:
     image: jupyter-scipy-notebook-dev
