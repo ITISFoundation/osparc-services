@@ -50,7 +50,6 @@ RUN pip install --upgrade pip && \
     jupyter nbextension enable init_cell/main
 # ----------------------------------------------------------------
 ENV PYTHONPATH=/home/jovyan/handlers
-COPY --chown=jovyan:users services/dy-jupyter/notebook-customisation/custom.js /home/jovyan/.jupyter/custom/custom.js
 # ----------------------------------------------------------------
 # install simcore-sdk
 RUN pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\

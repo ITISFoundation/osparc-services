@@ -16,6 +16,12 @@ echo
 echo "trust all notebooks in path..."
 find ${SIMCORE_NODE_APP_STATE_PATH} -name '*.ipynb' | xargs jupyter trust
 
+# prevents notebook to open in separate tab
+cat > ~/.jupyter/custom/custom.js <<EOF
+define(['base/js/namespace'], function(Jupyter){
+    Jupyter._target = '_self';
+});
+EOF
 # call the notebook with the basic parameters
 start-notebook.sh \
     --NotebookApp.base_url=${SIMCORE_NODE_BASEPATH} \
