@@ -33,7 +33,6 @@ cat > jupyter_config.json <<EOF
         "extra_static_paths": ["${SIMCORE_NODE_BASEPATH}/static"],
         "notebook_dir": "${SIMCORE_NODE_APP_STATE_PATH}",
         "token": "",
-        "disable_check_xsrf": false,
         "quit_button": false,
         "open_browser": false,
         "webbrowser_open_new": 0,
