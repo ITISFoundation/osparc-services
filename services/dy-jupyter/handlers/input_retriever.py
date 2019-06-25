@@ -3,7 +3,6 @@ import json
 import logging
 import os
 import shutil
-import tarfile
 import tempfile
 import time
 import zipfile
@@ -35,24 +34,13 @@ def _compress_files_in_folder(folder: Path, one_file_not_compress: bool = True) 
     if one_file_not_compress and len(list_files) == 1:
         return list_files[0]
 
-    temp_file = tempfile.NamedTemporaryFile(suffix=".tgz")
+    temp_file = tempfile.NamedTemporaryFile(suffix=".zip")
     temp_file.close()
-    for _file in list_files:
-        with tarfile.open(temp_file.name, mode='w:gz') as tar_ptr:
-            for file_path in list_files:
-                tar_ptr.add(str(file_path), arcname=file_path.name, recursive=False)
+    with zipfile.ZipFile(temp_file.name, mode="w") as zip_ptr:
+        for file_path in list_files:
+            zip_ptr.write(str(file_path), arcname=file_path.name)
+        
     return Path(temp_file.name)
-
-def _no_relative_path_tar(members: tarfile.TarFile):
-    for tarinfo in members:
-        path = Path(tarinfo.name)
-        if path.is_absolute():
-            # absolute path are not allowed
-            continue
-        if path.match("/../"):
-            # relative paths are not allowed
-            continue
-        yield tarinfo
 
 def _no_relative_path_zip(members: zipfile.ZipFile):
     for zipinfo in members.infolist():
@@ -65,16 +53,27 @@ def _no_relative_path_zip(members: zipfile.ZipFile):
             continue
         yield zipinfo.filename
 
-async def time_wrapped(func, *args, **kwargs):
-    logger.info("transfer started")
+async def get_time_wrapped(port):
+    logger.info("transfer started for %s", port.key)
     start_time = time.perf_counter()
-    ret = await func(*args, **kwargs)
+    ret = await port.get()
     elapsed_time = time.perf_counter() - start_time
     logger.info("transfer completed in %ss", elapsed_time)
     if isinstance(ret, Path):
         size_mb = ret.stat().st_size / 1024 / 1024
-        logger.info("%s: data size: %sMB, transfer rate %sMB/s", ret.name, size_mb, size_mb / elapsed_time)
+        logger.info("%s: data size: %sMB, transfer rate %sMB/s", ret.name, size_mb, size_mb / elapsed_time)    
     return ret
+
+async def set_time_wrapped(port, value):
+    logger.info("transfer started for %s", port.key)
+    start_time = time.perf_counter()
+    await port.set(value)
+    elapsed_time = time.perf_counter() - start_time
+    logger.info("transfer completed in %ss", elapsed_time)
+    if isinstance(value, Path):
+        size_mb = value.stat().st_size / 1024 / 1024
+        logger.info("%s: data size: %sMB, transfer rate %sMB/s", value.name, size_mb, size_mb / elapsed_time)    
+    
 
 async def download_data():
     logger.info("retrieving data from simcore...")
@@ -84,15 +83,17 @@ async def download_data():
     data = {}
 
     # let's gather all the data
-    download_tasks = [time_wrapped(port.get) for port in PORTS.inputs if port and port.value]
+    download_tasks = [get_time_wrapped(port) for port in PORTS.inputs if port and port.value]
     results = await asyncio.gather(*download_tasks)
-    logger.info("completed download")
+    logger.info("completed download %s", results)
     # if there are files, move them to the final destination
     # if data, copy it to a json file
-    for idx, port in enumerate(PORTS.inputs):
+    result = iter(results)
+    for port in PORTS.inputs:
         if not port or not port.value:
             continue
-        value = results[idx]
+        
+        value = result.__next__()
         data[port.key] = {"key": port.key, "value": value}
 
         if _FILE_TYPE_PREFIX in port.type:
@@ -139,24 +140,24 @@ async def upload_data():
             list_files = list(src_folder.glob("*"))
             if len(list_files) == 1:
                 # special case, direct upload
-                upload_tasks.append(time_wrapped(port.set, list_files[0]))
+                upload_tasks.append(set_time_wrapped(port, list_files[0]))
                 continue
             # generic case let's create an archive
             if len(list_files) > 1:
-                temp_file = tempfile.NamedTemporaryFile(suffix=".tgz")
+                temp_file = tempfile.NamedTemporaryFile(suffix=".zip")
                 temp_file.close()
-                for _file in list_files:
-                    with tarfile.open(temp_file.name, mode='w:gz') as tar_ptr:
-                        for file_path in list_files:
-                            tar_ptr.add(str(file_path), arcname=file_path.name, recursive=False)
+                with zipfile.ZipFile(temp_file.name, mode="w") as zip_ptr:
+                    for file_path in list_files:
+                        zip_ptr.write(str(file_path), arcname=file_path.name)
+                
                 temp_files.append(temp_file.name)
-                upload_tasks.append(time_wrapped(port.set, temp_file.name))
+                upload_tasks.append(set_time_wrapped(port, temp_file.name))
         else:
             data_file = outputs_path / _KEY_VALUE_FILE_NAME
             if data_file.exists():
                 data = json.loads(data_file.read_text())
                 if port.key in data and data[port.key] is not None:
-                    upload_tasks.append(time_wrapped(port.set, data[port.key]))
+                    upload_tasks.append(set_time_wrapped(port, data[port.key]))
 
         try:
             await asyncio.gather(*upload_tasks)
