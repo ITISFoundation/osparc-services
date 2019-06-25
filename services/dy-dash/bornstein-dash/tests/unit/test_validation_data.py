@@ -51,7 +51,7 @@ def _find_key_in_cfg(filename: str, value: Dict) -> str:
                 yield result
 
 @pytest.mark.parametrize("port_type", [
-    "input", "output"
+    "input"
 ])
 def test_validation_data_follows_definition(label_cfg: Dict, validation_cfg: Dict, validation_folder: Path):
     for key, value in label_cfg.items():

@@ -34,5 +34,5 @@ FROM common AS production
 # set of arguments to copy the right notebook
 ARG NOTEBOOK_NAME
 # copy the notebook in the image
-COPY --chown=jovyan:users kember/notebooks/${NOTEBOOK_NAME} ${NOTEBOOK_NAME}
+COPY --chown=jovyan:users kember/notebooks/${NOTEBOOK_NAME} notebooks/${NOTEBOOK_NAME}
 ENTRYPOINT [ "/bin/bash", "/docker/boot.sh" ]
