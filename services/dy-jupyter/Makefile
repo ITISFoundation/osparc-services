@@ -75,8 +75,9 @@ up-devel: .env
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml up
 
 down: .env
-	${DOCKER_COMPOSE} -f docker-compose.yml down
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml down
+	${DOCKER_COMPOSE} -f docker-compose.yml down
+
 
 .PHONY: push pull
 # target: push – Pushes the service images to ${DOCKER_REGISTRY}
