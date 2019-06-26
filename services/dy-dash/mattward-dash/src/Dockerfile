@@ -1,5 +1,5 @@
 #ARG BASE_IMAGE
-FROM masu.speag.com/simcore/base-images/cnap-dy-jupyter:latest AS common
+FROM itisfoundation/cnap-dy-jupyter:latest AS common
 LABEL maintainer=odeimaiz
 
 # install requirements --------------------------------------------------------
