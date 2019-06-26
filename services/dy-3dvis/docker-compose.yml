@@ -86,7 +86,7 @@ services:
                                           "GenericResources": [
                                             {
                                                "DiscreteResourceSpec": {
-                                                "Kind": "gpu",
+                                                "Kind": "VRAM",
                                                 "Value": 1
                                               }
                                             }
