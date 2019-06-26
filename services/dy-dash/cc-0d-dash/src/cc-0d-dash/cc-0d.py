@@ -285,7 +285,7 @@ def create_graph_1():
     title="Membrane Potential"
     axis_colums = [0,ynid[39]+1]
     plot_0 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
-    fig = create_graph(data_frame=plot_0, 
+    fig = create_graph(data_frame=plot_0,
                 x_axis_title="time (sec)",
                 y_axis_title=title)
     return fig
@@ -295,7 +295,7 @@ def create_graph_2():
     title="I<sub>Ca</sub> (pA/pF)"
     axis_colums = [0,I_Ca_store-1]
     plot_1 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
-    fig = create_graph(data_frame=plot_1, 
+    fig = create_graph(data_frame=plot_1,
                 x_axis_title="time (sec)",
                 y_axis_title=title)
     return fig
@@ -334,10 +334,10 @@ def create_graph_3():
                     title="[Ca]<sub>SRT</sub> (mM)"
                 ),
                 yaxis2=dict(
-                    title="Ca Dyad (\u00B5M)", 
+                    title="Ca Dyad (\u00B5M)",
                     anchor="x2"),
                 yaxis3=dict(
-                    title="Ca sl (mM)", 
+                    title="Ca sl (mM)",
                     anchor="x3")
                 )
     return figs
@@ -347,25 +347,156 @@ def create_graph_4():
     title="[Ca]<sub>i</sub> (\u00B5M)"
     axis_colums = [0,ynid[38]+1]
     plot_5 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
-    fig = create_graph(data_frame=plot_5, 
-                title=None, 
+    fig = create_graph(data_frame=plot_5,
+                title=None,
                 x_axis_title="time (sec)",
                 y_axis_title=title)
     return fig
 
 def create_graph_5():
+    # Ito
+    title="I<sub>to</sub> (pA/pF)"
+    axis_colums = [0,Ito-1]
+    plot_6 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    create_graph(data_frame=plot_6,
+                title=None,
+                x_axis_title="time (sec)",
+                y_axis_title=title)
 
 def create_graph_6():
+    # INa
+    title="I<sub>Na</sub> (pA/pF)"
+    axis_colums = [0,INa-1]
+    plot_7 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    create_graph(data_frame=plot_7,
+                title=None,
+                x_axis_title="time (sec)",
+                y_axis_title=title)
 
 def create_graph_7():
+    # IKs and ICFTR
+    axis_colums = [0,Iks-1]
+    plot_8 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    plot_data = [plot_8]
+
+    axis_colums = [0,ICFTR-1]
+    plot_9 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    plot_data.append(plot_9)
+
+    create_graphs(data_frames=plot_data,
+                title=None,
+                showlegend=False,
+                #xaxis=dict(title="time (sec)"),
+                xaxis2=dict(title="time (sec)", anchor="y2"),
+                yaxis=dict(
+                    domain=[0.6,1.0],
+                    title="I<sub>Ks</sub> (pA/pF)"
+                ),
+                yaxis2=dict(
+                    domain=[0,0.5],
+                    title="I<sub>CFTR</sub>",
+                    anchor="x2")
+                )
 
 def create_graph_8():
+    # IKr and IK1
+    axis_colums = [0,Ikr-1]
+    plot_10 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    plot_data = [plot_10]
+
+    axis_colums = [0,IK1-1]
+    plot_11 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    plot_data.append(plot_11)
+
+    create_graphs(data_frames=plot_data,
+                title=None,
+                showlegend=False,
+                #xaxis=dict(title="time (sec)"),
+                xaxis2=dict(title="time (sec)", anchor="y2"),
+                yaxis=dict(
+                    domain=[0.6,1.0],
+                    title="I<sub>Kr</sub> (pA/pF)"
+                ),
+                yaxis2=dict(
+                    domain=[0,0.5],
+                    title="I<sub>K1</sub> (pA/pF)",
+                    anchor="x2")
+                )
 
 def create_graph_9():
+    # [Na]
+    axis_colums = [0,ynid[32]+1]
+    plot_12 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    plot_data = [plot_12]
+
+    axis_colums = [0,ynid[33]+1]
+    plot_13 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    plot_data.append(plot_13)
+
+    axis_colums = [0,ynid[34]+1]
+    plot_14 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    plot_data.append(plot_14)
+
+    create_graphs(data_frames=plot_data,
+                title=None,
+                showlegend=False,
+                xaxis=dict(title="time (sec)", domain=[0,0.3]),
+                xaxis2=dict(title="time (sec)", domain=[0.4,0.6]),
+                xaxis3=dict(title="time (sec)", domain=[0.7,1.0]),
+                yaxis=dict(
+                    title="[Na]<sub>j</sub>"
+                ),
+                yaxis2=dict(
+                    title="[Na]<sub>s<sup>l</sup></sub>",
+                    anchor="x2"),
+                yaxis3=dict(
+                    title="[Na]<sub>i</sub> (mmol/L relevant compartment",
+                    anchor="x3")
+                )
 
 def create_graph_10():
+    # I_NCX
+    title="I<sub>NCX</sub> (pA/pF)"
+    axis_colums = [0,Incx-1]
+    plot_15 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    create_graph(data_frame=plot_15,
+                title=None,
+                x_axis_title="time (sec)",
+                y_axis_title=title)
 
 def create_graph_11():
+    # RyR fluxes
+    axis_colums = [0,Jleak[0]-1]
+    plot_16 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    plot_data = [plot_16]
+
+    axis_colums = [0,Jleak[1]-1]
+    plot_17 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    plot_data.append(plot_17)
+
+    plot_18 = data_frame_ar.filter(items=[data_frame_ar.columns[0]])
+    plot_18[1] = data_frame_ar[Jleak[0]-1] - data_frame_ar[Jleak[1]-1]
+    plot_data.append(plot_18)
+    create_graphs(data_frames=plot_data,
+                title=None,
+                showlegend=False,
+                xaxis=dict(title=None),
+                xaxis2=dict(title=None),
+                xaxis3=dict(title="time (sec)", anchor="y3"),
+                yaxis=dict(
+                    domain=[0.7,1.0],
+                    title="JRyR<sub>tot</sub>"
+                ),
+                yaxis2=dict(
+                    domain=[0.4,0.6],
+                    title="Passive Leak",
+                    anchor="x2"),
+                yaxis3=dict(
+                    domain=[0,0.3],
+                    title="SR Ca release",
+                    anchor="x3")
+                )
+
 
 # When pressing 'Load' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the four input graphs.
