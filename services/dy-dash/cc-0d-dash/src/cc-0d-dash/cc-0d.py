@@ -21,7 +21,7 @@ if DEVEL_MODE:
     WORKDIR = str(Path(os.path.dirname(os.path.realpath(__file__))).parent)
 else:
     WORKDIR = '/home/jovyan'
-OUTPUT_DIR = WORKDIR + '/output'
+INPUT_DIR = WORKDIR + '/input'
 
 
 base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', "/")
@@ -203,6 +203,170 @@ app.layout = html.Div(children=[
 ], style=osparc_style)
 
 
+SLICING = 10
+
+def create_graphs(data_frames, **kwargs):
+    data = [        
+            go.Scatter(
+                x=data_frames[df_index].iloc[0::SLICING,0],
+                y=data_frames[df_index].iloc[0::SLICING,i],
+                #opacity=1, 
+                xaxis=("x" + str(df_index + 1)),
+                yaxis=("y" + str(df_index + 1)),
+                name=str(data_frames[df_index].columns[i])
+            ) for df_index in range(0, len(data_frames)) 
+            for i in range(1,data_frames[df_index].columns.size)
+    ]
+    
+    layout = go.Layout(**kwargs)
+    fig = go.Figure(data=data, layout=layout)
+    return fig
+
+def create_graph(data_frame, title=None, x_axis_title=None, y_axis_title = None):
+    data = [        
+            go.Scatter(
+                x=data_frame.iloc[0::SLICING,0],
+                y=data_frame.iloc[0::SLICING,i],
+                #opacity=1,
+                name=str(data_frame.columns[i])
+            ) 
+            for i in range(1,data_frame.columns.size)
+            
+    ]
+    
+    #fig = tools.make_subplots(rows=1, cols=len(data_frames))
+    layout = go.Layout(
+        title=title,
+        showlegend=False,
+        xaxis=dict(
+            title=x_axis_title
+        ),
+        yaxis=dict(
+            title=y_axis_title
+        )        
+    )
+    fig = go.Figure(data=data, layout=layout)
+    return fig
+
+
+data_path_ty = await PORTS.inputs[0].get()
+data_frame_ty = pd.read_csv(data_path_ty, sep='\t', header=None)
+
+# scale time
+f = lambda x: x/1000.0
+data_frame_ty[0] = data_frame_ty[0].apply(f)
+syids = 9
+yids = [30, 31, 32, 33, 34, 36, 37, 38, 39]
+ynid = [0] * 206
+for id in range(1,syids):
+    ynid[yids[id]] = id
+
+data_path_ar = await PORTS.inputs[1].get()
+data_frame_ar = pd.read_csv(data_path_ar, sep='\t', header=None)
+
+tArray = 1
+I_Ca_store = 2
+Ito = 3
+Itof = 4
+Itos = 5
+INa = 6
+IK1 = 7
+s1 = 8
+k1 = 9
+Jserca = 10
+Iks = 11
+Ikr = 12
+Jleak = [13,14]
+ICFTR = 15
+Incx = 16
+
+def create_graph_1():
+    # membrane potential
+    title="Membrane Potential"
+    axis_colums = [0,ynid[39]+1]
+    plot_0 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    fig = create_graph(data_frame=plot_0, 
+                x_axis_title="time (sec)",
+                y_axis_title=title)
+    return fig
+
+def create_graph_2():
+    # LCC current (ICa)
+    title="I<sub>Ca</sub> (pA/pF)"
+    axis_colums = [0,I_Ca_store-1]
+    plot_1 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    fig = create_graph(data_frame=plot_1, 
+                x_axis_title="time (sec)",
+                y_axis_title=title)
+    return fig
+
+def create_graph_3():
+    # CaSRT & Caj
+    data_frame_casrt = data_frame_ty.filter(items=[data_frame_ty.columns[0], data_frame_ty.columns[ynid[30]+1], data_frame_ty.columns[ynid[31]+1]])
+    data_frame_casrt[3] = data_frame_casrt[1] + data_frame_casrt[2]
+    plot_2 = data_frame_casrt.filter(items=[data_frame_casrt.columns[0], data_frame_casrt.columns[3]])
+    plot_data = [plot_2]
+
+    # 
+    g = lambda x: x*1000.0
+    axis_colums = [0,ynid[36]+1]
+    data_frame_ty[ynid[36]+1] = data_frame_ty[ynid[36]+1].apply(g)
+    plot_3 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    plot_data.append(plot_3)
+
+    axis_colums = [0,ynid[37]+1]
+    plot_4 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    plot_data.append(plot_4)
+    figs = create_graphs(data_frames=plot_data,
+                title=None,
+                showlegend=False,
+                xaxis=dict(
+                    domain=[0,0.3],
+                    title="time (sec)"
+                ),
+                xaxis2=dict(
+                    domain=[0.4,0.6],
+                    title="time (sec)"),
+                xaxis3=dict(
+                    domain=[0.7,1.0],
+                    title="time (sec)"),
+                yaxis=dict(
+                    title="[Ca]<sub>SRT</sub> (mM)"
+                ),
+                yaxis2=dict(
+                    title="Ca Dyad (\u00B5M)", 
+                    anchor="x2"),
+                yaxis3=dict(
+                    title="Ca sl (mM)", 
+                    anchor="x3")
+                )
+    return figs
+
+def create_graph_4():
+    # Cai
+    title="[Ca]<sub>i</sub> (\u00B5M)"
+    axis_colums = [0,ynid[38]+1]
+    plot_5 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    fig = create_graph(data_frame=plot_5, 
+                title=None, 
+                x_axis_title="time (sec)",
+                y_axis_title=title)
+    return fig
+
+def create_graph_5():
+
+def create_graph_6():
+
+def create_graph_7():
+
+def create_graph_8():
+
+def create_graph_9():
+
+def create_graph_10():
+
+def create_graph_11():
+
 # When pressing 'Load' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the four input graphs.
 @app.callback(
@@ -224,18 +388,19 @@ app.layout = html.Div(children=[
     ]
 )
 def read_input_files(_n_clicks):
+    print(INPUT_DIR)
     figs = [
-        empty_graph_1,
-        empty_graph_2,
-        empty_graph_3,
-        empty_graph_4,
-        empty_graph_5,
-        empty_graph_6,
-        empty_graph_7,
-        empty_graph_8,
-        empty_graph_9,
-        empty_graph_10,
-        empty_graph_11
+        create_graph_1(),
+        create_graph_2(),
+        create_graph_3(),
+        create_graph_4(),
+        create_graph_5(),
+        create_graph_6(),
+        create_graph_7(),
+        create_graph_8(),
+        create_graph_9(),
+        create_graph_10(),
+        create_graph_11()
     ]
     return figs
 
