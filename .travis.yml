@@ -75,6 +75,9 @@ jobs:
       # in pull request we do not have credentials to push, so this is useless
       name: build dy-mattward-dash
       sudo: required
+      language: python
+      python:
+        - "3.6"
       before_install:
         - sudo bash services/dy-dash/mattward-dash/CI/travis.sh before_install
       install:

@@ -10,7 +10,7 @@ before_install() {
 }
 
 install() {
-    echo "nothing to install..."
+    bash ops/travis/helpers/ensure_python_pip
     pip3 install -r services/dy-dash/mattward-dash/tests/requirements.txt
 }
 
