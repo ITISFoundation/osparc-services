@@ -11,6 +11,7 @@ before_install() {
 
 install() {
     echo "nothing to install..."
+    pip install -r services/dy-dash/mattward-dash/tests/requirements.txt
 }
 
 before_script() {
