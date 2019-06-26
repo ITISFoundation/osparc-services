@@ -59,7 +59,7 @@ rebuild:
 
 .PHONY: build-devel
 # target: build-devel: – Builds images of core services for development.
-build-devel: .env
+build-devel:
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml build --parallel
 
 .PHONY: up up-devel down
@@ -69,11 +69,15 @@ up: .env
 	${DOCKER_COMPOSE} -f docker-compose.yml up
 
 up-devel: .env
+	@mkdir -p notebook-inputs
+	@mkdir -p notebook-outputs
+	@mkdir -p retrieval-data
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml up
 
 down: .env
-	${DOCKER_COMPOSE} -f docker-compose.yml down
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml down
+	${DOCKER_COMPOSE} -f docker-compose.yml down
+
 
 .PHONY: push pull
 # target: push – Pushes the service images to ${DOCKER_REGISTRY}

@@ -1,6 +1,7 @@
 #!/bin/bash
-
-set -e
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+IFS=$'\n\t'
 
 # BOOTING application ---------------------------------------------
 echo "Booting application ..."
@@ -8,13 +9,13 @@ echo "  User    :`id $(whoami)`"
 echo "  Workdir :`pwd`"
 
 
-if test "${CREATE_DUMMY_TABLE}" = "1"
+if [ -v CREATE_DUMMY_TABLE ] && [ "${CREATE_DUMMY_TABLE}" = "1" ]
 then
     pip install -r /home/jovyan/devel/requirements.txt
-    pushd /home/jovyan/packages/simcore-sdk; pip install -r requirements-dev.txt; popd
+    pushd /home/jovyan/scripts/dy_services_helpers; pip3 install -r requirements.txt; popd
 
     echo "Creating dummy tables ... using ${USE_CASE_CONFIG_FILE}"
-    result="$(python scripts/dy_services_helpers/platform_initialiser_csv_files.py ${USE_CASE_CONFIG_FILE} ${INIT_OPTIONS})"
+    result="$(python scripts/dy_services_helpers/platform_initialiser.py ${USE_CASE_CONFIG_FILE} --folder ${TEST_DATA_PATH})"
     echo "Received result of $result";
     IFS=, read -a array <<< "$result";
     echo "Received result pipeline id of ${array[0]}";
@@ -25,7 +26,10 @@ then
 fi
 
 # start the notebook now
+echo
 echo "Setting theme ..."
 jt -t grade3 -f ubuntu -fs 12 -T -N -cellw 90%
 # start the notebook now
+echo
+echo "Starting notebook ..."
 /docker/boot_notebook.sh
