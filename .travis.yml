@@ -25,8 +25,7 @@ jobs:
   include:
     # build dy-jupyter images ----------------------------------------------------------------------
     - stage: build / unit-testing
-      # in pull request we do not have credentials to push, so this is useless
-      if: NOT type = pull_request
+      # in pull request we do not have credentials to push, checks that the build still passes      
       name: build dy-jupyter
       sudo: required
       before_install:
@@ -50,8 +49,7 @@ jobs:
 
     # build dy-3dvis images ----------------------------------------------------------------------
     - stage: build / unit-testing
-      # in pull request we do not have credentials to push, so this is useless
-      if: NOT type = pull_request
+      # in pull request we do not have credentials to push, checks that the build still passes
       name: build dy-3dvis
       sudo: required
       before_install:
@@ -75,8 +73,7 @@ jobs:
 
     # build dy-raw-graphs images ----------------------------------------------------------------------
     - stage: build / unit-testing
-      # in pull request we do not have credentials to push, so this is useless
-      if: NOT type = pull_request
+      # in pull request we do not have credentials to push, checks that the build still passes
       name: build dy-raw-graphs
       sudo: required
       before_install:
@@ -100,8 +97,7 @@ jobs:
 
       # build dy-jupyter-extensions images ----------------------------------------------------------------------
     - stage: build / unit-testing
-      # in pull request we do not have credentials to push, so this is useless
-      if: NOT type = pull_request
+      # in pull request we do not have credentials to push, checks that the build still passes
       name: build dy-jupyter-extensions
       sudo: required
       before_install:
@@ -126,8 +122,7 @@ jobs:
     # FIXME: modeling currently fails in building client code
     # build dy-modeling images ----------------------------------------------------------------------
     # - stage: build / unit-testing
-    #   # in pull request we do not have credentials to push, so this is useless
-    #   if: NOT type = pull_request
+    #   # in pull request we do not have credentials to push, checks that the build still passes
     #   name: build dy-modeling
     #   sudo: required
     #   before_install:
@@ -151,7 +146,7 @@ jobs:
 
     # build dy-2Dgraph images ----------------------------------------------------------------------
     - stage: dependent build
-      if: NOT type = pull_request
+      # in pull request we do not have credentials to push, checks that the build still passes
       name: build dy-2Dgraph
       sudo: required
       before_install:
