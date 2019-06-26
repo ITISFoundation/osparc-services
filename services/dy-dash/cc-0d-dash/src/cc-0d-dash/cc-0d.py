@@ -16,9 +16,10 @@ import plotly.graph_objs as go
 from plotly import tools
 
 
-DEVEL_MODE = False
+DEVEL_MODE = True
 if DEVEL_MODE:
-    WORKDIR = str(Path(os.path.dirname(os.path.realpath(__file__))).parent)
+    # WORKDIR = str(Path(os.path.dirname(os.path.realpath(__file__))).parent)
+    WORKDIR = str(Path(Path(os.path.dirname(os.path.realpath(__file__))).parent).parent)
 else:
     WORKDIR = '/home/jovyan'
 INPUT_DIR = WORKDIR + '/input'
@@ -249,7 +250,8 @@ def create_graph(data_frame, title=None, x_axis_title=None, y_axis_title = None)
     return fig
 
 
-data_path_ty = await PORTS.inputs[0].get()
+# data_path_ty = await PORTS.inputs[0].get()
+data_path_ty = INPUT_DIR + '/vm_1Hz.txt'
 data_frame_ty = pd.read_csv(data_path_ty, sep='\t', header=None)
 
 # scale time
@@ -261,7 +263,8 @@ ynid = [0] * 206
 for id in range(1,syids):
     ynid[yids[id]] = id
 
-data_path_ar = await PORTS.inputs[1].get()
+# data_path_ar = await PORTS.inputs[1].get()
+data_path_ar = INPUT_DIR + '/allresult_1Hz.txt'
 data_frame_ar = pd.read_csv(data_path_ar, sep='\t', header=None)
 
 tArray = 1
