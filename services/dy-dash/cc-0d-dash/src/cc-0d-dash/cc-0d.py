@@ -206,34 +206,34 @@ app.layout = html.Div(children=[
 SLICING = 10
 
 def create_graphs(data_frames, **kwargs):
-    data = [        
+    data = [
             go.Scatter(
                 x=data_frames[df_index].iloc[0::SLICING,0],
                 y=data_frames[df_index].iloc[0::SLICING,i],
-                #opacity=1, 
+                #opacity=1,
                 xaxis=("x" + str(df_index + 1)),
                 yaxis=("y" + str(df_index + 1)),
                 name=str(data_frames[df_index].columns[i])
-            ) for df_index in range(0, len(data_frames)) 
+            ) for df_index in range(0, len(data_frames))
             for i in range(1,data_frames[df_index].columns.size)
     ]
-    
+
     layout = go.Layout(**kwargs)
     fig = go.Figure(data=data, layout=layout)
     return fig
 
 def create_graph(data_frame, title=None, x_axis_title=None, y_axis_title = None):
-    data = [        
+    data = [
             go.Scatter(
                 x=data_frame.iloc[0::SLICING,0],
                 y=data_frame.iloc[0::SLICING,i],
                 #opacity=1,
                 name=str(data_frame.columns[i])
-            ) 
+            )
             for i in range(1,data_frame.columns.size)
-            
+
     ]
-    
+
     #fig = tools.make_subplots(rows=1, cols=len(data_frames))
     layout = go.Layout(
         title=title,
@@ -243,7 +243,7 @@ def create_graph(data_frame, title=None, x_axis_title=None, y_axis_title = None)
         ),
         yaxis=dict(
             title=y_axis_title
-        )        
+        )
     )
     fig = go.Figure(data=data, layout=layout)
     return fig
@@ -307,7 +307,7 @@ def create_graph_3():
     plot_2 = data_frame_casrt.filter(items=[data_frame_casrt.columns[0], data_frame_casrt.columns[3]])
     plot_data = [plot_2]
 
-    # 
+    #
     g = lambda x: x*1000.0
     axis_colums = [0,ynid[36]+1]
     data_frame_ty[ynid[36]+1] = data_frame_ty[ynid[36]+1].apply(g)
