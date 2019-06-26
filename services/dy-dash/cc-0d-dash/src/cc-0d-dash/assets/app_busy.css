@@ -11,9 +11,7 @@
 ._dash-loading-callback::after {
   content: url('./Loading.gif');
   left: calc(50% - 75px);
-  /* content: url('./S4L_Busy.png');
-  /* left: calc(50% - 175px); */
   top: calc(50% - 155px);
   display: block;
-  position: relative;
+  position: absolute;
 }
