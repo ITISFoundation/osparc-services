@@ -108,9 +108,7 @@ dcc_input_pair = {
 def get_empty_input_graph():
     fig = tools.make_subplots(rows=4,
                             cols=1,
-                            # specs=[[{}], [{}], [{}], [{}]],
                             shared_xaxes=True,
-                            # shared_yaxes=True,
                             vertical_spacing=0.05
     )
 
