@@ -1,7 +1,8 @@
-version: '3.6'
+version: '3.7'
 services:
   jupyter-base-notebook:
     image: ${DOCKER_REGISTRY}/jupyter-base-notebook:${DOCKER_IMAGE_TAG}
+    # init: true
     build:
       context: ../../
       dockerfile: services/dy-jupyter/Dockerfile
@@ -39,6 +40,7 @@ services:
       - '8888:8888'
   jupyter-scipy-notebook:
     image: ${DOCKER_REGISTRY}/jupyter-scipy-notebook:${DOCKER_IMAGE_TAG}
+    init: true
     build:
       context: ../../
       dockerfile: services/dy-jupyter/Dockerfile
@@ -77,6 +79,7 @@ services:
 
   jupyter-r-notebook:
     image: ${DOCKER_REGISTRY}/jupyter-r-notebook:${DOCKER_IMAGE_TAG}
+    init: true
     build:
       context: ../../
       dockerfile: services/dy-jupyter/Dockerfile
