@@ -16,22 +16,22 @@ services:
         io.simcore.name: '{"name": "3d-viewer"}'
         io.simcore.description: '{"description": "Paraview Web-based Visualizer"}'
         io.simcore.authors: '{"authors": [
-                              {"name": "Sylvain Anderegg", "email": "anderegg@itis.swiss", 
+                              {"name": "Sylvain Anderegg", "email": "anderegg@itis.swiss",
                               "affiliation": "ITIS Foundation"}
                             ]}'
         io.simcore.contact: '{"contact": "anderegg@itis.swiss"}'
         io.simcore.inputs: '{"inputs": {
-                              "A": 
-                                {"displayOrder":1, "label": "1 dataset or n dataset in a zip", 
-                                "description": "Any paraview compatible dataset. Any number can be compressed in a zip file.", 
-                                "type": "data:*/*"}, 
-                              "B":{"displayOrder":2, "label": "1 dataset or n dataset in a zip", 
-                              "description": "Any paraview compatible dataset. Any number can be compressed in a zip file.", 
+                              "A":
+                                {"displayOrder":1, "label": "A",
+                                "description": "Any paraview compatible dataset. 1 dataset or N dataset compressed in a zip file.",
+                                "type": "data:*/*"},
+                              "B":{"displayOrder":2, "label": "B",
+                              "description": "Any paraview compatible dataset. 1 dataset or N dataset compressed in a zip file.",
                               "type": "data:*/*"}}
                             }'
         io.simcore.outputs: '{"outputs": {}}'
         simcore.service.settings: '[
-                                    {"name": "ports", "type": "int", "value": 8777}, 
+                                    {"name": "ports", "type": "int", "value": 8777},
                                     {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}
                                   ]'
         simcore.service.bootsettings: '[]'
@@ -59,23 +59,41 @@ services:
         io.simcore.name: '{"name": "3d-viewer-gpu"}'
         io.simcore.description: '{"description": "Paraview Web-based Visualizer GPU accelerated"}'
         io.simcore.authors: '{"authors": [
-                              {"name": "Sylvain Anderegg", "email": "anderegg@itis.swiss", 
+                              {"name": "Sylvain Anderegg", "email": "anderegg@itis.swiss",
                               "affiliation": "ITIS Foundation"}
                             ]}'
         io.simcore.contact: '{"contact": "anderegg@itis.swiss"}'
         io.simcore.inputs: '{"inputs": {
-                              "A": 
-                                {"displayOrder":1, "label": "1 dataset or n dataset in a zip", 
-                                "description": "Any paraview compatible dataset. Any number can be compressed in a zip file.", 
-                                "type": "data:*/*"}, 
-                              "B":{"displayOrder":2, "label": "1 dataset or n dataset in a zip", 
-                              "description": "Any paraview compatible dataset. Any number can be compressed in a zip file.", 
+                              "A":
+                                {"displayOrder":1, "label": "1 dataset or n dataset in a zip",
+                                "description": "Any paraview compatible dataset. Any number can be compressed in a zip file.",
+                                "type": "data:*/*"},
+                              "B":{"displayOrder":2, "label": "1 dataset or n dataset in a zip",
+                              "description": "Any paraview compatible dataset. Any number can be compressed in a zip file.",
                               "type": "data:*/*"}}
                             }'
         io.simcore.outputs: '{"outputs": {}}'
         simcore.service.settings: '[
-                                    {"name": "ports", "type": "int", "value": 8777}, 
-                                    {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}
+                                    {"name": "ports", "type": "int", "value": 8777},
+                                    {"name": "constraints", "type": "string", "value": [
+                                      "node.platform.os == linux"
+                                      ]},
+                                    {"name": "Resources", "type": "Resources", "value":
+                                      {
+                                      "Limits": {},
+                                      "Reservations":
+                                        {
+                                          "GenericResources": [
+                                            {
+                                               "DiscreteResourceSpec": {
+                                                "Kind": "VRAM",
+                                                "Value": 1
+                                              }
+                                            }
+                                          ]
+                                        }
+                                      }
+                                    }
                                   ]'
         simcore.service.bootsettings: '[]'
         org.label-schema.schema-version: "1.0"
@@ -85,10 +103,4 @@ services:
     runtime: nvidia
     ports:
       - '8778:8778'
-  simcore-paraviewweb-gpu2:
-    image: ${DOCKER_REGISTRY}/3d-viewer-gpu:${DOCKER_IMAGE_TAG}    
-    runtime: nvidia
-    ports:
-      - '8779:8779'
-    depends_on: 
-      - simcore-paraviewweb-gpu
+
