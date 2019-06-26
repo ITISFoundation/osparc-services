@@ -22,11 +22,11 @@ services:
         io.simcore.contact: '{"contact": "anderegg@itis.swiss"}'
         io.simcore.inputs: '{"inputs": {
                               "A":
-                                {"displayOrder":1, "label": "1 dataset or n dataset in a zip",
-                                "description": "Any paraview compatible dataset. Any number can be compressed in a zip file.",
+                                {"displayOrder":1, "label": "A",
+                                "description": "Any paraview compatible dataset. 1 dataset or N dataset compressed in a zip file.",
                                 "type": "data:*/*"},
-                              "B":{"displayOrder":2, "label": "1 dataset or n dataset in a zip",
-                              "description": "Any paraview compatible dataset. Any number can be compressed in a zip file.",
+                              "B":{"displayOrder":2, "label": "B",
+                              "description": "Any paraview compatible dataset. 1 dataset or N dataset compressed in a zip file.",
                               "type": "data:*/*"}}
                             }'
         io.simcore.outputs: '{"outputs": {}}'
