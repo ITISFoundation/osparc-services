@@ -74,25 +74,24 @@ jobs:
     # build dy-mattward-dash images ----------------------------------------------------------------------
     - stage: build / unit-testing
       # in pull request we do not have credentials to push, so this is useless
-      if: NOT type = pull_request
       name: build dy-mattward-dash
       sudo: required
       before_install:
-        - sudo bash services/dy-dash/bornstein-dash/travis.sh before_install
+        - sudo bash services/dy-dash/mattward-dash/travis.sh before_install
       install:
-        - unbuffer bash services/dy-dash/bornstein-dash/travis.sh install
+        - unbuffer bash services/dy-dash/mattward-dash/travis.sh install
       before_script:
-        - unbuffer bash services/dy-dash/bornstein-dash/travis.sh before_script
+        - unbuffer bash services/dy-dash/mattward-dash/travis.sh before_script
       script:
-        - unbuffer bash services/dy-dash/bornstein-dash/travis.sh script
+        - unbuffer bash services/dy-dash/mattward-dash/travis.sh script
       after_success:
-        - unbuffer bash services/dy-dash/bornstein-dash/travis.sh after_success
+        - unbuffer bash services/dy-dash/mattward-dash/travis.sh after_success
       after_failure:
-        - unbuffer bash services/dy-dash/bornstein-dash/travis.sh after_failure
+        - unbuffer bash services/dy-dash/mattward-dash/travis.sh after_failure
       deploy:
         - provider: script
           skip_cleanup: true
-          script: unbuffer bash services/dy-dash/bornstein-dash/travis.sh deploy
+          script: unbuffer bash services/dy-dash/mattward-dash/travis.sh deploy
           on:
             all_branches: true
     # build dy-raw-graphs images ----------------------------------------------------------------------
