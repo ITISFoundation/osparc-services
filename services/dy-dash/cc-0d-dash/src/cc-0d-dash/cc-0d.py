@@ -235,17 +235,8 @@ def create_graph(data_frame, title=None, x_axis_title=None, y_axis_title = None)
 
     ]
 
-    #fig = tools.make_subplots(rows=1, cols=len(data_frames))
-    layout = go.Layout(
-        title=title,
-        showlegend=False,
-        xaxis=dict(
-            title=x_axis_title
-        ),
-        yaxis=dict(
-            title=y_axis_title
-        )
-    )
+    fig = get_empty_input_graph(x_axis_title, y_axis_title)
+    layout = go.Layout(fig['layout'])
     fig = go.Figure(data=data, layout=layout)
     return fig
 
