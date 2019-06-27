@@ -376,20 +376,25 @@ def create_graph_7():
     plot_9 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
     plot_data.append(plot_9)
 
-    create_graphs(data_frames=plot_data,
-                title=None,
-                showlegend=False,
-                #xaxis=dict(title="time (sec)"),
-                xaxis2=dict(title="time (sec)", anchor="y2"),
-                yaxis=dict(
-                    domain=[0.6,1.0],
-                    title="I<sub>Ks</sub> (pA/pF)"
-                ),
-                yaxis2=dict(
-                    domain=[0,0.5],
-                    title="I<sub>CFTR</sub>",
-                    anchor="x2")
-                )
+    create_graphs(
+        data_frames=plot_data,
+        title=None,
+        showlegend=False,
+        #xaxis=dict(title="time (sec)"),
+        xaxis2=dict(
+            title="time (sec)",
+            anchor="y2"
+        ),
+        yaxis=dict(
+            domain=[0.6,1.0],
+            title="I<sub>Ks</sub> (pA/pF)"
+        ),
+        yaxis2=dict(
+            domain=[0,0.5],
+            title="I<sub>CFTR</sub>",
+            anchor="x2"
+        )
+    )
 
 def create_graph_8():
     # IKr and IK1
@@ -401,20 +406,22 @@ def create_graph_8():
     plot_11 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
     plot_data.append(plot_11)
 
-    create_graphs(data_frames=plot_data,
-                title=None,
-                showlegend=False,
-                #xaxis=dict(title="time (sec)"),
-                xaxis2=dict(title="time (sec)", anchor="y2"),
-                yaxis=dict(
-                    domain=[0.6,1.0],
-                    title="I<sub>Kr</sub> (pA/pF)"
-                ),
-                yaxis2=dict(
-                    domain=[0,0.5],
-                    title="I<sub>K1</sub> (pA/pF)",
-                    anchor="x2")
-                )
+    create_graphs(
+        data_frames=plot_data,
+        title=None,
+        showlegend=False,
+        #xaxis=dict(title="time (sec)"),
+        xaxis2=dict(title="time (sec)", anchor="y2"),
+        yaxis=dict(
+            domain=[0.6,1.0],
+            title="I<sub>Kr</sub> (pA/pF)"
+        ),
+        yaxis2=dict(
+            domain=[0,0.5],
+            title="I<sub>K1</sub> (pA/pF)",
+            anchor="x2"
+        )
+    )
 
 def create_graph_9():
     # [Na]
@@ -430,22 +437,25 @@ def create_graph_9():
     plot_14 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
     plot_data.append(plot_14)
 
-    create_graphs(data_frames=plot_data,
-                title=None,
-                showlegend=False,
-                xaxis=dict(title="time (sec)", domain=[0,0.3]),
-                xaxis2=dict(title="time (sec)", domain=[0.4,0.6]),
-                xaxis3=dict(title="time (sec)", domain=[0.7,1.0]),
-                yaxis=dict(
-                    title="[Na]<sub>j</sub>"
-                ),
-                yaxis2=dict(
-                    title="[Na]<sub>s<sup>l</sup></sub>",
-                    anchor="x2"),
-                yaxis3=dict(
-                    title="[Na]<sub>i</sub> (mmol/L relevant compartment",
-                    anchor="x3")
-                )
+    create_graphs(
+        data_frames=plot_data,
+        title=None,
+        showlegend=False,
+        xaxis=dict(title="time (sec)", domain=[0,0.3]),
+        xaxis2=dict(title="time (sec)", domain=[0.4,0.6]),
+        xaxis3=dict(title="time (sec)", domain=[0.7,1.0]),
+        yaxis=dict(
+            title="[Na]<sub>j</sub>"
+        ),
+        yaxis2=dict(
+            title="[Na]<sub>s<sup>l</sup></sub>",
+            anchor="x2"
+        ),
+        yaxis3=dict(
+            title="[Na]<sub>i</sub> (mmol/L relevant compartment",
+            anchor="x3"
+        )
+    )
 
 def create_graph_10():
     # I_NCX
@@ -470,25 +480,28 @@ def create_graph_11():
     plot_18 = data_frame_ar.filter(items=[data_frame_ar.columns[0]])
     plot_18[1] = data_frame_ar[Jleak[0]-1] - data_frame_ar[Jleak[1]-1]
     plot_data.append(plot_18)
-    create_graphs(data_frames=plot_data,
-                title=None,
-                showlegend=False,
-                xaxis=dict(title=None),
-                xaxis2=dict(title=None),
-                xaxis3=dict(title="time (sec)", anchor="y3"),
-                yaxis=dict(
-                    domain=[0.7,1.0],
-                    title="JRyR<sub>tot</sub>"
-                ),
-                yaxis2=dict(
-                    domain=[0.4,0.6],
-                    title="Passive Leak",
-                    anchor="x2"),
-                yaxis3=dict(
-                    domain=[0,0.3],
-                    title="SR Ca release",
-                    anchor="x3")
-                )
+    create_graphs(
+        data_frames=plot_data,
+        title=None,
+        showlegend=False,
+        xaxis=dict(title=None),
+        xaxis2=dict(title=None),
+        xaxis3=dict(title="time (sec)", anchor="y3"),
+        yaxis=dict(
+            domain=[0.7,1.0],
+            title="JRyR<sub>tot</sub>"
+        ),
+        yaxis2=dict(
+            domain=[0.4,0.6],
+            title="Passive Leak",
+            anchor="x2"
+        ),
+        yaxis3=dict(
+            domain=[0,0.3],
+            title="SR Ca release",
+            anchor="x3"
+        )
+    )
 
 
 # When pressing 'Load' this callback will be triggered.
