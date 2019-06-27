@@ -12,7 +12,6 @@ before_install() {
 install() {
     bash ops/travis/helpers/ensure_python_pip
     pip3 install -r services/dy-dash/mattward-dash/tests/requirements.txt
-    pip3 list
 }
 
 before_script() {
@@ -21,7 +20,6 @@ before_script() {
 }
 
 script() {
-    pip3 list
     cd services/dy-dash/mattward-dash
     make build
     make unit-test
