@@ -51,6 +51,9 @@ services:
         org.label-schema.vcs-url: https://github.com/odeimaiz
       target: production
     image: ${DOCKER_REGISTRY}/cc-rabbit-0d:${DOCKER_IMAGE_TAG}
+    volumes:
+      - ./input:/home/jovyan/input
+      - ./output:/home/jovyan/output
     ports:
     - 1240:8888
     init: true
