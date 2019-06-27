@@ -1,7 +1,7 @@
 version: '3.6'
 services:
   cc-rabbit-0d:
-    image: ${DOCKER_REGISTRY}/simcore/services/comp/cc-rabbit-0d:latest
+    image: ${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:latest
     command: run
     build:
       context: ./

@@ -98,7 +98,7 @@ check-pull:
 	@${DOCKER} login ${DOCKER_REGISTRY};\
 	SERVICE_VERSION=$$(cat VERSION);\
 	${DOCKER} pull \
-		${DOCKER_REGISTRY}/simcore/services/comp/cc-rabbit-0d:$$SERVICE_VERSION; \
+		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:$$SERVICE_VERSION; \
 	if [ $$? -eq 0 ] ; then \
 		echo "image already in registry ${DOCKER_REGISTRY}";\
 		false;\
@@ -123,17 +123,17 @@ push:
 	${DOCKER} login ${DOCKER_REGISTRY};\
 	SERVICE_VERSION=$$(cat VERSION);\
 	${DOCKER} tag \
-		${DOCKER_REGISTRY}/simcore/services/comp/cc-rabbit-0d:latest \
-		${DOCKER_REGISTRY}/simcore/services/comp/cc-rabbit-0d:$$SERVICE_VERSION;\
+		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:latest \
+		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:$$SERVICE_VERSION;\
 	${DOCKER} push \
-		${DOCKER_REGISTRY}/simcore/services/comp/cc-rabbit-0d:$$SERVICE_VERSION;\
+		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:$$SERVICE_VERSION;\
 	${DOCKER} push \
-		${DOCKER_REGISTRY}/simcore/services/comp/cc-rabbit-0d:latest;
+		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:latest;
 
 pull:
 	# pull latest service version if available
 	${DOCKER} pull \
-		${DOCKER_REGISTRY}/simcore/services/comp/cc-rabbit-0d:latest || true;
+		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:latest || true;
 
 # basic checks -------------------------------------
 .env: .env-devel
