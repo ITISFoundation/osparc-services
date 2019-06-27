@@ -1,24 +1,16 @@
 {
     "inputs": {
-        "input_1": {
-            "displayOrder": 1,
-            "label": "input_1_label",
-            "description": "The input 1 description",
-            "type": "string",
-            "defaultValue": "some_value(optional)",
-            "fileToKeyMap": {
-                "somefilename.ext":"input_1"
-            }
+        "vm_1Hz": {
+            "label": "vm 1Hz",
+            "displayOrder": 0,
+            "description": "Computed values from the solver",
+            "type": "data:*/*"
         },
-        "input_2": {
-            "displayOrder": 2,
-            "label": "input_2_label",
-            "description": "The input 2 description",
-            "type": "string",
-            "defaultValue": "some_value(optional)",
-            "fileToKeyMap": {
-                "somefilename.ext":"input_2"
-            }
+        "all_results_1Hz": {
+            "label": "all results 1Hz",
+            "displayOrder": 1,
+            "description": "Computed values from the solver",
+            "type": "data:*/*"
         }
     }
 }
