@@ -48,14 +48,6 @@ services:
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: https://github.com/odeimaiz
       target: production
-    command: run
-    environment:
-    - INPUT_FOLDER=/input
-    - OUTPUT_FOLDER=/output
-    - LOG_FOLDER=/log
-    image: ${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:latest
-    volumes:
-    - ./validation/input:/input
-    - ./tmp/output:/output
-    - ./tmp/log:/log
-version: '3.6'
+    image: ${DOCKER_REGISTRY}/cc-rabbit-0d:${DOCKER_IMAGE_TAG}    
+    init: true
+version: '3.7'
