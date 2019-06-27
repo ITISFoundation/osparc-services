@@ -14,7 +14,7 @@ import plotly.graph_objs as go
 from plotly import tools
 
 
-DEVEL_MODE = True
+DEVEL_MODE = False
 if DEVEL_MODE:
     WORKDIR = Path(os.path.dirname(os.path.realpath(__file__))).parent
 else:
