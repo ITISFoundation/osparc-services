@@ -1,0 +1,23 @@
+version: '3.6'
+services:
+  cc-rabbit-0d:
+    image: ${DOCKER_REGISTRY}/simcore/services/comp/cc-rabbit-0d:latest
+    command: run
+    build:
+      context: ./
+      dockerfile: src/Dockerfile
+      target: production
+      labels:
+        org.label-schema.schema-version: "1.0"
+        org.label-schema.build-date: "${BUILD_DATE}"
+        org.label-schema.vcs-url: https://github.com/odeimaiz
+        org.label-schema.vcs-ref: "${VCS_REF}"
+    environment:
+      - INPUT_FOLDER=/input
+      - OUTPUT_FOLDER=/output
+      - LOG_FOLDER=/log
+    volumes:
+      # some defaults to test the service
+      - ./validation/input:/input
+      - ./tmp/output:/output
+      - ./tmp/log:/log
