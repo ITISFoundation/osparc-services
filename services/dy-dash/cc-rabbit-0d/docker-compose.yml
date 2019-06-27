@@ -1,6 +1,8 @@
 services:
   cc-rabbit-0d:
     build:
+      args:
+        APP_NAME: cc-rabbit-0d.py
       context: ./
       dockerfile: src/Dockerfile
       labels:
@@ -48,6 +50,8 @@ services:
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: https://github.com/odeimaiz
       target: production
-    image: ${DOCKER_REGISTRY}/cc-rabbit-0d:${DOCKER_IMAGE_TAG}    
+    image: ${DOCKER_REGISTRY}/cc-rabbit-0d:${DOCKER_IMAGE_TAG}
+    ports:
+    - 1240:8888
     init: true
 version: '3.7'
