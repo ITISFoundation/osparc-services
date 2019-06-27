@@ -1,185 +1,118 @@
 {
     "outputs": {
-        
         "output_1": {
-            "displayOrder": 1,
-            "label": "output_1_label",
-            "description": "The input 1 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_1"
-            }
-        }
-        ,
+            "label": "Membrane Potential",
+            "displayOrder": 0,
+            "description": "Membrane Potential csv",
+            "type": "data:text/csv"
+        },
         "output_2": {
-            "displayOrder": 2,
-            "label": "output_2_label",
-            "description": "The input 2 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_2"
-            }
-        }
-        ,
+            "label": "LCC current",
+            "displayOrder": 1,
+            "description": "LCC current csv",
+            "type": "data:text/csv"
+        },
         "output_3": {
-            "displayOrder": 3,
-            "label": "output_3_label",
-            "description": "The input 3 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_3"
-            }
-        }
-        ,
+            "label": "CaSRT",
+            "displayOrder": 2,
+            "description": "CaSRT csv",
+            "type": "data:text/csv"
+        },
         "output_4": {
-            "displayOrder": 4,
-            "label": "output_4_label",
-            "description": "The input 4 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_4"
-            }
-        }
-        ,
+            "label": "Ca Dyad",
+            "displayOrder": 3,
+            "description": "Ca Dyad csv",
+            "type": "data:text/csv"
+        },
         "output_5": {
-            "displayOrder": 5,
-            "label": "output_5_label",
-            "description": "The input 5 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_5"
-            }
-        }
-        ,
+            "label": "Ca sl",
+            "displayOrder": 4,
+            "description": "Ca sl csv",
+            "type": "data:text/csv"
+        },
         "output_6": {
-            "displayOrder": 6,
-            "label": "output_6_label",
-            "description": "The input 6 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_6"
-            }
-        }
-        ,
+            "label": "Cai",
+            "displayOrder": 5,
+            "description": "Cai csv",
+            "type": "data:text/csv"
+        },
         "output_7": {
-            "displayOrder": 7,
-            "label": "output_7_label",
-            "description": "The input 7 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_7"
-            }
-        }
-        ,
+            "label": "Ito",
+            "displayOrder": 6,
+            "description": "Ito csv",
+            "type": "data:text/csv"
+        },
         "output_8": {
-            "displayOrder": 8,
-            "label": "output_8_label",
-            "description": "The input 8 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_8"
-            }
-        }
-        ,
+            "label": "INa",
+            "displayOrder": 7,
+            "description": "INa csv",
+            "type": "data:text/csv"
+        },
         "output_9": {
-            "displayOrder": 9,
-            "label": "output_9_label",
-            "description": "The input 9 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_9"
-            }
-        }
-        ,
+            "label": "IKs",
+            "displayOrder": 8,
+            "description": "IKs csv",
+            "type": "data:text/csv"
+        },
         "output_10": {
-            "displayOrder": 10,
-            "label": "output_10_label",
-            "description": "The input 10 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_10"
-            }
-        }
-        ,
+            "label": "ICFTR",
+            "displayOrder": 9,
+            "description": "ICFTR csv",
+            "type": "data:text/csv"
+        },
         "output_11": {
-            "displayOrder": 11,
-            "label": "output_11_label",
-            "description": "The input 11 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_11"
-            }
-        }
-        ,
+            "label": "IKr",
+            "displayOrder": 10,
+            "description": "IKr csv",
+            "type": "data:text/csv"
+        },
         "output_12": {
-            "displayOrder": 12,
-            "label": "output_12_label",
-            "description": "The input 12 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_12"
-            }
-        }
-        ,
+            "label": "IK1",
+            "displayOrder": 11,
+            "description": "IK1 csv",
+            "type": "data:text/csv"
+        },
         "output_13": {
-            "displayOrder": 13,
-            "label": "output_13_label",
-            "description": "The input 13 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_13"
-            }
-        }
-        ,
+            "label": "Naj",
+            "displayOrder": 12,
+            "description": "Naj csv",
+            "type": "data:text/csv"
+        },
         "output_14": {
-            "displayOrder": 14,
-            "label": "output_14_label",
-            "description": "The input 14 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_14"
-            }
-        }
-        ,
+            "label": "Nas",
+            "displayOrder": 13,
+            "description": "Nas csv",
+            "type": "data:text/csv"
+        },
         "output_15": {
-            "displayOrder": 15,
-            "label": "output_15_label",
-            "description": "The input 15 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_15"
-            }
-        }
-        ,
+            "label": "Nal",
+            "displayOrder": 14,
+            "description": "Nal csv",
+            "type": "data:text/csv"
+        },
         "output_16": {
-            "displayOrder": 16,
-            "label": "output_16_label",
-            "description": "The input 16 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_16"
-            }
-        }
-        ,
+            "label": "Incx",
+            "displayOrder": 15,
+            "description": "Incx csv",
+            "type": "data:text/csv"
+        },
         "output_17": {
-            "displayOrder": 17,
-            "label": "output_17_label",
-            "description": "The input 17 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_17"
-            }
-        }
-        ,
+            "label": "JRyR",
+            "displayOrder": 16,
+            "description": "JRyR csv",
+            "type": "data:text/csv"
+        },
         "output_18": {
+            "label": "Passive Leak",
+            "displayOrder": 17,
+            "description": "Passive Leak csv",
+            "type": "data:text/csv"
+        },
+        "output_19": {
+            "label": "SR Ca release",
             "displayOrder": 18,
-            "label": "output_18_label",
-            "description": "The input 18 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_18"
-            }
+            "description": "SR Ca release csv",
+            "type": "data:text/csv"
         }
-        
     }
 }
