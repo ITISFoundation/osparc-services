@@ -1,0 +1,10 @@
+#!/bin/bash
+#---------------------------------------------------------------
+# AUTO-GENERATED CODE, do not modify this will be overwritten!!!
+#---------------------------------------------------------------
+set -e
+_json_input=$INPUT_FOLDER/input.json
+export VM_1HZ=$INPUT_FOLDER/vm_1Hz
+export ALL_RESULTS_1HZ=$INPUT_FOLDER/all_results_1Hz
+export LOG_FILE=$LOG_FOLDER/log.dat
+bash execute
