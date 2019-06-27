@@ -208,15 +208,15 @@ SLICING = 10
 
 def create_graphs(data_frames, **kwargs):
     data = [
-            go.Scatter(
-                x=data_frames[df_index].iloc[0::SLICING,0],
-                y=data_frames[df_index].iloc[0::SLICING,i],
-                #opacity=1,
-                xaxis=("x" + str(df_index + 1)),
-                yaxis=("y" + str(df_index + 1)),
-                name=str(data_frames[df_index].columns[i])
-            ) for df_index in range(0, len(data_frames))
-            for i in range(1,data_frames[df_index].columns.size)
+        go.Scatter(
+            x=data_frames[df_index].iloc[0::SLICING,0],
+            y=data_frames[df_index].iloc[0::SLICING,i],
+            #opacity=1,
+            xaxis=("x" + str(df_index + 1)),
+            yaxis=("y" + str(df_index + 1)),
+            name=str(data_frames[df_index].columns[i])
+        ) for df_index in range(0, len(data_frames))
+        for i in range(1,data_frames[df_index].columns.size)
     ]
 
     layout = go.Layout(**kwargs)
@@ -225,14 +225,13 @@ def create_graphs(data_frames, **kwargs):
 
 def create_graph(data_frame, title=None, x_axis_title=None, y_axis_title = None):
     data = [
-            go.Scatter(
-                x=data_frame.iloc[0::SLICING,0],
-                y=data_frame.iloc[0::SLICING,i],
-                #opacity=1,
-                name=str(data_frame.columns[i])
-            )
-            for i in range(1,data_frame.columns.size)
-
+        go.Scatter(
+            x=data_frame.iloc[0::SLICING,0],
+            y=data_frame.iloc[0::SLICING,i],
+            #opacity=1,
+            # name=str(data_frame.columns[i])
+        )
+        for i in range(1,data_frame.columns.size)
     ]
 
     fig = get_empty_input_graph(x_axis_title, y_axis_title)
