@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
 from pathlib import Path
-import subprocess
 import asyncio
 
-import numpy as np
 import pandas as pd
 import flask
 import dash
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
 
@@ -18,11 +16,10 @@ from plotly import tools
 
 DEVEL_MODE = True
 if DEVEL_MODE:
-    # WORKDIR = str(Path(os.path.dirname(os.path.realpath(__file__))).parent)
-    WORKDIR = str(Path(Path(os.path.dirname(os.path.realpath(__file__))).parent).parent)
+    WORKDIR = Path(os.path.dirname(os.path.realpath(__file__))).parent
 else:
-    WORKDIR = '/home/jovyan'
-INPUT_DIR = WORKDIR + '/input'
+    WORKDIR = Path('/home/jovyan')
+INPUT_DIR = WORKDIR / 'input'
 
 
 base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', "/")
@@ -223,7 +220,7 @@ def create_graphs(data_frames, **kwargs):
     fig = go.Figure(data=data, layout=layout)
     return fig
 
-def create_graph(data_frame, title=None, x_axis_title=None, y_axis_title = None):
+def create_graph(data_frame, x_axis_title=None, y_axis_title = None):
     data = [
         go.Scatter(
             x=data_frame.iloc[0::SLICING,0],
@@ -241,7 +238,7 @@ def create_graph(data_frame, title=None, x_axis_title=None, y_axis_title = None)
 
 
 # data_path_ty = await PORTS.inputs[0].get()
-data_path_ty = INPUT_DIR + '/vm_1Hz.txt'
+data_path_ty = INPUT_DIR / 'vm_1Hz.txt'
 data_frame_ty = pd.read_csv(data_path_ty, sep='\t', header=None)
 
 # scale time
@@ -250,11 +247,11 @@ data_frame_ty[0] = data_frame_ty[0].apply(f)
 syids = 9
 yids = [30, 31, 32, 33, 34, 36, 37, 38, 39]
 ynid = [0] * 206
-for id in range(1,syids):
-    ynid[yids[id]] = id
+for i in range(1,syids):
+    ynid[yids[i]] = i
 
 # data_path_ar = await PORTS.inputs[1].get()
-data_path_ar = INPUT_DIR + '/allresult_1Hz.txt'
+data_path_ar = INPUT_DIR / 'allresult_1Hz.txt'
 data_frame_ar = pd.read_csv(data_path_ar, sep='\t', header=None)
 
 tArray = 1
@@ -341,7 +338,6 @@ def create_graph_4():
     axis_colums = [0,ynid[38]+1]
     plot_5 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
     fig = create_graph(data_frame=plot_5,
-                title=None,
                 x_axis_title="time (sec)",
                 y_axis_title=title)
     return fig
@@ -352,7 +348,6 @@ def create_graph_5():
     axis_colums = [0,Ito-1]
     plot_6 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
     create_graph(data_frame=plot_6,
-                title=None,
                 x_axis_title="time (sec)",
                 y_axis_title=title)
 
@@ -362,7 +357,6 @@ def create_graph_6():
     axis_colums = [0,INa-1]
     plot_7 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
     create_graph(data_frame=plot_7,
-                title=None,
                 x_axis_title="time (sec)",
                 y_axis_title=title)
 
@@ -463,7 +457,6 @@ def create_graph_10():
     axis_colums = [0,Incx-1]
     plot_15 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
     create_graph(data_frame=plot_15,
-                title=None,
                 x_axis_title="time (sec)",
                 y_axis_title=title)
 
