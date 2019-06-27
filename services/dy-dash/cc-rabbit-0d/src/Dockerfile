@@ -1,5 +1,4 @@
-#ARG BASE_IMAGE
-FROM itisfoundation/cnap-dy-jupyter:latest AS common
+FROM jupyter/base-notebook AS common
 LABEL maintainer=odeimaiz
 
 # install requirements --------------------------------------------------------
