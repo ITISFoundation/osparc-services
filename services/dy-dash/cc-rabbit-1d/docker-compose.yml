@@ -1,23 +1,36 @@
-version: '3.6'
 services:
   cc-rabbit-1d:
-    image: ${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-1d:latest
-    command: run
     build:
       context: ./
       dockerfile: src/Dockerfile
-      target: production
       labels:
-        org.label-schema.schema-version: "1.0"
-        org.label-schema.build-date: "${BUILD_DATE}"
+        io.simcore.authors: '{"authors": [{"name": "Odei Maiz", "email": "maiz@itis.swiss",
+          "affiliation": "ITIS Foundation"}]}'
+        io.simcore.contact: '{"contact": "maiz@itis.swiss"}'
+        io.simcore.description: '{"description": "cc-rabbit-1d"}'
+        io.simcore.inputs: '{"inputs": {"ECGs": {"label": "ECGs", "displayOrder":
+          0, "description": "Computed ECGs out of a solver", "type": "data:*/*"},
+          "y_1D": {"label": "action potentials", "displayOrder": 1, "description":
+          "Action potentials out of solver", "type": "data:*/*"}}}'
+        io.simcore.key: '{"key": "simcore/services/dynamic/cc-rabbit-1d"}'
+        io.simcore.name: '{"name": "cc-rabbit-1d"}'
+        io.simcore.outputs: '{"outputs": {"out_1": {"label": "ECG", "displayOrder":
+          0, "description": "ECG csv", "type": "data:text/csv"}}}'
+        io.simcore.type: '{"type": "dynamic"}'
+        io.simcore.version: '{"version": "0.1.0"}'
+        org.label-schema.build-date: ${BUILD_DATE}
+        org.label-schema.schema-version: '1.0'
+        org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: https://github.com/ITISFoundation/osparc-services
-        org.label-schema.vcs-ref: "${VCS_REF}"
+      target: production
+    command: run
     environment:
-      - INPUT_FOLDER=/input
-      - OUTPUT_FOLDER=/output
-      - LOG_FOLDER=/log
+    - INPUT_FOLDER=/input
+    - OUTPUT_FOLDER=/output
+    - LOG_FOLDER=/log
+    image: ${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-1d:latest
     volumes:
-      # some defaults to test the service
-      - ./validation/input:/input
-      - ./tmp/output:/output
-      - ./tmp/log:/log
+    - ./validation/input:/input
+    - ./tmp/output:/output
+    - ./tmp/log:/log
+version: '3.6'
