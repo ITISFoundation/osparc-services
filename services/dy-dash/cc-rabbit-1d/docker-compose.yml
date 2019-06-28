@@ -1,6 +1,8 @@
 services:
   cc-rabbit-1d:
     build:
+      args:
+        APP_NAME: cc-rabbit-1d.py
       context: ./
       dockerfile: src/Dockerfile
       labels:
@@ -23,14 +25,11 @@ services:
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: https://github.com/ITISFoundation/osparc-services
       target: production
-    command: run
-    environment:
-    - INPUT_FOLDER=/input
-    - OUTPUT_FOLDER=/output
-    - LOG_FOLDER=/log
-    image: ${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-1d:latest
+    image: ${DOCKER_REGISTRY}/cc-rabbit-1d:${DOCKER_IMAGE_TAG}
     volumes:
-    - ./validation/input:/input
-    - ./tmp/output:/output
-    - ./tmp/log:/log
-version: '3.6'
+      - ./input:/home/jovyan/input
+      - ./output:/home/jovyan/output
+    ports:
+    - 1241:8888
+    init: true
+version: '3.7'
