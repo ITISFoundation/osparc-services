@@ -1,0 +1,12 @@
+version: '3.6'
+services:
+  cc-rabbit-1d:
+    # bypass normal start by going directly as root in starting folder
+    entrypoint: sh
+    command: []
+    security_opt:
+      # in case gdb is needed
+      - seccomp:unconfined
+    volumes:
+      # mount the sources by default
+      - ./src:/home/scu/src
