@@ -54,26 +54,30 @@ dcc_input_button = {
     'color': dcc_input['color'],
     'backgroundColor': dcc_input['backgroundColor']
 }
+
 GRAPH_HEIGHT = 400
+X_LABEL_TIME_SEC = "time (sec)"
+Y_LABEL_1 = "Membrane Potential"
+Y_LABEL_2 = "I<sub>Ca</sub> (pA/pF)"
+Y_LABEL_3_1 = "[Ca]<sub>SRT</sub> (mM)"
+Y_LABEL_3_2 = "Ca Dyad (\u00B5M)"
+Y_LABEL_3_3 = "Ca sl (mM)"
+Y_LABEL_4 = "[Ca]<sub>i</sub> (\u00B5M)"
+Y_LABEL_5 = "I<sub>to</sub> (pA/pF)"
+Y_LABEL_6 = "I<sub>Na</sub> (pA/pF)"
+Y_LABEL_7_1 = "I<sub>Ks</sub> (pA/pF)"
+Y_LABEL_7_2 = "I<sub>CFTR</sub>"
+Y_LABEL_8_1 = "I<sub>K1</sub> (pA/pF)"
+Y_LABEL_8_2 = "I<sub>Kr</sub> (pA/pF)"
+Y_LABEL_9_1 = "[Na]<sub>j</sub>"
+Y_LABEL_9_2 = "[Na]<sub>s<sup>l</sup></sub>"
+Y_LABEL_9_3 = "[Na]<sub>i</sub> (mmol/L relevant compartment"
+Y_LABEL_10 = "I<sub>NCX</sub> (pA/pF)"
+Y_LABEL_11_1 = "JRyR<sub>tot</sub>"
+Y_LABEL_11_2 = "Passive Leak"
+Y_LABEL_11_3 = "SR Ca release"
 
-def give_fig_osparc_style(fig, xLabels=['x'], yLabels=['y']):
-    for idx, xLabel in enumerate(xLabels):
-        suffix = str(idx)
-        if idx is 0:
-            suffix = ''
-        fig['layout']['xaxis'+suffix].update(
-            title=xLabel,
-            gridcolor=osparc_style['gridColor']
-        )
-    for idx, yLabel in enumerate(yLabels):
-        suffix = str(idx)
-        if idx is 0:
-            suffix = ''
-        fig['layout']['yaxis'+suffix].update(
-            title=yLabel,
-            gridcolor=osparc_style['gridColor']
-        )
-
+def give_fig_osparc_style2(fig):
     margin = 10
     y_label_padding = 50
     x_label_padding = 30
@@ -94,6 +98,26 @@ def give_fig_osparc_style(fig, xLabels=['x'], yLabels=['y']):
             color=osparc_style['color']
         )
     )
+    return fig
+
+def give_fig_osparc_style(fig, xLabels=['x'], yLabels=['y']):
+    for idx, xLabel in enumerate(xLabels):
+        suffix = str(idx)
+        if idx is 0:
+            suffix = ''
+        fig['layout']['xaxis'+suffix].update(
+            title=xLabel,
+            gridcolor=osparc_style['gridColor']
+        )
+    for idx, yLabel in enumerate(yLabels):
+        suffix = str(idx)
+        if idx is 0:
+            suffix = ''
+        fig['layout']['yaxis'+suffix].update(
+            title=yLabel,
+            gridcolor=osparc_style['gridColor']
+        )
+    fig = give_fig_osparc_style2(fig)
     return fig
 
 def get_empty_graph(xLabel='x', yLabel='y'):
@@ -125,17 +149,17 @@ def get_empty_rows_graphs(xLabel='x', yLabels=['y']):
     return fig
 
 
-empty_graph_1 = get_empty_graph("time (sec)", "Membrane Potential")
-empty_graph_2 = get_empty_graph("time (sec)", "Ica (pA/pF)")
-empty_graph_3 = get_empty_cols_graphs([["time (sec)", "[Ca]SRT (mM)"], ["time (sec)", "Ca Dyad (uM)"], ["time (sec)", "Ca sl (mM)"]])
-empty_graph_4 = get_empty_graph("time (sec)", "[Ca]i (uM)")
-empty_graph_5 = get_empty_graph("time (sec)", "Ito (pA/pF)")
-empty_graph_6 = get_empty_graph("time (sec)", "INa (pA/pF)")
-empty_graph_7 = get_empty_rows_graphs("time (sec)", ["IKs (pA/pF)", "ICFTR"])
-empty_graph_8 = get_empty_rows_graphs("time (sec)", ["IK1 (pA/pF)", "IKr (pA/pF)"])
-empty_graph_9 = get_empty_cols_graphs([["time (sec)", "[Na]j"], ["time (sec)", "[Na]s"], ["time (sec)", "[Na]j (mmol/L) relevant comportment"]])
-empty_graph_10 = get_empty_graph("time (sec)", "INCX (pA/pF)")
-empty_graph_11 = get_empty_rows_graphs("time (sec)", ["JRyRtot", "Passive Leak", "SR Ca release"])
+empty_graph_1 = get_empty_graph(X_LABEL_TIME_SEC, Y_LABEL_1)
+empty_graph_2 = get_empty_graph(X_LABEL_TIME_SEC, Y_LABEL_2)
+empty_graph_3 = get_empty_cols_graphs([[X_LABEL_TIME_SEC, Y_LABEL_3_1], [X_LABEL_TIME_SEC, Y_LABEL_3_2], [X_LABEL_TIME_SEC, Y_LABEL_3_3]])
+empty_graph_4 = get_empty_graph(X_LABEL_TIME_SEC, Y_LABEL_4)
+empty_graph_5 = get_empty_graph(X_LABEL_TIME_SEC, Y_LABEL_5)
+empty_graph_6 = get_empty_graph(X_LABEL_TIME_SEC, Y_LABEL_6)
+empty_graph_7 = get_empty_rows_graphs(X_LABEL_TIME_SEC, [Y_LABEL_7_1, Y_LABEL_7_2])
+empty_graph_8 = get_empty_rows_graphs(X_LABEL_TIME_SEC, [Y_LABEL_8_1, Y_LABEL_8_2])
+empty_graph_9 = get_empty_cols_graphs([[X_LABEL_TIME_SEC, Y_LABEL_9_1], [X_LABEL_TIME_SEC, Y_LABEL_9_2], [X_LABEL_TIME_SEC, Y_LABEL_9_3]])
+empty_graph_10 = get_empty_graph(X_LABEL_TIME_SEC, Y_LABEL_10)
+empty_graph_11 = get_empty_rows_graphs(X_LABEL_TIME_SEC, [Y_LABEL_11_1, Y_LABEL_11_2, Y_LABEL_11_3])
 
 app.layout = html.Div(children=[
     html.Button('Reload', id='reload-button', style=dcc_input_button),
@@ -170,6 +194,7 @@ def create_graphs(data_frames, **kwargs):
 
     layout = go.Layout(**kwargs)
     fig = go.Figure(data=data, layout=layout)
+    fig = give_fig_osparc_style2(fig)
     return fig
 
 def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
@@ -222,22 +247,20 @@ Incx = 16
 
 def create_graph_1():
     # membrane potential
-    title="Membrane Potential"
     axis_colums = [0,ynid[39]+1]
     plot_0 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
     fig = create_graph(data_frame=plot_0,
-                x_axis_title="time (sec)",
-                y_axis_title=title)
+                x_axis_title=X_LABEL_TIME_SEC,
+                y_axis_title=Y_LABEL_1)
     return fig
 
 def create_graph_2():
     # LCC current (ICa)
-    title="I<sub>Ca</sub> (pA/pF)"
     axis_colums = [0,I_Ca_store-1]
     plot_1 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
     fig = create_graph(data_frame=plot_1,
-                x_axis_title="time (sec)",
-                y_axis_title=title)
+                x_axis_title=X_LABEL_TIME_SEC,
+                y_axis_title=Y_LABEL_2)
     return fig
 
 def create_graph_3():
@@ -257,59 +280,67 @@ def create_graph_3():
     axis_colums = [0,ynid[37]+1]
     plot_4 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
     plot_data.append(plot_4)
-    figs = create_graphs(data_frames=plot_data,
-                title=None,
-                showlegend=False,
-                xaxis=dict(
-                    domain=[0,0.3],
-                    title="time (sec)"
-                ),
-                xaxis2=dict(
-                    domain=[0.4,0.6],
-                    title="time (sec)"),
-                xaxis3=dict(
-                    domain=[0.7,1.0],
-                    title="time (sec)"),
-                yaxis=dict(
-                    title="[Ca]<sub>SRT</sub> (mM)"
-                ),
-                yaxis2=dict(
-                    title="Ca Dyad (\u00B5M)",
-                    anchor="x2"),
-                yaxis3=dict(
-                    title="Ca sl (mM)",
-                    anchor="x3")
-                )
+    figs = create_graphs(
+        data_frames=plot_data,
+        title=None,
+        showlegend=False,
+        xaxis=dict(
+            domain=[0,0.3],
+            title=X_LABEL_TIME_SEC,
+            gridcolor=osparc_style['gridColor']
+        ),
+        xaxis2=dict(
+            domain=[0.4,0.6],
+            title=X_LABEL_TIME_SEC,
+            gridcolor=osparc_style['gridColor']
+        ),
+        xaxis3=dict(
+            domain=[0.7,1.0],
+            title=X_LABEL_TIME_SEC,
+            gridcolor=osparc_style['gridColor']
+        ),
+        yaxis=dict(
+            title=Y_LABEL_3_1,
+            gridcolor=osparc_style['gridColor']
+        ),
+        yaxis2=dict(
+            title=Y_LABEL_3_2,
+            anchor="x2",
+            gridcolor=osparc_style['gridColor']
+        ),
+        yaxis3=dict(
+            title=Y_LABEL_3_3,
+            anchor="x3",
+            gridcolor=osparc_style['gridColor']
+        )
+    )
     return figs
 
 def create_graph_4():
     # Cai
-    title="[Ca]<sub>i</sub> (\u00B5M)"
     axis_colums = [0,ynid[38]+1]
     plot_5 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
     fig = create_graph(data_frame=plot_5,
-                x_axis_title="time (sec)",
-                y_axis_title=title)
+                x_axis_title=X_LABEL_TIME_SEC,
+                y_axis_title=Y_LABEL_4)
     return fig
 
 def create_graph_5():
     # Ito
-    title="I<sub>to</sub> (pA/pF)"
     axis_colums = [0,Ito-1]
     plot_6 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
     fig = create_graph(data_frame=plot_6,
-                x_axis_title="time (sec)",
-                y_axis_title=title)
+                x_axis_title=X_LABEL_TIME_SEC,
+                y_axis_title=Y_LABEL_5)
     return fig
 
 def create_graph_6():
     # INa
-    title="I<sub>Na</sub> (pA/pF)"
     axis_colums = [0,INa-1]
     plot_7 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
     fig = create_graph(data_frame=plot_7,
-                x_axis_title="time (sec)",
-                y_axis_title=title)
+                x_axis_title=X_LABEL_TIME_SEC,
+                y_axis_title=Y_LABEL_6)
     return fig
 
 def create_graph_7():
@@ -322,26 +353,29 @@ def create_graph_7():
     plot_9 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
     plot_data.append(plot_9)
 
-    fig = create_graphs(
+    figs = create_graphs(
         data_frames=plot_data,
         title=None,
         showlegend=False,
-        #xaxis=dict(title="time (sec)"),
+        #xaxis=dict(title=X_LABEL_TIME_SEC),
         xaxis2=dict(
-            title="time (sec)",
-            anchor="y2"
+            title=X_LABEL_TIME_SEC,
+            anchor="y2",
+            gridcolor=osparc_style['gridColor']
         ),
         yaxis=dict(
             domain=[0.6,1.0],
-            title="I<sub>Ks</sub> (pA/pF)"
+            title=Y_LABEL_7_1,
+            gridcolor=osparc_style['gridColor']
         ),
         yaxis2=dict(
             domain=[0,0.5],
-            title="I<sub>CFTR</sub>",
-            anchor="x2"
+            title=Y_LABEL_7_2,
+            anchor="x2",
+            gridcolor=osparc_style['gridColor']
         )
     )
-    return fig
+    return figs
 
 def create_graph_8():
     # IKr and IK1
@@ -353,23 +387,29 @@ def create_graph_8():
     plot_11 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
     plot_data.append(plot_11)
 
-    fig = create_graphs(
+    figs = create_graphs(
         data_frames=plot_data,
         title=None,
         showlegend=False,
-        #xaxis=dict(title="time (sec)"),
-        xaxis2=dict(title="time (sec)", anchor="y2"),
-        yaxis=dict(
-            domain=[0.6,1.0],
-            title="I<sub>Kr</sub> (pA/pF)"
+        #xaxis=dict(title=X_LABEL_TIME_SEC),
+        xaxis2=dict(
+            title=X_LABEL_TIME_SEC,
+            anchor="y2",
+            gridcolor=osparc_style['gridColor']
         ),
         yaxis2=dict(
             domain=[0,0.5],
-            title="I<sub>K1</sub> (pA/pF)",
-            anchor="x2"
+            title=Y_LABEL_8_1,
+            anchor="x2",
+            gridcolor=osparc_style['gridColor']
+        ),
+        yaxis=dict(
+            domain=[0.6,1.0],
+            title=Y_LABEL_8_2,
+            gridcolor=osparc_style['gridColor']
         )
     )
-    return fig
+    return figs
 
 def create_graph_9():
     # [Na]
@@ -385,35 +425,49 @@ def create_graph_9():
     plot_14 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
     plot_data.append(plot_14)
 
-    fig = create_graphs(
+    figs = create_graphs(
         data_frames=plot_data,
         title=None,
         showlegend=False,
-        xaxis=dict(title="time (sec)", domain=[0,0.3]),
-        xaxis2=dict(title="time (sec)", domain=[0.4,0.6]),
-        xaxis3=dict(title="time (sec)", domain=[0.7,1.0]),
+        xaxis=dict(
+            title=X_LABEL_TIME_SEC,
+            domain=[0,0.3],
+            gridcolor=osparc_style['gridColor']
+        ),
+        xaxis2=dict(
+            title=X_LABEL_TIME_SEC,
+            domain=[0.4,0.6],
+            gridcolor=osparc_style['gridColor']
+        ),
+        xaxis3=dict(
+            title=X_LABEL_TIME_SEC,
+            domain=[0.7,1.0],
+            gridcolor=osparc_style['gridColor']
+        ),
         yaxis=dict(
-            title="[Na]<sub>j</sub>"
+            title=Y_LABEL_9_1,
+            gridcolor=osparc_style['gridColor']
         ),
         yaxis2=dict(
-            title="[Na]<sub>s<sup>l</sup></sub>",
-            anchor="x2"
+            title=Y_LABEL_9_2,
+            anchor="x2",
+            gridcolor=osparc_style['gridColor']
         ),
         yaxis3=dict(
-            title="[Na]<sub>i</sub> (mmol/L relevant compartment",
-            anchor="x3"
+            title=Y_LABEL_9_3,
+            anchor="x3",
+            gridcolor=osparc_style['gridColor']
         )
     )
-    return fig
+    return figs
 
 def create_graph_10():
     # I_NCX
-    title="I<sub>NCX</sub> (pA/pF)"
     axis_colums = [0,Incx-1]
     plot_15 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
     fig = create_graph(data_frame=plot_15,
-                x_axis_title="time (sec)",
-                y_axis_title=title)
+                x_axis_title=X_LABEL_TIME_SEC,
+                y_axis_title=Y_LABEL_10)
     return fig
 
 def create_graph_11():
@@ -429,29 +483,42 @@ def create_graph_11():
     plot_18 = data_frame_ar.filter(items=[data_frame_ar.columns[0]])
     plot_18[1] = data_frame_ar[Jleak[0]-1] - data_frame_ar[Jleak[1]-1]
     plot_data.append(plot_18)
-    fig = create_graphs(
+    figs = create_graphs(
         data_frames=plot_data,
         title=None,
         showlegend=False,
-        xaxis=dict(title=None),
-        xaxis2=dict(title=None),
-        xaxis3=dict(title="time (sec)", anchor="y3"),
+        xaxis=dict(
+            title=None,
+            gridcolor=osparc_style['gridColor']
+        ),
+        xaxis2=dict(
+            title=None,
+            gridcolor=osparc_style['gridColor']
+        ),
+        xaxis3=dict(
+            title=X_LABEL_TIME_SEC,
+            anchor="y3",
+            gridcolor=osparc_style['gridColor']
+        ),
         yaxis=dict(
             domain=[0.7,1.0],
-            title="JRyR<sub>tot</sub>"
+            title=Y_LABEL_11_1,
+            gridcolor=osparc_style['gridColor']
         ),
         yaxis2=dict(
             domain=[0.4,0.6],
-            title="Passive Leak",
-            anchor="x2"
+            title=Y_LABEL_11_2,
+            anchor="x2",
+            gridcolor=osparc_style['gridColor']
         ),
         yaxis3=dict(
             domain=[0,0.3],
-            title="SR Ca release",
-            anchor="x3"
+            title=Y_LABEL_11_3,
+            anchor="x3",
+            gridcolor=osparc_style['gridColor']
         )
     )
-    return fig
+    return figs
 
 
 # When pressing 'Load' this callback will be triggered.
