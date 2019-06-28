@@ -57,7 +57,7 @@ endif
 
 .PHONY: build
 # target: build: – Builds all service images.
-build: pull update_compose_labels update_run_script
+build: pull update_compose_labels
 	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel
 
 .PHONY: build-devel
