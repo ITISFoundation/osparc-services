@@ -16,7 +16,7 @@ from plotly import tools
 
 DEVEL_MODE = False
 if DEVEL_MODE:
-    WORKDIR = Path(os.path.dirname(os.path.realpath(__file__))).parent
+    WORKDIR = Path(Path(os.path.dirname(os.path.realpath(__file__))).parent).parent
 else:
     WORKDIR = Path('/home/jovyan')
 INPUT_DIR = WORKDIR / 'input'
@@ -56,7 +56,7 @@ dcc_input_button = {
 }
 GRAPH_HEIGHT = 600
 
-def get_empty_input_graph(xLabel, yLabel):
+def get_empty_input_graph(xLabel='x', yLabel='y'):
     fig = go.Figure(data=[], layout={})
 
     fig['layout']['xaxis'].update(
@@ -89,7 +89,7 @@ def get_empty_input_graph(xLabel, yLabel):
     )
     return fig
 
-def get_empty_cols_graphs(labelPairs):
+def get_empty_cols_graphs(labelPairs=[['x', 'y']]):
     fig = tools.make_subplots(rows=1,
                             cols=len(labelPairs),
                             shared_xaxes=True,
@@ -130,7 +130,7 @@ def get_empty_cols_graphs(labelPairs):
     )
     return fig
 
-def get_empty_rows_graphs(xLabel, yLabels):
+def get_empty_rows_graphs(xLabel='x', yLabels=['y']):
     fig = tools.make_subplots(rows=len(yLabels),
                             cols=1,
                             shared_xaxes=True,
@@ -220,7 +220,7 @@ def create_graphs(data_frames, **kwargs):
     fig = go.Figure(data=data, layout=layout)
     return fig
 
-def create_graph(data_frame, x_axis_title=None, y_axis_title = None):
+def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
     data = [
         go.Scatter(
             x=data_frame.iloc[0::SLICING,0],
