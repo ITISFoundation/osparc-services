@@ -32,6 +32,6 @@ default_context:
     project_package_name:      'cc-rabbit-1d'
     project_short_description: 'cc-rabbit-1d'
     project_slug:              'cc-rabbit-1d'
-    project_type:              'dynamic'
+    project_type:              'computational'
     release_date:              '2019'
     version:                   '0.1.0'
