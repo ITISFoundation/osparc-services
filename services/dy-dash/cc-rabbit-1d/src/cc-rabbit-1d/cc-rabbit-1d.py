@@ -168,8 +168,8 @@ def ap_surface_1D():
     vm = out_v.iloc[range(min,max+1), range(1,num_cells+1)]
 
     colormap = [
-        [0, 'rgb(0,0,0)'],
-        [1.0, 'rgb(180.0, 180.0, 180.0)']
+        [0, 'rgb(40.0, 40.0, 40.0)'],
+        [1.0, 'rgb(240.0, 240.0, 240.0)']
     ]
 
     data = [
