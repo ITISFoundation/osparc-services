@@ -1,15 +1,10 @@
 {
-    "outputs": {
-        
-        "output_1": {
-            "displayOrder": 1,
-            "label": "output_1_label",
-            "description": "The input 1 description",
-            "type": "string",
-            "fileToKeyMap": {
-                "somefilename.ext":"output_1"
-            }
-        }
-        
+  "outputs": {
+    "out_1": {
+      "label": "ECG",
+      "displayOrder": 0,
+      "description": "ECG csv",
+      "type": "data:text/csv"
     }
+  }
 }
