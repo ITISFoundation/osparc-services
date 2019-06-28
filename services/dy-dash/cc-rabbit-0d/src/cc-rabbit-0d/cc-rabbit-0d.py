@@ -56,91 +56,15 @@ dcc_input_button = {
 }
 GRAPH_HEIGHT = 400
 
-def get_empty_input_graph(xLabel='x', yLabel='y'):
-    fig = go.Figure(data=[], layout={})
-
-    fig['layout']['xaxis'].update(
-        title=xLabel,
-        gridcolor=osparc_style['gridColor']
-    )
-    fig['layout']['yaxis'].update(
-        title=yLabel,
-        gridcolor=osparc_style['gridColor']
-    )
-    margin = 10
-    y_label_padding = 50
-    x_label_padding = 30
-    fig['layout']['margin'].update(
-        l=margin+y_label_padding,
-        r=margin,
-        b=margin+x_label_padding,
-        t=margin,
-    )
-
-    fig['layout'].update(
-        autosize=True,
-        height=GRAPH_HEIGHT,
-        showlegend=False,
-        plot_bgcolor=osparc_style['backgroundColor'],
-        paper_bgcolor=osparc_style['backgroundColor'],
-        font=dict(
-            color=osparc_style['color']
-        )
-    )
-    return fig
-
-def get_empty_cols_graphs(labelPairs=[['x', 'y']]):
-    fig = tools.make_subplots(rows=1,
-                            cols=len(labelPairs),
-                            shared_xaxes=True,
-                            vertical_spacing=0.05
-    )
-
-    for idx, labelPair in enumerate(labelPairs):
+def give_fig_osparc_style(fig, xLabels=['x'], yLabels=['y']):
+    for idx, xLabel in enumerate(xLabels):
         suffix = str(idx)
         if idx is 0:
             suffix = ''
         fig['layout']['xaxis'+suffix].update(
-            title=labelPair[0],
+            title=xLabel,
             gridcolor=osparc_style['gridColor']
         )
-        fig['layout']['yaxis'+suffix].update(
-            title=labelPair[1],
-            gridcolor=osparc_style['gridColor']
-        )
-    margin = 10
-    y_label_padding = 50
-    x_label_padding = 30
-    fig['layout']['margin'].update(
-        l=margin+y_label_padding,
-        r=margin,
-        b=margin+x_label_padding,
-        t=margin,
-    )
-
-    fig['layout'].update(
-        autosize=True,
-        height=GRAPH_HEIGHT,
-        showlegend=False,
-        plot_bgcolor=osparc_style['backgroundColor'],
-        paper_bgcolor=osparc_style['backgroundColor'],
-        font=dict(
-            color=osparc_style['color']
-        )
-    )
-    return fig
-
-def get_empty_rows_graphs(xLabel='x', yLabels=['y']):
-    fig = tools.make_subplots(rows=len(yLabels),
-                            cols=1,
-                            shared_xaxes=True,
-                            horizontal_spacing=0.05
-    )
-
-    fig['layout']['xaxis'].update(
-        title=xLabel,
-        gridcolor=osparc_style['gridColor']
-    )
     for idx, yLabel in enumerate(yLabels):
         suffix = str(idx)
         if idx is 0:
@@ -172,17 +96,45 @@ def get_empty_rows_graphs(xLabel='x', yLabels=['y']):
     )
     return fig
 
+def get_empty_graph(xLabel='x', yLabel='y'):
+    fig = go.Figure(data=[], layout={})
+    fig = give_fig_osparc_style(fig, [xLabel], [yLabel])
+    return fig
 
-empty_graph_1 = get_empty_input_graph("time (sec)", "Membrane Potential")
-empty_graph_2 = get_empty_input_graph("time (sec)", "Ica (pA/pF)")
+def get_empty_cols_graphs(labelPairs=[['x', 'y']]):
+    fig = tools.make_subplots(rows=1,
+                            cols=len(labelPairs),
+                            shared_xaxes=True,
+                            vertical_spacing=0.05
+    )
+    xLabels = []
+    yLabels = []
+    for labelPair in labelPairs:
+        xLabels.append(labelPair[0])
+        yLabels.append(labelPair[1])
+    fig = give_fig_osparc_style(fig, xLabels, yLabels)
+    return fig
+
+def get_empty_rows_graphs(xLabel='x', yLabels=['y']):
+    fig = tools.make_subplots(rows=len(yLabels),
+                            cols=1,
+                            shared_xaxes=True,
+                            horizontal_spacing=0.05
+    )
+    fig = give_fig_osparc_style(fig, [xLabel], yLabels)
+    return fig
+
+
+empty_graph_1 = get_empty_graph("time (sec)", "Membrane Potential")
+empty_graph_2 = get_empty_graph("time (sec)", "Ica (pA/pF)")
 empty_graph_3 = get_empty_cols_graphs([["time (sec)", "[Ca]SRT (mM)"], ["time (sec)", "Ca Dyad (uM)"], ["time (sec)", "Ca sl (mM)"]])
-empty_graph_4 = get_empty_input_graph("time (sec)", "[Ca]i (uM)")
-empty_graph_5 = get_empty_input_graph("time (sec)", "Ito (pA/pF)")
-empty_graph_6 = get_empty_input_graph("time (sec)", "INa (pA/pF)")
+empty_graph_4 = get_empty_graph("time (sec)", "[Ca]i (uM)")
+empty_graph_5 = get_empty_graph("time (sec)", "Ito (pA/pF)")
+empty_graph_6 = get_empty_graph("time (sec)", "INa (pA/pF)")
 empty_graph_7 = get_empty_rows_graphs("time (sec)", ["IKs (pA/pF)", "ICFTR"])
 empty_graph_8 = get_empty_rows_graphs("time (sec)", ["IK1 (pA/pF)", "IKr (pA/pF)"])
 empty_graph_9 = get_empty_cols_graphs([["time (sec)", "[Na]j"], ["time (sec)", "[Na]s"], ["time (sec)", "[Na]j (mmol/L) relevant comportment"]])
-empty_graph_10 = get_empty_input_graph("time (sec)", "INCX (pA/pF)")
+empty_graph_10 = get_empty_graph("time (sec)", "INCX (pA/pF)")
 empty_graph_11 = get_empty_rows_graphs("time (sec)", ["JRyRtot", "Passive Leak", "SR Ca release"])
 
 app.layout = html.Div(children=[
@@ -229,7 +181,7 @@ def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
         for i in range(1,data_frame.columns.size)
     ]
 
-    fig = get_empty_input_graph(x_axis_title, y_axis_title)
+    fig = get_empty_graph(x_axis_title, y_axis_title)
     layout = go.Layout(fig['layout'])
     fig = go.Figure(data=data, layout=layout)
     return fig
