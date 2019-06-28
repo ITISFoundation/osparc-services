@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 import asyncio
 
+import numpy as np
 import pandas as pd
 import flask
 import dash
@@ -14,7 +15,7 @@ import plotly.graph_objs as go
 from plotly import tools
 
 
-DEVEL_MODE = True
+DEVEL_MODE = False
 if DEVEL_MODE:
     WORKDIR = Path(Path(os.path.dirname(os.path.realpath(__file__))).parent).parent
 else:
@@ -107,22 +108,23 @@ def get_empty_graph(xLabel='x', yLabel='y'):
 
 
 empty_graph_1 = get_empty_graph()
+empty_graph_2 = get_empty_graph()
 
 app.layout = html.Div(children=[
     html.Button('Reload', id='reload-button', style=dcc_input_button),
-    dcc.Graph(id='graph-1', figure=empty_graph_1)
+    dcc.Graph(id='graph-1', figure=empty_graph_1),
+    dcc.Graph(id='graph-2', figure=empty_graph_2)
 ], style=osparc_style)
 
 
-SLICING = 10
-
-def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
+def create_graph(data_frame, title=None, x_axis_title=None, y_axis_title=None):
     data = [
-        go.Scatter(
-            x=data_frame.iloc[0::SLICING,0],
-            y=data_frame.iloc[0::SLICING,i]
-        )
-        for i in range(1,data_frame.columns.size)
+            go.Scatter(
+                x=data_frame[data_frame.columns[0]],
+                y=data_frame[data_frame.columns[i]],
+                name=str(data_frame.columns[i])
+            )
+            for i in range(1,data_frame.columns.size)
     ]
 
     fig = get_empty_graph(x_axis_title, y_axis_title)
@@ -130,19 +132,76 @@ def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
     fig = go.Figure(data=data, layout=layout)
     return fig
 
+def plot_ECG():
+    # data_path_a = await PORTS.inputs[0].get()
+    data_path_a = INPUT_DIR / 'ECGs.txt'
+    data_frame_a = pd.read_csv(data_path_a, sep="\t", header=None)
 
-def create_graph_1():
-    d = {'col1': [0, 1, 2], 'col2': [3, 4, 2]}
-    df = pd.DataFrame(data=d)
-    fig = create_graph(data_frame=df)
+    axis_colums = [0,1]
+    plot_1 = data_frame_a.filter(items=[data_frame_a.columns[i] for i in axis_colums])
+    fig = create_graph(data_frame=plot_1, x_axis_title='Time (sec)', y_axis_title='ECGs')
     return fig
 
+def ap_surface_1D():
+    # data_path_str = await PORTS.inputs[1].get()
+    data_path_str = INPUT_DIR / 'y_1D.txt'
+    data_frame_JJ = pd.read_csv(data_path_str, sep="\t", header=None)
+    out_v = data_frame_JJ
+
+    num_cells = 165
+    # point ranges you want to plot
+    min = 0 #90000;
+    max = out_v.shape[0]-1 # 4 #100000;
+    diff = (max - min + 1)
+
+    t = np.array(out_v.iloc[range(min,max+1), 0]).reshape(diff, 1)
+    T = t
+    #creates a matrix of t matricies (1 for each cell)
+    for b in range(1,(num_cells)):
+        T = np.hstack((T, t))
+
+    #creats an array of cell numbers
+    cellnum = np.array([x for x in range(1, num_cells+1)]).reshape(1, num_cells)
+
+    #creates a square matrix of cell numbers on the diagonal
+    cellm = np.ones((diff,1)) @ cellnum
+    vm = out_v.iloc[range(min,max+1), range(1,num_cells+1)]
+
+    colormap = [
+        [0, 'rgb(0,0,0)'],
+        [1.0, 'rgb(180.0, 180.0, 180.0)']
+    ]
+
+    data = [
+        go.Surface(
+            x=cellm,
+            y=T,
+            z=vm.values,
+            colorscale=colormap,
+            reversescale=True
+        )
+    ]
+
+    camera = dict(
+        up=dict(x=-1, y=0, z=0),
+        center=dict(x=0,y=0,z=0),
+        eye=dict(x=1, y=0, z=2)
+    )
+
+    layout = go.Layout(
+        title=None,
+        scene=dict(camera=camera),
+    )
+    fig = go.Figure(data=data, layout=layout)
+    fig = give_fig_osparc_style2(fig)
+    return fig
 
 # When pressing 'Load' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the four input graphs.
 @app.callback(
     [
-        Output('graph-1', 'figure')
+        Output('graph-1', 'figure'),
+        Output('graph-2', 'figure')
     ],
     [
         Input('reload-button', 'n_clicks')
@@ -150,7 +209,8 @@ def create_graph_1():
 )
 def read_input_files(_n_clicks):
     figs = [
-        create_graph_1()
+        plot_ECG(),
+        ap_surface_1D()
     ]
     return figs
 
