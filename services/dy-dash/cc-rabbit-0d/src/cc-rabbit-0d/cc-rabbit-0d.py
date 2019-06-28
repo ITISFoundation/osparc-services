@@ -54,7 +54,7 @@ dcc_input_button = {
     'color': dcc_input['color'],
     'backgroundColor': dcc_input['backgroundColor']
 }
-GRAPH_HEIGHT = 600
+GRAPH_HEIGHT = 400
 
 def get_empty_input_graph(xLabel='x', yLabel='y'):
     fig = go.Figure(data=[], layout={})
@@ -224,9 +224,7 @@ def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
     data = [
         go.Scatter(
             x=data_frame.iloc[0::SLICING,0],
-            y=data_frame.iloc[0::SLICING,i],
-            #opacity=1,
-            # name=str(data_frame.columns[i])
+            y=data_frame.iloc[0::SLICING,i]
         )
         for i in range(1,data_frame.columns.size)
     ]
@@ -347,18 +345,20 @@ def create_graph_5():
     title="I<sub>to</sub> (pA/pF)"
     axis_colums = [0,Ito-1]
     plot_6 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
-    create_graph(data_frame=plot_6,
+    fig = create_graph(data_frame=plot_6,
                 x_axis_title="time (sec)",
                 y_axis_title=title)
+    return fig
 
 def create_graph_6():
     # INa
     title="I<sub>Na</sub> (pA/pF)"
     axis_colums = [0,INa-1]
     plot_7 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
-    create_graph(data_frame=plot_7,
+    fig = create_graph(data_frame=plot_7,
                 x_axis_title="time (sec)",
                 y_axis_title=title)
+    return fig
 
 def create_graph_7():
     # IKs and ICFTR
@@ -370,7 +370,7 @@ def create_graph_7():
     plot_9 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
     plot_data.append(plot_9)
 
-    create_graphs(
+    fig = create_graphs(
         data_frames=plot_data,
         title=None,
         showlegend=False,
@@ -389,6 +389,7 @@ def create_graph_7():
             anchor="x2"
         )
     )
+    return fig
 
 def create_graph_8():
     # IKr and IK1
@@ -400,7 +401,7 @@ def create_graph_8():
     plot_11 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
     plot_data.append(plot_11)
 
-    create_graphs(
+    fig = create_graphs(
         data_frames=plot_data,
         title=None,
         showlegend=False,
@@ -416,6 +417,7 @@ def create_graph_8():
             anchor="x2"
         )
     )
+    return fig
 
 def create_graph_9():
     # [Na]
@@ -431,7 +433,7 @@ def create_graph_9():
     plot_14 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
     plot_data.append(plot_14)
 
-    create_graphs(
+    fig = create_graphs(
         data_frames=plot_data,
         title=None,
         showlegend=False,
@@ -450,15 +452,17 @@ def create_graph_9():
             anchor="x3"
         )
     )
+    return fig
 
 def create_graph_10():
     # I_NCX
     title="I<sub>NCX</sub> (pA/pF)"
     axis_colums = [0,Incx-1]
     plot_15 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
-    create_graph(data_frame=plot_15,
+    fig = create_graph(data_frame=plot_15,
                 x_axis_title="time (sec)",
                 y_axis_title=title)
+    return fig
 
 def create_graph_11():
     # RyR fluxes
@@ -473,7 +477,7 @@ def create_graph_11():
     plot_18 = data_frame_ar.filter(items=[data_frame_ar.columns[0]])
     plot_18[1] = data_frame_ar[Jleak[0]-1] - data_frame_ar[Jleak[1]-1]
     plot_data.append(plot_18)
-    create_graphs(
+    fig = create_graphs(
         data_frames=plot_data,
         title=None,
         showlegend=False,
@@ -495,6 +499,7 @@ def create_graph_11():
             anchor="x3"
         )
     )
+    return fig
 
 
 # When pressing 'Load' this callback will be triggered.
@@ -518,7 +523,6 @@ def create_graph_11():
     ]
 )
 def read_input_files(_n_clicks):
-    print(INPUT_DIR)
     figs = [
         create_graph_1(),
         create_graph_2(),
