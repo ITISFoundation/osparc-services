@@ -1,0 +1,16 @@
+{
+  "inputs": {
+    "ECGs": {
+      "label": "ECGs",
+      "displayOrder": 0,
+      "description": "Computed ECGs out of a solver",
+      "type": "data:*/*"
+    },
+    "y_1D": {
+      "label": "action potentials",
+      "displayOrder": 1,
+      "description": "Action potentials out of solver",
+      "type": "data:*/*"
+    }
+  }
+}

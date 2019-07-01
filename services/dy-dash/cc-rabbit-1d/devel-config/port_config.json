@@ -1,0 +1,22 @@
+{
+    "version": "0.1",
+    "schema": {
+        "inputs": {
+            "vm_1Hz": {
+                "label": "vm 1Hz",
+                "displayOrder": 0,
+                "description": "Computed values from the solver",
+                "type": "data:*/*"
+            },
+            "all_results_1Hz": {
+                "label": "all results 1Hz",
+                "displayOrder": 1,
+                "description": "Computed values from the solver",
+                "type": "data:*/*"
+            }
+        },
+        "outputs": {}
+    },
+    "inputs": {},
+    "outputs": {}
+}
