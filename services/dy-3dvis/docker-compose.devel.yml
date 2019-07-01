@@ -21,6 +21,7 @@ services:
       - TEST_DATA_PATH=/home/root/test-data
       - SERVER_PORT=8777
       - PARAVIEW_DEBUG=0
+      - PARAVIEW_SECURE=${PARAVIEW_SECURE}
     depends_on:
       - postgres
       - minio
@@ -54,6 +55,7 @@ services:
       - TEST_DATA_PATH=/home/root/test-data
       - SERVER_PORT=8778
       - PARAVIEW_DEBUG=0
+      - PARAVIEW_SECURE=${PARAVIEW_SECURE}
     depends_on:
       - postgres
       - minio

@@ -65,6 +65,12 @@ visualizer_options=(--content /opt/paraview/share/paraview-5.6/web/visualizer/ww
                     --settings-lod-threshold 5
                     )
 
+if [[ ${PARAVIEW_SECURE} == 1 ]]; then
+    echo
+    echo "setting secure websocket wss"
+    visualizer_options+=(--ws-endpoint wss)
+fi
+
 # set auto load state if available
 if [ -f "${PARAVIEW_INPUT_PATH}/${SIMCORE_STATE_FILE}" ]; then
     echo

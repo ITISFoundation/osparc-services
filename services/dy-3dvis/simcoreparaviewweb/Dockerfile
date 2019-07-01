@@ -84,7 +84,8 @@ ENV SIMCORE_NODE_UUID="-1" \
 # special paraview variables
 ENV SERVER_PORT="8777"  \
     SIMCORE_STATE_FILE="simcore-state.pvsm" \
-    PARAVIEW_DEBUG=0
+    PARAVIEW_DEBUG=0 \
+    PARAVIEW_SECURE=0
 
 RUN mkdir /home/root/trigger && \
     chmod 777 /home/root/trigger
