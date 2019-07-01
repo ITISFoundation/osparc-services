@@ -1,5 +1,9 @@
 #!/bin/sh
-set -e
+
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+IFS=$'\n\t'
+
 # This entrypoint script:
 #
 # - Executes *inside* of the container upon start as --user [default root]

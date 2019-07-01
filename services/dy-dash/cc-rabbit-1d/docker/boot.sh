@@ -1,6 +1,9 @@
 #!/bin/sh
 #
-set -e
+
+# http://redsymbol.net/articles/unofficial-bash-strict-mode/
+set -euo pipefail
+IFS=$'\n\t'
 
 # BOOTING application ---------------------------------------------
 echo "Booting in ${SC_BOOT_MODE} mode ..."
