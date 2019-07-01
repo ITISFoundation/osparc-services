@@ -5,9 +5,16 @@ import asyncio
 
 import numpy as np
 import pandas as pd
+import tempfile
+import zipfile
 import tqdm
+import matplotlib
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+
 import flask
 import dash
+import logging
 from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
@@ -15,8 +22,9 @@ import dash_html_components as html
 import plotly.graph_objs as go
 from plotly import tools
 
+logger = logging.getLogger(__name__)
 
-DEVEL_MODE = False
+DEVEL_MODE = True
 if DEVEL_MODE:
     WORKDIR = Path(Path(os.path.dirname(os.path.realpath(__file__))).parent).parent
 else:
@@ -116,29 +124,59 @@ app.layout = html.Div(children=[
 ], style=osparc_style)
 
 
-def create_graph(data_frame, title=None, x_axis_title=None, y_axis_title=None):
-    data = [
-            go.Scatter(
-                x=data_frame[data_frame.columns[0]],
-                y=data_frame[data_frame.columns[i]],
-                name=str(data_frame.columns[i])
-            )
-            for i in range(1,data_frame.columns.size)
-    ]
+def plot_contour(dat_files, i):
+    plt.clf()
+    data_frame = pd.read_csv(dat_files[i], sep='\t', header=None)
+    if data_frame.shape[0] == 1:
+        data_frame = pd.concat([data_frame]*data_frame.shape[1], ignore_index=True)
+    plt.contourf(data_frame.values, cmap=plt.get_cmap('jet'), levels=np.arange(-100.0, 51.0, 1.0))
+    plt.axis("off")
+    plt.colorbar()
 
-    fig = get_empty_graph(x_axis_title, y_axis_title)
-    layout = go.Layout(fig['layout'])
-    fig = go.Figure(data=data, layout=layout)
-    return fig
+# def _no_relative_path_zip(members: zipfile.ZipFile):
+def _no_relative_path_zip(members):
+    for zipinfo in members.infolist():
+        path = Path(zipinfo.filename)
+        if path.is_absolute():
+            # absolute path are not allowed
+            continue
+        if path.match("/../"):
+            # relative paths are not allowed
+            continue
+        yield zipinfo.filename
 
-def plot_ECG():
+def plot_video():
     # data_path_a = await PORTS.inputs[0].get()
-    data_path_a = INPUT_DIR / 'ECGs.txt'
-    data_frame_a = pd.read_csv(data_path_a, sep="\t", header=None)
+    data_path_a = INPUT_DIR / 'aps.zip'
 
-    axis_colums = [0,1]
-    plot_1 = data_frame_a.filter(items=[data_frame_a.columns[i] for i in axis_colums])
-    fig = create_graph(data_frame=plot_1, x_axis_title='Time (sec)', y_axis_title='ECGs')
+    temp_folder = tempfile.mkdtemp()
+    if zipfile.is_zipfile(data_path_a):
+        logger.info("unzipping %s", data_path_a)
+        with zipfile.ZipFile(data_path_a) as zip_file:
+            zip_file.extractall(temp_folder, members=_no_relative_path_zip(zip_file))
+
+    # get the list of files
+    dat_files = sorted([os.path.join(temp_folder, x) for x in os.listdir(temp_folder) if x.endswith(".dat")], key=lambda f: int(''.join(filter(str.isdigit, f))))
+    out_images_path = tempfile.gettempdir()
+
+    # create movie writer
+    FFMpegWriter = animation.writers["ffmpeg"]
+    metadata = dict(title="Action potentials", artist="", comment="")
+    movie_writer = FFMpegWriter(fps=30, metadata=metadata)
+
+    pixel_size = 600
+    dpi = 96.0
+    plt.ioff()
+    fig = plt.figure(frameon=False, figsize=(pixel_size/dpi, pixel_size/dpi), dpi=dpi)
+
+    number_of_frames = len(dat_files)
+    video_file_path = os.path.join(out_images_path, "movie.mp4")
+    with movie_writer.saving(fig, video_file_path, dpi):
+        for frame in tqdm.tqdm(range(0, number_of_frames)):
+            plot_contour(dat_files, frame)
+            movie_writer.grab_frame()
+    plt.close(fig)
+
     return fig
 
 # When pressing 'Load' this callback will be triggered.
@@ -153,7 +191,7 @@ def plot_ECG():
 )
 def read_input_files(_n_clicks):
     figs = [
-        plot_ECG()
+        plot_video()
     ]
     return figs
 
@@ -161,7 +199,8 @@ def read_input_files(_n_clicks):
 class AnyThreadEventLoopPolicy(asyncio.DefaultEventLoopPolicy):
     """Event loop policy that allows loop creation on any thread."""
 
-    def get_event_loop(self) -> asyncio.AbstractEventLoop:
+    # def get_event_loop(self) -> asyncio.AbstractEventLoop:
+    def get_event_loop(self):
         try:
             return super().get_event_loop()
         except (RuntimeError, AssertionError):
