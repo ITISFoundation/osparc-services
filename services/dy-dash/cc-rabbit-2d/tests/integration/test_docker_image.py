@@ -25,7 +25,7 @@ def docker_client() -> docker.DockerClient:
 
 @pytest.fixture
 def docker_image_key(docker_client: docker.DockerClient) -> str:
-    image_key = "simcore/services/comp/cc-rabbit-2d:latest"
+    image_key = "simcore/services/dynamic/cc-rabbit-2d:latest"
     docker_images = [image for image in docker_client.images.list() if any(image_key in tag for tag in image.tags)]
     return docker_images[0].tags[0]
 

@@ -1,4 +1,4 @@
-# author: Your full name
+# author: Odei Maiz
 
 OS_VERSION := $(shell uname -a)
 ifneq (,$(findstring Microsoft,$(OS_VERSION)))
@@ -19,16 +19,18 @@ export DOCKER_COMPOSE=docker-compose
 export DOCKER=docker
 endif
 
+# using ?= will only set if absent
+export DOCKER_IMAGE_TAG ?= $(shell cat VERSION)
+$(info DOCKER_IMAGE_TAG set to ${DOCKER_IMAGE_TAG})
+
+# default to local (no registry)
+export DOCKER_REGISTRY ?= itisfoundation
+$(info DOCKER_REGISTRY set to ${DOCKER_REGISTRY})
+
 export VCS_URL:=$(shell git config --get remote.origin.url)
 export VCS_REF:=$(shell git rev-parse --short HEAD)
 export VCS_STATUS_CLIENT:=$(if $(shell git status -s),'modified/untracked','clean')
 export BUILD_DATE:=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
-
-ifndef DOCKER_REGISTRY
-export DOCKER_REGISTRY=https://index.docker.io/v1
-endif
-
-
 
 ## Tools ------------------------------------------------------------------------------------------------------
 #
@@ -55,17 +57,21 @@ endif
 
 .PHONY: build
 # target: build: – Builds all service images.
-build: pull update_compose_labels update_run_script
+build: pull update_compose_labels
 	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel
+
+.PHONY: build-devel
+# target: build-devel: – Builds images of core services for development.
+build-devel:
+	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml build --parallel
 
 .PHONY: up down
 # target: up, down: – Starts/Stops services.
 up: .env down
-	@mkdir -p tmp/output
-	mkdir -p tmp/log
 	${DOCKER_COMPOSE} -f docker-compose.yml up
 
 down:
+	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml down
 	@${DOCKER_COMPOSE} -f docker-compose.yml down
 
 ## -------------------------------
@@ -73,8 +79,6 @@ down:
 .PHONY: up-devel
 # target: up-devel: – Starts service as root and with sources mounted in /home/scu/src for debugging.
 up-devel: .env down
-	@mkdir -p tmp/output
-	mkdir -p tmp/log
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml run cc-rabbit-2d
 
 ## -------------------------------
@@ -98,7 +102,7 @@ check-pull:
 	@${DOCKER} login ${DOCKER_REGISTRY};\
 	SERVICE_VERSION=$$(cat VERSION);\
 	${DOCKER} pull \
-		${DOCKER_REGISTRY}/simcore/services/comp/cc-rabbit-2d:$$SERVICE_VERSION; \
+		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-2d:$$SERVICE_VERSION; \
 	if [ $$? -eq 0 ] ; then \
 		echo "image already in registry ${DOCKER_REGISTRY}";\
 		false;\
@@ -123,17 +127,17 @@ push:
 	${DOCKER} login ${DOCKER_REGISTRY};\
 	SERVICE_VERSION=$$(cat VERSION);\
 	${DOCKER} tag \
-		${DOCKER_REGISTRY}/simcore/services/comp/cc-rabbit-2d:latest \
-		${DOCKER_REGISTRY}/simcore/services/comp/cc-rabbit-2d:$$SERVICE_VERSION;\
+		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-2d:latest \
+		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-2d:$$SERVICE_VERSION;\
 	${DOCKER} push \
-		${DOCKER_REGISTRY}/simcore/services/comp/cc-rabbit-2d:$$SERVICE_VERSION;\
+		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-2d:$$SERVICE_VERSION;\
 	${DOCKER} push \
-		${DOCKER_REGISTRY}/simcore/services/comp/cc-rabbit-2d:latest;
+		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-2d:latest;
 
 pull:
 	# pull latest service version if available
 	${DOCKER} pull \
-		${DOCKER_REGISTRY}/simcore/services/comp/cc-rabbit-2d:latest || true;
+		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-2d:latest || true;
 
 # basic checks -------------------------------------
 .env: .env-devel
@@ -147,13 +151,10 @@ pull:
 		false; \
 	fi
 
-.PHONY: update_compose_labels update_run_script
+.PHONY: update_compose_labels
 update_compose_labels:
 	pip install -r tools/requirements.txt
 	python3 tools/update_compose_labels.py --compose docker-compose.yml --input docker/labels
-
-update_run_script:
-	python3 tools/run_creator.py --folder docker/labels --runscript service.cli/do_run
 
 .PHONY: regenerate_cookiecutter
 regenerate_cookiecutter:

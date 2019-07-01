@@ -37,7 +37,7 @@ remove_cc-rabbit-2d_builds:
   stage: build
   script:
     - export DOCKER_REGISTRY=$SC_CI_TESTING_REGISTRY
-    - export DOCKER_PROJECT=$SC_CI_PROJECT_PATH_NAME/simcore/services/comp/cc-rabbit-2d
+    - export DOCKER_PROJECT=$SC_CI_PROJECT_PATH_NAME/simcore/services/dynamic/cc-rabbit-2d
     - export API_USER=$SC_CI_TESTING_REGISTRY_USER
     - export API_TOKEN=$SC_CI_TESTING_REGISTRY_PORTUS_TOKEN
     - bash $SC_CI_CC-RABBIT-2D_LOCATION/CI/delete-image-from-registry-portus # this will fail if registry is not available through Portus
@@ -95,7 +95,7 @@ cc-rabbit-2d-master:
     - cd $SC_CI_CC-RABBIT-2D_LOCATION
     - export DOCKER_REGISTRY=$SC_CI_TEST_IMAGE_PREFIX
     - make pull
-    - docker tag $SC_CI_TEST_IMAGE_PREFIX/simcore/services/comp/cc-rabbit-2d $SC_CI_MASTER_REGISTRY/simcore/services/comp/cc-rabbit-2d
+    - docker tag $SC_CI_TEST_IMAGE_PREFIX/simcore/services/dynamic/cc-rabbit-2d $SC_CI_MASTER_REGISTRY/simcore/services/dynamic/cc-rabbit-2d
     - export DOCKER_REGISTRY=$SC_CI_MASTER_REGISTRY
     - make push
   environment:
@@ -112,7 +112,7 @@ cc-rabbit-2d-staging:
     - cd $SC_CI_CC-RABBIT-2D_LOCATION
     - export DOCKER_REGISTRY=$SC_CI_MASTER_REGISTRY
     - make pull
-    - docker tag $SC_CI_MASTER_REGISTRY/simcore/services/comp/cc-rabbit-2d $SC_CI_STAGING_REGISTRY/simcore/services/comp/cc-rabbit-2d
+    - docker tag $SC_CI_MASTER_REGISTRY/simcore/services/dynamic/cc-rabbit-2d $SC_CI_STAGING_REGISTRY/simcore/services/dynamic/cc-rabbit-2d
     - export DOCKER_REGISTRY=$SC_CI_STAGING_REGISTRY
     - make push-release
   environment:

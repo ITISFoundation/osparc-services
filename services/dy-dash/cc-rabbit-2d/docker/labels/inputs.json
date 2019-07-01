@@ -1,14 +1,10 @@
 {
     "inputs": {
-        "input_1": {
-            "displayOrder": 1,
-            "label": "input_1_label",
-            "description": "The input 1 description",
-            "type": "string",
-            "defaultValue": "some_value(optional)",
-            "fileToKeyMap": {
-                "somefilename.ext":"input_1"
-            }
+        "ap": {
+            "label": "ap",
+            "displayOrder": 0,
+            "description": "these are computed data out of a 2d solver",
+            "type": "data:*/*"
         }
     }
 }
