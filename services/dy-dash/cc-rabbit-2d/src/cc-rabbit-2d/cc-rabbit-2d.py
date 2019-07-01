@@ -5,6 +5,7 @@ import asyncio
 
 import numpy as np
 import pandas as pd
+import tqdm
 import flask
 import dash
 from dash.dependencies import Input, Output

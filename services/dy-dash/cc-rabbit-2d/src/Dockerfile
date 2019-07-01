@@ -1,6 +1,13 @@
 FROM jupyter/base-notebook AS common
 LABEL maintainer=odeimaiz
 
+# install ffmpeg --------------------------------------------------------------
+USER root
+RUN apt-get update && \
+    apt-get install -y \
+    ffmpeg
+USER $NB_USER
+
 # install requirements --------------------------------------------------------
 COPY --chown=jovyan:users src/requirements.txt .
 # TODO: tmp workaround for https://github.com/pypa/pip/issues/6197
