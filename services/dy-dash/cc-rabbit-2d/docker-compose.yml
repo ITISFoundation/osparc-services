@@ -30,6 +30,6 @@ services:
       - ./input:/home/jovyan/input
       - ./output:/home/jovyan/output
     ports:
-    - 1241:8888
+    - 1242:8888
     init: true
 version: '3.7'

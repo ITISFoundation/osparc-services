@@ -31,7 +31,7 @@ services:
       - minio
       - adminer
     ports:
-      - '1241:8888'
+      - '1242:8888'
   #--------------------------------------------------------------------
   apihub:
     image: itisfoundation/apihub:staging-latest
