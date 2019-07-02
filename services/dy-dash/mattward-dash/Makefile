@@ -65,28 +65,25 @@ build: update_compose_labels
 	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel
 
 .PHONY: build-devel
-build-devel: update_compose_labels
+# target: build-devel: – Builds images of core services for development.
+build-devel:
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml build --parallel
 
 .PHONY: up down
 # target: up, down: – Starts/Stops services.
 up: .env down
-	# @mkdir -p tmp/output
-	# mkdir -p tmp/log
 	${DOCKER_COMPOSE} -f docker-compose.yml up
 
 down:
-	@${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml down
-	@${DOCKER_COMPOSE} -f docker-compose.yml down
+	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml down
+	${DOCKER_COMPOSE} -f docker-compose.yml down
 
 ## -------------------------------
 # Development/Debugging.
 .PHONY: up-devel
 # target: up-devel: – Starts service as root and with sources mounted in /home/scu/src for debugging.
 up-devel: .env down
-	# @mkdir -p tmp/output
-	# mkdir -p tmp/log
-	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml up
+	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml run mattward-dash
 
 ## -------------------------------
 # Testing.
@@ -130,11 +127,21 @@ check-release:
 
 
 push:
-	${DOCKER_COMPOSE} -f docker-compose.yml push
+	# push both latest and :$$SERVICE_VERSION tags
+	${DOCKER} login ${DOCKER_REGISTRY};\
+	SERVICE_VERSION=$$(cat VERSION);\
+	${DOCKER} tag \
+		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:latest \
+		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:$$SERVICE_VERSION;\
+	${DOCKER} push \
+		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:$$SERVICE_VERSION;\
+	${DOCKER} push \
+		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:latest;
 
-tag:
-	${DOCKER} tag ${DOCKER_REGISTRY}/mattward-dash:${DOCKER_IMAGE_TAG} ${DOCKER_NEW_REGISTRY}/simcore/services/dynamic/mattward-dash:${DOCKER_IMAGE_TAG} 
-	${DOCKER} tag ${DOCKER_REGISTRY}/mattward-dash:${DOCKER_IMAGE_TAG} ${DOCKER_NEW_REGISTRY}/simcore/services/dynamic/mattward-dash:latest
+pull:
+	# pull latest service version if available
+	${DOCKER} pull \
+		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:latest || true;
 
 # basic checks -------------------------------------
 .env: .env-devel
@@ -153,6 +160,11 @@ update_compose_labels:
 	pip install -r tools/requirements.txt
 	${PYTHON3} tools/update_compose_labels.py --compose docker-compose.yml --input docker/labels
 
+.PHONY: regenerate_cookiecutter
+regenerate_cookiecutter:
+	pip install cookiecutter
+	cookiecutter  --no-input --overwrite-if-exists --config-file=.cookiecutterrc gh:ITISFoundation/cookiecutter-osparc-service --output-dir ../
+
 .PHONY: info
 # target: info – Displays some parameters of makefile environments
 info:
@@ -163,6 +175,7 @@ info:
 	@echo '+ BUILD_DATE           : ${BUILD_DATE}'
 	@echo '+ OS_VERSION           : ${OS_VERSION}'
 	@echo '+ DOCKER_REGISTRY      : ${DOCKER_REGISTRY}'
+	@echo '+ DOCKER_IMAGE_TAG     : ${DOCKER_IMAGE_TAG}'
 
 
 ## -------------------------------

@@ -48,4 +48,4 @@ services:
     - ./validation/input:/input
     - ./tmp/output:/output
     - ./tmp/log:/log
-version: '3.6'
+version: '3.7'

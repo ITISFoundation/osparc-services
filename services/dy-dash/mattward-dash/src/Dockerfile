@@ -1,4 +1,3 @@
-#ARG BASE_IMAGE
 FROM itisfoundation/cnap-dy-jupyter:latest AS common
 LABEL maintainer=odeimaiz
 
