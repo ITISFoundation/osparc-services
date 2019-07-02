@@ -70,6 +70,7 @@ jobs:
           script: unbuffer bash ops/travis/build/dy-3dvis deploy
           on:
             all_branches: true
+
     # build dy-mattward-dash images ----------------------------------------------------------------------
     - stage: build / unit-testing
       # in pull request we do not have credentials to push, so this is useless
@@ -148,6 +149,7 @@ jobs:
           script: unbuffer bash services/dy-dash/cc-rabbit-1d/CI/travis.sh deploy
           on:
             all_branches: true
+
     # build dy-raw-graphs images ----------------------------------------------------------------------
     - stage: build / unit-testing
       # in pull request we do not have credentials to push, checks that the build still passes
@@ -172,7 +174,7 @@ jobs:
           on:
             all_branches: true
 
-      # build dy-jupyter-extensions images ----------------------------------------------------------------------
+    # build dy-jupyter-extensions images ----------------------------------------------------------------------
     - stage: build / unit-testing
       # in pull request we do not have credentials to push, checks that the build still passes
       name: build dy-jupyter-extensions
