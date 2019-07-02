@@ -4,7 +4,9 @@ variables:
   DOCKER_HOST: tcp://docker:2375/
   DOCKER_DRIVER: overlay2
   # have some prefix so it may help for garbage collecting in the registry
+  SC_CI_PROJECT_PATH_NAME: ci/$CI_PROJECT_PATH_SLUG/$CI_COMMIT_REF_SLUG
   SC_CI_TEST_IMAGE_PREFIX: $SC_CI_TESTING_REGISTRY/ci/$CI_PROJECT_PATH_SLUG/$CI_COMMIT_REF_SLUG
+  SC_CI_MATTWARD-DASH_LOCATION: services/mattward-dash
 services:
    - docker:dind
 before_script:
@@ -18,27 +20,49 @@ mattward-dash-build:
     - staging
   script:
     - echo "$SC_CI_TESTING_REGISTRY_PASSWORD" | docker login -u "$SC_CI_TESTING_REGISTRY_USER" --password-stdin $SC_CI_TESTING_REGISTRY
-    - cd services/mattward-dash
+    - cd $SC_CI_MATTWARD-DASH_LOCATION
     - export DOCKER_REGISTRY=$SC_CI_MASTER_REGISTRY
     - make pull
     - export DOCKER_REGISTRY=$SC_CI_TEST_IMAGE_PREFIX
     - make build
     - make push
+  only:
+    changes:
+      - "**/mattward-dash/**/*"
+  environment:
+    name: $CI_PROJECT_PATH_SLUG/$CI_COMMIT_REF_SLUG/mattward-dash
+    on_stop: remove_mattward-dash_builds
+
+remove_mattward-dash-builds:
+  stage: build
+  script:
+    - export DOCKER_REGISTRY=$SC_CI_TESTING_REGISTRY
+    - export DOCKER_PROJECT=$SC_CI_PROJECT_PATH_NAME/simcore/services/dynamic/mattward-dash
+    - export API_USER=$SC_CI_TESTING_REGISTRY_USER
+    - export API_TOKEN=$SC_CI_TESTING_REGISTRY_PORTUS_TOKEN
+    - bash $SC_CI_MATTWARD-DASH_LOCATION/CI/delete-image-from-registry-portus # this will fail if registry is not available through Portus
+  when: manual
+  environment:
+    name: $CI_PROJECT_PATH_SLUG/$CI_COMMIT_REF_SLUG/mattward-dash
+    action: stop
 
 mattward-dash-unit-test:
   stage: test
   except:
     - staging
   script:
-    - pip install -r services/mattward-dash/tests/requirements.txt
-    - cd services/mattward-dash
+    - pip install -r $SC_CI_MATTWARD-DASH_LOCATION/tests/requirements.txt
+    - cd $SC_CI_MATTWARD-DASH_LOCATION
     - make unit-test
+  only:
+    changes:
+      - "**/mattward-dash/**/*"
   artifacts:
     reports:
       junit:
-        - services/mattward-dash/pytest_unittest.xml
+        - $SC_CI_MATTWARD-DASH_LOCATION/pytest_unittest.xml
     paths:
-      - services/mattward-dash/pytest_unittest.xml
+      - $SC_CI_MATTWARD-DASH_LOCATION/pytest_unittest.xml
 
 mattward-dash-integration-test:
   stage: test
@@ -46,17 +70,20 @@ mattward-dash-integration-test:
     - staging
   script:
     - echo "$SC_CI_TESTING_REGISTRY_PASSWORD" | docker login -u "$SC_CI_TESTING_REGISTRY_USER" --password-stdin $SC_CI_TESTING_REGISTRY
-    - pip install -r services/mattward-dash/tests/requirements.txt
-    - cd services/mattward-dash
+    - pip install -r $SC_CI_MATTWARD-DASH_LOCATION/tests/requirements.txt
+    - cd $SC_CI_MATTWARD-DASH_LOCATION
     - export DOCKER_REGISTRY=$SC_CI_TEST_IMAGE_PREFIX
     - make pull
     - make integration-test
+  only:
+    changes:
+      - "**/mattward-dash/**/*"
   artifacts:
     reports:
       junit:
-        - services/mattward-dash/pytest_integrationtest.xml
+        - $SC_CI_MATTWARD-DASH_LOCATION/pytest_integrationtest.xml
     paths:
-      - services/mattward-dash/pytest_integrationtest.xml
+      - $SC_CI_MATTWARD-DASH_LOCATION/pytest_integrationtest.xml
 
 mattward-dash-master:
   stage: deploy
