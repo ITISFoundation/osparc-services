@@ -6,11 +6,10 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # BOOTING application ---------------------------------------------
-echo "Booting in ${SC_BOOT_MODE} mode ..."
 echo "  User    :`id $(whoami)`"
 echo "  Workdir :`pwd`"
 
-if test "${CREATE_DUMMY_TABLE}" = "1"
+if [[ -v CREATE_DUMMY_TABLE ]]
 then
     pushd /home/jovyan/scripts/dy_services_helpers; pip3 install -r requirements.txt; popd
 
@@ -36,14 +35,6 @@ then
   echo "Target is ${SC_BUILD_TARGET}"
 fi
 
-
-# RUNNING application ----------------------------------------
-if [[ ${BOOT_MODE} == "debug" ]]
-then
-  echo "debuging..."
-else
-  echo "running in release mode..."
-fi
 
 # start the dash-app now
 python /home/jovyan/src/${APP_URL}
