@@ -71,6 +71,85 @@ jobs:
           on:
             all_branches: true
 
+    # build dy-mattward-dash images ----------------------------------------------------------------------
+    - stage: build / unit-testing
+      # in pull request we do not have credentials to push, so this is useless
+      name: build dy-mattward-dash
+      sudo: required
+      language: python
+      python:
+        - "3.6"
+      before_install:
+        - sudo bash services/dy-dash/mattward-dash/CI/travis.sh before_install
+      install:
+        - unbuffer bash services/dy-dash/mattward-dash/CI/travis.sh install
+      before_script:
+        - unbuffer bash services/dy-dash/mattward-dash/CI/travis.sh before_script
+      script:
+        - unbuffer bash services/dy-dash/mattward-dash/CI/travis.sh script
+      after_success:
+        - unbuffer bash services/dy-dash/mattward-dash/CI/travis.sh after_success
+      after_failure:
+        - unbuffer bash services/dy-dash/mattward-dash/CI/travis.sh after_failure
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          script: unbuffer bash services/dy-dash/mattward-dash/CI/travis.sh deploy
+          on:
+            all_branches: true
+    # build dy-cc-rabbit-0d images ----------------------------------------------------------------------
+    - stage: build / unit-testing
+      # in pull request we do not have credentials to push, so this is useless
+      name: build dy-cc-rabbit-0d
+      sudo: required
+      language: python
+      python:
+        - "3.6"
+      before_install:
+        - sudo bash services/dy-dash/cc-rabbit-0d/CI/travis.sh before_install
+      install:
+        - unbuffer bash services/dy-dash/cc-rabbit-0d/CI/travis.sh install
+      before_script:
+        - unbuffer bash services/dy-dash/cc-rabbit-0d/CI/travis.sh before_script
+      script:
+        - unbuffer bash services/dy-dash/cc-rabbit-0d/CI/travis.sh script
+      after_success:
+        - unbuffer bash services/dy-dash/cc-rabbit-0d/CI/travis.sh after_success
+      after_failure:
+        - unbuffer bash services/dy-dash/cc-rabbit-0d/CI/travis.sh after_failure
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          script: unbuffer bash services/dy-dash/cc-rabbit-0d/CI/travis.sh deploy
+          on:
+            all_branches: true
+    # build dy-cc-rabbit-1d images ----------------------------------------------------------------------
+    - stage: build / unit-testing
+      # in pull request we do not have credentials to push, so this is useless
+      name: build dy-cc-rabbit-1d
+      sudo: required
+      language: python
+      python:
+        - "3.6"
+      before_install:
+        - sudo bash services/dy-dash/cc-rabbit-1d/CI/travis.sh before_install
+      install:
+        - unbuffer bash services/dy-dash/cc-rabbit-1d/CI/travis.sh install
+      before_script:
+        - unbuffer bash services/dy-dash/cc-rabbit-1d/CI/travis.sh before_script
+      script:
+        - unbuffer bash services/dy-dash/cc-rabbit-1d/CI/travis.sh script
+      after_success:
+        - unbuffer bash services/dy-dash/cc-rabbit-1d/CI/travis.sh after_success
+      after_failure:
+        - unbuffer bash services/dy-dash/cc-rabbit-1d/CI/travis.sh after_failure
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          script: unbuffer bash services/dy-dash/cc-rabbit-1d/CI/travis.sh deploy
+          on:
+            all_branches: true
+
     # build dy-raw-graphs images ----------------------------------------------------------------------
     - stage: build / unit-testing
       # in pull request we do not have credentials to push, checks that the build still passes
@@ -95,7 +174,7 @@ jobs:
           on:
             all_branches: true
 
-      # build dy-jupyter-extensions images ----------------------------------------------------------------------
+    # build dy-jupyter-extensions images ----------------------------------------------------------------------
     - stage: build / unit-testing
       # in pull request we do not have credentials to push, checks that the build still passes
       name: build dy-jupyter-extensions
