@@ -6,6 +6,7 @@
 
 import sys
 from pathlib import Path
+from typing import Dict
 
 import pytest
 
@@ -63,3 +64,15 @@ def git_root_dir(here: Path) -> Path:
     if root_dir.as_posix() == "/":
         return None
     return root_dir
+
+@pytest.fixture(scope='session')
+def env_devel_file(project_slug_dir: Path) -> Path:
+
+     file_path = project_slug_dir / ".env-devel"
+    assert file_path.exists()
+    return file_path
+
+ @pytest.fixture(scope='session')
+def env_devel(env_devel_file: Path) -> Dict:
+    env_devel = {line.strip().split("=")[0]:line.strip().split("=")[1] for line in env_devel_file.open()}
+    return env_devel
