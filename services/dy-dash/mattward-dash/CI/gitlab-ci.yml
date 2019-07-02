@@ -92,14 +92,14 @@ mattward-dash-master:
   script:
     - echo "$SC_CI_TESTING_REGISTRY_PASSWORD" | docker login -u "$SC_CI_TESTING_REGISTRY_USER" --password-stdin $SC_CI_TESTING_REGISTRY
     - echo "$SC_CI_MASTER_REGISTRY_PASSWORD" | docker login -u "$SC_CI_MASTER_REGISTRY_USER" --password-stdin $SC_CI_MASTER_REGISTRY
-    - cd services/mattward-dash
+    - cd $SC_CI_MATTWARD-DASH_LOCATION
     - export DOCKER_REGISTRY=$SC_CI_TEST_IMAGE_PREFIX
     - make pull
     - docker tag $SC_CI_TEST_IMAGE_PREFIX/simcore/services/comp/mattward-dash $SC_CI_MASTER_REGISTRY/simcore/services/comp/mattward-dash
     - export DOCKER_REGISTRY=$SC_CI_MASTER_REGISTRY
     - make push
   environment:
-    name: master
+    name: mattward-dash-master
     url: $SC_CI_MASTER_REGISTRY
 
 mattward-dash-staging:
@@ -109,12 +109,12 @@ mattward-dash-staging:
   script:
     - echo "$SC_CI_MASTER_REGISTRY_PASSWORD" | docker login -u "$SC_CI_MASTER_REGISTRY_USER" --password-stdin $SC_CI_MASTER_REGISTRY
     - echo "$SC_CI_STAGING_REGISTRY_PASSWORD" | docker login -u "$SC_CI_STAGING_REGISTRY_USER" --password-stdin $SC_CI_STAGING_REGISTRY
-    - cd services/mattward-dash
+    - cd $SC_CI_MATTWARD-DASH_LOCATION
     - export DOCKER_REGISTRY=$SC_CI_MASTER_REGISTRY
     - make pull
     - docker tag $SC_CI_MASTER_REGISTRY/simcore/services/comp/mattward-dash $SC_CI_STAGING_REGISTRY/simcore/services/comp/mattward-dash
     - export DOCKER_REGISTRY=$SC_CI_STAGING_REGISTRY
     - make push-release
   environment:
-    name: production
+    name: mattward-dash-production
     url: $SC_CI_STAGING_REGISTRY
