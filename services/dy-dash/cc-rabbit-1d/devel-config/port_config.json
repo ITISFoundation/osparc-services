@@ -21,7 +21,17 @@
                 }
             }
         },
-        "outputs": {}
+        "outputs": {
+            "out_1": {
+                "label": "ECG",
+                "displayOrder": 0,
+                "description": "ECG csv",
+                "type": "data:text/csv",
+                "fileToKeyMap": {
+                    "ECG.csv": "out_1"
+                }
+            }
+          }
     },
     "inputs": {},
     "outputs": {}
