@@ -71,7 +71,7 @@ def env_devel_file(project_slug_dir: Path) -> Path:
     assert file_path.exists()
     return file_path
 
- @pytest.fixture(scope='session')
+@pytest.fixture(scope='session')
 def env_devel(env_devel_file: Path) -> Dict:
     env_devel = {line.strip().split("=")[0]:line.strip().split("=")[1] for line in env_devel_file.open()}
     return env_devel
