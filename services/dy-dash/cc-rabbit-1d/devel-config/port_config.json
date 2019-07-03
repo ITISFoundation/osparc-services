@@ -2,17 +2,23 @@
     "version": "0.1",
     "schema": {
         "inputs": {
-            "vm_1Hz": {
-                "label": "vm 1Hz",
+            "ECGs": {
+                "label": "ECGs",
                 "displayOrder": 0,
-                "description": "Computed values from the solver",
-                "type": "data:*/*"
+                "description": "Computed ECGs out of a solver",
+                "type": "data:*/*",
+                "fileToKeyMap": {
+                    "ECGs.txt": "ECGs"
+                }
             },
-            "all_results_1Hz": {
-                "label": "all results 1Hz",
+            "y_1D": {
+                "label": "Action potentials",
                 "displayOrder": 1,
-                "description": "Computed values from the solver",
-                "type": "data:*/*"
+                "description": "Action potentials out of solver",
+                "type": "data:*/*",
+                "fileToKeyMap": {
+                    "y_1D.txt": "y_1D"
+                }
             }
         },
         "outputs": {}
