@@ -19,10 +19,10 @@ import plotly.graph_objs as go
 
 DEVEL_MODE = False
 if DEVEL_MODE:
-    WORKDIR = Path(Path(os.path.dirname(os.path.realpath(__file__))).parent).parent
+    IN_OUT_PARENT_DIR = Path(Path(os.path.dirname(os.path.realpath(__file__))).parent).parent / 'validation'
 else:
-    WORKDIR = Path('/home/jovyan')
-INPUT_DIR = WORKDIR / 'input'
+    IN_OUT_PARENT_DIR = Path('/home/jovyan')
+INPUT_DIR = IN_OUT_PARENT_DIR / 'input'
 
 
 base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', "/")
