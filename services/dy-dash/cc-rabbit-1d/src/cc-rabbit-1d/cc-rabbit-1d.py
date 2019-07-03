@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+# pylint: disable=dangerous-default-value
+
 import os
 from pathlib import Path
 import asyncio
@@ -12,7 +15,6 @@ import dash_core_components as dcc
 import dash_html_components as html
 
 import plotly.graph_objs as go
-from plotly import tools
 
 
 DEVEL_MODE = False
@@ -117,7 +119,7 @@ app.layout = html.Div(children=[
 ], style=osparc_style)
 
 
-def create_graph(data_frame, title=None, x_axis_title=None, y_axis_title=None):
+def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
     data = [
             go.Scatter(
                 x=data_frame[data_frame.columns[0]],
@@ -150,14 +152,14 @@ def ap_surface_1D():
 
     num_cells = 165
     # point ranges you want to plot
-    min = 0 #90000;
-    max = out_v.shape[0]-1 # 4 #100000;
-    diff = (max - min + 1)
+    minimum = 0 #90000;
+    maximum = out_v.shape[0]-1 # 4 #100000;
+    diff = (maximum - minimum + 1)
 
-    t = np.array(out_v.iloc[range(min,max+1), 0]).reshape(diff, 1)
+    t = np.array(out_v.iloc[range(minimum,maximum+1), 0]).reshape(diff, 1)
     T = t
     #creates a matrix of t matricies (1 for each cell)
-    for b in range(1,(num_cells)):
+    for _b in range(1,(num_cells)):
         T = np.hstack((T, t))
 
     #creats an array of cell numbers
@@ -165,7 +167,7 @@ def ap_surface_1D():
 
     #creates a square matrix of cell numbers on the diagonal
     cellm = np.ones((diff,1)) @ cellnum
-    vm = out_v.iloc[range(min,max+1), range(1,num_cells+1)]
+    vm = out_v.iloc[range(minimum,maximum+1), range(1,num_cells+1)]
 
     colormap = [
         [0, 'rgb(40.0, 40.0, 40.0)'],

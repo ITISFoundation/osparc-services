@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+# pylint: disable=dangerous-default-value
+
 import os
 from pathlib import Path
 import asyncio
