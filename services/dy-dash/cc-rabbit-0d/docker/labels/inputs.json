@@ -15,7 +15,7 @@
             "description": "Computed values from the solver",
             "type": "data:*/*",
             "fileToKeyMap": {
-                "all_results_1Hz.txt": "all_results_1Hz"
+                "allresults_1Hz.txt": "all_results_1Hz"
             }
         }
     }
