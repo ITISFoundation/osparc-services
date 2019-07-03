@@ -229,7 +229,7 @@ for i in range(1,syids):
     ynid[yids[i]] = i
 
 # data_path_ar = await PORTS.inputs[1].get()
-data_path_ar = INPUT_DIR / 'all_results_1Hz.txt'
+data_path_ar = INPUT_DIR / 'allresults_1Hz.txt'
 data_frame_ar = pd.read_csv(data_path_ar, sep='\t', header=None)
 
 tArray = 1
