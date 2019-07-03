@@ -106,7 +106,7 @@ def give_fig_osparc_style2(fig):
 def give_fig_osparc_style(fig, xLabels=['x'], yLabels=['y']):
     for idx, xLabel in enumerate(xLabels):
         suffix = str(idx)
-        if idx is 0:
+        if idx == 0:
             suffix = ''
         fig['layout']['xaxis'+suffix].update(
             title=xLabel,
@@ -114,7 +114,7 @@ def give_fig_osparc_style(fig, xLabels=['x'], yLabels=['y']):
         )
     for idx, yLabel in enumerate(yLabels):
         suffix = str(idx)
-        if idx is 0:
+        if idx == 0:
             suffix = ''
         fig['layout']['yaxis'+suffix].update(
             title=yLabel,
