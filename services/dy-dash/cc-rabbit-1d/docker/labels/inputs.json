@@ -4,13 +4,19 @@
       "label": "ECGs",
       "displayOrder": 0,
       "description": "Computed ECGs out of a solver",
-      "type": "data:*/*"
+      "type": "data:*/*",
+      "fileToKeyMap": {
+          "ECGs.txt": "ECGs"
+      }
     },
     "y_1D": {
       "label": "action potentials",
       "displayOrder": 1,
       "description": "Action potentials out of solver",
-      "type": "data:*/*"
+      "type": "data:*/*",
+      "fileToKeyMap": {
+          "y_1D.txt": "y_1D"
+      }
     }
   }
 }

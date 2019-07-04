@@ -25,8 +25,11 @@ def docker_client() -> docker.DockerClient:
 
 @pytest.fixture
 def docker_image_key(docker_client: docker.DockerClient) -> str:
-    image_key = "simcore/services/dynamic/cc-rabbit-0d:latest"
+    registry = os.environ.get("DOCKER_REGISTRY", "itisfoundation")
+    tag = os.environ.get("DOCKER_IMAGE_TAG", "latest")
+    image_key = "{}/cc-rabbit-0d:{}".format(registry, tag)
     docker_images = [image for image in docker_client.images.list() if any(image_key in tag for tag in image.tags)]
+    assert len(docker_images) == 1, "could not find docker image {}".format(image_key)
     return docker_images[0].tags[0]
 
 @pytest.fixture
