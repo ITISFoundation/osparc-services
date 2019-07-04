@@ -124,20 +124,17 @@ check-release:
 
 push:
 	# push both latest and :$$SERVICE_VERSION tags
-	${DOCKER} login ${DOCKER_REGISTRY};\
-	SERVICE_VERSION=$$(cat VERSION);\
+	${DOCKER_COMPOSE} -f docker-compose.yml push
 	${DOCKER} tag \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:latest \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:$$SERVICE_VERSION;\
+		${DOCKER_REGISTRY}/cc-rabbit-0d:${DOCKER_IMAGE_TAG} \
+		${DOCKER_REGISTRY}/cc-rabbit-0d:latest
 	${DOCKER} push \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:$$SERVICE_VERSION;\
-	${DOCKER} push \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:latest;
+		${DOCKER_REGISTRY}/cc-rabbit-0d:latest
+
 
 pull:
 	# pull latest service version if available
-	${DOCKER} pull \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:latest || true;
+	${DOCKER_COMPOSE} -f docker-compose.yml pull || true;
 
 # basic checks -------------------------------------
 .env: .env-devel
