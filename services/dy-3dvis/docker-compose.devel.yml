@@ -24,6 +24,7 @@ services:
     depends_on:
       - postgres
       - minio
+      - storage
     volumes:
       - ./simcoreparaviewweb/devel:/home/root/devel
       - ../../services:/home/root/services
@@ -57,6 +58,7 @@ services:
     depends_on:
       - postgres
       - minio
+      - storage
     volumes:
       - ./simcoreparaviewweb/devel:/home/root/devel
       - ../../services:/home/root/services
