@@ -1,0 +1,82 @@
+openapi: 3.0.2
+servers: []
+
+info:
+  title: oSparc Service REST API
+  description: oSparc Service API
+  version: "0.0.1"
+  contact:
+    name: IT'IS Foundation
+    email: support@simcore.io
+  license:
+    name: MIT
+    url: https://github.com/ITISFoundation/osparc-simcore/blob/master/LICENSE
+paths:
+  /retrieve:
+    get:
+      summary: The service pulls/pushes all data linked to its input/output ports from/to oSparc storage
+      responses:
+        '200':
+          description: retrieved all data
+          content:
+            application/json:
+              schema:
+                $ref: './services_api.yaml#/components/schemas/TransferEnvelopped'
+        default:
+          $ref: './services_api.yaml#/components/responses/DefaultErrorResponse'
+    post:
+      summary: The service pulls/pushes the data linked to the selected input/output ports from/to oSparc storage
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              $ref: './services_api.yaml#/components/schemas/PortsRequest'
+      responses:
+        '200':
+          description: completed push/pull
+          content:
+            application/json:
+              schema:
+                $ref: './services_api.yaml#/components/schemas/TransferEnvelopped'
+        default:
+          $ref: './services_api.yaml#/components/responses/DefaultErrorResponse'
+
+
+components:
+  schemas:
+    PortKey:
+      description: port key names
+      type: string
+      example: input_1
+    PortsRequest:
+      type: object
+      properties:
+        port_keys:
+          type: array
+          items:
+            $ref: '#/PortKey'
+
+    TransferForm:
+      type: object
+      properties:
+        size_bytes:
+          type: integer
+          description: transferred size in bytes
+      example:
+        size_bytes: 1024
+
+    TransferEnvelopped:
+      type: object
+      required:
+        - data
+      properties:
+        data:
+          $ref: './services_api.yaml#/components/schemas/TransferForm'
+
+  responses:
+    DefaultErrorResponse:
+      description: Default http error response body
+      content:
+        application/json:
+          schema:
+            $ref: './components/schemas/error.yaml#/ErrorEnveloped'
