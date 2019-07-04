@@ -79,7 +79,7 @@ down:
 .PHONY: up-devel
 # target: up-devel: – Starts service as root and with sources mounted in /home/scu/src for debugging.
 up-devel: .env down
-	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml run cc-rabbit-0d
+	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml up
 
 ## -------------------------------
 # Testing.

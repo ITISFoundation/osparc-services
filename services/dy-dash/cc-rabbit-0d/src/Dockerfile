@@ -1,15 +1,23 @@
-FROM jupyter/base-notebook AS common
+FROM phusion/baseimage:0.11 AS common
 LABEL maintainer=odeimaiz
 
+RUN install_clean -y \
+    python3-pip \
+    curl \    
+    git
+
 # install requirements --------------------------------------------------------
-COPY --chown=jovyan:users src/requirements.txt .
+COPY src/requirements.txt .
 # TODO: tmp workaround for https://github.com/pypa/pip/issues/6197
-RUN pip --cache-dir=/tmp/.pipcache install -r requirements.txt &&\
+RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+    python3 get-pip.py && \
+    rm get-pip.py && \
+    pip --cache-dir=/tmp/.pipcache install -r requirements.txt &&\
     rm -rf /tmp/.pipcache
 
 
 # prepare for booting ---------------------------------------------------------
-COPY --chown=jovyan:users docker /docker
+COPY docker /docker
 # set of arguments to copy the right app ---------------------------------
 ARG APP_NAME
 ENV APP_URL=${APP_NAME}
@@ -31,13 +39,13 @@ ENV SIMCORE_NODE_UUID="-1" \
     POSTGRES_PASSWORD="-1" \
     POSTGRES_DB="-1"
 # ----------------------------------------------------------------
-COPY --chown=jovyan:users /docker/scripts/healthcheck_curl_host.py /healthcheck/healthcheck_curl_host.py
+COPY /docker/scripts/healthcheck_curl_host.py /healthcheck/healthcheck_curl_host.py
 # will start to run after interval every interval. fails after timeout. fail do not count if during start-period. will do # retries
 HEALTHCHECK --interval=10s --timeout=30s --start-period=1s --retries=3 CMD [ "python3", "/healthcheck/healthcheck_curl_host.py", "http://localhost:8888" ]
 # -----------------------------------------------------------------------------
 FROM common AS development
 ENV SC_BUILD_TARGET=development
-VOLUME /home/jovyan/services
+# VOLUME /home/jovyan/services
 VOLUME /home/jovyan/devel
 VOLUME /home/jovyan/devel-config
 VOLUME /home/jovyan/src
@@ -58,5 +66,5 @@ ARG APP_NAME
 # copy the app in the image
 WORKDIR /home/jovyan/src
 # COPY --chown=jovyan:users src/cc-rabbit-0d/${APP_NAME} ${APP_NAME}
-COPY --chown=jovyan:users src/cc-rabbit-0d .
+COPY src/cc-rabbit-0d .
 ENTRYPOINT [ "/bin/bash", "/docker/boot.sh" ]
