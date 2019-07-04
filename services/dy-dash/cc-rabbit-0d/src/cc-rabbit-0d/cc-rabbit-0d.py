@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 # pylint: disable=dangerous-default-value
-
 import os
 from pathlib import Path
 import asyncio
@@ -16,6 +15,25 @@ import dash_html_components as html
 import plotly.graph_objs as go
 from plotly import tools
 
+from simcore_sdk import node_ports
+import logging
+
+from tenacity import retry, stop_after_attempt, wait_fixed, before_log
+
+logging.basicConfig(stream=sys.stderr, level=logging.INFO)
+logger = logging.getLogger()
+
+
+#TODO: node_ports.wait_for_response()
+@retry(wait_fixed=3,
+    #stop_after_attempt=15,
+    before=before_log(logger, logging.INFO) )
+def check_if_ready(n_inputs = 2):
+    PORTS = node_ports.ports()
+    tasks = asyncio.gather(*[PORTS.inputs[n].get() for n in range(n_inputs)])
+    paths_to_inputs = asyncio.get_event_loop().run_until_complete( tasks )
+    assert all( p.exists() for p in paths_to_inputs )
+
 
 DEVEL_MODE = False
 if DEVEL_MODE:
@@ -25,12 +43,12 @@ else:
 INPUT_DIR = IN_OUT_PARENT_DIR / 'input'
 
 
-base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', "/")
-if not base_pathname.endswith("/"):
-    base_pathname = base_pathname + "/"
-if not base_pathname.startswith("/"):
-    base_pathname = "/" + base_pathname
+DEFAULT_PATH = '/'
+base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', DEFAULT_PATH)
+if base_pathname != DEFAULT_PATH :
+    base_pathname = "/{}/".format(base_pathname.strip('/'))
 print('url_base_pathname', base_pathname)
+
 
 server = flask.Flask(__name__)
 app = dash.Dash(__name__,
@@ -215,9 +233,14 @@ def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
     return fig
 
 
-# data_path_ty = await PORTS.inputs[0].get()
-data_path_ty = INPUT_DIR / 'vm_1Hz.txt'
+
+#---------------------------------------------------------
+check_if_ready()
+
+PORTS = node_ports.ports()
+data_path_ty = asyncio.get_event_loop().run_until_complete(PORTS.inputs[0].get())
 data_frame_ty = pd.read_csv(data_path_ty, sep='\t', header=None)
+print(data_frame_ty.columns)
 
 # scale time
 f = lambda x: x/1000.0
@@ -228,9 +251,9 @@ ynid = [0] * 206
 for i in range(1,syids):
     ynid[yids[i]] = i
 
-# data_path_ar = await PORTS.inputs[1].get()
-data_path_ar = INPUT_DIR / 'allresults_1Hz.txt'
+data_path_ar = asyncio.get_event_loop().run_until_complete(PORTS.inputs[1].get())
 data_frame_ar = pd.read_csv(data_path_ar, sep='\t', header=None)
+print(data_frame_ar.columns)
 
 tArray = 1
 I_Ca_store = 2
