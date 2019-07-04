@@ -21,7 +21,16 @@ def call_python3(cmd, request):
         return "FAILURE".encode('utf-8')
     
     request.setResponseCode(200)
-    return "SUCCESS".encode('utf-8')
+    request.setHeader("Content-Type", "application/json")
+    return json.dumps(
+        {
+            "data": {
+                "size_bytes": output
+            }
+        }
+    ).encode('utf-8')
+    
+    # return output.encode('utf-8')
 
 class MyResource(Resource):
     def render_GET(self, request):

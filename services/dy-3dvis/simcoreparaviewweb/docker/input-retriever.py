@@ -57,6 +57,7 @@ async def retrieve_data(ports: List[str], cache: Dict) -> int:
         download_tasks.append(task(node_input.key, node_input.get))
     log.info("retrieving %s data", len(download_tasks))
 
+    transfer_bytes = 0
     if download_tasks:
         download_results = await asyncio.gather(*download_tasks)
         log.info("completed download, extracting/moving data to final folder...")
@@ -66,7 +67,7 @@ async def retrieve_data(ports: List[str], cache: Dict) -> int:
 
             if not local_path.exists():
                 continue
-
+            transfer_bytes = transfer_bytes + local_path.stat().st_size
             if zipfile.is_zipfile(str(local_path)):
                 log.info("extracting %s to %s", local_path, input_path())
                 zip_ref = zipfile.ZipFile(str(local_path), 'r')
@@ -83,7 +84,8 @@ async def retrieve_data(ports: List[str], cache: Dict) -> int:
                 cache[node_key] = [str(dest_path)]
                 log.info("move completed")
         end_time = time.clock()
-        log.info("retrieval complete: took %.2fseconds", end_time - start_time)
+        log.info("retrieval complete: took %.2fseconds for %s bytes", end_time - start_time, transfer_bytes)
+    return transfer_bytes
 
 
 def main(args=None) -> int:
@@ -106,11 +108,13 @@ def main(args=None) -> int:
                 file_transfer_history = json.load(fp)
 
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(retrieve_data(options.port_keys, file_transfer_history))
+        transfer_bytes = \
+            loop.run_until_complete(retrieve_data(options.port_keys, file_transfer_history))
         log.info("saving cache: %s", file_transfer_history)
         with CACHE_FILE_PATH.open("w") as fp:
             json.dump(file_transfer_history, fp)
 
+        print(transfer_bytes)
         return ExitCode.SUCCESS
     except:  # pylint: disable=bare-except
         log.exception("Unexpected error when retrievin data")
