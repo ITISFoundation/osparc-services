@@ -5,3 +5,4 @@ dash-daq~=0.1.0
 git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk
 git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python
 git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/postgres-database
+tenacity~=5.0.4
