@@ -1,36 +1,33 @@
 # -*- coding: utf-8 -*-
-
 # pylint: disable=dangerous-default-value
-import os
-from pathlib import Path
-import asyncio
 
-import pandas as pd
-import flask
+import asyncio
+import logging
+import os
+import sys
+from pathlib import Path
+
 import dash
-from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
-
+import flask
+import pandas as pd
 import plotly.graph_objs as go
+from dash.dependencies import Input, Output
 from plotly import tools
-
 from simcore_sdk import node_ports
-import logging
-
-from tenacity import retry, stop_after_attempt, wait_fixed, before_log
+from tenacity import before_log, retry, wait_fixed 
 
 logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 logger = logging.getLogger()
 
-
 #TODO: node_ports.wait_for_response()
-@retry(wait_fixed=3,
-    #stop_after_attempt=15,
+@retry(wait=wait_fixed(3),
+    #stop=stop_after_attempt(15),
     before=before_log(logger, logging.INFO) )
 def check_if_ready(n_inputs = 2):
-    PORTS = node_ports.ports()
-    tasks = asyncio.gather(*[PORTS.inputs[n].get() for n in range(n_inputs)])
+    ports = node_ports.ports()
+    tasks = asyncio.gather(*[ports.inputs[n].get() for n in range(n_inputs)])
     paths_to_inputs = asyncio.get_event_loop().run_until_complete( tasks )
     assert all( p.exists() for p in paths_to_inputs )
 
