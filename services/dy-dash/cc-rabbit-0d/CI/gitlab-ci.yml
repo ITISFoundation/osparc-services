@@ -6,7 +6,7 @@ variables:
   # have some prefix so it may help for garbage collecting in the registry
   SC_CI_PROJECT_PATH_NAME: ci/$CI_PROJECT_PATH_SLUG/$CI_COMMIT_REF_SLUG
   SC_CI_TEST_IMAGE_PREFIX: $SC_CI_TESTING_REGISTRY/ci/$CI_PROJECT_PATH_SLUG/$CI_COMMIT_REF_SLUG
-  SC_CI_CC-RABBIT-0D_LOCATION: models/cc-rabbit-0d
+  SC_CI_CC-RABBIT-0D_LOCATION: services/cc-rabbit-0d
 services:
    - docker:dind
 before_script:

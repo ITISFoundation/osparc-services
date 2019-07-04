@@ -4,7 +4,10 @@
       "label": "ECG",
       "displayOrder": 0,
       "description": "ECG csv",
-      "type": "data:text/csv"
+      "type": "data:text/csv",
+      "fileToKeyMap": {
+          "ECG.csv": "out_1"
+      }
     }
   }
 }

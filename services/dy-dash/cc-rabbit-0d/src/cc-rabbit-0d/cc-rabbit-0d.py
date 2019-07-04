@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+# pylint: disable=dangerous-default-value
+
 import os
 from pathlib import Path
 import asyncio
@@ -16,10 +19,10 @@ from plotly import tools
 
 DEVEL_MODE = False
 if DEVEL_MODE:
-    WORKDIR = Path(Path(os.path.dirname(os.path.realpath(__file__))).parent).parent
+    IN_OUT_PARENT_DIR = Path(Path(os.path.dirname(os.path.realpath(__file__))).parent).parent / 'validation'
 else:
-    WORKDIR = Path('/home/jovyan')
-INPUT_DIR = WORKDIR / 'input'
+    IN_OUT_PARENT_DIR = Path('/home/jovyan')
+INPUT_DIR = IN_OUT_PARENT_DIR / 'input'
 
 
 base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', "/")
@@ -103,7 +106,7 @@ def give_fig_osparc_style2(fig):
 def give_fig_osparc_style(fig, xLabels=['x'], yLabels=['y']):
     for idx, xLabel in enumerate(xLabels):
         suffix = str(idx)
-        if idx is 0:
+        if idx == 0:
             suffix = ''
         fig['layout']['xaxis'+suffix].update(
             title=xLabel,
@@ -111,7 +114,7 @@ def give_fig_osparc_style(fig, xLabels=['x'], yLabels=['y']):
         )
     for idx, yLabel in enumerate(yLabels):
         suffix = str(idx)
-        if idx is 0:
+        if idx == 0:
             suffix = ''
         fig['layout']['yaxis'+suffix].update(
             title=yLabel,
@@ -226,7 +229,7 @@ for i in range(1,syids):
     ynid[yids[i]] = i
 
 # data_path_ar = await PORTS.inputs[1].get()
-data_path_ar = INPUT_DIR / 'allresult_1Hz.txt'
+data_path_ar = INPUT_DIR / 'allresults_1Hz.txt'
 data_frame_ar = pd.read_csv(data_path_ar, sep='\t', header=None)
 
 tArray = 1
