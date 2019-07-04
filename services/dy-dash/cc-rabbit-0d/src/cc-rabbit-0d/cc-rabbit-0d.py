@@ -25,11 +25,12 @@ logger = logging.getLogger()
 @retry(wait=wait_fixed(3),
     #stop=stop_after_attempt(15),
     before=before_log(logger, logging.INFO) )
-def check_if_ready(n_inputs = 2):
+def download_all_inputs(n_inputs = 2):
     ports = node_ports.ports()
     tasks = asyncio.gather(*[ports.inputs[n].get() for n in range(n_inputs)])
     paths_to_inputs = asyncio.get_event_loop().run_until_complete( tasks )
     assert all( p.exists() for p in paths_to_inputs )
+    return paths_to_inputs
 
 
 DEVEL_MODE = False
@@ -229,29 +230,41 @@ def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
     fig = go.Figure(data=data, layout=layout)
     return fig
 
+#---------------------------------------------------------#
+# Data to plot in memory
+data_frame_ty = None
+data_frame_ar = None
+
+@app.route("/retrieve")
+def retrieve():
+    global data_frame_ty
+    global data_frame_ar
+
+    # download
+    data_path_ty, data_path_ar = download_all_inputs(2)
+
+    # read from file to memory
+    data_frame_ty = pd.read_csv(data_path_ty, sep='\t', header=None)
+    data_frame_ar = pd.read_csv(data_path_ar, sep='\t', header=None)
+
+    # scale time
+    f = lambda x: x/1000.0
+    data_frame_ty[0] = data_frame_ty[0].apply(f)
+
+    # render new values by pressing reload here
 
 
-#---------------------------------------------------------
-check_if_ready()
 
-PORTS = node_ports.ports()
-data_path_ty = asyncio.get_event_loop().run_until_complete(PORTS.inputs[0].get())
-data_frame_ty = pd.read_csv(data_path_ty, sep='\t', header=None)
-print(data_frame_ty.columns)
+# constants ----------
+def compute_ynid():
+    syids = 9
+    yids = [30, 31, 32, 33, 34, 36, 37, 38, 39]
+    ynid = [0] * 206
+    for i in range(1,syids):
+        ynid[yids[i]] = i
+    return ynid
 
-# scale time
-f = lambda x: x/1000.0
-data_frame_ty[0] = data_frame_ty[0].apply(f)
-syids = 9
-yids = [30, 31, 32, 33, 34, 36, 37, 38, 39]
-ynid = [0] * 206
-for i in range(1,syids):
-    ynid[yids[i]] = i
-
-data_path_ar = asyncio.get_event_loop().run_until_complete(PORTS.inputs[1].get())
-data_frame_ar = pd.read_csv(data_path_ar, sep='\t', header=None)
-print(data_frame_ar.columns)
-
+ynid = compute_ynid()
 tArray = 1
 I_Ca_store = 2
 Ito = 3
