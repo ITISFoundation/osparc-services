@@ -1,0 +1,5 @@
+docker
+jsonschema
+pytest
+pyyaml
+pylint

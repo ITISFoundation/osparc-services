@@ -52,8 +52,8 @@ services:
       target: production
     image: ${DOCKER_REGISTRY}/cc-rabbit-0d:${DOCKER_IMAGE_TAG}
     volumes:
-      - ./input:/home/jovyan/input
-      - ./output:/home/jovyan/output
+      - ./validation/input:/home/jovyan/input
+      - ./validation/output:/home/jovyan/output
     ports:
     - 1240:8888
     init: true

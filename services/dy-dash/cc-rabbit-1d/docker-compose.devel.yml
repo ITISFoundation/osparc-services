@@ -23,8 +23,8 @@ services:
       # mount the sources by default
       - ./src/cc-rabbit-1d:/home/jovyan/src
       - ../../../scripts/dy_services_helpers:/home/jovyan/scripts/dy_services_helpers
-      - ./input:/home/jovyan/input
-      - ./output:/home/jovyan/output
+      - ./validation/input:/home/jovyan/input
+      - ./validation/output:/home/jovyan/output
       - ./devel-config:/home/jovyan/devel-config
     depends_on:
       - postgres
