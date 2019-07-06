@@ -7,7 +7,7 @@ info:
   version: "0.0.1"
   contact:
     name: IT'IS Foundation
-    email: support@simcore.io
+    email: devops@simcore.io
   license:
     name: MIT
     url: https://github.com/ITISFoundation/osparc-simcore/blob/master/LICENSE
@@ -29,7 +29,7 @@ paths:
       requestBody:
         content:
           application/json:
-            schema: 
+            schema:
               $ref: './services_api.yaml#/components/schemas/PortsRequest'
       responses:
         '200':
@@ -48,13 +48,14 @@ components:
       description: port key names
       type: string
       example: input_1
+
     PortsRequest:
       type: object
       properties:
         port_keys:
           type: array
           items:
-            $ref: '#/PortKey'
+            $ref: '#/components/schemas/PortKey'
 
     TransferForm:
       type: object
@@ -73,10 +74,39 @@ components:
         data:
           $ref: './services_api.yaml#/components/schemas/TransferForm'
 
+    ErrorSchema:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          description: Typically the name of the exception that produced it otherwise some known error code
+        message:
+          type: string
+          description: Error message specific to this item
+        resource:
+          type: string
+          description: API resource affected by this error
+        field:
+          type: string
+          description: Specific field within the resource
+
+    ErrorEnveloped:
+        type: object
+        required:
+          - error
+        properties:
+          error:
+            type: array
+            items:
+              type: './services_api.yaml#/components/schemas/ErrorSchema'
+
   responses:
     DefaultErrorResponse:
       description: Default http error response body
       content:
         application/json:
           schema:
-            $ref: './components/schemas/error.yaml#/ErrorEnveloped'
+            $ref: './services_api.yaml#/components/schemas/ErrorEnveloped'
