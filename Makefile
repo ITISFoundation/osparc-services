@@ -38,7 +38,7 @@ info: ## Displays some parameters of makefile environments
 	@echo "To activate the venv, execute 'source .venv/bin/activate' or '.venv/bin/activate.bat' (WIN)"
 
 .PHONY: toc
-toc: .venv ## Udpates README.txt
+toc: .venv ## Upates README.txt with a ToC of all services
 	@.venv/bin/python ${CURDIR}/scripts/auto-doc/create-toc.py
 
 

@@ -100,14 +100,21 @@ def create_markdown(services_info, stream):
     writer.margin = 2  # add a whitespace for both sides of each cell
     writer.write_table()
 
+TOC_BEGIN = r'<!-- TOC_BEGIN -->'
+TOC_END = r'<!-- TOC_END -->'
+
 def split_section(readme):
+    """
+    returns pre and post sections
+    """
+    begin = end = len(readme)
     for match in re.finditer(r'<\!--\s*TOC_(\w+)\s*-->', readme):
         name = match.group(1)
         if name == "BEGIN":
-            begin = match.end(0)+1
+            begin = match.start(0)
         elif name == "END":
-            end = match.start(0)
-    assert begin<=end, "TOC_BEGIN, TOC_END missing?"
+            end = match.end(0)
+    assert begin<=end
     return readme[:begin], readme[end:]
 
 def stamp_message():
@@ -128,9 +135,13 @@ def main():
 
     with open(readme_path, 'w') as fh:
         print(pre, file=fh)
+
+        print(TOC_BEGIN, file=fh)
         print(stamp_message(), file=fh)
-        print("## Available services", file=fh)
+        print("## Available services [%d]" % len(services_info), file=fh)
         create_markdown(services_info, fh)
+        print(TOC_END, file=fh)
+
         print(post, file=fh)
 
 if __name__ == "__main__":
