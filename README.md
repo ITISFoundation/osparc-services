@@ -29,4 +29,3 @@ Collection of some open-source services for the osparc simcore platform:
 |  [3d-viewer](services/dy-3dvis/services/dy-3dvis/simcoreparaviewweb)      |  Paraview Web-based Visualizer                       |  dynamic  |  2.11.0          |  simcore/services/dynamic/3d-viewer:2.11.0               |
 |  [3d-viewer-gpu](services/dy-3dvis/services/dy-3dvis/simcoreparaviewweb)  |  Paraview Web-based Visualizer GPU accelerated       |  dynamic  |  2.11.0          |  simcore/services/dynamic/3d-viewer-gpu:2.11.0           |
 <!-- TOC_END -->
-
