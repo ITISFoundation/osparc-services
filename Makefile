@@ -37,6 +37,10 @@ info: ## Displays some parameters of makefile environments
 	.venv/bin/pip3 install pylint autopep8 virtualenv cookiecutter
 	@echo "To activate the venv, execute 'source .venv/bin/activate' or '.venv/bin/activate.bat' (WIN)"
 
+.PHONY: toc
+toc: .venv ## Udpates README.txt
+	@.venv/bin/python ${CURDIR}/scripts/auto-doc/create-toc.py
+
 
 .PHONY: clean
 clean:  ## Cleans all unversioned files in project

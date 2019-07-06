@@ -11,7 +11,6 @@ import traceback
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
-from pprint import pprint
 
 import yaml
 from pytablewriter import MarkdownTableWriter
@@ -38,6 +37,7 @@ def parse_repo():
     services_info = defaultdict(dict)
 
     for base, dirs, files in os.walk(services_dir):
+        base = Path(base)
         relbase = os.path.relpath(base, services_dir)
         for file_name in files:
             if file_name == "Dockerfile":
@@ -55,7 +55,7 @@ def parse_repo():
             elif file_name == "VERSION":
                 # Every service is published with a name and a version
                 version_files[relbase].update({
-                    'version': open(f"{base}/VERSION").read().strip()
+                    'version': (base / "VERSION").read_text().strip()
                 })
 
             elif file_name == "docker-compose.yml":
@@ -73,8 +73,14 @@ def parse_repo():
                             info[key] = json.loads(service['build']['labels'][f'io.simcore.{key}'])[key]
                         services_info[service_name].update(info)
 
-    return services_info
+    for service in services_info.values():
+        if service['version'] == "${DOCKER_IMAGE_TAG}":
+            folder = service['folder'].lstrip('services/')
+            for relbase in version_files:
+                if relbase in folder:
+                    service['version'] = version_files[relbase]['version']
 
+    return services_info
 
 def create_markdown(services_info, stream):
     writer = MarkdownTableWriter()
@@ -93,7 +99,6 @@ def create_markdown(services_info, stream):
 
     writer.margin = 2  # add a whitespace for both sides of each cell
     writer.write_table()
-
 
 def split_section(readme):
     for match in re.finditer(r'<\!--\s*TOC_(\w+)\s*-->', readme):
