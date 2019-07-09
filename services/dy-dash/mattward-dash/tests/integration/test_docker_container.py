@@ -44,7 +44,7 @@ def docker_container(dynamic_service_environ, docker_client: docker.DockerClient
     try:
         container_start_time = time.perf_counter()
         container = docker_client.containers.run(docker_image_key, detach=True, remove=False, init=True)
-        while not container.status == "running":            
+        while not container.status == "running":
             if container.status == "exited":
                 # not good for a dynamic container
                 pytest.fail("The container exited already.\nlogs: {}".format(pformat(container.logs(timestamps=True).decode("UTF-8")).split("\n"), width=200))
