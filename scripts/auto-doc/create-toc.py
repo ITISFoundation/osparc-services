@@ -20,6 +20,7 @@ current_dir = current_file.parent
 repo_dir = current_dir.parent.parent
 readme_path = repo_dir / "README.md"
 services_dir = repo_dir / "services"
+timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 def debug_it(fun):
     def wrap(*args, **kargs):
@@ -118,7 +119,6 @@ def split_section(readme):
     return readme[:begin], readme[end:]
 
 def stamp_message():
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d")
     this_file = os.path.relpath(current_file, repo_dir)
     return f"<!-- Automaticaly produced by {this_file} on {timestamp} -->"
 
@@ -140,8 +140,8 @@ def main():
         print(stamp_message(), file=fh)
         print("## Available services [%d]" % len(services_info), file=fh)
         create_markdown(services_info, fh)
+        print(f"*Updated on {timestamp}*\n", file=fh)
         print(TOC_END, file=fh)
-
         print(post, file=fh)
 
 if __name__ == "__main__":
