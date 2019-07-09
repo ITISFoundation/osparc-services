@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=dangerous-default-value
+# pylint: disable=global-statement
 
 import asyncio
 import logging
@@ -235,7 +236,7 @@ def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
 data_frame_ty = None
 data_frame_ar = None
 
-@app.route("/retrieve")
+# @app.route("/retrieve")
 def retrieve():
     global data_frame_ty
     global data_frame_ar
@@ -259,10 +260,10 @@ def retrieve():
 def compute_ynid():
     syids = 9
     yids = [30, 31, 32, 33, 34, 36, 37, 38, 39]
-    ynid = [0] * 206
+    ynid_l = [0] * 206
     for i in range(1,syids):
-        ynid[yids[i]] = i
-    return ynid
+        ynid_l[yids[i]] = i
+    return ynid_l
 
 ynid = compute_ynid()
 tArray = 1
@@ -578,19 +579,23 @@ def create_graph_11():
     ]
 )
 def read_input_files(_n_clicks):
-    figs = [
-        create_graph_1(),
-        create_graph_2(),
-        create_graph_3(),
-        create_graph_4(),
-        create_graph_5(),
-        create_graph_6(),
-        create_graph_7(),
-        create_graph_8(),
-        create_graph_9(),
-        create_graph_10(),
-        create_graph_11()
-    ]
+    retrieve()
+    if (data_frame_ty is not None) and (data_frame_ar is not None):
+        figs = [
+            create_graph_1(),
+            create_graph_2(),
+            create_graph_3(),
+            create_graph_4(),
+            create_graph_5(),
+            create_graph_6(),
+            create_graph_7(),
+            create_graph_8(),
+            create_graph_9(),
+            create_graph_10(),
+            create_graph_11()
+        ]
+    else:
+        figs = [get_empty_graph() for i in range(11)]
     return figs
 
 
