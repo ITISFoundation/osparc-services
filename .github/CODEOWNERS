@@ -1,15 +1,30 @@
 # Order is important. The last matching pattern has the most precedence.
 
 # files and folders recursively
-/api/                      @sanderegg, @pcrespov
-/ops/                      @sanderegg, @pcrespov
-/docs/                     @pcrespov
-/packages/service-library  @pcrespov
-/services/dy*              @sanderegg
-/services/sidecar          @pcrespov, @mguidon
-/services/web/client       @odeimaiz, @oetiker, @ignapas
-/services/web/server       @pcrespov
-/services/storage          @mguidon
+/api/                                             @sanderegg, @pcrespov
+/ops/                                             @sanderegg, @pcrespov
 
-requirements/*             @pcrespov
-/.travis.yml               @sanderegg
+/services/dy-2Dgraph                              @sanderegg
+/services/dy-2Dgraph/use-cases/cc/cc-oned         @sanderegg
+/services/dy-2Dgraph/use-cases/cc/cc-single-cell  @sanderegg
+/services/dy-2Dgraph/use-cases/cc/cc-twod         @sanderegg
+/services/dy-2Dgraph/use-cases/kember             @sanderegg
+/services/dy-2Dgraph/use-cases/mattward           @sanderegg
+
+/services/dy-3dvis                                @sanderegg
+
+/services/dy-dash                                 @odeimaiz
+/services/dy-dash/cc-rabbit-0d                    @odeimaiz
+/services/dy-dash/cc-rabbit-1d                    @odeimaiz
+/services/dy-dash/mattward-dash                   @odeimaiz
+
+/services/dy-jupyter                              @sanderegg, @pcrespov
+
+/services/dy-jupyter-extensions                   @sanderegg, @pcrespov
+/services/dy-jupyter-extensions/neuron            @mguidon
+
+/services/dy-modeling                             @sanderegg
+/services/dy-raw-graphs                           @odeimaiz
+
+
+/.travis.yml                                      @sanderegg
