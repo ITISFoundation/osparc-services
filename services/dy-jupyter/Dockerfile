@@ -53,7 +53,8 @@ ENV PYTHONPATH=/home/jovyan/handlers
 # ----------------------------------------------------------------
 # install simcore-sdk
 RUN pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
-    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python
+    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python &&\
+    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/postgres-database
 
 ENV NOTEBOOK_URL="notebooks/notebook.ipynb"
 # ----------------------------------------------------------------
