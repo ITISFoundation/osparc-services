@@ -1,20 +1,37 @@
 # -*- coding: utf-8 -*-
-
 # pylint: disable=dangerous-default-value
+# pylint: disable=global-statement
 
-import os
-from pathlib import Path
 import asyncio
+import logging
+import os
+import sys
+from pathlib import Path
 
-import pandas as pd
-import flask
 import dash
-from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
-
+import flask
+import pandas as pd
 import plotly.graph_objs as go
+from dash.dependencies import Input, Output
 from plotly import tools
+from simcore_sdk import node_ports
+from tenacity import before_log, retry, wait_fixed 
+
+logging.basicConfig(stream=sys.stderr, level=logging.INFO)
+logger = logging.getLogger()
+
+#TODO: node_ports.wait_for_response()
+@retry(wait=wait_fixed(3),
+    #stop=stop_after_attempt(15),
+    before=before_log(logger, logging.INFO) )
+def download_all_inputs(n_inputs = 2):
+    ports = node_ports.ports()
+    tasks = asyncio.gather(*[ports.inputs[n].get() for n in range(n_inputs)])
+    paths_to_inputs = asyncio.get_event_loop().run_until_complete( tasks )
+    assert all( p.exists() for p in paths_to_inputs )
+    return paths_to_inputs
 
 
 DEVEL_MODE = False
@@ -25,12 +42,12 @@ else:
 INPUT_DIR = IN_OUT_PARENT_DIR / 'input'
 
 
-base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', "/")
-if not base_pathname.endswith("/"):
-    base_pathname = base_pathname + "/"
-if not base_pathname.startswith("/"):
-    base_pathname = "/" + base_pathname
+DEFAULT_PATH = '/'
+base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', DEFAULT_PATH)
+if base_pathname != DEFAULT_PATH :
+    base_pathname = "/{}/".format(base_pathname.strip('/'))
 print('url_base_pathname', base_pathname)
+
 
 server = flask.Flask(__name__)
 app = dash.Dash(__name__,
@@ -214,24 +231,41 @@ def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
     fig = go.Figure(data=data, layout=layout)
     return fig
 
+#---------------------------------------------------------#
+# Data to plot in memory
+data_frame_ty = None
+data_frame_ar = None
 
-# data_path_ty = await PORTS.inputs[0].get()
-data_path_ty = INPUT_DIR / 'vm_1Hz.txt'
-data_frame_ty = pd.read_csv(data_path_ty, sep='\t', header=None)
+# @app.route("/retrieve")
+def retrieve():
+    global data_frame_ty
+    global data_frame_ar
 
-# scale time
-f = lambda x: x/1000.0
-data_frame_ty[0] = data_frame_ty[0].apply(f)
-syids = 9
-yids = [30, 31, 32, 33, 34, 36, 37, 38, 39]
-ynid = [0] * 206
-for i in range(1,syids):
-    ynid[yids[i]] = i
+    # download
+    data_path_ty, data_path_ar = download_all_inputs(2)
 
-# data_path_ar = await PORTS.inputs[1].get()
-data_path_ar = INPUT_DIR / 'allresults_1Hz.txt'
-data_frame_ar = pd.read_csv(data_path_ar, sep='\t', header=None)
+    # read from file to memory
+    data_frame_ty = pd.read_csv(data_path_ty, sep='\t', header=None)
+    data_frame_ar = pd.read_csv(data_path_ar, sep='\t', header=None)
 
+    # scale time
+    f = lambda x: x/1000.0
+    data_frame_ty[0] = data_frame_ty[0].apply(f)
+
+    # render new values by pressing reload here
+
+
+
+# constants ----------
+def compute_ynid():
+    syids = 9
+    yids = [30, 31, 32, 33, 34, 36, 37, 38, 39]
+    ynid_l = [0] * 206
+    for i in range(1,syids):
+        ynid_l[yids[i]] = i
+    return ynid_l
+
+ynid = compute_ynid()
 tArray = 1
 I_Ca_store = 2
 Ito = 3
@@ -545,19 +579,23 @@ def create_graph_11():
     ]
 )
 def read_input_files(_n_clicks):
-    figs = [
-        create_graph_1(),
-        create_graph_2(),
-        create_graph_3(),
-        create_graph_4(),
-        create_graph_5(),
-        create_graph_6(),
-        create_graph_7(),
-        create_graph_8(),
-        create_graph_9(),
-        create_graph_10(),
-        create_graph_11()
-    ]
+    retrieve()
+    if (data_frame_ty is not None) and (data_frame_ar is not None):
+        figs = [
+            create_graph_1(),
+            create_graph_2(),
+            create_graph_3(),
+            create_graph_4(),
+            create_graph_5(),
+            create_graph_6(),
+            create_graph_7(),
+            create_graph_8(),
+            create_graph_9(),
+            create_graph_10(),
+            create_graph_11()
+        ]
+    else:
+        figs = [get_empty_graph() for i in range(11)]
     return figs
 
 

@@ -1,6 +1,13 @@
 FROM itisfoundation/cnap-dy-jupyter:latest AS common
 LABEL maintainer=odeimaiz
 
+USER root
+# install git
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    git
+USER $NB_USER
+
 # install requirements --------------------------------------------------------
 COPY --chown=jovyan:users src/requirements.txt .
 # TODO: tmp workaround for https://github.com/pypa/pip/issues/6197
@@ -57,5 +64,6 @@ RUN mkdir -p /home/jovyan/output
 ARG APP_NAME
 # copy the app in the image
 WORKDIR /home/jovyan/src
+# COPY --chown=jovyan:users src/mattward-dash/${APP_NAME} ${APP_NAME}
 COPY --chown=jovyan:users src/mattward-dash .
 ENTRYPOINT [ "/bin/bash", "/docker/boot.sh" ]

@@ -11,25 +11,30 @@ services:
         io.simcore.contact: '{"contact": "maiz@itis.swiss"}'
         io.simcore.description: '{"description": "cc-rabbit-1d"}'
         io.simcore.inputs: '{"inputs": {"ECGs": {"label": "ECGs", "displayOrder":
-          0, "description": "Computed ECGs out of a solver", "type": "data:*/*"},
-          "y_1D": {"label": "action potentials", "displayOrder": 1, "description":
-          "Action potentials out of solver", "type": "data:*/*"}}}'
+          0, "description": "Computed ECGs out of a solver", "type": "data:*/*", "fileToKeyMap":
+          {"ECGs.txt": "ECGs"}}, "y_1D": {"label": "action potentials", "displayOrder":
+          1, "description": "Action potentials out of solver", "type": "data:*/*",
+          "fileToKeyMap": {"y_1D.txt": "y_1D"}}}}'
         io.simcore.key: '{"key": "simcore/services/dynamic/cc-rabbit-1d"}'
         io.simcore.name: '{"name": "cc-rabbit-1d"}'
         io.simcore.outputs: '{"outputs": {"out_1": {"label": "ECG", "displayOrder":
-          0, "description": "ECG csv", "type": "data:text/csv"}}}'
+          0, "description": "ECG csv", "type": "data:text/csv", "fileToKeyMap": {"ECG.csv":
+          "out_1"}}}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "0.1.0"}'
+        io.simcore.version: '{"version": "1.0.1"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: https://github.com/ITISFoundation/osparc-services
+        simcore.service.settings: '[ {"name": "ports", "type": "int", "value": 8888},
+          {"name": "constraints", "type": "string", "value": ["node.platform.os ==
+          linux"]} ]'
       target: production
     image: ${DOCKER_REGISTRY}/cc-rabbit-1d:${DOCKER_IMAGE_TAG}
-    volumes:
-      - ./validation/input:/home/jovyan/input
-      - ./validation/output:/home/jovyan/output
-    ports:
-    - 1241:8888
     init: true
+    ports:
+    - 1240:8888
+    volumes:
+    - ./validation/input:/home/jovyan/input
+    - ./validation/output:/home/jovyan/output
 version: '3.7'

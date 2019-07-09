@@ -31,21 +31,21 @@ services:
           {"label": "Output L pred", "displayOrder": 7, "description": "Output L pred
           data csv", "type": "data:text/csv", "fileToKeyMap": {"Lpred_plot.csv": "Lpred_plot"}}}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "0.2.0"}'
+        io.simcore.version: '{"version": "1.0.1"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: https://github.com/odeimaiz/osparc-services
+        simcore.service.settings: '[
+          {"name": "ports", "type": "int", "value": 8888},
+          {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}
+        ]'
       target: production
-    environment:
-    - INPUT_FOLDER=/input
-    - OUTPUT_FOLDER=/output
-    - LOG_FOLDER=/log
     image: ${DOCKER_REGISTRY}/mattward-dash:${DOCKER_IMAGE_TAG}
+    init: true
     ports:
     - 1238:8888
     volumes:
-    - ./validation/input:/input
-    - ./tmp/output:/output
-    - ./tmp/log:/log
+    - ./validation/input:/home/jovyan/input
+    - ./validation/output:/home/jovyan/output
 version: '3.7'
