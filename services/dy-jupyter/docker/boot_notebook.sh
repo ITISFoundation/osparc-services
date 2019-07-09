@@ -24,6 +24,7 @@ define(['base/js/namespace'], function(Jupyter){
 EOF
 
 #https://github.com/jupyter/notebook/issues/3130 for delete_to_trash
+#https://github.com/nteract/hydrogen/issues/922 for disable_xsrf
 cat > jupyter_config.json <<EOF
 {
     "NotebookApp": {
@@ -36,6 +37,7 @@ cat > jupyter_config.json <<EOF
         "quit_button": false,
         "open_browser": false,
         "webbrowser_open_new": 0,
+        "disable_check_xsrf": true,
         "nbserver_extensions": {
             "input_retriever": true,
             "state_handler": true
