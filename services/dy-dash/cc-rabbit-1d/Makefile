@@ -57,7 +57,7 @@ endif
 
 .PHONY: build
 # target: build: – Builds all service images.
-build: pull update_compose_labels
+build: update_compose_labels
 	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel
 
 .PHONY: build-devel
@@ -72,14 +72,14 @@ up: .env down
 
 down:
 	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml down
-	@${DOCKER_COMPOSE} -f docker-compose.yml down
+	${DOCKER_COMPOSE} -f docker-compose.yml down
 
 ## -------------------------------
 # Development/Debugging.
 .PHONY: up-devel
 # target: up-devel: – Starts service as root and with sources mounted in /home/scu/src for debugging.
 up-devel: .env down
-	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml run cc-rabbit-1d
+	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml up
 
 ## -------------------------------
 # Testing.
@@ -124,20 +124,17 @@ check-release:
 
 push:
 	# push both latest and :$$SERVICE_VERSION tags
-	${DOCKER} login ${DOCKER_REGISTRY};\
-	SERVICE_VERSION=$$(cat VERSION);\
+	${DOCKER_COMPOSE} -f docker-compose.yml push
 	${DOCKER} tag \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-1d:latest \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-1d:$$SERVICE_VERSION;\
+		${DOCKER_REGISTRY}/cc-rabbit-1d:${DOCKER_IMAGE_TAG} \
+		${DOCKER_REGISTRY}/cc-rabbit-1d:latest
 	${DOCKER} push \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-1d:$$SERVICE_VERSION;\
-	${DOCKER} push \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-1d:latest;
+		${DOCKER_REGISTRY}/cc-rabbit-1d:latest
+
 
 pull:
 	# pull latest service version if available
-	${DOCKER} pull \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-1d:latest || true;
+	${DOCKER_COMPOSE} -f docker-compose.yml pull || true;
 
 # basic checks -------------------------------------
 .env: .env-devel
@@ -171,6 +168,7 @@ info:
 	@echo '+ BUILD_DATE           : ${BUILD_DATE}'
 	@echo '+ OS_VERSION           : ${OS_VERSION}'
 	@echo '+ DOCKER_REGISTRY      : ${DOCKER_REGISTRY}'
+	@echo '+ DOCKER_IMAGE_TAG     : ${DOCKER_IMAGE_TAG}'
 
 
 ## -------------------------------
