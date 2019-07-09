@@ -20,17 +20,17 @@ from simcore_sdk import node_ports
 
 DEVEL_MODE = False
 if DEVEL_MODE:
-    WORKDIR = str(Path(os.path.dirname(os.path.realpath(__file__))).parent)
+    IN_OUT_PARENT_DIR = Path(Path(os.path.dirname(os.path.realpath(__file__))).parent).parent / 'validation'
 else:
-    WORKDIR = '/home/jovyan'
-OUTPUT_DIR = WORKDIR + '/output'
+    IN_OUT_PARENT_DIR = Path('/home/jovyan')
+INPUT_DIR = IN_OUT_PARENT_DIR / 'input'
+OUTPUT_DIR = IN_OUT_PARENT_DIR / 'output'
 
 
-base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', "/")
-if not base_pathname.endswith("/"):
-    base_pathname = base_pathname + "/"
-if not base_pathname.startswith("/"):
-    base_pathname = "/" + base_pathname
+DEFAULT_PATH = '/'
+base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', DEFAULT_PATH)
+if base_pathname != DEFAULT_PATH :
+    base_pathname = "/{}/".format(base_pathname.strip('/'))
 print('url_base_pathname', base_pathname)
 
 server = flask.Flask(__name__)
@@ -545,32 +545,32 @@ def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, 
 
 
 def push_output_data():
-    input_path= OUTPUT_DIR+'/input.csv'
-    cv_path= OUTPUT_DIR+'/CV_plot.csv'
-    t_path= OUTPUT_DIR+'/t_plot.csv'
-    ist_path= OUTPUT_DIR+'/Ist_plot.csv'
-    tst_path= OUTPUT_DIR+'/tst_plot.csv'
-    qst_path= OUTPUT_DIR+'/CAP_plot.csv'
-    vpred_path= OUTPUT_DIR+'/V_pred_plot.csv'
-    lpred_path= OUTPUT_DIR+'/Lpred_plot.csv'
-    PORTS = node_ports.ports()
+    input_path= OUTPUT_DIR / 'input.csv'
+    cv_path= OUTPUT_DIR / 'CV_plot.csv'
+    t_path= OUTPUT_DIR / 't_plot.csv'
+    ist_path= OUTPUT_DIR / 'Ist_plot.csv'
+    tst_path= OUTPUT_DIR / 'tst_plot.csv'
+    qst_path= OUTPUT_DIR / 'CAP_plot.csv'
+    vpred_path= OUTPUT_DIR / 'V_pred_plot.csv'
+    lpred_path= OUTPUT_DIR / 'Lpred_plot.csv'
     output_files = [input_path, cv_path, t_path, ist_path, tst_path, qst_path, vpred_path, lpred_path]
-    loop = asyncio.get_event_loop()
-    for idx, path in enumerate(output_files):
-        if (os.path.isfile(path)):
-            loop.run_until_complete(PORTS.outputs[idx].set(path))
+    ports = node_ports.ports()
+    tasks = asyncio.gather(*[ports.outputs[idx].set(path) for idx, path in enumerate(output_files)])
+    paths_to_outputs = asyncio.get_event_loop().run_until_complete( tasks )
+    assert all( p.exists() for p in paths_to_outputs )
+    return paths_to_outputs
 
 def run_solver(*args):
     if DEVEL_MODE:
         return
 
     subprocess.call(["execute_cnap.sh", *args], cwd=OUTPUT_DIR)
-    push_output_data()
+    # push_output_data()
 
 def create_input_files(model_id, plot_vs_tCNAP):
     # !execute_cnap.sh $model_id 0 0.0 1.0 0.5 0.4
     run_solver(str(model_id), "0", "0.0", "1.0", "0.5", "0.4")
-    path = OUTPUT_DIR+'/input.csv'
+    path = OUTPUT_DIR / 'input.csv'
     return create_learned_model_input(path, plot_vs_tCNAP)
 
 def build_input_graphs(data):
@@ -774,13 +774,13 @@ def predict( # pylint:disable=too-many-arguments
     selected_cb = get_selected_checkboxes(input_plot_options)
     plot_vs_qst = selected_cb[0]
     plot_vs_tCNAP = selected_cb[1]
-    cv_path= OUTPUT_DIR+'/CV_plot.csv'
-    t_path= OUTPUT_DIR+'/t_plot.csv'
-    ist_path= OUTPUT_DIR+'/Ist_plot.csv'
-    tst_path= OUTPUT_DIR+'/tst_plot.csv'
-    qst_path= OUTPUT_DIR+'/CAP_plot.csv'
-    vpred_path= OUTPUT_DIR+'/V_pred_plot.csv'
-    lpred_path= OUTPUT_DIR+'/Lpred_plot.csv'
+    cv_path= OUTPUT_DIR / 'CV_plot.csv'
+    t_path= OUTPUT_DIR / 't_plot.csv'
+    ist_path= OUTPUT_DIR / 'Ist_plot.csv'
+    tst_path= OUTPUT_DIR / 'tst_plot.csv'
+    qst_path= OUTPUT_DIR / 'CAP_plot.csv'
+    vpred_path= OUTPUT_DIR / 'V_pred_plot.csv'
+    lpred_path= OUTPUT_DIR / 'Lpred_plot.csv'
     data = None
     if button_current_ts>button_duration_ts:
         sweep_param = 1
