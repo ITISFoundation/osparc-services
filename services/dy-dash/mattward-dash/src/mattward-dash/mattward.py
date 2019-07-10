@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+import asyncio
+import logging
 import os
+import sys
 from pathlib import Path
 import subprocess
-import asyncio
 
 import numpy as np
 import pandas as pd
@@ -16,6 +18,9 @@ import plotly.graph_objs as go
 from plotly import tools
 
 from simcore_sdk import node_ports
+
+logging.basicConfig(stream=sys.stderr, level=logging.INFO)
+logger = logging.getLogger()
 
 
 DEVEL_MODE = False
@@ -554,18 +559,25 @@ def push_output_data():
     vpred_path= OUTPUT_DIR / 'V_pred_plot.csv'
     lpred_path= OUTPUT_DIR / 'Lpred_plot.csv'
     output_files = [input_path, cv_path, t_path, ist_path, tst_path, qst_path, vpred_path, lpred_path]
+    for p in output_files:
+        logger.info('file %s', str(p))
+        logger.info('exsits %s', p.exists())
     ports = node_ports.ports()
-    tasks = asyncio.gather(*[ports.outputs[idx].set(path) for idx, path in enumerate(output_files)])
-    paths_to_outputs = asyncio.get_event_loop().run_until_complete( tasks )
-    assert all( p.exists() for p in paths_to_outputs )
-    return paths_to_outputs
+    for idx, path in enumerate(output_files):
+        if path.exists():
+            task = ports.outputs[idx].set(path)
+            asyncio.get_event_loop().run_until_complete( task )
+    # ports = node_ports.ports()
+    # tasks = asyncio.gather(*[ports.outputs[idx].set(path) for idx, path in enumerate(output_files)])
+    # paths_to_outputs = asyncio.get_event_loop().run_until_complete( tasks )
+    # assert all( p.exists() for p in paths_to_outputs )
+    # return paths_to_outputs
 
 def run_solver(*args):
     if DEVEL_MODE:
         return
 
     subprocess.call(["execute_cnap.sh", *args], cwd=OUTPUT_DIR)
-    # push_output_data()
 
 def create_input_files(model_id, plot_vs_tCNAP):
     # !execute_cnap.sh $model_id 0 0.0 1.0 0.5 0.4
@@ -658,6 +670,7 @@ def read_input_file(_n_clicks, input_nerve_profile, input_plot_options):
     model_id = input_nerve_profile + 1
     selected_cb = get_selected_checkboxes(input_plot_options)
     data = create_input_files(model_id, selected_cb[1])
+    push_output_data()
     return build_input_graphs(data)
 
 
