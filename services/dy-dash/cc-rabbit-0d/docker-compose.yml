@@ -9,7 +9,7 @@ services:
         io.simcore.authors: '{"authors": [{"name": "odeimaiz", "email": "maiz@itis.swiss",
           "affiliation": "ITIS Foundation"}]}'
         io.simcore.contact: '{"contact": "maiz@itis.swiss"}'
-        io.simcore.description: '{"description": "cc-rabbit-0d"}'
+        io.simcore.description: '{"description": "cc-viewer-0d"}'
         io.simcore.inputs: '{"inputs": {"vm_1Hz": {"label": "vm 1Hz", "displayOrder":
           0, "description": "Computed values from the solver", "type": "data:*/*",
           "fileToKeyMap": {"vm_1Hz.txt": "vm_1Hz"}}, "all_results_1Hz": {"label":
@@ -17,7 +17,7 @@ services:
           the solver", "type": "data:*/*", "fileToKeyMap": {"allresults_1Hz.txt":
           "all_results_1Hz"}}}}'
         io.simcore.key: '{"key": "simcore/services/dynamic/cc-viewer-0d"}'
-        io.simcore.name: '{"name": "cc-rabbit-0d"}'
+        io.simcore.name: '{"name": "cc-viewer-0d"}'
         io.simcore.outputs: '{"outputs": {"output_1": {"label": "Membrane Potential",
           "displayOrder": 0, "description": "Membrane Potential csv", "type": "data:text/csv",
           "fileToKeyMap": {"Membrane_Potential.csv": "output_1"}}, "output_2": {"label":
@@ -62,10 +62,9 @@ services:
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: https://github.com/ITISFoundation/osparc-services
-        simcore.service.settings: '[
-          {"name": "ports", "type": "int", "value": 8888},
-          {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}
-        ]'
+        simcore.service.settings: '[ {"name": "ports", "type": "int", "value": 8888},
+          {"name": "constraints", "type": "string", "value": ["node.platform.os ==
+          linux"]} ]'
       target: production
     image: ${DOCKER_REGISTRY}/cc-rabbit-0d:${DOCKER_IMAGE_TAG}
     init: true
