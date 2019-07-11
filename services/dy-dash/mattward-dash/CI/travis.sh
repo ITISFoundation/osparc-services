@@ -42,7 +42,7 @@ deploy() {
     # these variable must be available securely from travis
     echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     # push the local images
-    cd dy-dash/mattward-dash
+    cd services/dy-dash/mattward-dash
     make push
 }
 
