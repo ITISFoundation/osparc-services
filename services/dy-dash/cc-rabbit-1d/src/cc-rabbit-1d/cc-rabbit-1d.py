@@ -168,10 +168,23 @@ def retrieve():
     data_frame_JJ = pd.read_csv(data_path_JJ, sep='\t', header=None)
 
 
+def pandas_dataframe_to_output_data(data_frame, title, header=False, port_number=0):
+    title = title.replace(" ", "_") + ".csv"
+    dummy_file_path = Path(title)
+    data_frame.to_csv(dummy_file_path, sep=',', header=header, index=False, encoding='utf-8')
+
+    ports = node_ports.ports()
+    task = ports.outputs[port_number].set(dummy_file_path)
+    asyncio.get_event_loop().run_until_complete( task )
+
+
 def plot_ECG():
+    x_label = 'Time (sec)'
+    y_label = 'ECGs'
     axis_colums = [0,1]
     plot_1 = data_frame_a.filter(items=[data_frame_a.columns[i] for i in axis_colums])
-    fig = create_graph(data_frame=plot_1, x_axis_title='Time (sec)', y_axis_title='ECGs')
+    pandas_dataframe_to_output_data(plot_1, y_label, [x_label, y_label], 0)
+    fig = create_graph(data_frame=plot_1, x_axis_title=x_label, y_axis_title=y_label)
     return fig
 
 def ap_surface_1D():
