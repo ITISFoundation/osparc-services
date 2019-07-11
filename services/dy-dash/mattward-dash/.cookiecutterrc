@@ -34,4 +34,4 @@ default_context:
     project_slug:              'mattward-dash'
     project_type:              'computational'
     release_date:              '2019'
-    version:                   '1.0.1'
+    version:                   '3.0.0'

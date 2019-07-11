@@ -83,7 +83,7 @@ down:
 .PHONY: up-devel
 # target: up-devel: – Starts service as root and with sources mounted in /home/scu/src for debugging.
 up-devel: .env down
-	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml run mattward-dash
+	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml up
 
 ## -------------------------------
 # Testing.
@@ -106,7 +106,7 @@ check-pull:
 	@${DOCKER} login ${DOCKER_REGISTRY};\
 	SERVICE_VERSION=$$(cat VERSION);\
 	${DOCKER} pull \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:$$SERVICE_VERSION; \
+		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-viewer:$$SERVICE_VERSION; \
 	if [ $$? -eq 0 ] ; then \
 		echo "image already in registry ${DOCKER_REGISTRY}";\
 		false;\
@@ -131,17 +131,17 @@ push:
 	${DOCKER} login ${DOCKER_REGISTRY};\
 	SERVICE_VERSION=$$(cat VERSION);\
 	${DOCKER} tag \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:latest \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:$$SERVICE_VERSION;\
+		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-viewer:latest \
+		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-viewer:$$SERVICE_VERSION;\
 	${DOCKER} push \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:$$SERVICE_VERSION;\
+		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-viewer:$$SERVICE_VERSION;\
 	${DOCKER} push \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:latest;
+		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-viewer:latest;
 
 pull:
 	# pull latest service version if available
 	${DOCKER} pull \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:latest || true;
+		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-viewer:latest || true;
 
 # basic checks -------------------------------------
 .env: .env-devel

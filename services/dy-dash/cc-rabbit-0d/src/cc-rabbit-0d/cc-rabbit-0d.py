@@ -255,6 +255,15 @@ def retrieve():
     # render new values by pressing reload here
 
 
+def pandas_dataframe_to_output_data(data_frame, title, header=False, port_number=0):
+    title = title.replace(" ", "_") + ".csv"
+    dummy_file_path = Path(title)
+    data_frame.to_csv(dummy_file_path, sep=',', header=header, index=False, encoding='utf-8')
+
+    ports = node_ports.ports()
+    task = ports.outputs[port_number].set(dummy_file_path)
+    asyncio.get_event_loop().run_until_complete( task )
+
 
 # constants ----------
 def compute_ynid():
@@ -286,6 +295,7 @@ def create_graph_1():
     # membrane potential
     axis_colums = [0,ynid[39]+1]
     plot_0 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_0, "Membrane Potential", ["time (sec)", "Membrane Potential"], 0)
     fig = create_graph(data_frame=plot_0,
                 x_axis_title=X_LABEL_TIME_SEC,
                 y_axis_title=Y_LABEL_1)
@@ -295,6 +305,7 @@ def create_graph_2():
     # LCC current (ICa)
     axis_colums = [0,I_Ca_store-1]
     plot_1 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_1, "I_ca", ["time(sec)", "I_ca(pA/pF)"], 1)
     fig = create_graph(data_frame=plot_1,
                 x_axis_title=X_LABEL_TIME_SEC,
                 y_axis_title=Y_LABEL_2)
@@ -305,6 +316,7 @@ def create_graph_3():
     data_frame_casrt = data_frame_ty.filter(items=[data_frame_ty.columns[0], data_frame_ty.columns[ynid[30]+1], data_frame_ty.columns[ynid[31]+1]])
     data_frame_casrt[3] = data_frame_casrt[1] + data_frame_casrt[2]
     plot_2 = data_frame_casrt.filter(items=[data_frame_casrt.columns[0], data_frame_casrt.columns[3]])
+    pandas_dataframe_to_output_data(plot_2, "Ca_SRT", ["time(sec)", "Ca_SRT(mM)"], 2)
     plot_data = [plot_2]
 
     #
@@ -312,10 +324,12 @@ def create_graph_3():
     axis_colums = [0,ynid[36]+1]
     data_frame_ty[ynid[36]+1] = data_frame_ty[ynid[36]+1].apply(g)
     plot_3 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_3, "Ca_Dyad", ["time (sec)", "Ca_Dyad(uM)"], 3)
     plot_data.append(plot_3)
 
     axis_colums = [0,ynid[37]+1]
     plot_4 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_4, "Ca_sl", ["time (sec)", "Ca_sl(mM)"], 4)
     plot_data.append(plot_4)
     figs = create_graphs(
         data_frames=plot_data,
@@ -357,6 +371,7 @@ def create_graph_4():
     # Cai
     axis_colums = [0,ynid[38]+1]
     plot_5 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_5, "Ca_i", ["time (sec)", "Ca_i(uM)"], 5)
     fig = create_graph(data_frame=plot_5,
                 x_axis_title=X_LABEL_TIME_SEC,
                 y_axis_title=Y_LABEL_4)
@@ -366,6 +381,7 @@ def create_graph_5():
     # Ito
     axis_colums = [0,Ito-1]
     plot_6 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_6, "I_to", ["time (sec)", "I_to(pA/pF)"], 6)
     fig = create_graph(data_frame=plot_6,
                 x_axis_title=X_LABEL_TIME_SEC,
                 y_axis_title=Y_LABEL_5)
@@ -375,6 +391,7 @@ def create_graph_6():
     # INa
     axis_colums = [0,INa-1]
     plot_7 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_7, "I_Na", ["time (sec)", "I_to(pA/pF)"], 7)
     fig = create_graph(data_frame=plot_7,
                 x_axis_title=X_LABEL_TIME_SEC,
                 y_axis_title=Y_LABEL_6)
@@ -384,10 +401,12 @@ def create_graph_7():
     # IKs and ICFTR
     axis_colums = [0,Iks-1]
     plot_8 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_8, "I_Ks", ["time (sec)", "I_Ks(pA/pF)"], 8)
     plot_data = [plot_8]
 
     axis_colums = [0,ICFTR-1]
     plot_9 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_9, "I_CFTR", ["time (sec)", "I_Ks"], 9)
     plot_data.append(plot_9)
 
     figs = create_graphs(
@@ -418,10 +437,12 @@ def create_graph_8():
     # IKr and IK1
     axis_colums = [0,Ikr-1]
     plot_10 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_10, "I_Kr", ["time (sec)", "I_Kr(pA/pF)"], 10)
     plot_data = [plot_10]
 
     axis_colums = [0,IK1-1]
     plot_11 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_11, "I_K1", ["time (sec)", "I_K1(pA/pF)"], 11)
     plot_data.append(plot_11)
 
     figs = create_graphs(
@@ -452,14 +473,17 @@ def create_graph_9():
     # [Na]
     axis_colums = [0,ynid[32]+1]
     plot_12 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_12, "Na_j", ["time (sec)", "Na_j"], 12)
     plot_data = [plot_12]
 
     axis_colums = [0,ynid[33]+1]
     plot_13 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_13, "Na_s", ["time (sec)", "Na_s"], 13)
     plot_data.append(plot_13)
 
     axis_colums = [0,ynid[34]+1]
     plot_14 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_14, "Na_i", ["time (sec)", "Na_i(mmol/L)"], 14)
     plot_data.append(plot_14)
 
     figs = create_graphs(
@@ -502,6 +526,7 @@ def create_graph_10():
     # I_NCX
     axis_colums = [0,Incx-1]
     plot_15 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_15, "I_NCX", ["time (sec)", "I_NCX(pA/pF)"], 15)
     fig = create_graph(data_frame=plot_15,
                 x_axis_title=X_LABEL_TIME_SEC,
                 y_axis_title=Y_LABEL_10)
@@ -511,14 +536,17 @@ def create_graph_11():
     # RyR fluxes
     axis_colums = [0,Jleak[0]-1]
     plot_16 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_16, "JRyR_tot", ["time (sec)", "JRyR_tot"], 16)
     plot_data = [plot_16]
 
     axis_colums = [0,Jleak[1]-1]
     plot_17 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_17, "Passive_Leak", ["time (sec)", "Passive_Leak"], 17)
     plot_data.append(plot_17)
 
     plot_18 = data_frame_ar.filter(items=[data_frame_ar.columns[0]])
     plot_18[1] = data_frame_ar[Jleak[0]-1] - data_frame_ar[Jleak[1]-1]
+    pandas_dataframe_to_output_data(plot_18, "SR_Ca_realease", ["time (sec)", "SR_Ca_realease"], 18)
     plot_data.append(plot_18)
     figs = create_graphs(
         data_frames=plot_data,
