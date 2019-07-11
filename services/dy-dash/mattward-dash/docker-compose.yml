@@ -9,10 +9,11 @@ services:
         io.simcore.authors: '{"authors": [{"name": "Odei Maiz", "email": "maiz@itis.swiss",
           "affiliation": "IT''IS Foundation"}]}'
         io.simcore.contact: '{"contact": "maiz@itis.swiss"}'
-        io.simcore.description: '{"description": "MattWard-Dash"}'
+        io.simcore.description: '{"description": "Graph viewer for data generated
+          by mattward solver"}'
         io.simcore.inputs: '{"inputs": {}}'
         io.simcore.key: '{"key": "simcore/services/dynamic/mattward-viewer"}'
-        io.simcore.name: '{"name": "MattWard-Dash"}'
+        io.simcore.name: '{"name": "mattward-viewer"}'
         io.simcore.outputs: '{"outputs": {"input": {"label": "Input data", "displayOrder":
           0, "description": "Input data csv", "type": "data:text/csv", "fileToKeyMap":
           {"input.csv": "input"}}, "t_plot": {"label": "Output time", "displayOrder":
@@ -36,10 +37,9 @@ services:
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: https://github.com/odeimaiz/osparc-services
-        simcore.service.settings: '[
-          {"name": "ports", "type": "int", "value": 8888},
-          {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}
-        ]'
+        simcore.service.settings: '[ {"name": "ports", "type": "int", "value": 8888},
+          {"name": "constraints", "type": "string", "value": ["node.platform.os ==
+          linux"]} ]'
       target: production
     image: ${DOCKER_REGISTRY}/mattward-viewer:${DOCKER_IMAGE_TAG}
     init: true
