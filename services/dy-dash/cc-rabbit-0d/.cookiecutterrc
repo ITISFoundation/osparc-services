@@ -34,4 +34,4 @@ default_context:
     project_slug:              'cc-rabbit-0d'
     project_type:              'computational'
     release_date:              '2019'
-    version:                   '1.0.2'
+    version:                   '3.0.0'
