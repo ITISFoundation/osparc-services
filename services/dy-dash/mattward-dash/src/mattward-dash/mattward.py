@@ -456,7 +456,7 @@ app.layout = html.Div(children=[
         html.Div([
             html.H4(
                 id='output-label',
-                children='Predicted Compund Nerve Action Potentials',
+                children='Predicted Compound Nerve Action Potentials',
                 style=centered_text
             ),
 
