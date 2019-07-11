@@ -102,7 +102,7 @@ check-pull:
 	@${DOCKER} login ${DOCKER_REGISTRY};\
 	SERVICE_VERSION=$$(cat VERSION);\
 	${DOCKER} pull \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-viewer-0d:$$SERVICE_VERSION; \
+		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-0d-viewer:$$SERVICE_VERSION; \
 	if [ $$? -eq 0 ] ; then \
 		echo "image already in registry ${DOCKER_REGISTRY}";\
 		false;\
@@ -126,10 +126,10 @@ push:
 	# push both latest and :$$SERVICE_VERSION tags
 	${DOCKER_COMPOSE} -f docker-compose.yml push
 	${DOCKER} tag \
-		${DOCKER_REGISTRY}/cc-rabbit-0d:${DOCKER_IMAGE_TAG} \
-		${DOCKER_REGISTRY}/cc-rabbit-0d:latest
+		${DOCKER_REGISTRY}/cc-0d-viewer:${DOCKER_IMAGE_TAG} \
+		${DOCKER_REGISTRY}/cc-0d-viewer:latest
 	${DOCKER} push \
-		${DOCKER_REGISTRY}/cc-rabbit-0d:latest
+		${DOCKER_REGISTRY}/cc-0d-viewer:latest
 
 
 pull:

@@ -9,15 +9,15 @@ services:
         io.simcore.authors: '{"authors": [{"name": "odeimaiz", "email": "maiz@itis.swiss",
           "affiliation": "ITIS Foundation"}]}'
         io.simcore.contact: '{"contact": "maiz@itis.swiss"}'
-        io.simcore.description: '{"description": "cc-viewer-0d"}'
+        io.simcore.description: '{"description": "cc-0d-viewer"}'
         io.simcore.inputs: '{"inputs": {"vm_1Hz": {"label": "vm 1Hz", "displayOrder":
           0, "description": "Computed values from the solver", "type": "data:*/*",
           "fileToKeyMap": {"vm_1Hz.txt": "vm_1Hz"}}, "all_results_1Hz": {"label":
           "all results 1Hz", "displayOrder": 1, "description": "Computed values from
           the solver", "type": "data:*/*", "fileToKeyMap": {"allresults_1Hz.txt":
           "all_results_1Hz"}}}}'
-        io.simcore.key: '{"key": "simcore/services/dynamic/cc-viewer-0d"}'
-        io.simcore.name: '{"name": "cc-viewer-0d"}'
+        io.simcore.key: '{"key": "simcore/services/dynamic/cc-0d-viewer"}'
+        io.simcore.name: '{"name": "cc-0d-viewer"}'
         io.simcore.outputs: '{"outputs": {"output_1": {"label": "Membrane Potential",
           "displayOrder": 0, "description": "Membrane Potential csv", "type": "data:text/csv",
           "fileToKeyMap": {"Membrane_Potential.csv": "output_1"}}, "output_2": {"label":
@@ -66,7 +66,7 @@ services:
           {"name": "constraints", "type": "string", "value": ["node.platform.os ==
           linux"]} ]'
       target: production
-    image: ${DOCKER_REGISTRY}/cc-rabbit-0d:${DOCKER_IMAGE_TAG}
+    image: ${DOCKER_REGISTRY}/cc-0d-viewer:${DOCKER_IMAGE_TAG}
     init: true
     ports:
     - 1240:8888

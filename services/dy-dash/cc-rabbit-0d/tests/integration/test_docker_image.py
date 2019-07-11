@@ -27,7 +27,7 @@ def docker_client() -> docker.DockerClient:
 def docker_image_key(docker_client: docker.DockerClient) -> str:
     registry = os.environ.get("DOCKER_REGISTRY", "itisfoundation")
     tag = os.environ.get("DOCKER_IMAGE_TAG", "latest")
-    image_key = "{}/cc-viewer-0d:{}".format(registry, tag)
+    image_key = "{}/cc-0d-viewer:{}".format(registry, tag)
     docker_images = [image for image in docker_client.images.list() if any(image_key in tag for tag in image.tags)]
     assert len(docker_images) == 1, "could not find docker image {}".format(image_key)
     return docker_images[0].tags[0]
