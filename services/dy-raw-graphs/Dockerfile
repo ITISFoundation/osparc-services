@@ -58,12 +58,15 @@ FROM base AS production
 
 ARG BRANCH_NAME
 RUN apk add --no-cache --virtual .build-deps \
-    git &&\
+      git &&\
     git clone https://github.com/ITISFoundation/raw.git --branch ${BRANCH_NAME} &&\
     cd raw &&\
     npm install -g bower &&\
     bower install --force --allow-root &&\
     apk del --no-cache .build-deps
+
+RUN apk add --no-cache \
+  postgresql-libs
 
 WORKDIR $HOME
 COPY --chown=scu:scu services/dy-raw-graphs/docker $HOME/docker
