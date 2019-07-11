@@ -16,7 +16,7 @@ services:
           "all results 1Hz", "displayOrder": 1, "description": "Computed values from
           the solver", "type": "data:*/*", "fileToKeyMap": {"allresults_1Hz.txt":
           "all_results_1Hz"}}}}'
-        io.simcore.key: '{"key": "simcore/services/dynamic/cc-rabbit-0d"}'
+        io.simcore.key: '{"key": "simcore/services/dynamic/cc-viewer-0d"}'
         io.simcore.name: '{"name": "cc-rabbit-0d"}'
         io.simcore.outputs: '{"outputs": {"output_1": {"label": "Membrane Potential",
           "displayOrder": 0, "description": "Membrane Potential csv", "type": "data:text/csv",

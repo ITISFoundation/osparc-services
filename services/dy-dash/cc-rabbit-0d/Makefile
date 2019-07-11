@@ -102,7 +102,7 @@ check-pull:
 	@${DOCKER} login ${DOCKER_REGISTRY};\
 	SERVICE_VERSION=$$(cat VERSION);\
 	${DOCKER} pull \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:$$SERVICE_VERSION; \
+		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-viewer-0d:$$SERVICE_VERSION; \
 	if [ $$? -eq 0 ] ; then \
 		echo "image already in registry ${DOCKER_REGISTRY}";\
 		false;\
