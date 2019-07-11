@@ -42,7 +42,7 @@ def stringify_folder(folder: Path) -> Dict:
 
 
 def update_compose_labels(compose_cfg: Dict, json_labels: Dict) -> bool:
-    compose_labels = compose_cfg["services"]["mattward-dash"]["build"]["labels"]
+    compose_labels = compose_cfg["services"]["mattward-viewer"]["build"]["labels"]
     changed = False
     for json_key, json_value in json_labels.items():
         if json_key in compose_labels:

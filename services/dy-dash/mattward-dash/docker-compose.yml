@@ -11,7 +11,7 @@ services:
         io.simcore.contact: '{"contact": "maiz@itis.swiss"}'
         io.simcore.description: '{"description": "MattWard-Dash"}'
         io.simcore.inputs: '{"inputs": {}}'
-        io.simcore.key: '{"key": "simcore/services/dynamic/mattward-dash"}'
+        io.simcore.key: '{"key": "simcore/services/dynamic/mattward-viewer"}'
         io.simcore.name: '{"name": "MattWard-Dash"}'
         io.simcore.outputs: '{"outputs": {"input": {"label": "Input data", "displayOrder":
           0, "description": "Input data csv", "type": "data:text/csv", "fileToKeyMap":
@@ -41,7 +41,7 @@ services:
           {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}
         ]'
       target: production
-    image: ${DOCKER_REGISTRY}/mattward-dash:${DOCKER_IMAGE_TAG}
+    image: ${DOCKER_REGISTRY}/mattward-viewer:${DOCKER_IMAGE_TAG}
     init: true
     ports:
     - 1238:8888
