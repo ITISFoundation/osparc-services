@@ -689,7 +689,7 @@ def update_output_label(button_current_ts, button_duration_ts):
     if button_duration_ts is None:
         button_duration_ts = 0
 
-    base_text = 'Predicted Compund Nerve Action Potentials'
+    base_text = 'Predicted Compound Nerve Action Potentials'
     if button_current_ts<button_duration_ts:
         return base_text + ' (Duration)'
     return base_text + ' (Current)'
