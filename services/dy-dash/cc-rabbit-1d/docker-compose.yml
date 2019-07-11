@@ -30,7 +30,7 @@ services:
           {"name": "constraints", "type": "string", "value": ["node.platform.os ==
           linux"]} ]'
       target: production
-    image: ${DOCKER_REGISTRY}/cc-rabbit-1d:${DOCKER_IMAGE_TAG}
+    image: ${DOCKER_REGISTRY}/cc-1d-viewer:${DOCKER_IMAGE_TAG}
     init: true
     ports:
     - 1240:8888
