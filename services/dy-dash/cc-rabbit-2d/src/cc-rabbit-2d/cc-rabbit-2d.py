@@ -1,22 +1,16 @@
-# -*- coding: utf-8 -*-
-# pylint: disable=dangerous-default-value
 # pylint: disable=global-statement
 
 import asyncio
 import logging
 import os
 import sys
-from pathlib import Path
+from shutil import copyfile
 
-import dash
-import dash_html_components as html
-import flask
+from flask import Flask, render_template
 import pandas as pd
 import numpy as np
-import plotly.graph_objs as go
-from dash.dependencies import Input, Output
 from simcore_sdk import node_ports
-from tenacity import before_log, retry, wait_fixed
+from tenacity import before_log, retry, wait_fixed, stop_after_attempt
 
 import tempfile
 import matplotlib.pyplot as plt
@@ -30,7 +24,7 @@ logger = logging.getLogger()
 
 #TODO: node_ports.wait_for_response()
 @retry(wait=wait_fixed(3),
-    #stop=stop_after_attempt(15),
+    stop=stop_after_attempt(15),
     before=before_log(logger, logging.INFO) )
 def download_all_inputs(n_inputs = 1):
     ports = node_ports.ports()
@@ -40,119 +34,16 @@ def download_all_inputs(n_inputs = 1):
     return paths_to_inputs
 
 
-DEVEL_MODE = False
-if DEVEL_MODE:
-    IN_OUT_PARENT_DIR = Path(Path(os.path.dirname(os.path.realpath(__file__))).parent).parent / 'validation'
-else:
-    IN_OUT_PARENT_DIR = Path('/home/jovyan')
-INPUT_DIR = IN_OUT_PARENT_DIR / 'input'
-
-
 DEFAULT_PATH = '/'
 base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', DEFAULT_PATH)
 if base_pathname != DEFAULT_PATH :
     base_pathname = "/{}/".format(base_pathname.strip('/'))
 print('url_base_pathname', base_pathname)
 
-server = flask.Flask(__name__)
-app = dash.Dash(__name__,
-    server=server,
-    url_base_pathname=base_pathname
-)
-app.css.append_css({
-    "external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"
-})
 
+# creates a Flask application, named app
+app = Flask(__name__)
 
-osparc_style = {
-    'color': '#bfbfbf',
-    'backgroundColor': '#202020',
-    'gridColor': '#444',
-}
-dcc_input = {
-    'color': osparc_style['color'],
-    'backgroundColor': osparc_style['gridColor']
-}
-dcc_input_button = {
-    'height': '40px',
-    'width': '100%',
-    'color': dcc_input['color'],
-    'backgroundColor': dcc_input['backgroundColor']
-}
-
-GRAPH_HEIGHT = 400
-
-def give_fig_osparc_style2(fig):
-    margin = 10
-    y_label_padding = 50
-    x_label_padding = 30
-    fig['layout']['margin'].update(
-        l=margin+y_label_padding,
-        r=margin,
-        b=margin+x_label_padding,
-        t=margin,
-    )
-
-    fig['layout'].update(
-        autosize=True,
-        height=GRAPH_HEIGHT,
-        showlegend=False,
-        plot_bgcolor=osparc_style['backgroundColor'],
-        paper_bgcolor=osparc_style['backgroundColor'],
-        font=dict(
-            color=osparc_style['color']
-        )
-    )
-    return fig
-
-def give_fig_osparc_style(fig, xLabels=['x'], yLabels=['y']):
-    for idx, xLabel in enumerate(xLabels):
-        suffix = str(idx)
-        if idx == 0:
-            suffix = ''
-        fig['layout']['xaxis'+suffix].update(
-            title=xLabel,
-            gridcolor=osparc_style['gridColor']
-        )
-    for idx, yLabel in enumerate(yLabels):
-        suffix = str(idx)
-        if idx == 0:
-            suffix = ''
-        fig['layout']['yaxis'+suffix].update(
-            title=yLabel,
-            gridcolor=osparc_style['gridColor']
-        )
-    fig = give_fig_osparc_style2(fig)
-    return fig
-
-def get_empty_graph(xLabel='x', yLabel='y'):
-    fig = go.Figure(data=[], layout={})
-    fig = give_fig_osparc_style(fig, [xLabel], [yLabel])
-    return fig
-
-
-empty_graph = get_empty_graph()
-
-app.layout = html.Div(children=[
-    html.Button('Reload', id='reload-button', style=dcc_input_button),
-    html.Video(id='video')
-], style=osparc_style)
-
-
-def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
-    data = [
-            go.Scatter(
-                x=data_frame[data_frame.columns[0]],
-                y=data_frame[data_frame.columns[i]],
-                name=str(data_frame.columns[i])
-            )
-            for i in range(1,data_frame.columns.size)
-    ]
-
-    fig = get_empty_graph(x_axis_title, y_axis_title)
-    layout = go.Layout(fig['layout'])
-    fig = go.Figure(data=data, layout=layout)
-    return fig
 
 #---------------------------------------------------------#
 # Data to plot in memory
@@ -198,34 +89,30 @@ def create_movie_writer():
     plt.ioff()
     fig = plt.figure(frameon=False, figsize=(pixel_size/dpi, pixel_size/dpi), dpi=dpi)
 
+    movie_name = "output_movie.mp4"
     number_of_frames = len(dat_files)
-    video_file_path = os.path.join(out_images_path, "test_movie.mp4")
+    video_file_path = os.path.join(out_images_path, movie_name)
     with movie_writer.saving(fig, video_file_path, dpi):
         for nFrame in tqdm.tqdm(range(0, number_of_frames)):
             plot_contour(dat_files[nFrame])
             movie_writer.grab_frame()
     plt.close(fig)
-    return video_file_path
+    dst = "/home/jovyan/src/static/"+movie_name
+    copyfile(video_file_path, dst)
+    return dst
 
-
-# When pressing 'Load' this callback will be triggered.
-# Also, its output will trigger the rebuilding of the four input graphs.
-@app.callback(
-    [
-        Output('video', 'src')
-    ],
-    [
-        Input('reload-button', 'n_clicks')
-    ]
-)
-def read_input_files(_n_clicks):
+# a route where we will display a welcome message via an HTML template
+@app.route(base_pathname, methods=['GET', 'POST'])
+def serve_index():
     retrieve()
-    if (dat_files is not None) and (out_images_path is not None):
-        # figs = [create_movie_writer()]
-        figs = [get_empty_graph()]
+    if dat_files and len(dat_files) > 0:
+        source = create_movie_writer()
+        message = "CC-2D-Viewer"
+        return render_template('index.html', message=message, source=source)
     else:
-        figs = [get_empty_graph()]
-    return figs
+        source = ""
+        message = "Input not found"
+        return render_template('index.html', message=message, source=source)
 
 
 class AnyThreadEventLoopPolicy(asyncio.DefaultEventLoopPolicy):
@@ -240,7 +127,7 @@ class AnyThreadEventLoopPolicy(asyncio.DefaultEventLoopPolicy):
             self.set_event_loop(loop)
             return loop
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # the following line is needed for async calls
     asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
-    app.run_server(debug=DEVEL_MODE, port=8888, host="0.0.0.0")
+    app.run(debug=False, port=8888, host="0.0.0.0")
