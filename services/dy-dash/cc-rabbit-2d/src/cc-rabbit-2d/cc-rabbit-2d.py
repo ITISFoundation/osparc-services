@@ -109,10 +109,9 @@ def serve_index():
         message = "CC-2D-Viewer"
         logger.info('video_source %s', source)
         return render_template('index.html', message=message, source=base_pathname+source, basepath=base_pathname)
-    else:
-        source = ""
-        message = "Input not found"
-        return render_template('index.html', message=message, source=base_pathname+source, basepath=base_pathname)
+    source = ""
+    message = "Input not found"
+    return render_template('index.html', message=message, source=base_pathname+source, basepath=base_pathname)
 
 
 class AnyThreadEventLoopPolicy(asyncio.DefaultEventLoopPolicy):
