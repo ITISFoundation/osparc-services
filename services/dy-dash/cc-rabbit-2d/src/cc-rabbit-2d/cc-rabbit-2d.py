@@ -6,7 +6,7 @@ import os
 import sys
 from shutil import copyfile
 
-from flask import Flask, render_template
+from flask import Flask, render_template, Blueprint
 import pandas as pd
 import numpy as np
 from simcore_sdk import node_ports
@@ -38,11 +38,10 @@ DEFAULT_PATH = '/'
 base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', DEFAULT_PATH)
 if base_pathname != DEFAULT_PATH :
     base_pathname = "/{}/".format(base_pathname.strip('/'))
-print('url_base_pathname', base_pathname)
+logger.info('url_base_pathname %s', base_pathname)
 
 
-# creates a Flask application, named app
-app = Flask(__name__)
+bp = Blueprint('myBlueprint', __name__, static_folder='static', template_folder='templates')
 
 
 #---------------------------------------------------------#
@@ -97,22 +96,23 @@ def create_movie_writer():
             plot_contour(dat_files[nFrame])
             movie_writer.grab_frame()
     plt.close(fig)
-    dst = "/home/jovyan/src/static/"+movie_name
-    copyfile(video_file_path, dst)
-    return dst
+    rel_dst = "static/"+movie_name
+    copyfile(video_file_path, "/home/jovyan/src/"+rel_dst)
+    return rel_dst
 
 # a route where we will display a welcome message via an HTML template
-@app.route(base_pathname, methods=['GET', 'POST'])
+@bp.route("/", methods=['GET', 'POST'])
 def serve_index():
     retrieve()
     if dat_files and len(dat_files) > 0:
         source = create_movie_writer()
         message = "CC-2D-Viewer"
-        return render_template('index.html', message=message, source=source)
+        logger.info('video_source %s', source)
+        return render_template('index.html', message=message, source=base_pathname+source, basepath=base_pathname)
     else:
         source = ""
         message = "Input not found"
-        return render_template('index.html', message=message, source=source)
+        return render_template('index.html', message=message, source=base_pathname+source, basepath=base_pathname)
 
 
 class AnyThreadEventLoopPolicy(asyncio.DefaultEventLoopPolicy):
@@ -127,7 +127,11 @@ class AnyThreadEventLoopPolicy(asyncio.DefaultEventLoopPolicy):
             self.set_event_loop(loop)
             return loop
 
+
 if __name__ == "__main__":
     # the following line is needed for async calls
     asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
+
+    app = Flask(__name__)
+    app.register_blueprint(bp, url_prefix=base_pathname)
     app.run(debug=False, port=8888, host="0.0.0.0")
