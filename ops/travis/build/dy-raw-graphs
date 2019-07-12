@@ -21,6 +21,7 @@ before_script() {
 script() {
     cd services/dy-raw-graphs
     make build
+    make test
 }
 
 after_success() {
