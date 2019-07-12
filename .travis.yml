@@ -97,32 +97,6 @@ jobs:
           script: unbuffer bash services/dy-dash/mattward-dash/CI/travis.sh deploy
           on:
             all_branches: true
-    # build dy-bornstein-dash images ----------------------------------------------------------------------
-    - stage: build / unit-testing
-      # in pull request we do not have credentials to push, so this is useless
-      name: build dy-bornstein-dash
-      sudo: required
-      language: python
-      python:
-        - "3.6"
-      before_install:
-        - sudo bash services/dy-dash/bornstein-dash/CI/travis.sh before_install
-      install:
-        - unbuffer bash services/dy-dash/bornstein-dash/CI/travis.sh install
-      before_script:
-        - unbuffer bash services/dy-dash/bornstein-dash/CI/travis.sh before_script
-      script:
-        - unbuffer bash services/dy-dash/bornstein-dash/CI/travis.sh script
-      after_success:
-        - unbuffer bash services/dy-dash/bornstein-dash/CI/travis.sh after_success
-      after_failure:
-        - unbuffer bash services/dy-dash/bornstein-dash/CI/travis.sh after_failure
-      deploy:
-        - provider: script
-          skip_cleanup: true
-          script: unbuffer bash services/dy-dash/bornstein-dash/CI/travis.sh deploy
-          on:
-            all_branches: true
     # build dy-cc-rabbit-0d images ----------------------------------------------------------------------
     - stage: build / unit-testing
       # in pull request we do not have credentials to push, so this is useless
