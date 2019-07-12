@@ -1,6 +1,13 @@
 FROM phusion/baseimage:0.11 AS common
 LABEL maintainer=odeimaiz
 
+# install ffmpeg --------------------------------------------------------------
+USER root
+RUN apt-get update && \
+    apt-get install -y \
+    ffmpeg
+USER $NB_USER
+
 RUN install_clean -y \
     python3-pip \
     curl \
