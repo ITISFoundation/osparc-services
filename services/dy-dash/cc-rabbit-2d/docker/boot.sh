@@ -38,3 +38,4 @@ fi
 
 # start the dash-app now
 python3 /home/jovyan/src/${APP_URL}
+# gunicorn -b 0.0.0.0:8888 /home/jovyan/src/cc-rabbit-2d-simple:app
