@@ -15,6 +15,8 @@ bp = Blueprint('myBlueprint', __name__, static_folder='static', template_folder=
 def retrieve():
     source = os.path.join(dirname, 'input/video.mp4')
     dest = os.path.join(dirname, 'static/video.mp4')
+    if os.path.exists(dest):
+        os.remove(dest
     try:
         copyfile(source, dest)
     except:
