@@ -6,8 +6,8 @@
     <link rel="stylesheet" href="{{base_pathname}}static/osparc_theme.css">
   </head>
   <body>
-    <form method="post" action={{base_pathname}}>
-      <input type="submit" name="Reload"/>
+    <form method="post" action={{base_pathname}}retrieve>
+      <button name="Reload" value="Reload">Reload inputs</button>
     </form>
     <h1>{{message}}</h1>
     <video src="{{ source }}" alt="Output video" controls>
