@@ -1,7 +1,9 @@
 import os
+from shutil import copyfile
 
 from flask import Flask, render_template, Blueprint
 
+dirname = os.path.dirname(__file__)
 
 DEFAULT_PATH = '/'
 base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', DEFAULT_PATH)
@@ -19,8 +21,8 @@ def retrieve():
         os.remove(dest)
     try:
         copyfile(source, dest)
-    except:
-        print('Failed!')
+    except EnvironmentError:
+        print("Unable to copy file")
         return serve_index()
     print('Done!')
     return serve_index()
