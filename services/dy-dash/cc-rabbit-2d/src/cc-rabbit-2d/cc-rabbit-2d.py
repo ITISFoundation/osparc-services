@@ -77,7 +77,10 @@ def create_movie_writer():
             movie_writer.grab_frame()
     plt.close(fig)
     rel_dst = "static/"+movie_name
-    copyfile(video_file_path, "/home/jovyan/src/"+rel_dst)
+    dst = "/home/jovyan/src/"+rel_dst
+    if os.path.exists(dst):
+        os.remove(dst)
+    copyfile(video_file_path, dst)
     return rel_dst
 
 
