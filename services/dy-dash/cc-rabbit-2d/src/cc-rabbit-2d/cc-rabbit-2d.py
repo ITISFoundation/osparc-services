@@ -49,25 +49,6 @@ bp = Blueprint('myBlueprint', __name__, static_folder='static', template_folder=
 dat_files = None
 out_images_path = None
 
-# @app.route("/retrieve")
-def retrieve():
-    global dat_files
-    global out_images_path
-
-    # download
-    compressed_data_path = download_all_inputs(1)
-
-    temp_folder = tempfile.mkdtemp()
-    if len(compressed_data_path) > 0:
-        if zipfile.is_zipfile(compressed_data_path[0]):
-            with zipfile.ZipFile(compressed_data_path[0]) as zip_file:
-                zip_file.extractall(temp_folder)
-
-    # get the list of files
-    dat_files = sorted([os.path.join(temp_folder, x) for x in os.listdir(temp_folder) if x.endswith(".dat")], key=lambda f: int(''.join(filter(str.isdigit, f))))
-    out_images_path = tempfile.gettempdir()
-
-
 def plot_contour(dat_file):
     plt.clf()
     data_frame = pd.read_csv(dat_file, sep='\t', header=None)
@@ -76,7 +57,6 @@ def plot_contour(dat_file):
     plt.contourf(data_frame.values, cmap=plt.get_cmap('jet'), levels=np.arange(-100.0, 51.0, 1.0))
     plt.axis("off")
     plt.colorbar()
-
 
 def create_movie_writer():
     FFMpegWriter = animation.writers["ffmpeg"]
@@ -100,10 +80,29 @@ def create_movie_writer():
     copyfile(video_file_path, "/home/jovyan/src/"+rel_dst)
     return rel_dst
 
+
+@bp.route("/retrieve", methods=['GET', 'POST'])
+def retrieve():
+    global dat_files
+    global out_images_path
+
+    # download
+    compressed_data_path = download_all_inputs(1)
+
+    temp_folder = tempfile.mkdtemp()
+    if len(compressed_data_path) > 0:
+        if zipfile.is_zipfile(compressed_data_path[0]):
+            with zipfile.ZipFile(compressed_data_path[0]) as zip_file:
+                zip_file.extractall(temp_folder)
+
+    # get the list of files
+    dat_files = sorted([os.path.join(temp_folder, x) for x in os.listdir(temp_folder) if x.endswith(".dat")], key=lambda f: int(''.join(filter(str.isdigit, f))))
+    out_images_path = tempfile.gettempdir()
+    return serve_index()
+
 # a route where we will display a welcome message via an HTML template
-@bp.route("/", methods=['GET', 'POST'])
+@bp.route("/")
 def serve_index():
-    retrieve()
     if dat_files and len(dat_files) > 0:
         source = create_movie_writer()
         message = "CC-2D-Viewer"
