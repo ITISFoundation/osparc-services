@@ -780,7 +780,7 @@ def predict( # pylint:disable=too-many-arguments
     if button_duration_ts is None:
         button_duration_ts = 0
 
-    if button_current_ts == 0 & button_duration_ts == 0:
+    if button_current_ts == 0 and button_duration_ts == 0:
         return [get_empty_output_1_graph(), get_empty_output_2_graph()]
 
     model_id = input_nerve_profile + 1
