@@ -34,7 +34,7 @@ bp = Blueprint('myBlueprint', __name__, static_folder='static', template_folder=
 
 #---------------------------------------------------------#
 # Data to service
-compressed_data_path = None
+data_paths = None
 
 @bp.route("/healthcheck")
 def healthcheck():
@@ -48,16 +48,16 @@ def download_all_inputs(n_inputs = 1):
 
 @bp.route("/retrieve", methods=['GET', 'POST'])
 def retrieve():
-    global compressed_data_path
+    global data_paths
 
     # download
     logger.info('download inputs')
     try:
-        compressed_data_path = download_all_inputs(1)
-        logger.info('inputs downloaded to %s', compressed_data_path)
+        data_paths = download_all_inputs(1)
+        logger.info('inputs downloaded to %s', data_paths)
 
         transfered_bytes = 0
-        for file_path in compressed_data_path:
+        for file_path in data_paths:
             if file_path:
                 transfered_bytes = transfered_bytes + file_path.stat().st_size
         my_reposnse = {
@@ -69,6 +69,7 @@ def retrieve():
     except Exception:  # pylint: disable=broad-except
         logger.exception("Unexpected error when retrievin data")
         return Response("Unexpected error", status=500, mimetype='application/json')
+#---------------------------------------------------------#
 
 
 #---------------------------------------------------------#
@@ -82,7 +83,7 @@ def preprocess_inputs():
     global out_images_path
 
     temp_folder = tempfile.mkdtemp()
-    for file_path in compressed_data_path:
+    for file_path in data_paths:
         if file_path and zipfile.is_zipfile(file_path):
             with zipfile.ZipFile(file_path) as zip_file:
                 zip_file.extractall(temp_folder)
