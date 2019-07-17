@@ -14,7 +14,7 @@ then
     pushd /home/jovyan/scripts/dy_services_helpers; pip3 install -r requirements.txt; popd
 
     echo "Creating dummy tables ... using ${USE_CASE_CONFIG_FILE}"
-    result="$(python3 scripts/dy_services_helpers/platform_initialiser.py ${USE_CASE_CONFIG_FILE} --folder '')";
+    result="$(python3 /home/jovyan/scripts/dy_services_helpers/platform_initialiser.py ${USE_CASE_CONFIG_FILE} --folder ${TEST_DATA_PATH})";
     echo "Received result of $result";
     IFS=, read -a array <<< "$result";
     echo "Received result pipeline id of ${array[0]}";
@@ -37,4 +37,4 @@ fi
 
 
 # start the dash-app now
-python /home/jovyan/src/${APP_URL}
+python3 /home/jovyan/src/${APP_URL}

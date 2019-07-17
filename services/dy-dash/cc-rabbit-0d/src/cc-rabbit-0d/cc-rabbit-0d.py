@@ -1,20 +1,37 @@
 # -*- coding: utf-8 -*-
-
 # pylint: disable=dangerous-default-value
+# pylint: disable=global-statement
 
-import os
-from pathlib import Path
 import asyncio
+import logging
+import os
+import sys
+from pathlib import Path
 
-import pandas as pd
-import flask
 import dash
-from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
-
+import flask
+import pandas as pd
 import plotly.graph_objs as go
+from dash.dependencies import Input, Output
 from plotly import tools
+from simcore_sdk import node_ports
+from tenacity import before_log, retry, wait_fixed 
+
+logging.basicConfig(stream=sys.stderr, level=logging.INFO)
+logger = logging.getLogger()
+
+#TODO: node_ports.wait_for_response()
+@retry(wait=wait_fixed(3),
+    #stop=stop_after_attempt(15),
+    before=before_log(logger, logging.INFO) )
+def download_all_inputs(n_inputs = 2):
+    ports = node_ports.ports()
+    tasks = asyncio.gather(*[ports.inputs[n].get() for n in range(n_inputs)])
+    paths_to_inputs = asyncio.get_event_loop().run_until_complete( tasks )
+    assert all( p.exists() for p in paths_to_inputs )
+    return paths_to_inputs
 
 
 DEVEL_MODE = False
@@ -25,12 +42,12 @@ else:
 INPUT_DIR = IN_OUT_PARENT_DIR / 'input'
 
 
-base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', "/")
-if not base_pathname.endswith("/"):
-    base_pathname = base_pathname + "/"
-if not base_pathname.startswith("/"):
-    base_pathname = "/" + base_pathname
+DEFAULT_PATH = '/'
+base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', DEFAULT_PATH)
+if base_pathname != DEFAULT_PATH :
+    base_pathname = "/{}/".format(base_pathname.strip('/'))
 print('url_base_pathname', base_pathname)
+
 
 server = flask.Flask(__name__)
 app = dash.Dash(__name__,
@@ -214,24 +231,50 @@ def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
     fig = go.Figure(data=data, layout=layout)
     return fig
 
+#---------------------------------------------------------#
+# Data to plot in memory
+data_frame_ty = None
+data_frame_ar = None
 
-# data_path_ty = await PORTS.inputs[0].get()
-data_path_ty = INPUT_DIR / 'vm_1Hz.txt'
-data_frame_ty = pd.read_csv(data_path_ty, sep='\t', header=None)
+# @app.route("/retrieve")
+def retrieve():
+    global data_frame_ty
+    global data_frame_ar
 
-# scale time
-f = lambda x: x/1000.0
-data_frame_ty[0] = data_frame_ty[0].apply(f)
-syids = 9
-yids = [30, 31, 32, 33, 34, 36, 37, 38, 39]
-ynid = [0] * 206
-for i in range(1,syids):
-    ynid[yids[i]] = i
+    # download
+    data_path_ty, data_path_ar = download_all_inputs(2)
 
-# data_path_ar = await PORTS.inputs[1].get()
-data_path_ar = INPUT_DIR / 'allresults_1Hz.txt'
-data_frame_ar = pd.read_csv(data_path_ar, sep='\t', header=None)
+    # read from file to memory
+    data_frame_ty = pd.read_csv(data_path_ty, sep='\t', header=None)
+    data_frame_ar = pd.read_csv(data_path_ar, sep='\t', header=None)
 
+    # scale time
+    f = lambda x: x/1000.0
+    data_frame_ty[0] = data_frame_ty[0].apply(f)
+
+    # render new values by pressing reload here
+
+
+def pandas_dataframe_to_output_data(data_frame, title, header=False, port_number=0):
+    title = title.replace(" ", "_") + ".csv"
+    dummy_file_path = Path(title)
+    data_frame.to_csv(dummy_file_path, sep=',', header=header, index=False, encoding='utf-8')
+
+    ports = node_ports.ports()
+    task = ports.outputs[port_number].set(dummy_file_path)
+    asyncio.get_event_loop().run_until_complete( task )
+
+
+# constants ----------
+def compute_ynid():
+    syids = 9
+    yids = [30, 31, 32, 33, 34, 36, 37, 38, 39]
+    ynid_l = [0] * 206
+    for i in range(1,syids):
+        ynid_l[yids[i]] = i
+    return ynid_l
+
+ynid = compute_ynid()
 tArray = 1
 I_Ca_store = 2
 Ito = 3
@@ -252,6 +295,7 @@ def create_graph_1():
     # membrane potential
     axis_colums = [0,ynid[39]+1]
     plot_0 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_0, "Membrane Potential", ["time (sec)", "Membrane Potential"], 0)
     fig = create_graph(data_frame=plot_0,
                 x_axis_title=X_LABEL_TIME_SEC,
                 y_axis_title=Y_LABEL_1)
@@ -261,6 +305,7 @@ def create_graph_2():
     # LCC current (ICa)
     axis_colums = [0,I_Ca_store-1]
     plot_1 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_1, "I_ca", ["time(sec)", "I_ca(pA/pF)"], 1)
     fig = create_graph(data_frame=plot_1,
                 x_axis_title=X_LABEL_TIME_SEC,
                 y_axis_title=Y_LABEL_2)
@@ -271,6 +316,7 @@ def create_graph_3():
     data_frame_casrt = data_frame_ty.filter(items=[data_frame_ty.columns[0], data_frame_ty.columns[ynid[30]+1], data_frame_ty.columns[ynid[31]+1]])
     data_frame_casrt[3] = data_frame_casrt[1] + data_frame_casrt[2]
     plot_2 = data_frame_casrt.filter(items=[data_frame_casrt.columns[0], data_frame_casrt.columns[3]])
+    pandas_dataframe_to_output_data(plot_2, "Ca_SRT", ["time(sec)", "Ca_SRT(mM)"], 2)
     plot_data = [plot_2]
 
     #
@@ -278,10 +324,12 @@ def create_graph_3():
     axis_colums = [0,ynid[36]+1]
     data_frame_ty[ynid[36]+1] = data_frame_ty[ynid[36]+1].apply(g)
     plot_3 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_3, "Ca_Dyad", ["time (sec)", "Ca_Dyad(uM)"], 3)
     plot_data.append(plot_3)
 
     axis_colums = [0,ynid[37]+1]
     plot_4 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_4, "Ca_sl", ["time (sec)", "Ca_sl(mM)"], 4)
     plot_data.append(plot_4)
     figs = create_graphs(
         data_frames=plot_data,
@@ -323,6 +371,7 @@ def create_graph_4():
     # Cai
     axis_colums = [0,ynid[38]+1]
     plot_5 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_5, "Ca_i", ["time (sec)", "Ca_i(uM)"], 5)
     fig = create_graph(data_frame=plot_5,
                 x_axis_title=X_LABEL_TIME_SEC,
                 y_axis_title=Y_LABEL_4)
@@ -332,6 +381,7 @@ def create_graph_5():
     # Ito
     axis_colums = [0,Ito-1]
     plot_6 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_6, "I_to", ["time (sec)", "I_to(pA/pF)"], 6)
     fig = create_graph(data_frame=plot_6,
                 x_axis_title=X_LABEL_TIME_SEC,
                 y_axis_title=Y_LABEL_5)
@@ -341,6 +391,7 @@ def create_graph_6():
     # INa
     axis_colums = [0,INa-1]
     plot_7 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_7, "I_Na", ["time (sec)", "I_to(pA/pF)"], 7)
     fig = create_graph(data_frame=plot_7,
                 x_axis_title=X_LABEL_TIME_SEC,
                 y_axis_title=Y_LABEL_6)
@@ -350,10 +401,12 @@ def create_graph_7():
     # IKs and ICFTR
     axis_colums = [0,Iks-1]
     plot_8 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_8, "I_Ks", ["time (sec)", "I_Ks(pA/pF)"], 8)
     plot_data = [plot_8]
 
     axis_colums = [0,ICFTR-1]
     plot_9 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_9, "I_CFTR", ["time (sec)", "I_Ks"], 9)
     plot_data.append(plot_9)
 
     figs = create_graphs(
@@ -384,10 +437,12 @@ def create_graph_8():
     # IKr and IK1
     axis_colums = [0,Ikr-1]
     plot_10 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_10, "I_Kr", ["time (sec)", "I_Kr(pA/pF)"], 10)
     plot_data = [plot_10]
 
     axis_colums = [0,IK1-1]
     plot_11 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_11, "I_K1", ["time (sec)", "I_K1(pA/pF)"], 11)
     plot_data.append(plot_11)
 
     figs = create_graphs(
@@ -418,14 +473,17 @@ def create_graph_9():
     # [Na]
     axis_colums = [0,ynid[32]+1]
     plot_12 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_12, "Na_j", ["time (sec)", "Na_j"], 12)
     plot_data = [plot_12]
 
     axis_colums = [0,ynid[33]+1]
     plot_13 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_13, "Na_s", ["time (sec)", "Na_s"], 13)
     plot_data.append(plot_13)
 
     axis_colums = [0,ynid[34]+1]
     plot_14 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_14, "Na_i", ["time (sec)", "Na_i(mmol/L)"], 14)
     plot_data.append(plot_14)
 
     figs = create_graphs(
@@ -468,6 +526,7 @@ def create_graph_10():
     # I_NCX
     axis_colums = [0,Incx-1]
     plot_15 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_15, "I_NCX", ["time (sec)", "I_NCX(pA/pF)"], 15)
     fig = create_graph(data_frame=plot_15,
                 x_axis_title=X_LABEL_TIME_SEC,
                 y_axis_title=Y_LABEL_10)
@@ -477,14 +536,17 @@ def create_graph_11():
     # RyR fluxes
     axis_colums = [0,Jleak[0]-1]
     plot_16 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_16, "JRyR_tot", ["time (sec)", "JRyR_tot"], 16)
     plot_data = [plot_16]
 
     axis_colums = [0,Jleak[1]-1]
     plot_17 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_17, "Passive_Leak", ["time (sec)", "Passive_Leak"], 17)
     plot_data.append(plot_17)
 
     plot_18 = data_frame_ar.filter(items=[data_frame_ar.columns[0]])
     plot_18[1] = data_frame_ar[Jleak[0]-1] - data_frame_ar[Jleak[1]-1]
+    pandas_dataframe_to_output_data(plot_18, "SR_Ca_realease", ["time (sec)", "SR_Ca_realease"], 18)
     plot_data.append(plot_18)
     figs = create_graphs(
         data_frames=plot_data,
@@ -545,19 +607,23 @@ def create_graph_11():
     ]
 )
 def read_input_files(_n_clicks):
-    figs = [
-        create_graph_1(),
-        create_graph_2(),
-        create_graph_3(),
-        create_graph_4(),
-        create_graph_5(),
-        create_graph_6(),
-        create_graph_7(),
-        create_graph_8(),
-        create_graph_9(),
-        create_graph_10(),
-        create_graph_11()
-    ]
+    retrieve()
+    if (data_frame_ty is not None) and (data_frame_ar is not None):
+        figs = [
+            create_graph_1(),
+            create_graph_2(),
+            create_graph_3(),
+            create_graph_4(),
+            create_graph_5(),
+            create_graph_6(),
+            create_graph_7(),
+            create_graph_8(),
+            create_graph_9(),
+            create_graph_10(),
+            create_graph_11()
+        ]
+    else:
+        figs = [get_empty_graph() for i in range(11)]
     return figs
 
 

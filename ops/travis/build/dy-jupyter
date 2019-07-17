@@ -21,6 +21,7 @@ before_script() {
 script() {
     cd services/dy-jupyter
     make build
+    make test
 }
 
 after_success() {

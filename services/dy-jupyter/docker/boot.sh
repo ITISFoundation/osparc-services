@@ -12,7 +12,7 @@ echo "  Workdir :`pwd`"
 if [ -v CREATE_DUMMY_TABLE ] && [ "${CREATE_DUMMY_TABLE}" = "1" ]
 then
     pip install -r /home/jovyan/devel/requirements.txt
-    pushd /home/jovyan/scripts/dy_services_helpers; pip3 install -r requirements.txt; popd
+    pushd /home/jovyan/scripts/dy_services_helpers; pip install -r requirements.txt; popd
 
     echo "Creating dummy tables ... using ${USE_CASE_CONFIG_FILE}"
     result="$(python scripts/dy_services_helpers/platform_initialiser.py ${USE_CASE_CONFIG_FILE} --folder ${TEST_DATA_PATH})"

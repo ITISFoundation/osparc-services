@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+import asyncio
+import logging
 import os
+import sys
 from pathlib import Path
 import subprocess
-import asyncio
 
 import numpy as np
 import pandas as pd
@@ -17,20 +19,23 @@ from plotly import tools
 
 from simcore_sdk import node_ports
 
+logging.basicConfig(stream=sys.stderr, level=logging.INFO)
+logger = logging.getLogger()
+
 
 DEVEL_MODE = False
 if DEVEL_MODE:
-    WORKDIR = str(Path(os.path.dirname(os.path.realpath(__file__))).parent)
+    IN_OUT_PARENT_DIR = Path(Path(os.path.dirname(os.path.realpath(__file__))).parent).parent / 'validation'
 else:
-    WORKDIR = '/home/jovyan'
-OUTPUT_DIR = WORKDIR + '/output'
+    IN_OUT_PARENT_DIR = Path('/home/jovyan')
+INPUT_DIR = IN_OUT_PARENT_DIR / 'input'
+OUTPUT_DIR = IN_OUT_PARENT_DIR / 'output'
 
 
-base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', "/")
-if not base_pathname.endswith("/"):
-    base_pathname = base_pathname + "/"
-if not base_pathname.startswith("/"):
-    base_pathname = "/" + base_pathname
+DEFAULT_PATH = '/'
+base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', DEFAULT_PATH)
+if base_pathname != DEFAULT_PATH :
+    base_pathname = "/{}/".format(base_pathname.strip('/'))
 print('url_base_pathname', base_pathname)
 
 server = flask.Flask(__name__)
@@ -451,7 +456,7 @@ app.layout = html.Div(children=[
         html.Div([
             html.H4(
                 id='output-label',
-                children='Predicted Compund Nerve Action Potentials',
+                children='Predicted Compound Nerve Action Potentials',
                 style=centered_text
             ),
 
@@ -545,32 +550,39 @@ def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, 
 
 
 def push_output_data():
-    input_path= OUTPUT_DIR+'/input.csv'
-    cv_path= OUTPUT_DIR+'/CV_plot.csv'
-    t_path= OUTPUT_DIR+'/t_plot.csv'
-    ist_path= OUTPUT_DIR+'/Ist_plot.csv'
-    tst_path= OUTPUT_DIR+'/tst_plot.csv'
-    qst_path= OUTPUT_DIR+'/CAP_plot.csv'
-    vpred_path= OUTPUT_DIR+'/V_pred_plot.csv'
-    lpred_path= OUTPUT_DIR+'/Lpred_plot.csv'
-    PORTS = node_ports.ports()
+    input_path= OUTPUT_DIR / 'input.csv'
+    cv_path= OUTPUT_DIR / 'CV_plot.csv'
+    t_path= OUTPUT_DIR / 't_plot.csv'
+    ist_path= OUTPUT_DIR / 'Ist_plot.csv'
+    tst_path= OUTPUT_DIR / 'tst_plot.csv'
+    qst_path= OUTPUT_DIR / 'CAP_plot.csv'
+    vpred_path= OUTPUT_DIR / 'V_pred_plot.csv'
+    lpred_path= OUTPUT_DIR / 'Lpred_plot.csv'
     output_files = [input_path, cv_path, t_path, ist_path, tst_path, qst_path, vpred_path, lpred_path]
-    loop = asyncio.get_event_loop()
+    for p in output_files:
+        logger.info('file %s', str(p))
+        logger.info('exsits %s', p.exists())
+    ports = node_ports.ports()
     for idx, path in enumerate(output_files):
-        if (os.path.isfile(path)):
-            loop.run_until_complete(PORTS.outputs[idx].set(path))
+        if path.exists():
+            task = ports.outputs[idx].set(path)
+            asyncio.get_event_loop().run_until_complete( task )
+    # ports = node_ports.ports()
+    # tasks = asyncio.gather(*[ports.outputs[idx].set(path) for idx, path in enumerate(output_files)])
+    # paths_to_outputs = asyncio.get_event_loop().run_until_complete( tasks )
+    # assert all( p.exists() for p in paths_to_outputs )
+    # return paths_to_outputs
 
 def run_solver(*args):
     if DEVEL_MODE:
         return
 
     subprocess.call(["execute_cnap.sh", *args], cwd=OUTPUT_DIR)
-    push_output_data()
 
 def create_input_files(model_id, plot_vs_tCNAP):
     # !execute_cnap.sh $model_id 0 0.0 1.0 0.5 0.4
     run_solver(str(model_id), "0", "0.0", "1.0", "0.5", "0.4")
-    path = OUTPUT_DIR+'/input.csv'
+    path = OUTPUT_DIR / 'input.csv'
     return create_learned_model_input(path, plot_vs_tCNAP)
 
 def build_input_graphs(data):
@@ -658,6 +670,7 @@ def read_input_file(_n_clicks, input_nerve_profile, input_plot_options):
     model_id = input_nerve_profile + 1
     selected_cb = get_selected_checkboxes(input_plot_options)
     data = create_input_files(model_id, selected_cb[1])
+    push_output_data()
     return build_input_graphs(data)
 
 
@@ -676,7 +689,7 @@ def update_output_label(button_current_ts, button_duration_ts):
     if button_duration_ts is None:
         button_duration_ts = 0
 
-    base_text = 'Predicted Compund Nerve Action Potentials'
+    base_text = 'Predicted Compound Nerve Action Potentials'
     if button_current_ts<button_duration_ts:
         return base_text + ' (Duration)'
     return base_text + ' (Current)'
@@ -767,20 +780,20 @@ def predict( # pylint:disable=too-many-arguments
     if button_duration_ts is None:
         button_duration_ts = 0
 
-    if button_current_ts == 0 & button_duration_ts == 0:
+    if button_current_ts == 0 and button_duration_ts == 0:
         return [get_empty_output_1_graph(), get_empty_output_2_graph()]
 
     model_id = input_nerve_profile + 1
     selected_cb = get_selected_checkboxes(input_plot_options)
     plot_vs_qst = selected_cb[0]
     plot_vs_tCNAP = selected_cb[1]
-    cv_path= OUTPUT_DIR+'/CV_plot.csv'
-    t_path= OUTPUT_DIR+'/t_plot.csv'
-    ist_path= OUTPUT_DIR+'/Ist_plot.csv'
-    tst_path= OUTPUT_DIR+'/tst_plot.csv'
-    qst_path= OUTPUT_DIR+'/CAP_plot.csv'
-    vpred_path= OUTPUT_DIR+'/V_pred_plot.csv'
-    lpred_path= OUTPUT_DIR+'/Lpred_plot.csv'
+    cv_path= OUTPUT_DIR / 'CV_plot.csv'
+    t_path= OUTPUT_DIR / 't_plot.csv'
+    ist_path= OUTPUT_DIR / 'Ist_plot.csv'
+    tst_path= OUTPUT_DIR / 'tst_plot.csv'
+    qst_path= OUTPUT_DIR / 'CAP_plot.csv'
+    vpred_path= OUTPUT_DIR / 'V_pred_plot.csv'
+    lpred_path= OUTPUT_DIR / 'Lpred_plot.csv'
     data = None
     if button_current_ts>button_duration_ts:
         sweep_param = 1

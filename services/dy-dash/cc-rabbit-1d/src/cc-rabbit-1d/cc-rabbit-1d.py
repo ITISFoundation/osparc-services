@@ -1,20 +1,37 @@
 # -*- coding: utf-8 -*-
-
 # pylint: disable=dangerous-default-value
+# pylint: disable=global-statement
 
-import os
-from pathlib import Path
 import asyncio
+import logging
+import os
+import sys
+from pathlib import Path
 
-import numpy as np
-import pandas as pd
-import flask
 import dash
-from dash.dependencies import Input, Output
 import dash_core_components as dcc
 import dash_html_components as html
-
+import flask
+import numpy as np
+import pandas as pd
 import plotly.graph_objs as go
+from dash.dependencies import Input, Output
+from simcore_sdk import node_ports
+from tenacity import before_log, retry, wait_fixed 
+
+logging.basicConfig(stream=sys.stderr, level=logging.INFO)
+logger = logging.getLogger()
+
+#TODO: node_ports.wait_for_response()
+@retry(wait=wait_fixed(3),
+    #stop=stop_after_attempt(15),
+    before=before_log(logger, logging.INFO) )
+def download_all_inputs(n_inputs = 2):
+    ports = node_ports.ports()
+    tasks = asyncio.gather(*[ports.inputs[n].get() for n in range(n_inputs)])
+    paths_to_inputs = asyncio.get_event_loop().run_until_complete( tasks )
+    assert all( p.exists() for p in paths_to_inputs )
+    return paths_to_inputs
 
 
 DEVEL_MODE = False
@@ -25,11 +42,10 @@ else:
 INPUT_DIR = IN_OUT_PARENT_DIR / 'input'
 
 
-base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', "/")
-if not base_pathname.endswith("/"):
-    base_pathname = base_pathname + "/"
-if not base_pathname.startswith("/"):
-    base_pathname = "/" + base_pathname
+DEFAULT_PATH = '/'
+base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', DEFAULT_PATH)
+if base_pathname != DEFAULT_PATH :
+    base_pathname = "/{}/".format(base_pathname.strip('/'))
 print('url_base_pathname', base_pathname)
 
 server = flask.Flask(__name__)
@@ -134,20 +150,44 @@ def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
     fig = go.Figure(data=data, layout=layout)
     return fig
 
-def plot_ECG():
-    # data_path_a = await PORTS.inputs[0].get()
-    data_path_a = INPUT_DIR / 'ECGs.txt'
-    data_frame_a = pd.read_csv(data_path_a, sep="\t", header=None)
+#---------------------------------------------------------#
+# Data to plot in memory
+data_frame_a = None
+data_frame_JJ  = None
 
+# @app.route("/retrieve")
+def retrieve():
+    global data_frame_a
+    global data_frame_JJ
+
+    # download
+    data_path_a, data_path_JJ = download_all_inputs(2)
+
+    # read from file to memory
+    data_frame_a = pd.read_csv(data_path_a, sep='\t', header=None)
+    data_frame_JJ = pd.read_csv(data_path_JJ, sep='\t', header=None)
+
+
+def pandas_dataframe_to_output_data(data_frame, title, header=False, port_number=0):
+    title = title.replace(" ", "_") + ".csv"
+    dummy_file_path = Path(title)
+    data_frame.to_csv(dummy_file_path, sep=',', header=header, index=False, encoding='utf-8')
+
+    ports = node_ports.ports()
+    task = ports.outputs[port_number].set(dummy_file_path)
+    asyncio.get_event_loop().run_until_complete( task )
+
+
+def plot_ECG():
+    x_label = 'Time (sec)'
+    y_label = 'ECGs'
     axis_colums = [0,1]
     plot_1 = data_frame_a.filter(items=[data_frame_a.columns[i] for i in axis_colums])
-    fig = create_graph(data_frame=plot_1, x_axis_title='Time (sec)', y_axis_title='ECGs')
+    pandas_dataframe_to_output_data(plot_1, y_label, [x_label, y_label], 0)
+    fig = create_graph(data_frame=plot_1, x_axis_title=x_label, y_axis_title=y_label)
     return fig
 
 def ap_surface_1D():
-    # data_path_str = await PORTS.inputs[1].get()
-    data_path_str = INPUT_DIR / 'y_1D.txt'
-    data_frame_JJ = pd.read_csv(data_path_str, sep="\t", header=None)
     out_v = data_frame_JJ
 
     num_cells = 165
@@ -210,10 +250,14 @@ def ap_surface_1D():
     ]
 )
 def read_input_files(_n_clicks):
-    figs = [
-        plot_ECG(),
-        ap_surface_1D()
-    ]
+    retrieve()
+    if (data_frame_a is not None) and (data_frame_JJ is not None):
+        figs = [
+            plot_ECG(),
+            ap_surface_1D()
+        ]
+    else:
+        figs = [get_empty_graph() for i in range(2)]
     return figs
 
 

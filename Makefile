@@ -8,34 +8,20 @@ export VCS_STATUS_CLIENT:=$(if $(shell git status -s),'modified/untracked','clea
 export BUILD_DATE:=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 
-## Tools ------------------------------------------------------------------------------------------------------
-#
-tools =
-ifeq ($(shell uname -s),Darwin)
-	SED = gsed
-else
-	SED = sed
-endif
+.PHONY: help
+help: ## This nice help (thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html)
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-ifeq ($(shell which ${SED}),)
-	tools += $(SED)
-endif
+.DEFAULT_GOAL := help
 
-## ------------------------------------------------------------------------------------------------------
-.PHONY: all
-all: help info
-ifdef tools
-	$(error "Can't find tools:${tools}")
-endif
-## ------------------------------------------------------------------------------------------------------
+
 .PHONY: new-service
-# target: new-service – Bakes a new project from cookiecutter-simcore-pyservice and drops it under services/
-new-service:
+new-service: ## Bakes a new project from cookiecutter-simcore-pyservice and drops it under services/
 	.venv/bin/cookiecutter gh:ITISFoundation/cookiecutter-osparc-service --output-dir $(CURDIR)/services
 
+
 .PHONY: info
-# target: info – Displays some parameters of makefile environments
-info:
+info: ## Displays some parameters of makefile environments
 	@echo '+ VCS_* '
 	@echo '  - ULR                : ${VCS_URL}'
 	@echo '  - REF                : ${VCS_REF}'
@@ -44,28 +30,19 @@ info:
 	@echo '+ VERSION              : ${VERSION}'
 	@echo '+ DOCKER_REGISTRY      : ${DOCKER_REGISTRY}'
 
-## -------------------------------
-# Virtual Environments
-.venv:
-# target: .venv – Creates a python virtual environment with dev tools (pip, pylint, ...)
+
+.venv: ## Creates a python virtual environment with dev tools (pip, pylint, ...)
 	python3 -m venv .venv
 	.venv/bin/pip3 install --upgrade pip wheel setuptools
 	.venv/bin/pip3 install pylint autopep8 virtualenv cookiecutter
+	.venv/bin/pip3 install -r scripts/auto-doc/requirements.txt
 	@echo "To activate the venv, execute 'source .venv/bin/activate' or '.venv/bin/activate.bat' (WIN)"
 
-## -------------------------------
-# Auxiliary targets.
+.PHONY: toc
+toc: .venv ## Upates README.txt with a ToC of all services
+	@.venv/bin/python ${CURDIR}/scripts/auto-doc/create-toc.py
+
 
 .PHONY: clean
-# target: clean – Cleans all unversioned files in project
-clean:
+clean:  ## Cleans all unversioned files in project
 	@git clean -dxf -e .vscode/
-
-.PHONY: help
-# target: help – Display all callable targets
-help:
-	@echo "Make targets in osparc-simcore:"
-	@echo
-	@egrep "^\s*#\s*target\s*:\s*" [Mm]akefile \
-	| $(SED) -r "s/^\s*#\s*target\s*:\s*//g"
-	@echo

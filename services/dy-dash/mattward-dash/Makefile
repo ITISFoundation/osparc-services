@@ -30,6 +30,12 @@ $(info DOCKER_IMAGE_TAG set to ${DOCKER_IMAGE_TAG})
 export DOCKER_REGISTRY ?= itisfoundation
 $(info DOCKER_REGISTRY set to ${DOCKER_REGISTRY})
 
+ifeq (${DOCKER_REGISTRY}, itisfoundation)
+	export DOCKER_IMAGE_NAME = ${DOCKER_REGISTRY}/mattward-viewer
+else
+	export DOCKER_IMAGE_NAME = ${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-viewer
+endif
+
 export VCS_URL:=$(shell git config --get remote.origin.url)
 export VCS_REF:=$(shell git rev-parse --short HEAD)
 export VCS_STATUS_CLIENT:=$(if $(shell git status -s),'modified/untracked','clean')
@@ -83,7 +89,7 @@ down:
 .PHONY: up-devel
 # target: up-devel: – Starts service as root and with sources mounted in /home/scu/src for debugging.
 up-devel: .env down
-	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml run mattward-dash
+	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml up
 
 ## -------------------------------
 # Testing.
@@ -105,8 +111,7 @@ check-pull:
 	# check if the service is already online
 	@${DOCKER} login ${DOCKER_REGISTRY};\
 	SERVICE_VERSION=$$(cat VERSION);\
-	${DOCKER} pull \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:$$SERVICE_VERSION; \
+	${DOCKER} pull ${DOCKER_IMAGE_NAME}:$$SERVICE_VERSION; \
 	if [ $$? -eq 0 ] ; then \
 		echo "image already in registry ${DOCKER_REGISTRY}";\
 		false;\
@@ -131,17 +136,17 @@ push:
 	${DOCKER} login ${DOCKER_REGISTRY};\
 	SERVICE_VERSION=$$(cat VERSION);\
 	${DOCKER} tag \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:latest \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:$$SERVICE_VERSION;\
+		${DOCKER_IMAGE_NAME}:latest \
+		${DOCKER_IMAGE_NAME}:$$SERVICE_VERSION;\
 	${DOCKER} push \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:$$SERVICE_VERSION;\
+		${DOCKER_IMAGE_NAME}:$$SERVICE_VERSION;\
 	${DOCKER} push \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:latest;
+		${DOCKER_IMAGE_NAME}:latest;
 
 pull:
 	# pull latest service version if available
 	${DOCKER} pull \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/mattward-dash:latest || true;
+		${DOCKER_IMAGE_NAME}:latest || true;
 
 # basic checks -------------------------------------
 .env: .env-devel
@@ -175,6 +180,7 @@ info:
 	@echo '+ BUILD_DATE           : ${BUILD_DATE}'
 	@echo '+ OS_VERSION           : ${OS_VERSION}'
 	@echo '+ DOCKER_REGISTRY      : ${DOCKER_REGISTRY}'
+	@echo '+ DOCKER_IMAGE_NAME    : ${DOCKER_IMAGE_NAME}'
 	@echo '+ DOCKER_IMAGE_TAG     : ${DOCKER_IMAGE_TAG}'
 
 

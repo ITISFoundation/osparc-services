@@ -27,7 +27,7 @@ def docker_client() -> docker.DockerClient:
 def docker_image_key(docker_client: docker.DockerClient) -> str:
     registry = os.environ.get("DOCKER_REGISTRY", "itisfoundation")
     tag = os.environ.get("DOCKER_IMAGE_TAG", "latest")
-    image_key = "{}/mattward-dash:{}".format(registry, tag)
+    image_key = "{}/mattward-viewer:{}".format(registry, tag)
     docker_images = [image for image in docker_client.images.list() if any(image_key in tag for tag in image.tags)]
     assert len(docker_images) == 1, "could not find docker image {}".format(image_key)
     return docker_images[0].tags[0]
@@ -44,7 +44,7 @@ def docker_container(dynamic_service_environ, docker_client: docker.DockerClient
     try:
         container_start_time = time.perf_counter()
         container = docker_client.containers.run(docker_image_key, detach=True, remove=False, init=True)
-        while not container.status == "running":            
+        while not container.status == "running":
             if container.status == "exited":
                 # not good for a dynamic container
                 pytest.fail("The container exited already.\nlogs: {}".format(pformat(container.logs(timestamps=True).decode("UTF-8")).split("\n"), width=200))

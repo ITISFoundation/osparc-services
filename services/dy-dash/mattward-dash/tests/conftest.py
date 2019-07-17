@@ -67,7 +67,6 @@ def git_root_dir(here: Path) -> Path:
 
 @pytest.fixture(scope='session')
 def env_devel_file(project_slug_dir: Path) -> Path:
-    
     file_path = project_slug_dir / ".env-devel"
     assert file_path.exists()
     return file_path

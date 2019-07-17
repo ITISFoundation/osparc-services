@@ -79,7 +79,7 @@ down:
 .PHONY: up-devel
 # target: up-devel: – Starts service as root and with sources mounted in /home/scu/src for debugging.
 up-devel: .env down
-	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml run cc-rabbit-0d
+	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml up
 
 ## -------------------------------
 # Testing.
@@ -102,7 +102,7 @@ check-pull:
 	@${DOCKER} login ${DOCKER_REGISTRY};\
 	SERVICE_VERSION=$$(cat VERSION);\
 	${DOCKER} pull \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:$$SERVICE_VERSION; \
+		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-0d-viewer:$$SERVICE_VERSION; \
 	if [ $$? -eq 0 ] ; then \
 		echo "image already in registry ${DOCKER_REGISTRY}";\
 		false;\
@@ -124,20 +124,17 @@ check-release:
 
 push:
 	# push both latest and :$$SERVICE_VERSION tags
-	${DOCKER} login ${DOCKER_REGISTRY};\
-	SERVICE_VERSION=$$(cat VERSION);\
+	${DOCKER_COMPOSE} -f docker-compose.yml push
 	${DOCKER} tag \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:latest \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:$$SERVICE_VERSION;\
+		${DOCKER_REGISTRY}/cc-0d-viewer:${DOCKER_IMAGE_TAG} \
+		${DOCKER_REGISTRY}/cc-0d-viewer:latest
 	${DOCKER} push \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:$$SERVICE_VERSION;\
-	${DOCKER} push \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:latest;
+		${DOCKER_REGISTRY}/cc-0d-viewer:latest
+
 
 pull:
 	# pull latest service version if available
-	${DOCKER} pull \
-		${DOCKER_REGISTRY}/simcore/services/dynamic/cc-rabbit-0d:latest || true;
+	${DOCKER_COMPOSE} -f docker-compose.yml pull || true;
 
 # basic checks -------------------------------------
 .env: .env-devel
