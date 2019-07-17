@@ -237,6 +237,11 @@ data_frame_ty = None
 data_frame_ar = None
 
 # @app.route("/retrieve")
+@server.route("/healthcheck")
+def healthcheck():
+    return flask.Response("healthy", status=200, mimetype='application/json')
+
+
 def retrieve():
     global data_frame_ty
     global data_frame_ar
