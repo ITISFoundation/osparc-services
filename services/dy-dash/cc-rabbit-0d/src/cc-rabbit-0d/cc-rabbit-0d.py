@@ -17,21 +17,9 @@ import plotly.graph_objs as go
 from dash.dependencies import Input, Output
 from plotly import tools
 from simcore_sdk import node_ports
-from tenacity import before_log, retry, wait_fixed 
 
 logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 logger = logging.getLogger()
-
-#TODO: node_ports.wait_for_response()
-@retry(wait=wait_fixed(3),
-    #stop=stop_after_attempt(15),
-    before=before_log(logger, logging.INFO) )
-def download_all_inputs(n_inputs = 2):
-    ports = node_ports.ports()
-    tasks = asyncio.gather(*[ports.inputs[n].get() for n in range(n_inputs)])
-    paths_to_inputs = asyncio.get_event_loop().run_until_complete( tasks )
-    assert all( p.exists() for p in paths_to_inputs )
-    return paths_to_inputs
 
 
 DEVEL_MODE = False
@@ -236,12 +224,20 @@ def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
 data_frame_ty = None
 data_frame_ar = None
 
-# @app.route("/retrieve")
 @server.route("/healthcheck")
 def healthcheck():
     return flask.Response("healthy", status=200, mimetype='application/json')
 
 
+def download_all_inputs(n_inputs = 2):
+    ports = node_ports.ports()
+    tasks = asyncio.gather(*[ports.inputs[n].get() for n in range(n_inputs)])
+    paths_to_inputs = asyncio.get_event_loop().run_until_complete( tasks )
+    assert all( p.exists() for p in paths_to_inputs )
+    return paths_to_inputs
+
+
+@server.route("/retrieve")
 def retrieve():
     global data_frame_ty
     global data_frame_ar
@@ -256,8 +252,6 @@ def retrieve():
     # scale time
     f = lambda x: x/1000.0
     data_frame_ty[0] = data_frame_ty[0].apply(f)
-
-    # render new values by pressing reload here
 
 
 def pandas_dataframe_to_output_data(data_frame, title, header=False, port_number=0):
@@ -612,7 +606,6 @@ def create_graph_11():
     ]
 )
 def read_input_files(_n_clicks):
-    retrieve()
     if (data_frame_ty is not None) and (data_frame_ar is not None):
         figs = [
             create_graph_1(),
