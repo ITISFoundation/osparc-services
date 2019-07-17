@@ -10,7 +10,6 @@ from flask import Flask, render_template, Blueprint, Response
 import pandas as pd
 import numpy as np
 from simcore_sdk import node_ports
-from tenacity import before_log, retry, wait_fixed, stop_after_attempt
 
 import tempfile
 import matplotlib.pyplot as plt
@@ -22,15 +21,10 @@ import zipfile
 logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 logger = logging.getLogger()
 
-#TODO: node_ports.wait_for_response()
-@retry(wait=wait_fixed(3),
-    stop=stop_after_attempt(15),
-    before=before_log(logger, logging.INFO) )
 def download_all_inputs(n_inputs = 1):
     ports = node_ports.ports()
     tasks = asyncio.gather(*[ports.inputs[n].get() for n in range(n_inputs)])
     paths_to_inputs = asyncio.get_event_loop().run_until_complete( tasks )
-    assert all( p.exists() for p in paths_to_inputs )
     return paths_to_inputs
 
 
