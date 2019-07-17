@@ -32,17 +32,13 @@ logger.info('url_base_pathname %s', base_pathname)
 
 bp = Blueprint('myBlueprint', __name__, static_folder='static', template_folder='templates')
 
-
 #---------------------------------------------------------#
-# Data to plot in memory
-dat_files = None
-out_images_path = None
-
+# Data to service
+compressed_data_path = None
 
 @bp.route("/healthcheck")
 def healthcheck():
     return Response("healthy", status=200, mimetype='application/json')
-
 
 def download_all_inputs(n_inputs = 1):
     ports = node_ports.ports()
@@ -50,11 +46,9 @@ def download_all_inputs(n_inputs = 1):
     paths_to_inputs = asyncio.get_event_loop().run_until_complete( tasks )
     return paths_to_inputs
 
-
 @bp.route("/retrieve", methods=['GET', 'POST'])
 def retrieve():
-    global dat_files
-    global out_images_path
+    global compressed_data_path
 
     # download
     logger.info('download inputs')
@@ -62,17 +56,10 @@ def retrieve():
         compressed_data_path = download_all_inputs(1)
         logger.info('inputs downloaded to %s', compressed_data_path)
 
-        temp_folder = tempfile.mkdtemp()
         transfered_bytes = 0
         for file_path in compressed_data_path:
-            if file_path and zipfile.is_zipfile(file_path):
-                with zipfile.ZipFile(file_path) as zip_file:
-                    zip_file.extractall(temp_folder)
+            if file_path:
                 transfered_bytes = transfered_bytes + file_path.stat().st_size
-
-        # get the list of files
-        dat_files = sorted([os.path.join(temp_folder, x) for x in os.listdir(temp_folder) if x.endswith(".dat")], key=lambda f: int(''.join(filter(str.isdigit, f))))
-        out_images_path = tempfile.gettempdir()
         my_reposnse = {
             'data': {
                 'size_bytes': transfered_bytes
@@ -82,6 +69,28 @@ def retrieve():
     except Exception:  # pylint: disable=broad-except
         logger.exception("Unexpected error when retrievin data")
         return Response("Unexpected error", status=500, mimetype='application/json')
+
+
+#---------------------------------------------------------#
+# Data to plot in memory
+dat_files = None
+out_images_path = None
+
+
+def preprocess_inputs():
+    global dat_files
+    global out_images_path
+
+    temp_folder = tempfile.mkdtemp()
+    for file_path in compressed_data_path:
+        if file_path and zipfile.is_zipfile(file_path):
+            with zipfile.ZipFile(file_path) as zip_file:
+                zip_file.extractall(temp_folder)
+
+        # get the list of files
+        dat_files = sorted([os.path.join(temp_folder, x) for x in os.listdir(temp_folder) if x.endswith(".dat")], key=lambda f: int(''.join(filter(str.isdigit, f))))
+        out_images_path = tempfile.gettempdir()
+
 
 def plot_contour(dat_file):
     plt.clf()
@@ -122,7 +131,7 @@ def create_movie_writer():
 @bp.route("/")
 def serve_index():
     video_source = None
-
+    preprocess_inputs()
     if dat_files and len(dat_files) > 0:
         video_source = create_movie_writer()
         logger.info('video_source %s', video_source)
