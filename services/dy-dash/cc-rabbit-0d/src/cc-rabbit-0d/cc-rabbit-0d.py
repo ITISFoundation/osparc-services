@@ -6,12 +6,13 @@ import asyncio
 import logging
 import os
 import sys
+import json
 from pathlib import Path
 
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-import flask
+from flask import Flask, Blueprint, Response
 import pandas as pd
 import plotly.graph_objs as go
 from dash.dependencies import Input, Output
@@ -37,11 +38,54 @@ if base_pathname != DEFAULT_PATH :
 print('url_base_pathname', base_pathname)
 
 
-server = flask.Flask(__name__)
+server = Flask(__name__)
 app = dash.Dash(__name__,
     server=server,
     url_base_pathname=base_pathname
 )
+
+bp = Blueprint('myBlueprint', __name__, static_folder='static', template_folder='templates')
+
+#---------------------------------------------------------#
+# Data to service
+data_paths = None
+
+@bp.route("/healthcheck")
+def healthcheck():
+    return Response("healthy", status=200, mimetype='application/json')
+
+def download_all_inputs(n_inputs = 2):
+    ports = node_ports.ports()
+    tasks = asyncio.gather(*[ports.inputs[n].get() for n in range(n_inputs)])
+    paths_to_inputs = asyncio.get_event_loop().run_until_complete( tasks )
+    return paths_to_inputs
+
+@bp.route("/retrieve", methods=['GET', 'POST'])
+def retrieve():
+    global data_paths
+
+    # download
+    logger.info('download inputs')
+    try:
+        data_paths = download_all_inputs(2)
+        logger.info('inputs downloaded to %s', data_paths)
+
+        transfered_bytes = 0
+        for file_path in data_paths:
+            if file_path:
+                transfered_bytes = transfered_bytes + file_path.stat().st_size
+        my_response = {
+            'data': {
+                'size_bytes': transfered_bytes
+            }
+        }
+        return Response(json.dumps(my_response), status=200, mimetype='application/json')
+    except Exception:  # pylint: disable=broad-except
+        logger.exception("Unexpected error when retrievin data")
+        return Response("Unexpected error", status=500, mimetype='application/json')
+#---------------------------------------------------------#
+
+
 app.css.append_css({
     "external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"
 })
@@ -223,36 +267,6 @@ def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
 # Data to plot in memory
 data_frame_ty = None
 data_frame_ar = None
-
-@server.route("/healthcheck")
-def healthcheck():
-    return flask.Response("healthy", status=200, mimetype='application/json')
-
-
-def download_all_inputs(n_inputs = 2):
-    ports = node_ports.ports()
-    tasks = asyncio.gather(*[ports.inputs[n].get() for n in range(n_inputs)])
-    paths_to_inputs = asyncio.get_event_loop().run_until_complete( tasks )
-    assert all( p.exists() for p in paths_to_inputs )
-    return paths_to_inputs
-
-
-@server.route("/retrieve")
-def retrieve():
-    global data_frame_ty
-    global data_frame_ar
-
-    # download
-    data_path_ty, data_path_ar = download_all_inputs(2)
-
-    # read from file to memory
-    data_frame_ty = pd.read_csv(data_path_ty, sep='\t', header=None)
-    data_frame_ar = pd.read_csv(data_path_ar, sep='\t', header=None)
-
-    # scale time
-    f = lambda x: x/1000.0
-    data_frame_ty[0] = data_frame_ty[0].apply(f)
-
 
 def pandas_dataframe_to_output_data(data_frame, title, header=False, port_number=0):
     title = title.replace(" ", "_") + ".csv"
@@ -584,6 +598,20 @@ def create_graph_11():
     )
     return figs
 
+def preprocess_inputs():
+    global data_frame_ty
+    global data_frame_ar
+
+    if data_paths and len(data_paths) == 2:
+        data_path_ty, data_path_ar = data_paths
+
+        # read from file to memory
+        data_frame_ty = pd.read_csv(data_path_ty, sep='\t', header=None)
+        data_frame_ar = pd.read_csv(data_path_ar, sep='\t', header=None)
+
+        # scale time
+        f = lambda x: x/1000.0
+        data_frame_ty[0] = data_frame_ty[0].apply(f)
 
 # When pressing 'Load' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the four input graphs.
@@ -606,6 +634,7 @@ def create_graph_11():
     ]
 )
 def read_input_files(_n_clicks):
+    preprocess_inputs()
     if (data_frame_ty is not None) and (data_frame_ar is not None):
         figs = [
             create_graph_1(),
@@ -624,6 +653,11 @@ def read_input_files(_n_clicks):
         figs = [get_empty_graph() for i in range(11)]
     return figs
 
+@bp.route("/")
+def serve_index():
+    read_input_files(1)
+    return app.layout
+
 
 class AnyThreadEventLoopPolicy(asyncio.DefaultEventLoopPolicy):
     """Event loop policy that allows loop creation on any thread."""
@@ -640,4 +674,6 @@ class AnyThreadEventLoopPolicy(asyncio.DefaultEventLoopPolicy):
 if __name__ == '__main__':
     # the following line is needed for async calls
     asyncio.set_event_loop_policy(AnyThreadEventLoopPolicy())
+
+    server.register_blueprint(bp, url_prefix=base_pathname)
     app.run_server(debug=DEVEL_MODE, port=8888, host="0.0.0.0")
