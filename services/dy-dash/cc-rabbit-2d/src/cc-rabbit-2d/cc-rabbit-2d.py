@@ -4,6 +4,7 @@ import asyncio
 import logging
 import os
 import sys
+import json
 from shutil import copyfile
 
 from flask import Flask, render_template, Blueprint, Response
@@ -84,35 +85,51 @@ def retrieve():
     global out_images_path
 
     # download
-    compressed_data_path = download_all_inputs(1)
+    logger.info('download inputs')
+    try:
+        compressed_data_path = download_all_inputs(1)
+        logger.info('inputs downloaded to %s', compressed_data_path)
+
+        temp_folder = tempfile.mkdtemp()
+        transfered_bytes = 0
+        for file_path in compressed_data_path:
+            if file_path and zipfile.is_zipfile(file_path):
+                with zipfile.ZipFile(file_path) as zip_file:
+                    zip_file.extractall(temp_folder)
+                transfered_bytes = transfered_bytes + file_path.stat().st_size
+
+        # get the list of files
+        dat_files = sorted([os.path.join(temp_folder, x) for x in os.listdir(temp_folder) if x.endswith(".dat")], key=lambda f: int(''.join(filter(str.isdigit, f))))
+        out_images_path = tempfile.gettempdir()
+        my_reposnse = {
+            'data': {
+                'size_bytes': transfered_bytes
+            }
+        }
+        return Response(json.dumps(my_reposnse), status=200, mimetype='application/json')
+    except Exception:  # pylint: disable=broad-except
+        logger.exception("Unexpected error when retrievin data")
+        return Response("Unexpected error", status=500, mimetype='application/json')
 
 
 @bp.route("/healthcheck")
 def healthcheck():
     return Response("healthy", status=200, mimetype='application/json')
 
-    temp_folder = tempfile.mkdtemp()
-    if len(compressed_data_path) > 0:
-        if zipfile.is_zipfile(compressed_data_path[0]):
-            with zipfile.ZipFile(compressed_data_path[0]) as zip_file:
-                zip_file.extractall(temp_folder)
-
-    # get the list of files
-    dat_files = sorted([os.path.join(temp_folder, x) for x in os.listdir(temp_folder) if x.endswith(".dat")], key=lambda f: int(''.join(filter(str.isdigit, f))))
-    out_images_path = tempfile.gettempdir()
-    return serve_index()
 
 # a route where we will display a welcome message via an HTML template
 @bp.route("/")
 def serve_index():
+    video_source = None
+
     if dat_files and len(dat_files) > 0:
-        source = create_movie_writer()
+        video_source = create_movie_writer()
+        logger.info('video_source %s', video_source)
+    if video_source:
         message = "CC-2D-Viewer"
-        logger.info('video_source %s', source)
-        return render_template('index.html', message=message, source=base_pathname+source, basepath=base_pathname)
-    source = ""
+        return render_template('index.html', message=message, source=base_pathname+video_source, basepath=base_pathname)
     message = "Input not found"
-    return render_template('index.html', message=message, source=base_pathname+source, basepath=base_pathname)
+    return render_template('index.html', message=message, source="", basepath=base_pathname)
 
 
 class AnyThreadEventLoopPolicy(asyncio.DefaultEventLoopPolicy):
