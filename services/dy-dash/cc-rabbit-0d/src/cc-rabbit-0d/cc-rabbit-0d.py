@@ -83,13 +83,22 @@ def retrieve():
     except Exception:  # pylint: disable=broad-except
         logger.exception("Unexpected error when retrievin data")
         return Response("Unexpected error", status=500, mimetype='application/json')
-#---------------------------------------------------------#
 
+def pandas_dataframe_to_output_data(data_frame, title, header=False, port_number=0):
+    title = title.replace(" ", "_") + ".csv"
+    dummy_file_path = Path(title)
+    data_frame.to_csv(dummy_file_path, sep=',', header=header, index=False, encoding='utf-8')
+
+    ports = node_ports.ports()
+    task = ports.outputs[port_number].set(dummy_file_path)
+    asyncio.get_event_loop().run_until_complete( task )
+
+#---------------------------------------------------------#
+# Styling
 
 app.css.append_css({
     "external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"
 })
-
 
 osparc_style = {
     'color': '#bfbfbf',
@@ -267,15 +276,6 @@ def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
 # Data to plot in memory
 data_frame_ty = None
 data_frame_ar = None
-
-def pandas_dataframe_to_output_data(data_frame, title, header=False, port_number=0):
-    title = title.replace(" ", "_") + ".csv"
-    dummy_file_path = Path(title)
-    data_frame.to_csv(dummy_file_path, sep=',', header=header, index=False, encoding='utf-8')
-
-    ports = node_ports.ports()
-    task = ports.outputs[port_number].set(dummy_file_path)
-    asyncio.get_event_loop().run_until_complete( task )
 
 
 # constants ----------
