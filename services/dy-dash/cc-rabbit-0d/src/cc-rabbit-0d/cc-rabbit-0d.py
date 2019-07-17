@@ -604,14 +604,14 @@ def preprocess_inputs():
 
     if data_paths and len(data_paths) == 2:
         data_path_ty, data_path_ar = data_paths
+        if (data_path_ty is not None) and (data_path_ar is not None):
+            # read from file to memory
+            data_frame_ty = pd.read_csv(data_path_ty, sep='\t', header=None)
+            data_frame_ar = pd.read_csv(data_path_ar, sep='\t', header=None)
 
-        # read from file to memory
-        data_frame_ty = pd.read_csv(data_path_ty, sep='\t', header=None)
-        data_frame_ar = pd.read_csv(data_path_ar, sep='\t', header=None)
-
-        # scale time
-        f = lambda x: x/1000.0
-        data_frame_ty[0] = data_frame_ty[0].apply(f)
+            # scale time
+            f = lambda x: x/1000.0
+            data_frame_ty[0] = data_frame_ty[0].apply(f)
 
 # When pressing 'Load' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the four input graphs.
