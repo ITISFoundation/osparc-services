@@ -44,7 +44,7 @@ app = dash.Dash(__name__,
     url_base_pathname=base_pathname
 )
 
-bp = Blueprint('myBlueprint', __name__, static_folder='static', template_folder='templates')
+bp = Blueprint('myBlueprint', __name__)
 
 #---------------------------------------------------------#
 # Data to service
