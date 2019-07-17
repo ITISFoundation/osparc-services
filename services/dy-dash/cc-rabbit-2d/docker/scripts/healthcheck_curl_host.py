@@ -33,8 +33,9 @@ if os.environ.get("DEBUG") == BOOTS_WITH_DEBUGGER:
     print(0)
 else:
     # Notice the '/' after the basurl. That's needed when asking a flask server
-    print(0 if urlopen("{host}{baseurl}/".format(
+    print(0 if urlopen("{host}{baseurl}{endpoint}".format(
         host=sys.argv[1],
-        baseurl=os.environ.get("SIMCORE_NODE_BASEPATH", ""))
+        baseurl=os.environ.get("SIMCORE_NODE_BASEPATH", ""),
+        endpoint=sys.argv[2])
         ).getcode() == 200
         else 1)

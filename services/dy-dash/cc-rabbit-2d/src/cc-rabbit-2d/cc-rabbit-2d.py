@@ -6,7 +6,7 @@ import os
 import sys
 from shutil import copyfile
 
-from flask import Flask, render_template, Blueprint
+from flask import Flask, render_template, Blueprint, Response
 import pandas as pd
 import numpy as np
 from simcore_sdk import node_ports
@@ -91,6 +91,11 @@ def retrieve():
 
     # download
     compressed_data_path = download_all_inputs(1)
+
+
+@bp.route("/healthcheck")
+def healthcheck():
+    return Response("healthy", status=200, mimetype='application/json')
 
     temp_folder = tempfile.mkdtemp()
     if len(compressed_data_path) > 0:
