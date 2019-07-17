@@ -60,12 +60,12 @@ def retrieve():
         for file_path in data_paths:
             if file_path:
                 transfered_bytes = transfered_bytes + file_path.stat().st_size
-        my_reposnse = {
+        my_response = {
             'data': {
                 'size_bytes': transfered_bytes
             }
         }
-        return Response(json.dumps(my_reposnse), status=200, mimetype='application/json')
+        return Response(json.dumps(my_response), status=200, mimetype='application/json')
     except Exception:  # pylint: disable=broad-except
         logger.exception("Unexpected error when retrievin data")
         return Response("Unexpected error", status=500, mimetype='application/json')
