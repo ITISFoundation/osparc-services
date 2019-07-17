@@ -22,12 +22,6 @@ import zipfile
 logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 logger = logging.getLogger()
 
-def download_all_inputs(n_inputs = 1):
-    ports = node_ports.ports()
-    tasks = asyncio.gather(*[ports.inputs[n].get() for n in range(n_inputs)])
-    paths_to_inputs = asyncio.get_event_loop().run_until_complete( tasks )
-    return paths_to_inputs
-
 
 DEFAULT_PATH = '/'
 base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', DEFAULT_PATH)
@@ -44,39 +38,17 @@ bp = Blueprint('myBlueprint', __name__, static_folder='static', template_folder=
 dat_files = None
 out_images_path = None
 
-def plot_contour(dat_file):
-    plt.clf()
-    data_frame = pd.read_csv(dat_file, sep='\t', header=None)
-    if data_frame.shape[0] == 1:
-        data_frame = pd.concat([data_frame]*data_frame.shape[1], ignore_index=True)
-    plt.contourf(data_frame.values, cmap=plt.get_cmap('jet'), levels=np.arange(-100.0, 51.0, 1.0))
-    plt.axis("off")
-    plt.colorbar()
 
-def create_movie_writer():
-    FFMpegWriter = animation.writers["ffmpeg"]
-    metdata = dict(title="Action potentials", artist="", comment="")
-    movie_writer = FFMpegWriter(fps=30, metadata=metdata)
+@bp.route("/healthcheck")
+def healthcheck():
+    return Response("healthy", status=200, mimetype='application/json')
 
-    pixel_size = 600
-    dpi = 96.0
-    plt.ioff()
-    fig = plt.figure(frameon=False, figsize=(pixel_size/dpi, pixel_size/dpi), dpi=dpi)
 
-    movie_name = "output_movie.mp4"
-    number_of_frames = len(dat_files)
-    video_file_path = os.path.join(out_images_path, movie_name)
-    with movie_writer.saving(fig, video_file_path, dpi):
-        for nFrame in tqdm.tqdm(range(0, number_of_frames)):
-            plot_contour(dat_files[nFrame])
-            movie_writer.grab_frame()
-    plt.close(fig)
-    rel_dst = "static/"+movie_name
-    dst = "/home/jovyan/src/"+rel_dst
-    if os.path.exists(dst):
-        os.remove(dst)
-    copyfile(video_file_path, dst)
-    return rel_dst
+def download_all_inputs(n_inputs = 1):
+    ports = node_ports.ports()
+    tasks = asyncio.gather(*[ports.inputs[n].get() for n in range(n_inputs)])
+    paths_to_inputs = asyncio.get_event_loop().run_until_complete( tasks )
+    return paths_to_inputs
 
 
 @bp.route("/retrieve", methods=['GET', 'POST'])
@@ -111,10 +83,39 @@ def retrieve():
         logger.exception("Unexpected error when retrievin data")
         return Response("Unexpected error", status=500, mimetype='application/json')
 
+def plot_contour(dat_file):
+    plt.clf()
+    data_frame = pd.read_csv(dat_file, sep='\t', header=None)
+    if data_frame.shape[0] == 1:
+        data_frame = pd.concat([data_frame]*data_frame.shape[1], ignore_index=True)
+    plt.contourf(data_frame.values, cmap=plt.get_cmap('jet'), levels=np.arange(-100.0, 51.0, 1.0))
+    plt.axis("off")
+    plt.colorbar()
 
-@bp.route("/healthcheck")
-def healthcheck():
-    return Response("healthy", status=200, mimetype='application/json')
+def create_movie_writer():
+    FFMpegWriter = animation.writers["ffmpeg"]
+    metdata = dict(title="Action potentials", artist="", comment="")
+    movie_writer = FFMpegWriter(fps=30, metadata=metdata)
+
+    pixel_size = 600
+    dpi = 96.0
+    plt.ioff()
+    fig = plt.figure(frameon=False, figsize=(pixel_size/dpi, pixel_size/dpi), dpi=dpi)
+
+    movie_name = "output_movie.mp4"
+    number_of_frames = len(dat_files)
+    video_file_path = os.path.join(out_images_path, movie_name)
+    with movie_writer.saving(fig, video_file_path, dpi):
+        for nFrame in tqdm.tqdm(range(0, number_of_frames)):
+            plot_contour(dat_files[nFrame])
+            movie_writer.grab_frame()
+    plt.close(fig)
+    rel_dst = "static/"+movie_name
+    dst = "/home/jovyan/src/"+rel_dst
+    if os.path.exists(dst):
+        os.remove(dst)
+    copyfile(video_file_path, dst)
+    return rel_dst
 
 
 # a route where we will display a welcome message via an HTML template
