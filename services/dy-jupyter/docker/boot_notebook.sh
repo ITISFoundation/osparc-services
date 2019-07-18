@@ -39,7 +39,8 @@ cat > jupyter_config.json <<EOF
         "webbrowser_open_new": 0,
         "disable_check_xsrf": true,
         "nbserver_extensions": {
-            "input_retriever": true,
+            "retrieve": true,
+            "push": true,
             "state_handler": true
         }
     },

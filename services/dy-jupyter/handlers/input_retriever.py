@@ -3,14 +3,13 @@ import json
 import logging
 import os
 import shutil
+import sys
 import tempfile
 import time
 import zipfile
-from typing import List
 from pathlib import Path
+from typing import List
 
-from notebook.base.handlers import IPythonHandler
-from notebook.utils import url_path_join
 from simcore_sdk import node_ports
 
 logger = logging.getLogger(__name__)
@@ -66,8 +65,10 @@ async def set_time_wrapped(port, value):
     elapsed_time = time.perf_counter() - start_time
     logger.info("transfer completed in %ss", elapsed_time)
     if isinstance(value, Path):
-        size_mb = value.stat().st_size / 1024 / 1024
-        logger.info("%s: data size: %sMB, transfer rate %sMB/s", value.name, size_mb, size_mb / elapsed_time)
+        size_bytes = value.stat().st_size
+        logger.info("%s: data size: %sMB, transfer rate %sMB/s", value.name, size_bytes / 1024 / 1024, size_bytes / 1024 / 1024 / elapsed_time)
+        return size_bytes
+    return sys.getsizeof(value)
 
 async def download_data(port_keys: List[str]) -> int:
     logger.info("retrieving data from simcore...")
@@ -137,10 +138,15 @@ async def upload_data(port_keys: List[str]) -> int:
     start_time = time.perf_counter()
     PORTS = node_ports.ports()
     outputs_path = Path(_OUTPUTS_FOLDER).expanduser()
-    upload_tasks = []
+
+    # let's gather the tasks
     temp_files = []
+    upload_tasks = []
     transfer_bytes = 0
     for port in PORTS.outputs:
+        logger.info("Checking port %s", port.key)
+        if port_keys and port.key not in port_keys:
+            continue
         logger.debug("uploading data to port '%s' with value '%s'...", port.key, port.value)
         if _FILE_TYPE_PREFIX in port.type:
             src_folder = outputs_path / port.key
@@ -165,66 +171,23 @@ async def upload_data(port_keys: List[str]) -> int:
                 data = json.loads(data_file.read_text())
                 if port.key in data and data[port.key] is not None:
                     upload_tasks.append(set_time_wrapped(port, data[port.key]))
-
+    if upload_tasks:
         try:
-            await asyncio.gather(*upload_tasks)
+            results = await asyncio.gather(*upload_tasks)
+            transfer_bytes = sum(results)
         finally:
             # clean up possible compressed files
             for file_path in temp_files:
                 Path(file_path).unlink()
+
     stop_time = time.perf_counter()
     logger.info("all data uploaded to simcore in %sseconds", stop_time-start_time)
     return transfer_bytes
 
-
-
-class RetrieveHandler(IPythonHandler):
-    def initialize(self): #pylint: disable=no-self-use
-        PORTS = node_ports.ports()
-        _create_ports_sub_folders(PORTS.inputs, Path(_INPUTS_FOLDER).expanduser())
-        _create_ports_sub_folders(PORTS.outputs, Path(_OUTPUTS_FOLDER).expanduser())
-        self.file_transfer_history = {}
-
-    async def get(self):
-        try:
-            results = await asyncio.gather(download_data(port_keys=[]), upload_data(port_keys=[]))
-            transfered_size = sum(results)
-            self.write(json.dumps({
-                "data": {
-                    "size_bytes": transfered_size
-                }
-            }))
-            self.set_status(200)
-        except node_ports.exceptions.NodeportsException as exc:
-            logger.exception("Unexpected problem when processing retrieve call")
-            self.set_status(500, reason=str(exc))
-        except Exception as exc: #pylint: disable=broad-except
-            logger.exception("Unexpected problem when processing retrieve call")
-            self.set_status(500, reason=str(exc))
-        finally:
-            self.finish('completed retrieve!')
-
-    async def post(self):
-        request_contents = json.loads(self.request.body)
-        ports = request_contents["port_keys"]
-        logger.info("getting data of ports %s from previous node with POST request...", ports)
-        try:
-            results = await asyncio.gather(download_data(ports), upload_data(ports))
-            transfered_size = sum(results)
-            self.write(json.dumps({
-                "data": {
-                    "size_bytes": transfered_size
-                }
-            }))
-            self.set_status(200)
-        except node_ports.exceptions.NodeportsException as exc:
-            logger.exception("Unexpected problem when processing retrieve call")
-            self.set_status(500, reason=str(exc))
-        except Exception as exc: #pylint: disable=broad-except
-            logger.exception("Unexpected problem when processing retrieve call")
-            self.set_status(500, reason=str(exc))
-        finally:
-            self.finish()
+def init():
+    PORTS = node_ports.ports()
+    _create_ports_sub_folders(PORTS.inputs, Path(_INPUTS_FOLDER).expanduser())
+    _create_ports_sub_folders(PORTS.outputs, Path(_OUTPUTS_FOLDER).expanduser())
 
 def _create_ports_sub_folders(ports: node_ports._items_list.ItemsList, parent_path: Path): # pylint: disable=protected-access
     values = {}
@@ -241,19 +204,3 @@ def _create_ports_sub_folders(ports: node_ports._items_list.ItemsList, parent_pa
 def _init_sub_folders():
     Path(_INPUTS_FOLDER).expanduser().mkdir(exist_ok=True, parents=True)
     Path(_OUTPUTS_FOLDER).expanduser().mkdir(exist_ok=True, parents=True)
-
-def load_jupyter_server_extension(nb_server_app):
-    """ Called when the extension is loaded
-
-    - Adds API to server
-
-    :param nb_server_app: handle to the Notebook webserver instance.
-    :type nb_server_app: NotebookWebApplication
-    """
-    _init_sub_folders()
-
-    web_app = nb_server_app.web_app
-    host_pattern = '.*$'
-    route_pattern = url_path_join(web_app.settings['base_url'], '/retrieve')
-
-    web_app.add_handlers(host_pattern, [(route_pattern, RetrieveHandler)])
