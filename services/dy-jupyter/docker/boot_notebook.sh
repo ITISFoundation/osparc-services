@@ -41,7 +41,7 @@ cat > jupyter_config.json <<EOF
         "nbserver_extensions": {
             "retrieve": true,
             "push": true,
-            "state_handler": true
+            "state": true
         }
     },
     "FileContentsManager": {
