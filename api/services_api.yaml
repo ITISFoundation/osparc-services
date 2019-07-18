@@ -25,7 +25,7 @@ paths:
         default:
           $ref: './services_api.yaml#/components/responses/DefaultErrorResponse'
     post:
-      summary: The service pulls/pushes the data linked to the selected input/output ports from/to oSparc storage
+      summary: The service pulls the data linked to the selected input ports from oSparc storage
       requestBody:
         content:
           application/json:
@@ -33,14 +33,52 @@ paths:
               $ref: './services_api.yaml#/components/schemas/PortsRequest'
       responses:
         '200':
-          description: completed push/pull
+          description: completed pull
           content:
             application/json:
               schema:
                 $ref: './services_api.yaml#/components/schemas/TransferEnvelopped'
         default:
           $ref: './services_api.yaml#/components/responses/DefaultErrorResponse'
-
+  /push:
+    head:
+      summary: Tells the user whether the endpoint is supported
+      responses:
+        '204':
+          description: endpoint support active
+        '4XX':
+          description: endpoint not supported
+    post:
+      summary: The service pushes the data linked from the selected output ports to oSparc storage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: './services_api.yaml#/components/schemas/PortsRequest'
+      responses:
+        '200':
+          description: completed push
+          content:
+            application/json:
+              schema:
+                $ref: './services_api.yaml#/components/schemas/TransferEnvelopped'
+        default:
+          $ref: './services_api.yaml#/components/responses/DefaultErrorResponse'
+  /state:
+    get:
+      summary: Pulls the service state from oSparc storage
+      responses:
+        '204':
+          description: completed pull
+        default:
+          $ref: './services_api.yaml#/components/responses/DefaultErrorResponse'
+    post:
+      summary: Pushes the service state to oSparc storage
+      responses:
+        '204':
+          description: completed push
+        default:
+          $ref: './services_api.yaml#/components/responses/DefaultErrorResponse'
 
 components:
   schemas:
