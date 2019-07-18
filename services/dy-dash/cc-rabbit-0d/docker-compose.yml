@@ -15,7 +15,7 @@ services:
           0, "description": "VM 1Hz", "type": "data:text/plain", "fileToKeyMap": {"vm_1Hz.txt":
           "vm1Hz"}}, "allresults1Hz": {"label": "All results 1Hz", "displayOrder":
           1, "description": "All results 1Hz", "type": "data:text/plain", "fileToKeyMap":
-          {"allresults_1Hz.txt": "allresults1Hz"}}}}'
+          {"allresult_1Hz.txt": "allresults1Hz"}}}}'
         io.simcore.key: '{"key": "simcore/services/dynamic/cc-0d-viewer"}'
         io.simcore.name: '{"name": "0D cardiac model viewer"}'
         io.simcore.outputs: '{"outputs": {"output_1": {"label": "Membrane Potential",
