@@ -3,6 +3,12 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+# create output folder
+echo
+echo "creating inputs/outputs folder"
+mkdir -p ${INPUTS_FOLDER:-~/inputs}
+mkdir -p ${OUTPUTS_FOLDER:-~/outputs}
+
 # try to pull data from S3
 echo
 echo "trying to restore state..."
