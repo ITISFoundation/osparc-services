@@ -81,7 +81,7 @@ def retrieve():
         }
         return Response(json.dumps(my_response), status=200, mimetype='application/json')
     except Exception:  # pylint: disable=broad-except
-        logger.exception("Unexpected error when retrievin data")
+        logger.exception("Unexpected error when retrieving data")
         return Response("Unexpected error", status=500, mimetype='application/json')
 
 def pandas_dataframe_to_output_data(data_frame, title, header=False, port_number=0):
