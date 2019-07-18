@@ -137,7 +137,7 @@ async def download_data(port_keys: List[str]) -> int:
     logger.info("all data retrieved from simcore in %sseconds: %s", stop_time - start_time, data)
     return transfer_bytes
 
-async def upload_data(port_keys: List[str]) -> int:
+async def upload_data(port_keys: List[str]) -> int: #pylint: disable=too-many-branches
     logger.info("uploading data to simcore...")
     start_time = time.perf_counter()
     PORTS = node_ports.ports()
@@ -187,19 +187,3 @@ async def upload_data(port_keys: List[str]) -> int:
     stop_time = time.perf_counter()
     logger.info("all data uploaded to simcore in %sseconds", stop_time-start_time)
     return transfer_bytes
-
-def _create_ports_sub_folders(ports: node_ports._items_list.ItemsList, parent_path: Path): # pylint: disable=protected-access
-    values = {}
-    for port in ports:
-        values[port.key] = port.value
-        if _FILE_TYPE_PREFIX in port.type:
-            sub_folder = parent_path / port.key
-            sub_folder.mkdir(exist_ok=True, parents=True)
-
-    parent_path.mkdir(exist_ok=True, parents=True)
-    values_file = parent_path / _KEY_VALUE_FILE_NAME
-    values_file.write_text(json.dumps(values))
-
-def _init_sub_folders():
-    Path(_INPUTS_FOLDER).expanduser().mkdir(exist_ok=True, parents=True)
-    Path(_OUTPUTS_FOLDER).expanduser().mkdir(exist_ok=True, parents=True)
