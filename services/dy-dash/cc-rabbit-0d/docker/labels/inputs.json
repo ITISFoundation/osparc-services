@@ -15,7 +15,7 @@
             "description": "All results 1Hz",
             "type": "data:text/plain",
             "fileToKeyMap": {
-                "allresult_1Hz.txt":"allresults1Hz"
+                "allresults_1Hz.txt":"allresults1Hz"
             }
         }
     }
