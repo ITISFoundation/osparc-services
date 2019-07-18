@@ -15,8 +15,7 @@ services:
           "description": "APs in a compressed zip file", "type": "data:*/zip", "fileToKeyMap":
           {"aps.zip": "ap"}}}}'
         io.simcore.key: '{"key": "simcore/services/dynamic/cc-2d-viewer"}'
-        io.simcore.name: '{"name": "2D cardiac model viewer for Rabbit SS and Human
-          GB"}'
+        io.simcore.name: '{"name": "2D cardiac model viewer"}'
         io.simcore.outputs: '{"outputs": {}}'
         io.simcore.type: '{"type": "dynamic"}'
         io.simcore.version: '{"version": "3.0.2"}'

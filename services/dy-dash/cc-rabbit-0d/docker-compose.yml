@@ -17,8 +17,7 @@ services:
           1, "description": "All results 1Hz", "type": "data:text/plain", "fileToKeyMap":
           {"allresult_1Hz.txt": "allresults1Hz"}}}}'
         io.simcore.key: '{"key": "simcore/services/dynamic/cc-0d-viewer"}'
-        io.simcore.name: '{"name": "0D cardiac model viewer for Rabbit SS and Human
-          GB"}'
+        io.simcore.name: '{"name": "0D cardiac model viewer"}'
         io.simcore.outputs: '{"outputs": {"output_1": {"label": "Membrane Potential",
           "displayOrder": 0, "description": "Membrane Potential csv", "type": "data:text/csv",
           "fileToKeyMap": {"Membrane_Potential.csv": "output_1"}}, "output_2": {"label":

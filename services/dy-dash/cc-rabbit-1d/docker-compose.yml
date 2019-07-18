@@ -17,8 +17,7 @@ services:
           1, "description": "Action Potentials out of solver", "type": "data:*/*",
           "fileToKeyMap": {"y_1D.txt": "APs"}}}}'
         io.simcore.key: '{"key": "simcore/services/dynamic/cc-1d-viewer"}'
-        io.simcore.name: '{"name": "1D cardiac model viewer for Rabbit SS and Human
-          GB"}'
+        io.simcore.name: '{"name": "1D cardiac model viewer"}'
         io.simcore.outputs: '{"outputs": {"out_1": {"label": "ECG", "displayOrder":
           0, "description": "ECG csv", "type": "data:text/csv", "fileToKeyMap": {"ECG.csv":
           "out_1"}}}}'
