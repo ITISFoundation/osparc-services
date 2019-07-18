@@ -1,0 +1,24 @@
+:root {
+	--color: #bfbfbf;
+	--background-color: #202020;
+	--grid-color: #444444;
+}
+
+body {
+	color: var(--color);
+	background-color: var(--background-color);
+}
+
+/* needed for hiding undo/redo buttons in plotly graphs */
+._dash-undo-redo {
+	display: none;
+}
+
+/* overrides dropdown menu options */
+.Select-value {
+	color: var(--color);
+}
+.Select-menu-outer {
+	color: var(--color);
+	background-color: var(--grid-color);
+}

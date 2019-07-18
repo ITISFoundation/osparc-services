@@ -23,6 +23,7 @@ appRouter.get('/', function (request, response) {
 });
 
 appRouter.get('/retrieve', callInputRetriever);
+appRouter.post('/retrieve', callInputRetriever);
 appRouter.get('/input', getInputFile);
 appRouter.get('/inputs', getInputFiles);
 appRouter.get('/output', getOutput);
@@ -53,7 +54,12 @@ function callInputRetriever(request, response) {
   pyProcess.on("close", (code) => {
     console.log(`Function completed with code ${code}.`);
     if (code === 0) {
-      response.sendStatus("200");
+      const resp = {
+        "data": {
+          "size_bytes": 2
+        }
+      };
+      response.status("200").send(resp);
       console.log("All went fine");
     }
     else {

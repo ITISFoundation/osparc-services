@@ -6,16 +6,16 @@
       "description": "Computed ECGs out of a solver",
       "type": "data:*/*",
       "fileToKeyMap": {
-          "ECGs.txt": "ECGs"
+        "ECGs.txt": "ECGs"
       }
     },
-    "y_1D": {
-      "label": "action potentials",
+    "APs": {
+      "label": "Action Potentials",
       "displayOrder": 1,
-      "description": "Action potentials out of solver",
+      "description": "Action Potentials out of solver",
       "type": "data:*/*",
       "fileToKeyMap": {
-          "y_1D.txt": "y_1D"
+        "y_1D.txt": "APs"
       }
     }
   }
