@@ -83,9 +83,7 @@ async def download_data(port_keys: List[str]) -> int:
         # if port_keys contains some keys only download them
         logger.info("Checking node %s", node_input.key)
         if port_keys and node_input.key not in port_keys:
-            continue
-        if not node_input or node_input.value is None:
-            continue
+            continue        
         # collect coroutines
         download_tasks.append(get_time_wrapped(node_input))
     logger.info("retrieving %s data", len(download_tasks))
@@ -103,8 +101,9 @@ async def download_data(port_keys: List[str]) -> int:
                 downloaded_file = value
                 dest_path = inputs_path / port.key
                 # first cleanup
-                logger.info("removing %s", dest_path)
-                shutil.rmtree(dest_path)
+                if dest_path.exists():
+                    logger.info("removing %s", dest_path)
+                    shutil.rmtree(dest_path)
                 if not downloaded_file or not downloaded_file.exists():
                     # the link may be empty
                     continue
@@ -126,9 +125,14 @@ async def download_data(port_keys: List[str]) -> int:
                     logger.info("all moved to %s", dest_path)
             else:
                 transfer_bytes = transfer_bytes + sys.getsizeof(value)
-    # if data other than file, copy them to a json file
-    data_file = inputs_path / _KEY_VALUE_FILE_NAME
-    data_file.write_text(json.dumps(data))
+    # create/update the json file with the new values
+    if data:
+        data_file = inputs_path / _KEY_VALUE_FILE_NAME
+        if data_file.exists():
+            current_data = json.loads(data_file.read_text())
+            # merge data
+            data = {**current_data, **data}
+        data_file.write_text(json.dumps(data))
     stop_time = time.perf_counter()
     logger.info("all data retrieved from simcore in %sseconds: %s", stop_time - start_time, data)
     return transfer_bytes
@@ -183,11 +187,6 @@ async def upload_data(port_keys: List[str]) -> int:
     stop_time = time.perf_counter()
     logger.info("all data uploaded to simcore in %sseconds", stop_time-start_time)
     return transfer_bytes
-
-def init():
-    PORTS = node_ports.ports()
-    _create_ports_sub_folders(PORTS.inputs, Path(_INPUTS_FOLDER).expanduser())
-    _create_ports_sub_folders(PORTS.outputs, Path(_OUTPUTS_FOLDER).expanduser())
 
 def _create_ports_sub_folders(ports: node_ports._items_list.ItemsList, parent_path: Path): # pylint: disable=protected-access
     values = {}

@@ -10,9 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 class RetrieveHandler(IPythonHandler):
-    def initialize(self): #pylint: disable=no-self-use
-        input_retriever.init()
-
     # deprecated: get download everything and upload everything
     async def get(self):
         try:

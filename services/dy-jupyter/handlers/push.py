@@ -9,8 +9,10 @@ logger = logging.getLogger(__name__)
 
 
 class PushHandler(IPythonHandler):
-    def initialize(self): #pylint: disable=no-self-use
-        input_retriever.init()
+    async def head(self):
+        # tells user that we provide that endpoint
+        self.set_status(204)
+        self.finish()
 
     async def post(self):
         request_contents = json.loads(self.request.body)
