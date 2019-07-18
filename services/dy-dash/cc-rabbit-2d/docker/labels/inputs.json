@@ -1,12 +1,12 @@
 {
   "inputs": {
     "ap": {
-      "label": "ap",
+      "label": "APs",
       "displayOrder": 0,
-      "description": "these are computed data out of a 2d solver",
+      "description": "APs in a compressed zip file",
       "type": "data:*/zip",
       "fileToKeyMap": {
-          "aps.zip": "ap"
+        "aps.zip": "ap"
       }
     }
   }

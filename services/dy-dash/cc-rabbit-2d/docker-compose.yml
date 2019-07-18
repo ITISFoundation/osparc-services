@@ -10,12 +10,13 @@ services:
           "affiliation": "ITIS Foundation"}]}'
         io.simcore.contact: '{"contact": "maiz@itis.swiss"}'
         io.simcore.description: '{"description": "Graph viewer for data generated
-          by cc-2d solver"}'
-        io.simcore.inputs: '{"inputs": {"ap": {"label": "ap", "displayOrder": 0, "description":
-          "these are computed data out of a 2d solver", "type": "data:*/zip", "fileToKeyMap":
+          by Rabbit SS and Human GB 2D cardiac models"}'
+        io.simcore.inputs: '{"inputs": {"ap": {"label": "APs", "displayOrder": 0,
+          "description": "APs in a compressed zip file", "type": "data:*/zip", "fileToKeyMap":
           {"aps.zip": "ap"}}}}'
         io.simcore.key: '{"key": "simcore/services/dynamic/cc-2d-viewer"}'
-        io.simcore.name: '{"name": "cc-2d-viewer"}'
+        io.simcore.name: '{"name": "2D cardiac model viewer for Rabbit SS and Human
+          GB"}'
         io.simcore.outputs: '{"outputs": {}}'
         io.simcore.type: '{"type": "dynamic"}'
         io.simcore.version: '{"version": "3.0.2"}'
