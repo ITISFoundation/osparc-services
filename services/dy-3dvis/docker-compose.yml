@@ -33,7 +33,19 @@ services:
         io.simcore.outputs: '{"outputs": {}}'
         simcore.service.settings: '[
                                     {"name": "ports", "type": "int", "value": 8777},
-                                    {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}
+                                    {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]},
+                                    {"name": "resources", "type": "resources", "value":
+                                      {
+                                        "Limits": {
+                                          "NanoCPUs": 4000000000,
+                                          "MemoryBytes": 16777216
+                                        },
+                                        "Reservations": {
+                                          "NanoCPUs": 1000000000,
+                                          "MemoryBytes": 2097152
+                                        }
+                                      }
+                                    }
                                   ]'
         simcore.service.bootsettings: '[]'
         org.label-schema.schema-version: "1.0"
@@ -82,9 +94,14 @@ services:
                                       ]},
                                     {"name": "Resources", "type": "Resources", "value":
                                       {
-                                      "Limits": {},
+                                      "Limits": {
+                                        "NanoCPUs": 4000000000,
+                                        "MemoryBytes": 16777216
+                                      },
                                       "Reservations":
                                         {
+                                          "NanoCPUs": 1000000000,
+                                          "MemoryBytes": 2097152,
                                           "GenericResources": [
                                             {
                                                "DiscreteResourceSpec": {
