@@ -117,7 +117,7 @@ def main(args=None) -> int:
         print(transfer_bytes)
         return ExitCode.SUCCESS
     except:  # pylint: disable=bare-except
-        log.exception("Unexpected error when retrievin data")
+        log.exception("Unexpected error when retrieving data")
         return ExitCode.FAIL
 
 
