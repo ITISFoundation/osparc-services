@@ -51,7 +51,7 @@ async def retrieve_data(ports: List[str], cache: Dict) -> int:
             for file_path in cache[node_input.key]:
                 Path(file_path).unlink()
             del cache[node_input.key]
-        if not node_input or node_input.value is None:            
+        if not node_input or node_input.value is None:
             continue
         # collect coroutines
         download_tasks.append(task(node_input.key, node_input.get))
@@ -73,7 +73,7 @@ async def retrieve_data(ports: List[str], cache: Dict) -> int:
                 zip_ref = zipfile.ZipFile(str(local_path), 'r')
                 zip_ref.extractall(str(input_path()))
                 cache[node_key] = \
-                    [str(input_path() / zipped_file) for zipped_file in zip_ref.namelist()] 
+                    [str(input_path() / zipped_file) for zipped_file in zip_ref.namelist()]
                 zip_ref.close()
                 log.info("extraction completed")
             else:
@@ -92,9 +92,9 @@ def main(args=None) -> int:
     try:
         parser = argparse.ArgumentParser(description=__doc__)
         parser.add_argument("--port_keys", help="The port keys to push/pull",
-                            type=str, nargs="*", required=True)
+                            type=str, nargs="*", required=False)
         options = parser.parse_args(args)
-        log.info("has to retrieve the following ports: %s", 
+        log.info("has to retrieve the following ports: %s",
                                     options.port_keys if options.port_keys else "all"
                                     )
 
