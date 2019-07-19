@@ -1,0 +1,13 @@
+{
+  "inputs": {
+    "ap": {
+      "label": "APs",
+      "displayOrder": 0,
+      "description": "APs in a compressed zip file",
+      "type": "data:*/zip",
+      "fileToKeyMap": {
+        "aps.zip": "ap"
+      }
+    }
+  }
+}

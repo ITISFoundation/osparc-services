@@ -1,21 +1,21 @@
 {
     "inputs": {
-        "vm_1Hz": {
-            "label": "vm 1Hz",
+        "vm1Hz": {
+            "label": "VM 1Hz",
             "displayOrder": 0,
-            "description": "Computed values from the solver",
-            "type": "data:*/*",
+            "description": "VM 1Hz",
+            "type": "data:text/plain",
             "fileToKeyMap": {
-                "vm_1Hz.txt": "vm_1Hz"
+                "vm_1Hz.txt":"vm1Hz"
             }
         },
-        "all_results_1Hz": {
-            "label": "all results 1Hz",
+        "allresults1Hz": {
+            "label": "All results 1Hz",
             "displayOrder": 1,
-            "description": "Computed values from the solver",
-            "type": "data:*/*",
+            "description": "All results 1Hz",
+            "type": "data:text/plain",
             "fileToKeyMap": {
-                "allresults_1Hz.txt": "all_results_1Hz"
+                "allresult_1Hz.txt":"allresults1Hz"
             }
         }
     }

@@ -3,6 +3,12 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+# create output folder
+echo
+echo "creating inputs/outputs folder"
+mkdir -p ${INPUTS_FOLDER:-~/inputs}
+mkdir -p ${OUTPUTS_FOLDER:-~/outputs}
+
 # try to pull data from S3
 echo
 echo "trying to restore state..."
@@ -39,8 +45,9 @@ cat > jupyter_config.json <<EOF
         "webbrowser_open_new": 0,
         "disable_check_xsrf": true,
         "nbserver_extensions": {
-            "input_retriever": true,
-            "state_handler": true
+            "retrieve": true,
+            "push": true,
+            "state": true
         }
     },
     "FileContentsManager": {
