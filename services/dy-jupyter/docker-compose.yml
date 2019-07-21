@@ -27,9 +27,17 @@ services:
           "output_2":{"label": "output 2", "displayOrder":1, "description": "Output 2", "type": "data:*/*"}
           }}'
         simcore.service.settings: '[
-          {"name": "resources", "type": "Resources", "value": {"mem_limit":17179869184, "cpu_limit": 4000000000}},
-          {"name": "ports", "type": "int", "value": 8888},
-          {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
+                                    {"name": "ports", "type": "int", "value": 8888},
+                                    {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]},
+                                    {"name": "resources", "type": "resources", "value":
+                                      {
+                                        "Limits": {
+                                          "NanoCPUs": 4000000000,
+                                          "MemoryBytes": 8388608
+                                        }
+                                      }
+                                    }
+                                  ]'
         # simcore.service.bootsettings: '[
         #   {"name": "entry_point", "type": "string", "value": "?token=simcore"}]'
         org.label-schema.schema-version: "1.0"
@@ -65,9 +73,17 @@ services:
           "output_2":{"label": "output 2", "displayOrder":1, "description": "Output 2", "type": "data:*/*"}
           }}'
         simcore.service.settings: '[
-          {"name": "resources", "type": "Resources", "value": {"mem_limit":17179869184, "cpu_limit": 4000000000}},
-          {"name": "ports", "type": "int", "value": 8888},
-          {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
+                                    {"name": "ports", "type": "int", "value": 8888},
+                                    {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]},
+                                    {"name": "resources", "type": "resources", "value":
+                                      {
+                                        "Limits": {
+                                          "NanoCPUs": 4000000000,
+                                          "MemoryBytes": 8388608
+                                        }
+                                      }
+                                    }
+                                  ]'
         # simcore.service.bootsettings: '[
         #   {"name": "entry_point", "type": "string", "value": "?token=${NOTEBOOK_TOKEN}"}]'
         org.label-schema.schema-version: "1.0"
@@ -104,9 +120,17 @@ services:
           "output_2":{"label": "output 2", "displayOrder":1, "description": "Output 2", "type": "data:*/*"}
           }}'
         simcore.service.settings: '[
-          {"name": "resources", "type": "Resources", "value": {"mem_limit":17179869184, "cpu_limit": 4000000000}},
-          {"name": "ports", "type": "int", "value": 8888},
-          {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
+                                    {"name": "ports", "type": "int", "value": 8888},
+                                    {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]},
+                                    {"name": "resources", "type": "resources", "value":
+                                      {
+                                        "Limits": {
+                                          "NanoCPUs": 4000000000,
+                                          "MemoryBytes": 8388608
+                                        }
+                                      }
+                                    }
+                                  ]'
         # simcore.service.bootsettings: '[
         #   {"name": "entry_point", "type": "string", "value": "?token=${NOTEBOOK_TOKEN}"}]'
         org.label-schema.schema-version: "1.0"

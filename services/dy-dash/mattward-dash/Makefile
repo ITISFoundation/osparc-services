@@ -26,6 +26,7 @@ endif
 # using ?= will only set if absent
 export DOCKER_IMAGE_TAG ?= $(shell cat VERSION)
 $(info DOCKER_IMAGE_TAG set to ${DOCKER_IMAGE_TAG})
+
 # default to local (no registry)
 export DOCKER_REGISTRY ?= itisfoundation
 $(info DOCKER_REGISTRY set to ${DOCKER_REGISTRY})
@@ -69,6 +70,11 @@ endif
 # target: build: – Builds all service images.
 build: update_compose_labels
 	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel
+
+.PHONY: rebuild
+# target: rebuild: – Builds all service images without using cache.
+rebuild: update_compose_labels
+	${DOCKER_COMPOSE} -f docker-compose.yml build --no-cache --parallel
 
 .PHONY: build-devel
 # target: build-devel: – Builds images of core services for development.
@@ -133,15 +139,12 @@ check-release:
 
 push:
 	# push both latest and :$$SERVICE_VERSION tags
-	${DOCKER} login ${DOCKER_REGISTRY};\
-	SERVICE_VERSION=$$(cat VERSION);\
+	${DOCKER_COMPOSE} -f docker-compose.yml push
 	${DOCKER} tag \
-		${DOCKER_IMAGE_NAME}:latest \
-		${DOCKER_IMAGE_NAME}:$$SERVICE_VERSION;\
+		${DOCKER_REGISTRY}/mattward-viewer:${DOCKER_IMAGE_TAG} \
+		${DOCKER_REGISTRY}/mattward-viewer:latest
 	${DOCKER} push \
-		${DOCKER_IMAGE_NAME}:$$SERVICE_VERSION;\
-	${DOCKER} push \
-		${DOCKER_IMAGE_NAME}:latest;
+		${DOCKER_REGISTRY}/mattward-viewer:latest
 
 pull:
 	# pull latest service version if available
