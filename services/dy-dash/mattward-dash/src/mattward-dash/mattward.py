@@ -15,7 +15,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 
 import plotly.graph_objs as go
-from plotly import tools
+from plotly import subplots
 
 from simcore_sdk import node_ports
 
@@ -111,7 +111,7 @@ dcc_input_pair = {
 
 
 def get_empty_input_graph():
-    fig = tools.make_subplots(rows=4,
+    fig = subplots.make_subplots(rows=4,
                             cols=1,
                             shared_xaxes=True,
                             vertical_spacing=0.05
