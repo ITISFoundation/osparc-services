@@ -101,7 +101,7 @@ services:
       dockerfile: services/dy-jupyter/Dockerfile
       target: production
       args:
-        BASE_IMAGE: jupyter/r-notebook
+        BASE_IMAGE: brajwa/r3.6.1-notebook
         INSTALL_PYTHON2: 0
       labels:
         io.simcore.key: '{"key": "simcore/services/dynamic/jupyter-r-notebook"}'
