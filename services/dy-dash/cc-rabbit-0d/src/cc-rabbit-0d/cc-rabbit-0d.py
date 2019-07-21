@@ -288,16 +288,16 @@ def compute_ynid():
     return ynid_l
 
 ynid = compute_ynid()
-tArray = 1
+# tArray = 1
 I_Ca_store = 2
 Ito = 3
-Itof = 4
-Itos = 5
+# Itof = 4
+# Itos = 5
 INa = 6
 IK1 = 7
-s1 = 8
-k1 = 9
-Jserca = 10
+# s1 = 8
+# k1 = 9
+# Jserca = 10
 Iks = 11
 Ikr = 12
 Jleak = [13,14]
