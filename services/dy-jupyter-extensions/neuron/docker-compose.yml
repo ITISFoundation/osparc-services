@@ -18,7 +18,16 @@ services:
         io.simcore.contact: '{"contact": "guidon@itis.swiss"}'
         simcore.service.settings: '[
           {"name": "ports", "type": "int", "value": 8888},
-          {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
+          {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]},
+          {"name": "resources", "type": "resources", "value":
+            {
+              "Limits": {
+                "NanoCPUs": 4000000000,
+                "MemoryBytes": 8388608
+              }
+            }
+          }
+          ]'
 
         org.label-schema.schema-version: "1.0"
         org.label-schema.build-date: "${BUILD_DATE}"
