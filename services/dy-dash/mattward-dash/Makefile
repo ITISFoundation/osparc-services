@@ -71,6 +71,11 @@ endif
 build: update_compose_labels
 	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel
 
+.PHONY: rebuild
+# target: rebuild: – Builds all service images without using cache.
+rebuild: update_compose_labels
+	${DOCKER_COMPOSE} -f docker-compose.yml build --no-cache --parallel
+
 .PHONY: build-devel
 # target: build-devel: – Builds images of core services for development.
 build-devel:
