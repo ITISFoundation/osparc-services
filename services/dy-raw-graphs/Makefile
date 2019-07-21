@@ -56,7 +56,7 @@ build:
 
 .PHONY: rebuild
 # target: rebuild: – Builds all service images without using cache.
-rebuild: update_compose_labels
+rebuild:
 	${DOCKER_COMPOSE} -f docker-compose.yml build --no-cache --parallel
 
 .PHONY: build-devel
