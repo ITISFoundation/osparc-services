@@ -25,7 +25,7 @@ jobs:
   include:
     # build dy-jupyter images ----------------------------------------------------------------------
     - stage: build / unit-testing
-      # in pull request we do not have credentials to push, checks that the build still passes      
+      # in pull request we do not have credentials to push, checks that the build still passes
       name: build dy-jupyter
       sudo: required
       before_install:
@@ -201,7 +201,7 @@ jobs:
             all_branches: true
 
     # build dy-jupyter-extensions images ----------------------------------------------------------------------
-    - stage: build / unit-testing
+    - stage: dependent build
       # in pull request we do not have credentials to push, checks that the build still passes
       name: build dy-jupyter-extensions
       sudo: required
