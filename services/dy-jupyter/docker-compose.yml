@@ -33,7 +33,7 @@ services:
                                       {
                                         "Limits": {
                                           "NanoCPUs": 4000000000,
-                                          "MemoryBytes": 8388608
+                                          "MemoryBytes": 8589934592
                                         }
                                       }
                                     }
@@ -79,7 +79,7 @@ services:
                                       {
                                         "Limits": {
                                           "NanoCPUs": 4000000000,
-                                          "MemoryBytes": 8388608
+                                          "MemoryBytes": 8589934592
                                         }
                                       }
                                     }
@@ -126,7 +126,7 @@ services:
                                       {
                                         "Limits": {
                                           "NanoCPUs": 4000000000,
-                                          "MemoryBytes": 8388608
+                                          "MemoryBytes": 8589934592
                                         }
                                       }
                                     }
