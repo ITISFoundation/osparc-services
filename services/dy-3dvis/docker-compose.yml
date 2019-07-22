@@ -42,7 +42,7 @@ services:
                                         },
                                         "Reservations": {
                                           "NanoCPUs": 1000000000,
-                                          "MemoryBytes": 4294967296
+                                          "MemoryBytes": 1073741824
                                         }
                                       }
                                     }
@@ -100,8 +100,8 @@ services:
                                       },
                                       "Reservations":
                                         {
-                                          "NanoCPUs": 4000000000,
-                                          "MemoryBytes": 4294967296,
+                                          "NanoCPUs": 1000000000,
+                                          "MemoryBytes": 1073741824,
                                           "GenericResources": [
                                             {
                                                "DiscreteResourceSpec": {
