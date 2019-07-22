@@ -17,7 +17,7 @@ export DOCKER=docker
 endif
 
 # using ?= will only set if absent
-export DOCKER_BASE_IMAGE_TAG ?= $(shell cat BASE_VERSION)
+export DOCKER_BASE_IMAGE_TAG ?= $(shell cat ../../dy-jupyter/VERSION)
 $(info DOCKER_BASE_IMAGE_TAG set to ${DOCKER_BASE_IMAGE_TAG})
 
 # using ?= will only set if absent
