@@ -16,7 +16,7 @@ from flask import Flask, Blueprint, Response
 import pandas as pd
 import plotly.graph_objs as go
 from dash.dependencies import Input, Output
-from plotly import tools
+from plotly import subplots
 from simcore_sdk import node_ports
 
 logging.basicConfig(stream=sys.stderr, level=logging.INFO)
@@ -187,7 +187,7 @@ def get_empty_graph(xLabel='x', yLabel='y'):
     return fig
 
 def get_empty_cols_graphs(labelPairs=[['x', 'y']]):
-    fig = tools.make_subplots(rows=1,
+    fig = subplots.make_subplots(rows=1,
                             cols=len(labelPairs),
                             shared_xaxes=True,
                             vertical_spacing=0.05
@@ -201,7 +201,7 @@ def get_empty_cols_graphs(labelPairs=[['x', 'y']]):
     return fig
 
 def get_empty_rows_graphs(xLabel='x', yLabels=['y']):
-    fig = tools.make_subplots(rows=len(yLabels),
+    fig = subplots.make_subplots(rows=len(yLabels),
                             cols=1,
                             shared_xaxes=True,
                             horizontal_spacing=0.05
