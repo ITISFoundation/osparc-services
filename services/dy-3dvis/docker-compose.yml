@@ -38,11 +38,11 @@ services:
                                       {
                                         "Limits": {
                                           "NanoCPUs": 4000000000,
-                                          "MemoryBytes": 16777216
+                                          "MemoryBytes": 17179869184
                                         },
                                         "Reservations": {
                                           "NanoCPUs": 1000000000,
-                                          "MemoryBytes": 2097152
+                                          "MemoryBytes": 4294967296
                                         }
                                       }
                                     }
@@ -96,12 +96,12 @@ services:
                                       {
                                       "Limits": {
                                         "NanoCPUs": 4000000000,
-                                        "MemoryBytes": 16777216
+                                        "MemoryBytes": 17179869184
                                       },
                                       "Reservations":
                                         {
-                                          "NanoCPUs": 1000000000,
-                                          "MemoryBytes": 2097152,
+                                          "NanoCPUs": 4000000000,
+                                          "MemoryBytes": 4294967296,
                                           "GenericResources": [
                                             {
                                                "DiscreteResourceSpec": {

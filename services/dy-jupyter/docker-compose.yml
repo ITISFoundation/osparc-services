@@ -33,7 +33,7 @@ services:
                                       {
                                         "Limits": {
                                           "NanoCPUs": 4000000000,
-                                          "MemoryBytes": 8388608
+                                          "MemoryBytes": 8589934592
                                         }
                                       }
                                     }
@@ -79,7 +79,7 @@ services:
                                       {
                                         "Limits": {
                                           "NanoCPUs": 4000000000,
-                                          "MemoryBytes": 8388608
+                                          "MemoryBytes": 8589934592
                                         }
                                       }
                                     }
@@ -101,7 +101,7 @@ services:
       dockerfile: services/dy-jupyter/Dockerfile
       target: production
       args:
-        BASE_IMAGE: jupyter/r-notebook
+        BASE_IMAGE: brajwa/r3.6.1-notebook
         INSTALL_PYTHON2: 0
       labels:
         io.simcore.key: '{"key": "simcore/services/dynamic/jupyter-r-notebook"}'
@@ -126,7 +126,7 @@ services:
                                       {
                                         "Limits": {
                                           "NanoCPUs": 4000000000,
-                                          "MemoryBytes": 8388608
+                                          "MemoryBytes": 8589934592
                                         }
                                       }
                                     }
