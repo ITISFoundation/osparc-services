@@ -92,11 +92,12 @@ services:
       - S3_SECRET_KEY=${S3_SECRET_KEY}
       - S3_BUCKET_NAME=${S3_BUCKET_NAME}
       - S3_SECURE=${S3_SECURE}
-      - RUN_DOCKER_ENGINE_ROOT=1
       - BF_API_SECRET=none
       - BF_API_KEY=none
       - APIHUB_HOST=${APIHUB_HOST}
       - APIHUB_PORT=${APIHUB_PORT}
+      - STORAGE_LOGLEVEL=INFO
+      - STORAGE_MONITORING_ENABLED=1
     restart: always
     depends_on:
       - postgres
