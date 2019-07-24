@@ -32,8 +32,9 @@ if os.environ.get("DEBUG") == BOOTS_WITH_DEBUGGER:
     # Healthcheck disabled with service is boot with a debugger
     print(0)
 else:
-    print(0 if urlopen("{host}{baseurl}".format(
+    print(0 if urlopen("{host}{baseurl}{path}".format(
         host=sys.argv[1],
-        baseurl=os.environ.get("SIMCORE_NODE_BASEPATH", ""))
+        baseurl=os.environ.get("SIMCORE_NODE_BASEPATH", ""),
+        path=sys.argv[2] if len(sys.argv)>2 else "")
         ).getcode() == 200
         else 1)
