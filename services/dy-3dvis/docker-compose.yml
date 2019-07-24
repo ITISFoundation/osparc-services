@@ -41,8 +41,8 @@ services:
                                           "MemoryBytes": 17179869184
                                         },
                                         "Reservations": {
-                                          "NanoCPUs": 1000000000,
-                                          "MemoryBytes": 4294967296
+                                          "NanoCPUs": 100000000,
+                                          "MemoryBytes": 536870912
                                         }
                                       }
                                     }
@@ -100,8 +100,8 @@ services:
                                       },
                                       "Reservations":
                                         {
-                                          "NanoCPUs": 4000000000,
-                                          "MemoryBytes": 4294967296,
+                                          "NanoCPUs": 100000000,
+                                          "MemoryBytes": 536870912,
                                           "GenericResources": [
                                             {
                                                "DiscreteResourceSpec": {
@@ -121,5 +121,5 @@ services:
         org.label-schema.vcs-ref: "${VCS_REF}"
     runtime: nvidia
     ports:
-      - '8778:8778'
+      - '8778:8777'
 
