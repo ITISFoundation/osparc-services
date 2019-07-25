@@ -117,26 +117,9 @@ dcc_input_button = {
 }
 
 GRAPH_HEIGHT = 400
-X_LABEL_TIME_SEC = "time (sec)"
-Y_LABEL_1 = "Membrane Potential"
-Y_LABEL_2 = "I<sub>Ca</sub> (pA/pF)"
-Y_LABEL_3_1 = "[Ca]<sub>SRT</sub> (mM)"
-Y_LABEL_3_2 = "Ca Dyad (\u00B5M)"
-Y_LABEL_3_3 = "Ca sl (mM)"
-Y_LABEL_4 = "[Ca]<sub>i</sub> (\u00B5M)"
-Y_LABEL_5 = "I<sub>to</sub> (pA/pF)"
-Y_LABEL_6 = "I<sub>Na</sub> (pA/pF)"
-Y_LABEL_7_1 = "I<sub>Ks</sub> (pA/pF)"
-Y_LABEL_7_2 = "I<sub>CFTR</sub>"
-Y_LABEL_8_1 = "I<sub>K1</sub> (pA/pF)"
-Y_LABEL_8_2 = "I<sub>Kr</sub> (pA/pF)"
-Y_LABEL_9_1 = "[Na]<sub>j</sub>"
-Y_LABEL_9_2 = "[Na]<sub>s<sup>l</sup></sub>"
-Y_LABEL_9_3 = "[Na]<sub>i</sub> (mmol/L relevant compartment"
-Y_LABEL_10 = "I<sub>NCX</sub> (pA/pF)"
-Y_LABEL_11_1 = "JRyR<sub>tot</sub>"
-Y_LABEL_11_2 = "Passive Leak"
-Y_LABEL_11_3 = "SR Ca release"
+X_LABEL_TIME_SEC = "Time (sec)"
+Y_LABEL_1 = "Action potential (Vm)"
+Y_LABEL_2 = "Calcium cytosol (mM)"
 
 def give_fig_osparc_style2(fig):
     margin = 10
@@ -212,29 +195,11 @@ def get_empty_rows_graphs(xLabel='x', yLabels=['y']):
 
 empty_graph_1 = get_empty_graph(X_LABEL_TIME_SEC, Y_LABEL_1)
 empty_graph_2 = get_empty_graph(X_LABEL_TIME_SEC, Y_LABEL_2)
-empty_graph_3 = get_empty_cols_graphs([[X_LABEL_TIME_SEC, Y_LABEL_3_1], [X_LABEL_TIME_SEC, Y_LABEL_3_2], [X_LABEL_TIME_SEC, Y_LABEL_3_3]])
-empty_graph_4 = get_empty_graph(X_LABEL_TIME_SEC, Y_LABEL_4)
-empty_graph_5 = get_empty_graph(X_LABEL_TIME_SEC, Y_LABEL_5)
-empty_graph_6 = get_empty_graph(X_LABEL_TIME_SEC, Y_LABEL_6)
-empty_graph_7 = get_empty_rows_graphs(X_LABEL_TIME_SEC, [Y_LABEL_7_1, Y_LABEL_7_2])
-empty_graph_8 = get_empty_rows_graphs(X_LABEL_TIME_SEC, [Y_LABEL_8_1, Y_LABEL_8_2])
-empty_graph_9 = get_empty_cols_graphs([[X_LABEL_TIME_SEC, Y_LABEL_9_1], [X_LABEL_TIME_SEC, Y_LABEL_9_2], [X_LABEL_TIME_SEC, Y_LABEL_9_3]])
-empty_graph_10 = get_empty_graph(X_LABEL_TIME_SEC, Y_LABEL_10)
-empty_graph_11 = get_empty_rows_graphs(X_LABEL_TIME_SEC, [Y_LABEL_11_1, Y_LABEL_11_2, Y_LABEL_11_3])
 
 app.layout = html.Div(children=[
     html.Button('Reload', id='reload-button', style=dcc_input_button),
     dcc.Graph(id='graph-1', figure=empty_graph_1),
     dcc.Graph(id='graph-2', figure=empty_graph_2),
-    dcc.Graph(id='graph-3', figure=empty_graph_3),
-    dcc.Graph(id='graph-4', figure=empty_graph_4),
-    dcc.Graph(id='graph-5', figure=empty_graph_5),
-    dcc.Graph(id='graph-6', figure=empty_graph_6),
-    dcc.Graph(id='graph-7', figure=empty_graph_7),
-    dcc.Graph(id='graph-8', figure=empty_graph_8),
-    dcc.Graph(id='graph-9', figure=empty_graph_9),
-    dcc.Graph(id='graph-10', figure=empty_graph_10),
-    dcc.Graph(id='graph-11', figure=empty_graph_11),
 ], style=osparc_style)
 
 
@@ -307,7 +272,7 @@ def create_graph_1():
     # Action potential (Vm): col 9th
     axis_colums = [0, 8]
     plot_0 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_0, "ActionPotential", ["time (sec)", "Action potential (Vm)"], 0)
+    pandas_dataframe_to_output_data(plot_0, "ActionPotential", [X_LABEL_TIME_SEC, Y_LABEL_1], 0)
     fig = create_graph(data_frame=plot_0,
                 x_axis_title=X_LABEL_TIME_SEC,
                 y_axis_title=Y_LABEL_1)
@@ -316,18 +281,18 @@ def create_graph_1():
 def create_graph_2():
     # Calcium cytosol (mM): col 10th
     axis_colums = [0, 9]
-    plot_5 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_5, "CalciumCytosol", ["time (sec)", "Calcium cytosol (mM)"], 5)
-    fig = create_graph(data_frame=plot_5,
+    plot_1 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_1, "CalciumCytosol", [X_LABEL_TIME_SEC, Y_LABEL_2], 1)
+    fig = create_graph(data_frame=plot_1,
                 x_axis_title=X_LABEL_TIME_SEC,
-                y_axis_title=Y_LABEL_4)
+                y_axis_title=Y_LABEL_2)
     return fig
 
 def preprocess_inputs():
     global data_frame_ty
 
     if data_paths and len(data_paths) == 1:
-        data_path_ty = data_paths
+        data_path_ty = data_paths[0]
         if (data_path_ty is not None):
             # read from file to memory
             data_frame_ty = pd.read_csv(data_path_ty, sep='\t', header=None)
