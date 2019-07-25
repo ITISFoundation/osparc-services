@@ -10,15 +10,6 @@
                 "fileToKeyMap": {
                     "vm_1Hz.txt": "vm_1Hz"
                 }
-            },
-            "all_results_1Hz": {
-                "label": "all results 1Hz",
-                "displayOrder": 1,
-                "description": "Computed values from the solver",
-                "type": "data:*/*",
-                "fileToKeyMap": {
-                    "allresults_1Hz.txt": "all_results_1Hz"
-                }
             }
         },
         "outputs": {
