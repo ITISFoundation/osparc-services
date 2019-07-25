@@ -6,7 +6,7 @@
             "description": "Action potential csv",
             "type": "data:text/csv",
             "fileToKeyMap": {
-                "Membrane_Potential.csv": "output_1"
+                "ActionPotential.csv": "output_1"
             }
         },
         "output_2": {
@@ -15,7 +15,7 @@
             "description": "Calcium cytosol csv",
             "type": "data:text/csv",
             "fileToKeyMap": {
-                "I_ca.csv": "output_2"
+                "CalciumCytosol.csv": "output_2"
             }
         }
     }

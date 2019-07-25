@@ -18,9 +18,9 @@ services:
         io.simcore.name: '{"name": "0D cardiac model viewer"}'
         io.simcore.outputs: '{"outputs": {"output_1": {"label": "Action potential",
           "displayOrder": 0, "description": "Action potential csv", "type": "data:text/csv",
-          "fileToKeyMap": {"Membrane_Potential.csv": "output_1"}}, "output_2": {"label":
+          "fileToKeyMap": {"ActionPotential.csv": "output_1"}}, "output_2": {"label":
           "Calcium cytosol", "displayOrder": 1, "description": "Calcium cytosol csv",
-          "type": "data:text/csv", "fileToKeyMap": {"I_ca.csv": "output_2"}}}}'
+          "type": "data:text/csv", "fileToKeyMap": {"CalciumCytosol.csv": "output_2"}}}}'
         io.simcore.type: '{"type": "dynamic"}'
         io.simcore.version: '{"version": "3.0.4"}'
         org.label-schema.build-date: ${BUILD_DATE}
