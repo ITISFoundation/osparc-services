@@ -54,7 +54,7 @@ data_paths = None
 def healthcheck():
     return Response("healthy", status=200, mimetype='application/json')
 
-def download_all_inputs(n_inputs = 2):
+def download_all_inputs(n_inputs = 1):
     ports = node_ports.ports()
     tasks = asyncio.gather(*[ports.inputs[n].get() for n in range(n_inputs)])
     paths_to_inputs = asyncio.get_event_loop().run_until_complete( tasks )
@@ -275,7 +275,6 @@ def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
 #---------------------------------------------------------#
 # Data to plot in memory
 data_frame_ty = None
-data_frame_ar = None
 
 
 # constants ----------
@@ -287,327 +286,51 @@ def compute_ynid():
         ynid_l[yids[i]] = i
     return ynid_l
 
-ynid = compute_ynid()
+# ynid = compute_ynid()
 # tArray = 1
-I_Ca_store = 2
-Ito = 3
+# I_Ca_store = 2
+# Ito = 3
 # Itof = 4
 # Itos = 5
-INa = 6
-IK1 = 7
+# INa = 6
+# IK1 = 7
 # s1 = 8
 # k1 = 9
 # Jserca = 10
-Iks = 11
-Ikr = 12
-Jleak = [13,14]
-ICFTR = 15
-Incx = 16
+# Iks = 11
+# Ikr = 12
+# Jleak = [13,14]
+# ICFTR = 15
+# Incx = 16
 
 def create_graph_1():
-    # membrane potential
-    axis_colums = [0,ynid[39]+1]
+    # Action potential (Vm): col 9th
+    axis_colums = [0, 8]
     plot_0 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_0, "Membrane Potential", ["time (sec)", "Membrane Potential"], 0)
+    pandas_dataframe_to_output_data(plot_0, "ActionPotential", ["time (sec)", "Action potential (Vm)"], 0)
     fig = create_graph(data_frame=plot_0,
                 x_axis_title=X_LABEL_TIME_SEC,
                 y_axis_title=Y_LABEL_1)
     return fig
 
 def create_graph_2():
-    # LCC current (ICa)
-    axis_colums = [0,I_Ca_store-1]
-    plot_1 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_1, "I_ca", ["time(sec)", "I_ca(pA/pF)"], 1)
-    fig = create_graph(data_frame=plot_1,
-                x_axis_title=X_LABEL_TIME_SEC,
-                y_axis_title=Y_LABEL_2)
-    return fig
-
-def create_graph_3():
-    # CaSRT & Caj
-    data_frame_casrt = data_frame_ty.filter(items=[data_frame_ty.columns[0], data_frame_ty.columns[ynid[30]+1], data_frame_ty.columns[ynid[31]+1]])
-    data_frame_casrt[3] = data_frame_casrt[1] + data_frame_casrt[2]
-    plot_2 = data_frame_casrt.filter(items=[data_frame_casrt.columns[0], data_frame_casrt.columns[3]])
-    pandas_dataframe_to_output_data(plot_2, "Ca_SRT", ["time(sec)", "Ca_SRT(mM)"], 2)
-    plot_data = [plot_2]
-
-    #
-    g = lambda x: x*1000.0
-    axis_colums = [0,ynid[36]+1]
-    data_frame_ty[ynid[36]+1] = data_frame_ty[ynid[36]+1].apply(g)
-    plot_3 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_3, "Ca_Dyad", ["time (sec)", "Ca_Dyad(uM)"], 3)
-    plot_data.append(plot_3)
-
-    axis_colums = [0,ynid[37]+1]
-    plot_4 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_4, "Ca_sl", ["time (sec)", "Ca_sl(mM)"], 4)
-    plot_data.append(plot_4)
-    figs = create_graphs(
-        data_frames=plot_data,
-        title=None,
-        showlegend=False,
-        xaxis=dict(
-            domain=[0,0.3],
-            title=X_LABEL_TIME_SEC,
-            gridcolor=osparc_style['gridColor']
-        ),
-        xaxis2=dict(
-            domain=[0.4,0.6],
-            title=X_LABEL_TIME_SEC,
-            gridcolor=osparc_style['gridColor']
-        ),
-        xaxis3=dict(
-            domain=[0.7,1.0],
-            title=X_LABEL_TIME_SEC,
-            gridcolor=osparc_style['gridColor']
-        ),
-        yaxis=dict(
-            title=Y_LABEL_3_1,
-            gridcolor=osparc_style['gridColor']
-        ),
-        yaxis2=dict(
-            title=Y_LABEL_3_2,
-            anchor="x2",
-            gridcolor=osparc_style['gridColor']
-        ),
-        yaxis3=dict(
-            title=Y_LABEL_3_3,
-            anchor="x3",
-            gridcolor=osparc_style['gridColor']
-        )
-    )
-    return figs
-
-def create_graph_4():
-    # Cai
-    axis_colums = [0,ynid[38]+1]
+    # Calcium cytosol (mM): col 10th
+    axis_colums = [0, 9]
     plot_5 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_5, "Ca_i", ["time (sec)", "Ca_i(uM)"], 5)
+    pandas_dataframe_to_output_data(plot_5, "CalciumCytosol", ["time (sec)", "Calcium cytosol (mM)"], 5)
     fig = create_graph(data_frame=plot_5,
                 x_axis_title=X_LABEL_TIME_SEC,
                 y_axis_title=Y_LABEL_4)
     return fig
 
-def create_graph_5():
-    # Ito
-    axis_colums = [0,Ito-1]
-    plot_6 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_6, "I_to", ["time (sec)", "I_to(pA/pF)"], 6)
-    fig = create_graph(data_frame=plot_6,
-                x_axis_title=X_LABEL_TIME_SEC,
-                y_axis_title=Y_LABEL_5)
-    return fig
-
-def create_graph_6():
-    # INa
-    axis_colums = [0,INa-1]
-    plot_7 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_7, "I_Na", ["time (sec)", "I_to(pA/pF)"], 7)
-    fig = create_graph(data_frame=plot_7,
-                x_axis_title=X_LABEL_TIME_SEC,
-                y_axis_title=Y_LABEL_6)
-    return fig
-
-def create_graph_7():
-    # IKs and ICFTR
-    axis_colums = [0,Iks-1]
-    plot_8 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_8, "I_Ks", ["time (sec)", "I_Ks(pA/pF)"], 8)
-    plot_data = [plot_8]
-
-    axis_colums = [0,ICFTR-1]
-    plot_9 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_9, "I_CFTR", ["time (sec)", "I_Ks"], 9)
-    plot_data.append(plot_9)
-
-    figs = create_graphs(
-        data_frames=plot_data,
-        title=None,
-        showlegend=False,
-        #xaxis=dict(title=X_LABEL_TIME_SEC),
-        xaxis2=dict(
-            title=X_LABEL_TIME_SEC,
-            anchor="y2",
-            gridcolor=osparc_style['gridColor']
-        ),
-        yaxis=dict(
-            domain=[0.6,1.0],
-            title=Y_LABEL_7_1,
-            gridcolor=osparc_style['gridColor']
-        ),
-        yaxis2=dict(
-            domain=[0,0.5],
-            title=Y_LABEL_7_2,
-            anchor="x2",
-            gridcolor=osparc_style['gridColor']
-        )
-    )
-    return figs
-
-def create_graph_8():
-    # IKr and IK1
-    axis_colums = [0,Ikr-1]
-    plot_10 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_10, "I_Kr", ["time (sec)", "I_Kr(pA/pF)"], 10)
-    plot_data = [plot_10]
-
-    axis_colums = [0,IK1-1]
-    plot_11 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_11, "I_K1", ["time (sec)", "I_K1(pA/pF)"], 11)
-    plot_data.append(plot_11)
-
-    figs = create_graphs(
-        data_frames=plot_data,
-        title=None,
-        showlegend=False,
-        #xaxis=dict(title=X_LABEL_TIME_SEC),
-        xaxis2=dict(
-            title=X_LABEL_TIME_SEC,
-            anchor="y2",
-            gridcolor=osparc_style['gridColor']
-        ),
-        yaxis2=dict(
-            domain=[0,0.5],
-            title=Y_LABEL_8_1,
-            anchor="x2",
-            gridcolor=osparc_style['gridColor']
-        ),
-        yaxis=dict(
-            domain=[0.6,1.0],
-            title=Y_LABEL_8_2,
-            gridcolor=osparc_style['gridColor']
-        )
-    )
-    return figs
-
-def create_graph_9():
-    # [Na]
-    axis_colums = [0,ynid[32]+1]
-    plot_12 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_12, "Na_j", ["time (sec)", "Na_j"], 12)
-    plot_data = [plot_12]
-
-    axis_colums = [0,ynid[33]+1]
-    plot_13 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_13, "Na_s", ["time (sec)", "Na_s"], 13)
-    plot_data.append(plot_13)
-
-    axis_colums = [0,ynid[34]+1]
-    plot_14 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_14, "Na_i", ["time (sec)", "Na_i(mmol/L)"], 14)
-    plot_data.append(plot_14)
-
-    figs = create_graphs(
-        data_frames=plot_data,
-        title=None,
-        showlegend=False,
-        xaxis=dict(
-            title=X_LABEL_TIME_SEC,
-            domain=[0,0.3],
-            gridcolor=osparc_style['gridColor']
-        ),
-        xaxis2=dict(
-            title=X_LABEL_TIME_SEC,
-            domain=[0.4,0.6],
-            gridcolor=osparc_style['gridColor']
-        ),
-        xaxis3=dict(
-            title=X_LABEL_TIME_SEC,
-            domain=[0.7,1.0],
-            gridcolor=osparc_style['gridColor']
-        ),
-        yaxis=dict(
-            title=Y_LABEL_9_1,
-            gridcolor=osparc_style['gridColor']
-        ),
-        yaxis2=dict(
-            title=Y_LABEL_9_2,
-            anchor="x2",
-            gridcolor=osparc_style['gridColor']
-        ),
-        yaxis3=dict(
-            title=Y_LABEL_9_3,
-            anchor="x3",
-            gridcolor=osparc_style['gridColor']
-        )
-    )
-    return figs
-
-def create_graph_10():
-    # I_NCX
-    axis_colums = [0,Incx-1]
-    plot_15 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_15, "I_NCX", ["time (sec)", "I_NCX(pA/pF)"], 15)
-    fig = create_graph(data_frame=plot_15,
-                x_axis_title=X_LABEL_TIME_SEC,
-                y_axis_title=Y_LABEL_10)
-    return fig
-
-def create_graph_11():
-    # RyR fluxes
-    axis_colums = [0,Jleak[0]-1]
-    plot_16 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_16, "JRyR_tot", ["time (sec)", "JRyR_tot"], 16)
-    plot_data = [plot_16]
-
-    axis_colums = [0,Jleak[1]-1]
-    plot_17 = data_frame_ar.filter(items=[data_frame_ar.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_17, "Passive_Leak", ["time (sec)", "Passive_Leak"], 17)
-    plot_data.append(plot_17)
-
-    plot_18 = data_frame_ar.filter(items=[data_frame_ar.columns[0]])
-    plot_18[1] = data_frame_ar[Jleak[0]-1] - data_frame_ar[Jleak[1]-1]
-    pandas_dataframe_to_output_data(plot_18, "SR_Ca_realease", ["time (sec)", "SR_Ca_realease"], 18)
-    plot_data.append(plot_18)
-    figs = create_graphs(
-        data_frames=plot_data,
-        title=None,
-        showlegend=False,
-        xaxis=dict(
-            title=None,
-            gridcolor=osparc_style['gridColor']
-        ),
-        xaxis2=dict(
-            title=None,
-            gridcolor=osparc_style['gridColor']
-        ),
-        xaxis3=dict(
-            title=X_LABEL_TIME_SEC,
-            anchor="y3",
-            gridcolor=osparc_style['gridColor']
-        ),
-        yaxis=dict(
-            domain=[0.7,1.0],
-            title=Y_LABEL_11_1,
-            gridcolor=osparc_style['gridColor']
-        ),
-        yaxis2=dict(
-            domain=[0.4,0.6],
-            title=Y_LABEL_11_2,
-            anchor="x2",
-            gridcolor=osparc_style['gridColor']
-        ),
-        yaxis3=dict(
-            domain=[0,0.3],
-            title=Y_LABEL_11_3,
-            anchor="x3",
-            gridcolor=osparc_style['gridColor']
-        )
-    )
-    return figs
-
 def preprocess_inputs():
     global data_frame_ty
-    global data_frame_ar
 
-    if data_paths and len(data_paths) == 2:
-        data_path_ty, data_path_ar = data_paths
-        if (data_path_ty is not None) and (data_path_ar is not None):
+    if data_paths and len(data_paths) == 1:
+        data_path_ty = data_paths
+        if (data_path_ty is not None):
             # read from file to memory
             data_frame_ty = pd.read_csv(data_path_ty, sep='\t', header=None)
-            data_frame_ar = pd.read_csv(data_path_ar, sep='\t', header=None)
 
             # scale time
             f = lambda x: x/1000.0
@@ -618,16 +341,7 @@ def preprocess_inputs():
 @app.callback(
     [
         Output('graph-1', 'figure'),
-        Output('graph-2', 'figure'),
-        Output('graph-3', 'figure'),
-        Output('graph-4', 'figure'),
-        Output('graph-5', 'figure'),
-        Output('graph-6', 'figure'),
-        Output('graph-7', 'figure'),
-        Output('graph-8', 'figure'),
-        Output('graph-9', 'figure'),
-        Output('graph-10', 'figure'),
-        Output('graph-11', 'figure')
+        Output('graph-2', 'figure')
     ],
     [
         Input('reload-button', 'n_clicks')
@@ -635,19 +349,10 @@ def preprocess_inputs():
 )
 def read_input_files(_n_clicks):
     preprocess_inputs()
-    if (data_frame_ty is not None) and (data_frame_ar is not None):
+    if (data_frame_ty is not None):
         figs = [
             create_graph_1(),
-            create_graph_2(),
-            create_graph_3(),
-            create_graph_4(),
-            create_graph_5(),
-            create_graph_6(),
-            create_graph_7(),
-            create_graph_8(),
-            create_graph_9(),
-            create_graph_10(),
-            create_graph_11()
+            create_graph_2()
         ]
     else:
         figs = [get_empty_graph() for i in range(11)]
