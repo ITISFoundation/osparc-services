@@ -67,7 +67,7 @@ def retrieve():
     # download
     logger.info('download inputs')
     try:
-        data_paths = download_all_inputs(2)
+        data_paths = download_all_inputs(1)
         logger.info('inputs downloaded to %s', data_paths)
 
         transfered_bytes = 0
