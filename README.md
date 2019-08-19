@@ -6,20 +6,8 @@
 
 Collection of some open-source services for the osparc simcore platform:
 
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- TOC_BEGIN -->
-<!-- Automaticaly produced by scripts/auto-doc/create-toc.py on 2019-08-19T08:24:16Z -->
+<!-- Automaticaly produced by scripts/auto-doc/create-toc.py on 2019-08-19T11:13:46Z -->
 ## Available services [18]
 |                                   name                                    |                                  description                                  |   type    |  latest version  |                        identifier                        |
 |---------------------------------------------------------------------------|-------------------------------------------------------------------------------|-----------|------------------|----------------------------------------------------------|
@@ -41,10 +29,6 @@ Collection of some open-source services for the osparc simcore platform:
 |  [modeler](services/dy-modeling/services/dy-modeling/server)              |  Modeler viewer                                                               |  dynamic  |  0.1.1           |  simcore/services/dynamic/modeler-webserver:0.1.1        |
 |  [3d-viewer](services/dy-3dvis/services/dy-3dvis/simcoreparaviewweb)      |  Paraview Web-based Visualizer                                                |  dynamic  |  2.11.0          |  simcore/services/dynamic/3d-viewer:2.11.0               |
 |  [3d-viewer-gpu](services/dy-3dvis/services/dy-3dvis/simcoreparaviewweb)  |  Paraview Web-based Visualizer GPU accelerated                                |  dynamic  |  2.11.0          |  simcore/services/dynamic/3d-viewer-gpu:2.11.0           |
-*Updated on 2019-08-19T08:24:16Z*
+*Updated on 2019-08-19T11:13:46Z*
 
 <!-- TOC_END -->
-
-
-
-
