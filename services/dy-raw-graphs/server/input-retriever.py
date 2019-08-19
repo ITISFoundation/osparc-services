@@ -48,7 +48,7 @@ def _no_relative_path_zip(members: zipfile.ZipFile):
         if path.match("/../"):
             # relative paths are not allowed
             continue
-        yield zipinfo
+        yield zipinfo.filename
 
 async def download_data():
     logger.info("retrieving data from simcore...")
@@ -71,10 +71,7 @@ async def download_data():
             elif path.is_dir():
                 shutil.rmtree(path)
         # check if local_path is a compressed file
-        if tarfile.is_tarfile(local_path):
-            with tarfile.open(local_path) as tar_file:
-                tar_file.extractall(dest_path, members=_no_relative_path_tar(tar_file))
-        elif zipfile.is_zipfile(local_path):
+        if zipfile.is_zipfile(local_path):
             with zipfile.ZipFile(local_path) as zip_file:
                 zip_file.extractall(dest_path, members=_no_relative_path_zip(zip_file))
         else:
