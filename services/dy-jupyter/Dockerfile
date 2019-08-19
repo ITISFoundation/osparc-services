@@ -17,7 +17,9 @@ USER root
 RUN if [ "x${INSTALL_PYTHON2}" = "1" ] ; then $CONDA_DIR/envs/python2/bin/python -m ipykernel install && \
 $CONDA_DIR/envs/python2/bin/kernda -o -y /usr/local/share/jupyter/kernels/python2/kernel.json ; fi
 RUN apt-get update &&\
-    apt-get install -y git
+    apt-get install -y \
+    git \
+    gcc
 USER $NB_USER
 # ----------------------------------------------------------------
 # set up oSparc env variables
@@ -54,7 +56,8 @@ ENV PYTHONPATH=/home/jovyan/handlers
 # install simcore-sdk
 RUN pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
     pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python &&\
-    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/postgres-database
+    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/postgres-database &&\
+    pip install blackfynn
 
 ENV NOTEBOOK_URL="notebooks/notebook.ipynb"
 # ----------------------------------------------------------------
