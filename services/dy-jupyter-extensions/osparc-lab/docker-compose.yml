@@ -25,11 +25,20 @@ services:
               "Limits": {
                 "NanoCPUs": 4000000000,
                 "MemoryBytes": 8388608
+              },
+              "Reservations": {
+                "NanoCPUs": 4000000000,
+                "MemoryBytes": 4294967296,
+                "GenericResources": [{
+                    "DiscreteResourceSpec": {
+                      "Kind": "VRAM",
+                      "Value": 1
+                    }
+                }]
               }
             }
           }
           ]'
-
         org.label-schema.schema-version: "1.0"
         org.label-schema.build-date: "${BUILD_DATE}"
         org.label-schema.vcs-url: "${VCS_URL}"
