@@ -17,3 +17,4 @@
 - [ ] Documentation reflects the changes
 - [ ] **Runs in the swarm**
 - [ ] If you design a new module, add your user to .github/CODEOWNERS
+- [ ] Table of Contents was accordingly updated (make toc)
