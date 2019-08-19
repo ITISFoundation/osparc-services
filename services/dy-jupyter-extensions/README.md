@@ -9,3 +9,7 @@ Dynamic services based on the osparc jupyter-base notebook services with specifi
 - pyneuroml
 - netpyne
 - lfpy
+
+## osparc-lab
+
+Laboratory for experimenting with Tensorflow and friends

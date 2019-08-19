@@ -29,7 +29,6 @@ def main(args = None) -> int:
         parser.add_argument("path", help="The folder or file to get for the node", type=Path)
         parser.add_argument("--silent", help="The script will silently fail if the flag is on", default=False, const=True, action="store_const", required=False)
         options = parser.parse_args(args)
-
         loop = asyncio.get_event_loop()
         loop.run_until_complete(data_manager.pull(options.path))
         return ExitCode.SUCCESS
