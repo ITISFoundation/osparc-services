@@ -62,17 +62,13 @@ RUN export PATH="${PYENV_ROOT}/bin:$PATH" && \
 COPY --from=visualizer /home/node/visualizer/dist /opt/paraview/share/paraview-5.6/web/visualizer/www
 WORKDIR /home/root
 # ----------------------------------------------------------------
-COPY scripts/docker/healthcheck_curl_host.py /healthcheck/healthcheck_curl_host.py
-# will start to run after interval every interval. fails after timeout. fail do not count if during start-period. will do # retries
-#HEALTHCHECK --interval=10s --timeout=30s --start-period=1s --retries=3 CMD [ "python3", "/healthcheck/healthcheck_curl_host.py", "http://localhost:80/visualizer" ]
-
 # set up oSparc env variables
 ENV SIMCORE_NODE_UUID="-1" \
     SIMCORE_USER_ID="-1" \
     SIMCORE_NODE_BASEPATH="" \
     SIMCORE_NODE_APP_STATE_PATH=${PARAVIEW_INPUT_PATH} \
     SIMCORE_HOST_NAME="localhost" \
-    STORAGE_ENDPOINT="=1" \    
+    STORAGE_ENDPOINT="=1" \
     S3_ENDPOINT="=1" \
     S3_ACCESS_KEY="-1" \
     S3_SECRET_KEY="-1" \
@@ -89,12 +85,18 @@ ENV SERVER_PORT="8777"  \
 
 RUN mkdir /home/root/trigger && \
     chmod 777 /home/root/trigger
+
+COPY scripts/docker/healthcheck_curl_host.py /healthcheck/healthcheck_curl_host.py
+# will start to run after interval every interval. fails after timeout. fail do not count if during start-period. will do # retries
+HEALTHCHECK --interval=10s --timeout=30s --start-period=1s --retries=3 CMD [ "python3", "/healthcheck/healthcheck_curl_host.py", "http://localhost:8777", "/" ]
+
 #------------------------------------------
 FROM common AS production
 # copy scripts
 COPY services/dy-3dvis/simcoreparaviewweb/docker /home/root/docker
 COPY services/dy-3dvis/simcoreparaviewweb/config /home/root/config
 COPY services/dy-3dvis/simcoreparaviewweb/handlers/*.rpy /opt/paraview/share/paraview-5.6/web/visualizer/www/
+
 ENTRYPOINT [ "/bin/bash", "docker/boot.sh" ]
 #------------------------------------------
 FROM common as development
