@@ -1,174 +1,21 @@
 {
     "outputs": {
         "output_1": {
-            "label": "Membrane Potential",
+            "label": "Action potential",
             "displayOrder": 0,
-            "description": "Membrane Potential csv",
+            "description": "Action potential csv",
             "type": "data:text/csv",
             "fileToKeyMap": {
-                "Membrane_Potential.csv": "output_1"
+                "ActionPotential.csv": "output_1"
             }
         },
         "output_2": {
-            "label": "LCC current",
+            "label": "Calcium cytosol",
             "displayOrder": 1,
-            "description": "LCC current csv",
+            "description": "Calcium cytosol csv",
             "type": "data:text/csv",
             "fileToKeyMap": {
-                "I_ca.csv": "output_2"
-            }
-        },
-        "output_3": {
-            "label": "CaSRT",
-            "displayOrder": 2,
-            "description": "CaSRT csv",
-            "type": "data:text/csv",
-            "fileToKeyMap": {
-                "Ca_SRT.csv": "output_3"
-            }
-        },
-        "output_4": {
-            "label": "Ca Dyad",
-            "displayOrder": 3,
-            "description": "Ca Dyad csv",
-            "type": "data:text/csv",
-            "fileToKeyMap": {
-                "Ca_Dyad.csv": "output_4"
-            }
-        },
-        "output_5": {
-            "label": "Ca sl",
-            "displayOrder": 4,
-            "description": "Ca sl csv",
-            "type": "data:text/csv",
-            "fileToKeyMap": {
-                "Ca_sl.csv": "output_5"
-            }
-        },
-        "output_6": {
-            "label": "Cai",
-            "displayOrder": 5,
-            "description": "Cai csv",
-            "type": "data:text/csv",
-            "fileToKeyMap": {
-                "Ca_i.csv": "output_6"
-            }
-        },
-        "output_7": {
-            "label": "Ito",
-            "displayOrder": 6,
-            "description": "Ito csv",
-            "type": "data:text/csv",
-            "fileToKeyMap": {
-                "I_to.csv": "output_7"
-            }
-        },
-        "output_8": {
-            "label": "INa",
-            "displayOrder": 7,
-            "description": "INa csv",
-            "type": "data:text/csv",
-            "fileToKeyMap": {
-                "I_Na.csv": "output_8"
-            }
-        },
-        "output_9": {
-            "label": "IKs",
-            "displayOrder": 8,
-            "description": "IKs csv",
-            "type": "data:text/csv",
-            "fileToKeyMap": {
-                "I_Ks.csv": "output_9"
-            }
-        },
-        "output_10": {
-            "label": "ICFTR",
-            "displayOrder": 9,
-            "description": "ICFTR csv",
-            "type": "data:text/csv",
-            "fileToKeyMap": {
-                "I_CFTR.csv": "output_10"
-            }
-        },
-        "output_11": {
-            "label": "IKr",
-            "displayOrder": 10,
-            "description": "IKr csv",
-            "type": "data:text/csv",
-            "fileToKeyMap": {
-                "I_Kr.csv": "output_11"
-            }
-        },
-        "output_12": {
-            "label": "IK1",
-            "displayOrder": 11,
-            "description": "IK1 csv",
-            "type": "data:text/csv",
-            "fileToKeyMap": {
-                "I_K1.csv": "output_12"
-            }
-        },
-        "output_13": {
-            "label": "Naj",
-            "displayOrder": 12,
-            "description": "Naj csv",
-            "type": "data:text/csv",
-            "fileToKeyMap": {
-                "Na_j.csv": "output_13"
-            }
-        },
-        "output_14": {
-            "label": "Nas",
-            "displayOrder": 13,
-            "description": "Nas csv",
-            "type": "data:text/csv",
-            "fileToKeyMap": {
-                "Na_s.csv": "output_14"
-            }
-        },
-        "output_15": {
-            "label": "Nal",
-            "displayOrder": 14,
-            "description": "Nal csv",
-            "type": "data:text/csv",
-            "fileToKeyMap": {
-                "Na_i.csv": "output_15"
-            }
-        },
-        "output_16": {
-            "label": "Incx",
-            "displayOrder": 15,
-            "description": "Incx csv",
-            "type": "data:text/csv",
-            "fileToKeyMap": {
-                "I_NCX.csv": "output_16"
-            }
-        },
-        "output_17": {
-            "label": "JRyR",
-            "displayOrder": 16,
-            "description": "JRyR csv",
-            "type": "data:text/csv",
-            "fileToKeyMap": {
-                "JRyR_tot.csv": "output_17"
-            }
-        },
-        "output_18": {
-            "label": "Passive Leak",
-            "displayOrder": 17,
-            "description": "Passive Leak csv",
-            "type": "data:text/csv",
-            "fileToKeyMap": {
-                "Passive_Leak.csv": "output_18"
-            }
-        },
-        "output_19": {
-            "label": "SR Ca release",
-            "displayOrder": 18,
-            "description": "SR Ca release csv",
-            "type": "data:text/csv",
-            "fileToKeyMap": {
-                "SR_Ca_realease.csv": "output_19"
+                "CalciumCytosol.csv": "output_2"
             }
         }
     }
