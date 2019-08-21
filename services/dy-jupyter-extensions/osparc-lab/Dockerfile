@@ -11,8 +11,10 @@ USER root
 # prepare for booting ---------------------------------------------------------
 # COPY --chown=jovyan:users docker /docker
 # where to put the inputs outputs
-ENV INPUTS_FOLDER /home/jovyan/notebooks/_inputs
-ENV OUTPUTS_FOLDER /home/jovyan/notebooks/_outputs
+ENV INPUTS_FOLDER /home/jovyan/work/_inputs
+ENV OUTPUTS_FOLDER /home/jovyan/work/_outputs
+ENV SIMCORE_NODE_APP_STATE_PATH /home/jovyan/work
+
 ENV JUPYTER_ENABLE_LAB 1
 
 # VS CODE ---------------------------------------------------------------------
@@ -47,7 +49,26 @@ RUN wget ${CODESERVER_URL} && \
     fix-permissions $CONDA_DIR && \
     fix-permissions $HOME
 
+
+
 USER $NB_UID
+
+# add python extension (latest version not yet compatible with code-server)
+
+ENV PYTHON_EXTENSION_FILENAME="ms-python-release"
+ENV PYTHON_EXTENSION_VERSION="2019.3.6215"
+ENV PYTHON_EXTENSION_FOLDER="ms-python.python-2019.3.6215"
+RUN mkdir $HOME/.vscode_extensions && \
+    cd $HOME/.vscode_extensions && \
+    mkdir $HOME/.vscode_extensions/${PYTHON_EXTENSION_FILENAME} && \
+    cd ${PYTHON_EXTENSION_FILENAME} && \
+    wget https://github.com/microsoft/vscode-python/releases/download/${PYTHON_EXTENSION_VERSION}/${PYTHON_EXTENSION_FILENAME}.vsix && \
+    mv ${PYTHON_EXTENSION_FILENAME}.vsix ${PYTHON_EXTENSION_FILENAME}.zip && \
+    unzip ${PYTHON_EXTENSION_FILENAME}.zip && \
+    mv extension ../${PYTHON_EXTENSION_FOLDER} && \
+    mv extension.vsixmanifest ../${PYTHON_EXTENSION_FOLDER}/.vsixmanifest && \
+    rm -rf $HOME/.vscode_extensions/${PYTHON_EXTENSION_FILENAME}
+
 # -----------------------------------------------------------------------------
 FROM common AS development
 VOLUME /home/jovyan/services
@@ -60,5 +81,5 @@ CMD [ "/bin/bash", "/docker/boot.sh" ]
 # -----------------------------------------------------------------------------
 FROM common AS production
 # copy the notebooks in the image
-COPY --chown=jovyan:users ${NOTEBOOK_FOLDER_NAME} notebooks
+# COPY --chown=jovyan:users ${NOTEBOOK_FOLDER_NAME} notebooks
 ENTRYPOINT [ "/bin/bash", "/docker/boot.sh" ]
