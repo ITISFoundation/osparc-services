@@ -1,4 +1,4 @@
-.PHONY: all check clean help
+.PHONY: all check clean help base
 
 objects = $(wildcard *.in)
 outputs := $(objects:.in=.txt)
@@ -16,6 +16,9 @@ check:
 # target: clean – Cleans all requirements/*.txt
 clean: check
 	- rm $(outputs)
+
+base:
+	docker run --rm --entrypoint pip itisfoundation/jupyter-base-notebook:2.13.0 freeze | grep -v simcore- | grep -v conda > base.txt
 
 # target: help – Display all callable targets
 help:
