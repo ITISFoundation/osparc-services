@@ -53,6 +53,12 @@ RUN wget ${CODESERVER_URL} && \
 
 USER $NB_UID
 
+RUN pip install ipympl \
+  progressbar2 \
+  scikit-image && \
+  jupyter labextension install @jupyter-widgets/jupyterlab-manager && \
+  jupyter labextension install jupyter-matplotlib
+
 # add python extension (latest version not yet compatible with code-server)
 
 ENV PYTHON_EXTENSION_FILENAME="ms-python-release"
