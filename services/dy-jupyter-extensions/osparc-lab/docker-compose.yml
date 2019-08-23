@@ -24,11 +24,11 @@ services:
             {
               "Limits": {
                 "NanoCPUs": 4000000000,
-                "MemoryBytes": 8388608
+                "MemoryBytes": 17179869184
               },
               "Reservations": {
-                "NanoCPUs": 4000000000,
-                "MemoryBytes": 4294967296,
+                "NanoCPUs": 100000000,
+                "MemoryBytes": 536870912,
                 "GenericResources": [{
                     "DiscreteResourceSpec": {
                       "Kind": "VRAM",
