@@ -13,6 +13,7 @@
 ## Checklist
 
 - [ ] I think the code is well written
+- [ ] I updated the table of contents (make toc)
 - [ ] Unit tests for the changes exist
 - [ ] Documentation reflects the changes
 - [ ] **Runs in the swarm**

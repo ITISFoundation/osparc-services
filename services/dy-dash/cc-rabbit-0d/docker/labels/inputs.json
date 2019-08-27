@@ -8,15 +8,6 @@
             "fileToKeyMap": {
                 "vm_1Hz.txt":"vm1Hz"
             }
-        },
-        "allresults1Hz": {
-            "label": "All results 1Hz",
-            "displayOrder": 1,
-            "description": "All results 1Hz",
-            "type": "data:text/plain",
-            "fileToKeyMap": {
-                "allresult_1Hz.txt":"allresults1Hz"
-            }
         }
     }
 }
