@@ -8,7 +8,9 @@ Collection of some open-source services for the osparc simcore platform:
 [![Build Status](https://travis-ci.com/ITISFoundation/osparc-services.svg?branch=master)](https://travis-ci.com/ITISFoundation/osparc-services)
 
 
+## Continuous integration
 
+[Continuous integration](ops/README.md)
 
 
 
