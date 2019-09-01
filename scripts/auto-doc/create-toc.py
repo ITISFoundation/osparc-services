@@ -86,16 +86,16 @@ def parse_repo():
 def create_markdown(services_info, stream):
     writer = MarkdownTableWriter()
     writer.stream = stream
-    writer.headers = ['name', 'description', 'type', 'latest version', 'identifier']
+    writer.headers = ['name', 'description', 'type', 'latest version']
     writer.value_matrix = []
     for key in sorted(services_info.keys()):
         row = services_info[key]
+        image_key = "{}:{}".format(row['key'].rsplit('/', 1)[-1], row['version'])
         writer.value_matrix.append( [
             "[{name}]({folder})".format(**row),
             row['description'],
             row['type'],
-            row['version'],
-            "{key}:{version}".format(**row),
+            "[![](https://images.microbadger.com/badges/version/itisfoundation/{}.svg)](https://microbadger.com/images/itisfoundation/{} 'Get your own version badge on microbadger.com')".format(image_key, image_key)
         ] )
 
     writer.margin = 2  # add a whitespace for both sides of each cell
