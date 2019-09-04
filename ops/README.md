@@ -18,4 +18,3 @@ DOCKER_PASSWORD = %your password%
 
 ![release workflow](mermaid-diagram-20190827131033.svg)
 
-> **Note:** The terms *repository* and *registry* above refer to VCS repository at github and docker images registry at dockerhub, resp.
