@@ -2,6 +2,7 @@
 
 This service is based on the official docker images [jupyter notebook docker images](https://jupyter-docker-stacks.readthedocs.io/en/latest/using/selecting.html#jupyter-base-notebook).
 Currently the base, scipy and r notebooks are used here.
+In addition there is a base image with gpu support. At the moment this is taken as is from [NVAITC/ai-lab](https://github.com/NVAITC/ai-lab)
 
 It brings the jupyter notebook application as an example of how easy one can integrate external tools in the osparc platform.
 
