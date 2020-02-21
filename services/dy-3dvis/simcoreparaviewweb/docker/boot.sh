@@ -58,7 +58,7 @@ mv /opt/paraview/share/paraview-5.6/web/visualizer/www/*.* /opt/paraview/share/p
 visualizer_options=(--content /opt/paraview/share/paraview-5.6/web/visualizer/www/ \
                     --data ${PARAVIEW_INPUT_PATH} \
                     --host ${SIMCORE_HOST_NAME}:${SERVER_PORT}${SIMCORE_NODE_BASEPATH} \
-                    --port ${SERVER_PORT} \
+                    --port 8777 \
                     --timeout 20000 \
                     --no-built-in-palette \
                     --color-palette-file /home/root/config/s4lColorMap.json \

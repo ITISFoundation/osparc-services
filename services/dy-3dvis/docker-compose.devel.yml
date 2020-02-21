@@ -19,7 +19,7 @@ services:
       - SIMCORE_NODE_BASEPATH=${SIMCORE_NODE_BASEPATH}
       - SIMCORE_HOST_NAME=${SIMCORE_HOST_NAME}
       - TEST_DATA_PATH=/home/root/test-data
-      - SERVER_PORT=8777
+      - SERVER_PORT=80
       - PARAVIEW_DEBUG=0
     depends_on:
       - postgres
@@ -34,40 +34,11 @@ services:
       - ./simcoreparaviewweb/docker:/home/root/docker
       - ./simcoreparaviewweb/config:/home/root/config
       - ./simcoreparaviewweb/handlers:/home/root/handlers
-  simcore-paraviewweb-gpu:
-    image: 3d-viewer-gpu-dev
-    build:
-      target: development
-    environment:
-      - STORAGE_ENDPOINT=${STORAGE_ENDPOINT}
-      - S3_ENDPOINT=${S3_ENDPOINT}
-      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
-      - S3_SECRET_KEY=${S3_SECRET_KEY}
-      - S3_BUCKET_NAME=${S3_BUCKET_NAME}
-      - POSTGRES_ENDPOINT=${POSTGRES_ENDPOINT}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_HOST=${POSTGRES_HOST}
-      - POSTGRES_PORT=${POSTGRES_PORT}
-      - SIMCORE_NODE_BASEPATH=${SIMCORE_NODE_BASEPATH}
-      - SIMCORE_HOST_NAME=${SIMCORE_HOST_NAME}
-      - TEST_DATA_PATH=/home/root/test-data
-      - SERVER_PORT=8777
-      - PARAVIEW_DEBUG=0
-    depends_on:
-      - postgres
-      - minio
-      - storage
-    volumes:
-      - ./simcoreparaviewweb/devel:/home/root/devel
-      - ../../services:/home/root/services
-      - ../../scripts/dy_services_helpers:/home/root/scripts/dy_services_helpers
-      - ./test-data:/home/root/test-data
-      - ./visualizer-data:/data
-      - ./simcoreparaviewweb/docker:/home/root/docker
-      - ./simcoreparaviewweb/config:/home/root/config
-      - ./simcoreparaviewweb/handlers:/home/root/handlers
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.simcore-paraviewweb.loadbalancer.server.port=8777
+      - traefik.http.routers.simcore-paraviewweb.rule=hostregexp(`{host:.+}`)
+      - traefik.http.routers.simcore-paraviewweb.entrypoints=http
   #--------------------------------------------------------------------
   storage:
     image: itisfoundation/storage:latest
@@ -90,6 +61,9 @@ services:
       - BF_API_KEY=none
       - STORAGE_LOGLEVEL=INFO
       - STORAGE_MONITORING_ENABLED=1
+      - TRACING_ENABLED=${TRACING_ENABLED:-True}
+      - TRACING_ZIPKIN_ENDPOINT=${TRACING_ZIPKIN_ENDPOINT}
+
     restart: always
     depends_on:
       - postgres
@@ -121,3 +95,37 @@ services:
     ports:
       - "9001:9000"
     command: server /data
+  #--------------------------------------------------------------------
+  traefik:
+    image: traefik:v2.1
+    init: true
+    ports:
+      - "80:80"
+      - "8080:8080"
+    command:
+      - "--api=true"
+      - "--api.dashboard=true"
+      - "--log.level=DEBUG"
+      - "--accesslog=true"
+      - "--entryPoints.http.address=:80"
+      - "--entryPoints.traefik_dashboard.address=:8080"
+      - "--providers.docker.endpoint=unix:///var/run/docker.sock"
+      - "--providers.docker.swarmMode=false"
+      - "--providers.docker.exposedByDefault=false"
+
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+
+    labels:
+      - traefik.enable=true
+      # gzip compression
+      - traefik.http.middlewares.gzip.compress=true
+      # ssl header necessary so that socket.io upgrades correctly from polling to websocket mode. the middleware must be attached to the right connection.
+      # - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=http
+      # traefik UI
+      - traefik.http.routers.api.service=api@internal
+      - traefik.http.routers.api.rule=PathPrefix(`/dashboard`) || PathPrefix(`/api`)
+      - traefik.http.routers.api.entrypoints=traefik_dashboard
+      - traefik.http.routers.api.middlewares=gzip@docker
+      - traefik.http.services.api.loadbalancer.server.port=8080
