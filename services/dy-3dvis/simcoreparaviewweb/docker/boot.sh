@@ -42,7 +42,7 @@ echo
 
 # patch paraview
 echo
-echo "patching paraviewweb to allow for rpy scripts to run"
+echo "patching paraviewweb to allow for rpy scripts to run..."
 docker/patch_paraview.sh
 
 # the paraviewweb visualizer needs as host parameter the final endpoint of the client to establish the
@@ -51,10 +51,16 @@ docker/patch_paraview.sh
 # whatever port is being published outside the docker container)
 
 # move base path to expected node base path (sic)
-mkdir -p /opt/paraview/share/paraview-5.6/web/visualizer/www"${SIMCORE_NODE_BASEPATH}"
-mv /opt/paraview/share/paraview-5.6/web/visualizer/www/*.* /opt/paraview/share/paraview-5.6/web/visualizer/www"${SIMCORE_NODE_BASEPATH}"
+if [ -z SIMCORE_NODE_BASEPATH ]; then
+    echo
+    echo "moving served files to ${SIMCORE_NODE_BASEPATH}..."
+    mkdir -p /opt/paraview/share/paraview-5.6/web/visualizer/www"${SIMCORE_NODE_BASEPATH}"
+    mv /opt/paraview/share/paraview-5.6/web/visualizer/www/*.* /opt/paraview/share/paraview-5.6/web/visualizer/www"${SIMCORE_NODE_BASEPATH}"
+fi
 
 # set default parameters (note that port is the server local port, and host is used for the websocket location)
+echo
+echo "setting up visualizer options..."
 visualizer_options=(--content /opt/paraview/share/paraview-5.6/web/visualizer/www/ \
                     --data ${PARAVIEW_INPUT_PATH} \
                     --host ${SIMCORE_HOST_NAME}${SIMCORE_NODE_BASEPATH} \
