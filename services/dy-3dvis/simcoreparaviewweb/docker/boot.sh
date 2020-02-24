@@ -40,10 +40,7 @@ python docker/state_manager.py pull --path "${SIMCORE_NODE_APP_STATE_PATH}" --si
 echo "...DONE"
 echo
 
-# patch paraview
-echo
-echo "patching paraviewweb to allow for rpy scripts to run..."
-docker/patch_paraview.sh
+
 
 # the paraviewweb visualizer needs as host parameter the final endpoint of the client to establish the
 # websocket. the endpoint must be the hostname and port
@@ -51,20 +48,26 @@ docker/patch_paraview.sh
 # whatever port is being published outside the docker container)
 
 # move base path to expected node base path (sic)
-if [ -z SIMCORE_NODE_BASEPATH ]; then
+if [[ -v SIMCORE_NODE_BASEPATH ]] && [[ -n SIMCORE_NODE_BASEPATH ]]; then
     echo
     echo "moving served files to ${SIMCORE_NODE_BASEPATH}..."
     mkdir -p /opt/paraview/share/paraview-5.6/web/visualizer/www"${SIMCORE_NODE_BASEPATH}"
     mv /opt/paraview/share/paraview-5.6/web/visualizer/www/*.* /opt/paraview/share/paraview-5.6/web/visualizer/www"${SIMCORE_NODE_BASEPATH}"
 fi
 
+# patch paraview
+echo
+echo "patching paraviewweb to allow for rpy scripts to run..."
+docker/patch_paraview.sh
+
 # set default parameters (note that port is the server local port, and host is used for the websocket location)
 echo
 echo "setting up visualizer options..."
 visualizer_options=(--content /opt/paraview/share/paraview-5.6/web/visualizer/www/ \
                     --data ${PARAVIEW_INPUT_PATH} \
-                    --host ${SIMCORE_HOST_NAME}${SIMCORE_NODE_BASEPATH} \
+                    --host ${SIMCORE_HOST_NAME}:${SERVER_PORT}${SIMCORE_NODE_BASEPATH} \
                     --port ${SERVER_PORT} \
+                    --ws-endpoint ${SIMCORE_NODE_BASEPATH}/ws \
                     --timeout 20000 \
                     --no-built-in-palette \
                     --color-palette-file /home/root/config/s4lColorMap.json \
