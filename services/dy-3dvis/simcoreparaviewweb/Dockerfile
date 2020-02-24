@@ -80,7 +80,7 @@ ENV SIMCORE_NODE_UUID="-1" \
     POSTGRES_DB="-1"
 
 # special paraview variables
-ENV SERVER_PORT="8777"  \
+ENV SERVER_PORT="80"  \
     SIMCORE_STATE_FILE="simcore-state.pvsm" \
     PARAVIEW_DEBUG=0
 
@@ -89,7 +89,7 @@ RUN mkdir /home/root/trigger && \
 
 COPY scripts/docker/healthcheck_curl_host.py /healthcheck/healthcheck_curl_host.py
 # will start to run after interval every interval. fails after timeout. fail do not count if during start-period. will do # retries
-HEALTHCHECK --interval=10s --timeout=30s --start-period=1s --retries=3 CMD [ "python3", "/healthcheck/healthcheck_curl_host.py", "http://localhost:8777", "/" ]
+# HEALTHCHECK --interval=10s --timeout=30s --start-period=1s --retries=3 CMD [ "python3", "/healthcheck/healthcheck_curl_host.py", "http://localhost:80", "/" ]
 
 #------------------------------------------
 FROM common AS production
