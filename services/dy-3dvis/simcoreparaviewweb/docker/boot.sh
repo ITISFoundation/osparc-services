@@ -21,9 +21,9 @@ then
     echo
     echo "development mode, init dummy pipeline..."
     # in style: pipelineid,nodeuuid
-    result="$(python3 scripts/dy_services_helpers/platform_initialiser.py ${USE_CASE_CONFIG_FILE} --folder ${TEST_DATA_PATH})";
+    result="$(python3 scripts/dy_services_helpers/platform_initialiser.py "${USE_CASE_CONFIG_FILE}" --folder "${TEST_DATA_PATH}")";
     echo "Received result of $result";
-    IFS=, read -a array <<< "$result";
+    IFS=, read -ra array <<< "$result";
     echo "Received result pipeline id of ${array[0]}";
     echo "Received result node uuid of ${array[1]}";
     # the fake SIMCORE_NODE_UUID is exported to be available to the service
@@ -36,7 +36,7 @@ fi
 # try to pull data from S3
 echo
 echo "trying to download previous state..."
-python docker/state_manager.py pull --path ${SIMCORE_NODE_APP_STATE_PATH} --silent
+python docker/state_manager.py pull --path "${SIMCORE_NODE_APP_STATE_PATH}" --silent
 echo "...DONE"
 echo
 
@@ -51,14 +51,14 @@ docker/patch_paraview.sh
 # whatever port is being published outside the docker container)
 
 # move base path to expected node base path (sic)
-mkdir -p /opt/paraview/share/paraview-5.6/web/visualizer/www${SIMCORE_NODE_BASEPATH}
-mv /opt/paraview/share/paraview-5.6/web/visualizer/www/*.* /opt/paraview/share/paraview-5.6/web/visualizer/www${SIMCORE_NODE_BASEPATH}
+mkdir -p /opt/paraview/share/paraview-5.6/web/visualizer/www"${SIMCORE_NODE_BASEPATH}"
+mv /opt/paraview/share/paraview-5.6/web/visualizer/www/*.* /opt/paraview/share/paraview-5.6/web/visualizer/www"${SIMCORE_NODE_BASEPATH}"
 
 # set default parameters (note that port is the server local port, and host is used for the websocket location)
 visualizer_options=(--content /opt/paraview/share/paraview-5.6/web/visualizer/www/ \
                     --data ${PARAVIEW_INPUT_PATH} \
-                    --host ${SIMCORE_HOST_NAME}:${SERVER_PORT}${SIMCORE_NODE_BASEPATH} \
-                    --port 8777 \
+                    --host ${SIMCORE_HOST_NAME}${SIMCORE_NODE_BASEPATH} \
+                    --port ${SERVER_PORT} \
                     --timeout 20000 \
                     --no-built-in-palette \
                     --color-palette-file /home/root/config/s4lColorMap.json \
@@ -81,7 +81,7 @@ fi
 
 # start server
 echo
-echo "starting paraview on ${SIMCORE_HOST_NAME}:${SERVER_PORT}${SIMCORE_NODE_BASEPATH}..."
-echo "using ${visualizer_options[@]}"
+echo "starting paraview on ${SIMCORE_HOST_NAME}${SIMCORE_NODE_BASEPATH}..."
+echo "using " "${visualizer_options[@]}"
 /opt/paraview/bin/pvpython -dr --mpi \
     /opt/paraview/share/paraview-5.6/web/visualizer/server/pvw-visualizer.py "${visualizer_options[@]}"
