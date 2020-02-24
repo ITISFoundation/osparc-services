@@ -21,7 +21,7 @@ then
     echo
     echo "development mode, init dummy pipeline..."
     # in style: pipelineid,nodeuuid
-    result="$(python3 scripts/dy_services_helpers/platform_initialiser.py "${USE_CASE_CONFIG_FILE}" --folder "${TEST_DATA_PATH}")";
+    result="$(python3 scripts/dy_services_helpers/platform_initialiser.py ${USE_CASE_CONFIG_FILE} --folder ${TEST_DATA_PATH})";
     echo "Received result of $result";
     IFS=, read -ra array <<< "$result";
     echo "Received result pipeline id of ${array[0]}";
