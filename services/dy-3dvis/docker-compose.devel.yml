@@ -19,8 +19,8 @@ services:
       - SIMCORE_NODE_BASEPATH=${SIMCORE_NODE_BASEPATH}
       - SIMCORE_HOST_NAME=${SIMCORE_HOST_NAME}
       - TEST_DATA_PATH=/home/root/test-data
-      - SERVER_PORT=80
-      - PARAVIEW_DEBUG=0
+      - SERVER_PORT=${SERVER_PORT}
+      - PARAVIEW_DEBUG=${PARAVIEW_DEBUG}
     depends_on:
       - postgres
       - minio
@@ -36,7 +36,7 @@ services:
       - ./simcoreparaviewweb/handlers:/home/root/handlers
     labels:
       - traefik.enable=true
-      - traefik.http.services.simcore-paraviewweb.loadbalancer.server.port=8777
+      - traefik.http.services.simcore-paraviewweb.loadbalancer.server.port=${SERVER_PORT}
       - traefik.http.routers.simcore-paraviewweb.rule=hostregexp(`{host:.+}`)
       - traefik.http.routers.simcore-paraviewweb.entrypoints=http
   #--------------------------------------------------------------------
