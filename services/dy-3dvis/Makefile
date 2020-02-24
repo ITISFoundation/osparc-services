@@ -65,12 +65,16 @@ build-devel: .env
 up: .env
 	${DOCKER_COMPOSE} -f docker-compose.yml up
 
-up-devel: .env
-	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml up
+.stack-paraviewweb-devel.yml: .env docker-compose.yml docker-compose.devel.yml
+	docker-compose --file docker-compose.yml --file docker-compose.devel.yml --log-level=ERROR config > $@
+
+SWARM_STACK_NAME=paraviewweb
+
+up-devel: .stack-paraviewweb-devel.yml	
+	docker stack deploy --compose-file $< $(SWARM_STACK_NAME)
 
 down:
-	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml down
-	${DOCKER_COMPOSE} -f docker-compose.yml down
+	docker stack rm $(SWARM_STACK_NAME)
 
 .PHONY: push pull
 # target: push – Pushes the service images to ${DOCKER_REGISTRY}

@@ -1,4 +1,4 @@
-version: "2.3"
+version: "3.7"
 services:
   simcore-paraviewweb:
     image: 3d-viewer-dev
@@ -25,6 +25,7 @@ services:
       - postgres
       - minio
       - storage
+      - traefik
     volumes:
       - ./simcoreparaviewweb/devel:/home/root/devel
       - ../../services:/home/root/services
@@ -34,11 +35,15 @@ services:
       - ./simcoreparaviewweb/docker:/home/root/docker
       - ./simcoreparaviewweb/config:/home/root/config
       - ./simcoreparaviewweb/handlers:/home/root/handlers
-    labels:
-      - traefik.enable=true
-      - traefik.http.services.simcore-paraviewweb.loadbalancer.server.port=${SERVER_PORT}
-      - traefik.http.routers.simcore-paraviewweb.rule=hostregexp(`{host:.+}`)
-      - traefik.http.routers.simcore-paraviewweb.entrypoints=http
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=paraviewweb_default
+        - traefik.http.services.simcore-paraviewweb.loadbalancer.server.port=${SERVER_PORT}
+        - traefik.http.routers.simcore-paraviewweb.rule=hostregexp(`{host:.+}`)
+        - traefik.http.routers.simcore-paraviewweb.entrypoints=http
+        - traefik.http.routers.simcore-paraviewweb.middlewares=gzip@docker, sslheader
+
   #--------------------------------------------------------------------
   storage:
     image: itisfoundation/storage:latest
@@ -110,22 +115,24 @@ services:
       - "--entryPoints.http.address=:80"
       - "--entryPoints.traefik_dashboard.address=:8080"
       - "--providers.docker.endpoint=unix:///var/run/docker.sock"
-      - "--providers.docker.swarmMode=false"
+      - "--providers.docker.swarmMode=true"
       - "--providers.docker.exposedByDefault=false"
 
     volumes:
       # So that Traefik can listen to the Docker events
       - /var/run/docker.sock:/var/run/docker.sock
 
-    labels:
-      - traefik.enable=true
-      # gzip compression
-      - traefik.http.middlewares.gzip.compress=true
-      # ssl header necessary so that socket.io upgrades correctly from polling to websocket mode. the middleware must be attached to the right connection.
-      # - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=http
-      # traefik UI
-      - traefik.http.routers.api.service=api@internal
-      - traefik.http.routers.api.rule=PathPrefix(`/dashboard`) || PathPrefix(`/api`)
-      - traefik.http.routers.api.entrypoints=traefik_dashboard
-      - traefik.http.routers.api.middlewares=gzip@docker
-      - traefik.http.services.api.loadbalancer.server.port=8080
+    deploy:
+      labels:
+        - traefik.enable=true
+        # gzip compression
+        - traefik.http.middlewares.gzip.compress=true
+        # ssl header necessary so that socket.io upgrades correctly from polling to websocket mode. the middleware must be attached to the right connection.
+        - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto=http
+        # traefik UI
+        - traefik.docker.network=paraviewweb_default
+        - traefik.http.routers.api.service=api@internal
+        - traefik.http.routers.api.rule=PathPrefix(`/dashboard`) || PathPrefix(`/api`)
+        - traefik.http.routers.api.entrypoints=traefik_dashboard
+        - traefik.http.routers.api.middlewares=gzip@docker
+        - traefik.http.services.api.loadbalancer.server.port=8080

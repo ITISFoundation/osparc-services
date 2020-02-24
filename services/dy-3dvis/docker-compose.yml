@@ -1,4 +1,4 @@
-version: '2.3'
+version: '3.7'
 services:
   simcore-paraviewweb:
     image: ${DOCKER_REGISTRY}/3d-viewer:${DOCKER_IMAGE_TAG}
