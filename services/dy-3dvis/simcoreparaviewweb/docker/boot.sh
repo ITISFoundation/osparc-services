@@ -48,7 +48,7 @@ echo
 # whatever port is being published outside the docker container)
 
 # move base path to expected node base path (sic)
-if [[ -v SIMCORE_NODE_BASEPATH ]] && [[ -n SIMCORE_NODE_BASEPATH ]]; then
+if [[ -v SIMCORE_NODE_BASEPATH ]] && [[ -n ${SIMCORE_NODE_BASEPATH} ]]; then
     echo
     echo "moving served files to ${SIMCORE_NODE_BASEPATH}..."
     mkdir -p /opt/paraview/share/paraview-5.6/web/visualizer/www"${SIMCORE_NODE_BASEPATH}"
@@ -64,21 +64,21 @@ docker/patch_paraview.sh
 echo
 echo "setting up visualizer options..."
 visualizer_options=(--content /opt/paraview/share/paraview-5.6/web/visualizer/www/ \
-                    --data ${PARAVIEW_INPUT_PATH} \
-                    --host ${SIMCORE_HOST_NAME}:${SERVER_PORT}${SIMCORE_NODE_BASEPATH} \
-                    --port ${SERVER_PORT} \
-                    --ws-endpoint ${SIMCORE_NODE_BASEPATH}/ws \
+                    --data "${PARAVIEW_INPUT_PATH}" \
+                    --host "${SIMCORE_HOST_NAME}":80"${SIMCORE_NODE_BASEPATH}" \
+                    --port "${SERVER_PORT}" \
+                    # --ws-endpoint ${SIMCORE_NODE_BASEPATH}/ws \
                     --timeout 20000 \
                     --no-built-in-palette \
                     --color-palette-file /home/root/config/s4lColorMap.json \
-                    --settings-lod-threshold 5
+                    --settings-lod-threshold 5 \
                     )
 
 # set auto load state if available
 if [ -f "${PARAVIEW_INPUT_PATH}/${SIMCORE_STATE_FILE}" ]; then
     echo
     echo "setting autoload of ${SIMCORE_STATE_FILE}"
-    visualizer_options+=(--load-file ${SIMCORE_STATE_FILE})
+    visualizer_options+=(--load-file "${SIMCORE_STATE_FILE}")
 fi
 
 # show additional debugging parameters on demand
