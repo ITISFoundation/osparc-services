@@ -40,21 +40,6 @@ python docker/state_manager.py pull --path "${SIMCORE_NODE_APP_STATE_PATH}" --si
 echo "...DONE"
 echo
 
-
-
-# the paraviewweb visualizer needs as host parameter the final endpoint of the client to establish the
-# websocket. the endpoint must be the hostname and port
-# as seen from the client side (if in local development mode, this would be typically localhost and
-# whatever port is being published outside the docker container)
-
-# move base path to expected node base path (sic)
-if [[ -v SIMCORE_NODE_BASEPATH ]] && [[ -n ${SIMCORE_NODE_BASEPATH} ]]; then
-    echo
-    echo "moving served files to ${SIMCORE_NODE_BASEPATH}..."
-    mkdir -p /opt/paraview/share/paraview-5.6/web/visualizer/www"${SIMCORE_NODE_BASEPATH}"
-    mv /opt/paraview/share/paraview-5.6/web/visualizer/www/*.* /opt/paraview/share/paraview-5.6/web/visualizer/www"${SIMCORE_NODE_BASEPATH}"
-fi
-
 # patch paraview
 echo
 echo "patching paraviewweb to allow for rpy scripts to run..."
@@ -65,7 +50,7 @@ echo
 echo "setting up visualizer options..."
 visualizer_options=(--content /opt/paraview/share/paraview-5.6/web/visualizer/www/ \
                     --data "${PARAVIEW_INPUT_PATH}" \
-                    --host "${SIMCORE_HOST_NAME}":80"${SIMCORE_NODE_BASEPATH}" \
+                    # --host localhost:80"${SIMCORE_NODE_BASEPATH}" \
                     --port "${SERVER_PORT}" \
                     # --ws-endpoint ${SIMCORE_NODE_BASEPATH}/ws \
                     --timeout 20000 \
