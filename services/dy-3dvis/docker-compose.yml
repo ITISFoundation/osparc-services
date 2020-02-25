@@ -119,7 +119,7 @@ services:
         org.label-schema.build-date: "${BUILD_DATE}"
         org.label-schema.vcs-url: "${VCS_URL}"
         org.label-schema.vcs-ref: "${VCS_REF}"
-    runtime: nvidia
+    # runtime: nvidia
     ports:
       - '8778:${SERVER_PORT}'
 
