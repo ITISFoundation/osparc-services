@@ -1,7 +1,7 @@
-dist: xenial
+dist: bionic
 env:
   global:
-    - DOCKER_COMPOSE_VERSION=1.23.2
+    - DOCKER_COMPOSE_VERSION=1.25.3
 services:
   - docker
 addons:
