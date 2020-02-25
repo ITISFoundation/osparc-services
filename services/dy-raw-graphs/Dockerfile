@@ -35,7 +35,7 @@ RUN apk add --no-cache --virtual .build-deps \
     apk del --no-cache .build-deps
 
 
-RUN npm install express
+RUN npm install express require
 
 # ----------------------------------------------------------------
 # set up oSparc env variables
@@ -53,6 +53,11 @@ ENV SIMCORE_NODE_UUID="-1" \
     POSTGRES_USER="-1" \
     POSTGRES_PASSWORD="-1" \
     POSTGRES_DB="-1"
+
+# --------------- Healthcheck -------------------
+COPY --chown=scu:scu scripts/docker/healthcheck_request.js /healthcheck/healthcheck_request.js
+# will start to run after interval every interval. fails after timeout. fail do not count if during start-period. will do # retries
+HEALTHCHECK --interval=10s --timeout=30s --start-period=1s --retries=3 CMD [ "node", "/healthcheck/healthcheck_request.js", "http://localhost:4000", "/healthcheck" ]
 
 #-----------------Production----------------------
 FROM base AS production

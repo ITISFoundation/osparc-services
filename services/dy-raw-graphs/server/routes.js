@@ -22,6 +22,7 @@ appRouter.get('/', function (request, response) {
   response.sendFile(path.resolve(config.APP_PATH, 'index.html'));
 });
 
+appRouter.put('/healthcheck', healthcheck);
 appRouter.get('/retrieve', callInputRetriever);
 appRouter.post('/retrieve', callInputRetriever);
 appRouter.get('/input', getInputFile);
@@ -31,6 +32,11 @@ appRouter.put('/output', setOutput);
 
 module.exports = appRouter;
 
+
+function healthcheck(request, response) {
+  console.log('Healthcheck from ' + request.ip);
+  response.sendStatus("200");
+}
 
 function callInputRetriever(request, response) {
   console.log('Received a call to retrieve the data on input ports from ' + request.ip);
