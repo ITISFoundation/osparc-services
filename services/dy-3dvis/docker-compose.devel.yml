@@ -40,9 +40,10 @@ services:
         - traefik.enable=true
         - traefik.docker.network=paraviewweb_default
         - traefik.http.services.simcore-paraviewweb.loadbalancer.server.port=${SERVER_PORT}
-        - traefik.http.routers.simcore-paraviewweb.rule=hostregexp(`{host:.+}`)
+        - traefik.http.routers.simcore-paraviewweb.rule=hostregexp(`{host:.+}`) && PathPrefix(`${SIMCORE_NODE_BASEPATH}`)
         - traefik.http.routers.simcore-paraviewweb.entrypoints=http
-        - traefik.http.routers.simcore-paraviewweb.middlewares=gzip@docker, sslheader
+        - traefik.http.routers.simcore-paraviewweb.middlewares=gzip@docker, simcore-paraviewweb_stripprefixregex
+        - traefik.http.middlewares.simcore-paraviewweb_stripprefixregex.stripprefixregex.regex=^${SIMCORE_NODE_BASEPATH}
 
   #--------------------------------------------------------------------
   storage:
