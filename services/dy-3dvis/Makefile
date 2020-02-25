@@ -48,10 +48,10 @@ endif
 
 .PHONY: build rebuild
 # target: build, rebuild: – Builds all service images. Use `rebuild` to build w/o cache.
-build:
+build: .env
 	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel
 
-rebuild:
+rebuild: .env
 	${DOCKER_COMPOSE} -f docker-compose.yml build --no-cache --parallel
 
 .PHONY: build-devel
