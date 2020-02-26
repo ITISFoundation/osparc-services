@@ -57,7 +57,7 @@ ENV SIMCORE_NODE_UUID="-1" \
 # --------------- Healthcheck -------------------
 COPY --chown=scu:scu scripts/docker/healthcheck_curl_host.py $HOME/healthcheck/healthcheck_curl_host.py
 # will start to run after interval every interval. fails after timeout. fail do not count if during start-period. will do # retries
-HEALTHCHECK --interval=10s --timeout=30s --start-period=1s --retries=3 CMD [ "python3", "$HOME/healthcheck/healthcheck_curl_host.py", "http://localhost:4000/healthcheck" ]
+HEALTHCHECK --interval=10s --timeout=30s --start-period=1s --retries=3 CMD [ "python3", "$HOME/healthcheck/healthcheck_curl_host.py", "http://localhost:4000" ]
 
 #-----------------Production----------------------
 FROM base AS production
