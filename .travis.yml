@@ -200,29 +200,30 @@ jobs:
           on:
             all_branches: true
 
+    # FIXME: https://github.com/ITISFoundation/osparc-issues/issues/146
     # build dy-jupyter-extensions images ----------------------------------------------------------------------
-    - stage: dependent build
-      # in pull request we do not have credentials to push, checks that the build still passes
-      name: build dy-jupyter-extensions
-      sudo: required
-      before_install:
-        - sudo bash ops/travis/build/dy-jupyter-extensions before_install
-      install:
-        - unbuffer bash ops/travis/build/dy-jupyter-extensions install
-      before_script:
-        - unbuffer bash ops/travis/build/dy-jupyter-extensions before_script
-      script:
-        - unbuffer bash ops/travis/build/dy-jupyter-extensions script
-      after_success:
-        - unbuffer bash ops/travis/build/dy-jupyter-extensions after_success
-      after_failure:
-        - unbuffer bash ops/travis/build/dy-jupyter-extensions after_failure
-      deploy:
-        - provider: script
-          skip_cleanup: true
-          script: unbuffer bash ops/travis/build/dy-jupyter-extensions deploy
-          on:
-            all_branches: true
+    # - stage: dependent build
+    #   # in pull request we do not have credentials to push, checks that the build still passes
+    #   name: build dy-jupyter-extensions
+    #   sudo: required
+    #   before_install:
+    #     - sudo bash ops/travis/build/dy-jupyter-extensions before_install
+    #   install:
+    #     - unbuffer bash ops/travis/build/dy-jupyter-extensions install
+    #   before_script:
+    #     - unbuffer bash ops/travis/build/dy-jupyter-extensions before_script
+    #   script:
+    #     - unbuffer bash ops/travis/build/dy-jupyter-extensions script
+    #   after_success:
+    #     - unbuffer bash ops/travis/build/dy-jupyter-extensions after_success
+    #   after_failure:
+    #     - unbuffer bash ops/travis/build/dy-jupyter-extensions after_failure
+    #   deploy:
+    #     - provider: script
+    #       skip_cleanup: true
+    #       script: unbuffer bash ops/travis/build/dy-jupyter-extensions deploy
+    #       on:
+    #         all_branches: true
 
     # FIXME: modeling currently fails in building client code
     # build dy-modeling images ----------------------------------------------------------------------

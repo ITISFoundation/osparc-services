@@ -57,6 +57,9 @@ ENV SIMCORE_NODE_UUID="-1" \
 #-----------------Production----------------------
 FROM base AS production
 
+# https://github.com/npm/uid-number/issues/3
+RUN npm config set unsafe-perm true
+
 ARG BRANCH_NAME
 RUN apk add --no-cache --virtual .build-deps \
       git &&\
@@ -68,6 +71,11 @@ RUN apk add --no-cache --virtual .build-deps \
 
 RUN apk add --no-cache \
   postgresql-libs
+
+# --------------- Healthcheck -------------------
+COPY --chown=scu:scu scripts/docker/healthcheck.py $HOME/healthcheck/healthcheck.py
+# will start to run after interval every interval. fails after timeout. fail do not count if during start-period. will do # retries
+HEALTHCHECK --interval=10s --timeout=30s --start-period=1s --retries=3 CMD [ "python3", "/home/scu/healthcheck/healthcheck.py", "http://localhost:4000" ]
 
 WORKDIR $HOME
 COPY --chown=scu:scu services/dy-raw-graphs/docker $HOME/docker

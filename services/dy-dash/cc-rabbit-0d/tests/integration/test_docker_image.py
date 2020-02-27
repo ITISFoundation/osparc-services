@@ -46,7 +46,7 @@ def _download_url(url: str, file: Path):
 
 @pytest.fixture
 def osparc_service_labels_jsonschema(tmp_path) -> Dict:
-    url = "https://raw.githubusercontent.com/ITISFoundation/osparc-simcore/master/api/specs/shared/schemas/node-meta-v0.0.1.json"
+    url = "https://raw.githubusercontent.com/ITISFoundation/osparc-simcore/36fdb7b39dd581a05b513992a6a2f0ea2ce200f4/api/specs/common/schemas/node-meta-v0.0.1.json"
     file_name = tmp_path / "service_label.json"
     _download_url(url, file_name)
     with file_name.open() as fp:
