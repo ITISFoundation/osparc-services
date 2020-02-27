@@ -57,6 +57,9 @@ ENV SIMCORE_NODE_UUID="-1" \
 #-----------------Production----------------------
 FROM base AS production
 
+# https://github.com/npm/uid-number/issues/3
+RUN npm config set unsafe-perm true
+
 ARG BRANCH_NAME
 RUN apk add --no-cache --virtual .build-deps \
       git &&\
