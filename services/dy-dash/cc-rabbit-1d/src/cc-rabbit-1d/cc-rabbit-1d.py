@@ -222,7 +222,10 @@ def ap_surface_1D():
         T = np.hstack((T, t))
 
     #creats an array of cell numbers
-    celln = [x for x in range(1, num_cells+1)]
+    celln = [
+        x
+        for x in range(1, num_cells+1)
+    ]
     cellnum = np.array(celln).reshape(1, num_cells)
 
     #creates a square matrix of cell numbers on the diagonal
