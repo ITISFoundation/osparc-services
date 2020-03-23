@@ -11,7 +11,7 @@ services:
         io.simcore.version: '{"version": "${DOCKER_IMAGE_TAG}"}'
         io.simcore.type: '{"type": "dynamic"}'
         io.simcore.name: '{"name": "Tissue properties"}'
-        io.simcore.description: '{"description": "Tissue properties powered by [ITISFoundation](https://itis.swiss/virtual-population/tissue-properties/overview/) and [csv-to-html-table](https://github.com/derekeder/csv-to-html-table)"}'
+        io.simcore.description: '{"description": "Tissue properties powered by [ITIS Foundation](https://itis.swiss/virtual-population/tissue-properties/overview/) and [csv-to-html-table](https://github.com/derekeder/csv-to-html-table)"}'
         io.simcore.authors: '{"authors": [{"name": "odeimaiz", "email": "maiz@itis.swiss", "affiliation": "ITIS Foundation"}]}'
         io.simcore.contact: '{"contact": "maiz@itis.swiss"}'
         io.simcore.inputs: '{"inputs": {}}'
