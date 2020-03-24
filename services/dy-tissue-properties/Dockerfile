@@ -56,6 +56,7 @@ ENV SIMCORE_NODE_UUID="-1" \
 FROM base AS production
 
 COPY --chown=scu:scu services/dy-tissue-properties/csv-to-html-table $HOME/csv-to-html-table
+COPY --chown=scu:scu services/dy-tissue-properties/inputs/TissueProperties.csv $HOME/csv-to-html-table/data/TissueProperties.csv
 
 RUN apk add --no-cache \
   postgresql-libs
