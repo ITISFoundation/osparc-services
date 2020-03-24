@@ -1,0 +1,29 @@
+{
+    "version":"0.1",
+    "schema": {
+        "inputs": {
+            "input_1": {
+                "displayOrder": 0,
+                "label": "Input data",
+                "description": "Input data csv",
+                "type": "data:text/csv",
+                "fileToKeyMap": {
+                    "input.csv": "input_1"
+                }
+            }
+        },
+        "outputs": {
+            "output_1": {
+                "displayOrder": 0,
+                "label": "Input data",
+                "description": "Input data csv",
+                "type": "data:text/csv",
+                "fileToKeyMap": {
+                    "input.csv": "output_1"
+                }
+            }
+        }
+    },
+    "inputs": {},
+    "outputs": {}
+}
