@@ -25,5 +25,7 @@ services:
         org.label-schema.vcs-ref: "${VCS_REF}"
     environment:
       - SIMCORE_NODE_BASEPATH=${SIMCORE_NODE_BASEPATH}
+      - TISSUEPROPS_INPUT_PATH=${TISSUEPROPS_INPUT_PATH}
+      - TISSUEPROPS_OUTPUT_PATH=${TISSUEPROPS_OUTPUT_PATH}
     ports:
       - '4000:4000'
