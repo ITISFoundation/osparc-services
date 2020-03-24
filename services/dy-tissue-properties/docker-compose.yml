@@ -15,7 +15,9 @@ services:
         io.simcore.authors: '{"authors": [{"name": "odeimaiz", "email": "maiz@itis.swiss", "affiliation": "ITIS Foundation"}]}'
         io.simcore.contact: '{"contact": "maiz@itis.swiss"}'
         io.simcore.inputs: '{"inputs": {}}'
-        io.simcore.outputs: '{"outputs": {}}'
+        io.simcore.outputs: '{"outputs": {"output_1": {"label": "Tissue Properties", "displayOrder":
+          0, "description": "Input data csv", "type": "data:text/csv", "fileToKeyMap":
+          {"input.csv": "output_1"}}}}'
         simcore.service.settings: '[{"name": "resources", "type": "Resources", "value": {"mem_limit":17179869184, "cpu_limit": 4000000000}}, {"name": "ports", "type": "int", "value": 4000}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
         org.label-schema.schema-version: "1.0"
         org.label-schema.build-date: "${BUILD_DATE}"

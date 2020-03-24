@@ -2,7 +2,17 @@
     "version":"0.1",
     "schema": {
         "inputs": {},
-        "outputs": {}
+        "outputs": {
+            "output_1": {
+                "label": "Tissue Properties",
+                "displayOrder": 0,
+                "description": "Input data csv",
+                "type": "data:text/csv",
+                "fileToKeyMap": {
+                    "TissueProperties.csv": "output_1"
+                }
+            }
+        }
     },
     "inputs": {},
     "outputs": {}
