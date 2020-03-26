@@ -25,6 +25,8 @@
 
 /services/dy-modeling                             @sanderegg
 /services/dy-raw-graphs                           @odeimaiz
+/services/dy-tissue-properties                    @odeimaiz
+/services/dy-csv-table                            @odeimaiz
 
 
 /.travis.yml                                      @sanderegg
