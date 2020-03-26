@@ -230,7 +230,7 @@ jobs:
       name: build dy-csv-table
       sudo: required
       before_install:
-        - sudo bash ops/travis/build/dy-tiss-graphs before_install
+        - sudo bash ops/travis/build/dy-csv-table before_install
       install:
         - unbuffer bash ops/travis/build/dy-csv-table install
       before_script:
