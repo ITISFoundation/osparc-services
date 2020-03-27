@@ -200,6 +200,54 @@ jobs:
           on:
             all_branches: true
 
+    # build dy-tissue-properties images ----------------------------------------------------------------------
+    - stage: build / unit-testing
+      # in pull request we do not have credentials to push, checks that the build still passes
+      name: build dy-tissue-properties
+      sudo: required
+      before_install:
+        - sudo bash ops/travis/build/dy-tissue-properties before_install
+      install:
+        - unbuffer bash ops/travis/build/dy-tissue-properties install
+      before_script:
+        - unbuffer bash ops/travis/build/dy-tissue-properties before_script
+      script:
+        - unbuffer bash ops/travis/build/dy-tissue-properties script
+      after_success:
+        - unbuffer bash ops/travis/build/dy-tissue-properties after_success
+      after_failure:
+        - unbuffer bash ops/travis/build/dy-tissue-properties after_failure
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          script: unbuffer bash ops/travis/build/dy-tissue-properties deploy
+          on:
+            all_branches: true
+
+    # build dy-csv-table images ----------------------------------------------------------------------
+    - stage: build / unit-testing
+      # in pull request we do not have credentials to push, checks that the build still passes
+      name: build dy-csv-table
+      sudo: required
+      before_install:
+        - sudo bash ops/travis/build/dy-csv-table before_install
+      install:
+        - unbuffer bash ops/travis/build/dy-csv-table install
+      before_script:
+        - unbuffer bash ops/travis/build/dy-csv-table before_script
+      script:
+        - unbuffer bash ops/travis/build/dy-csv-table script
+      after_success:
+        - unbuffer bash ops/travis/build/dy-csv-table after_success
+      after_failure:
+        - unbuffer bash ops/travis/build/dy-csv-table after_failure
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          script: unbuffer bash ops/travis/build/dy-csv-table deploy
+          on:
+            all_branches: true
+
     # FIXME: https://github.com/ITISFoundation/osparc-issues/issues/146
     # build dy-jupyter-extensions images ----------------------------------------------------------------------
     # - stage: dependent build
