@@ -29,6 +29,7 @@ RUN apk add --no-cache --virtual .build-deps \
     git \
     python3-dev \
     postgresql-dev && \
+    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/service-library &&\
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python &&\
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/postgres-database &&\
@@ -60,7 +61,7 @@ FROM base AS production
 COPY --chown=scu:scu services/dy-csv-table/csv-to-html-table $HOME/csv-to-html-table
 
 RUN apk add --no-cache \
-  postgresql-libs
+    postgresql-libs
 
 # --------------- Healthcheck -------------------
 COPY --chown=scu:scu scripts/docker/healthcheck.py $HOME/healthcheck/healthcheck.py

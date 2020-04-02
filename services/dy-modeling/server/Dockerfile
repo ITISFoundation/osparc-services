@@ -56,6 +56,7 @@ ENV SIMCORE_NODE_UUID="-1" \
 # install simcore-sdk
 RUN export PATH="${PYENV_ROOT}/bin:$PATH" && \
     eval "$(pyenv init -)" && \
+    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/service-library &&\
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python &&\
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/postgres-database
@@ -73,7 +74,7 @@ ENV CREATE_DUMMY_TABLE 1
 ENV USE_CASE_CONFIG_FILE="/home/node/devel/port_config.json"
 ENV TEST_DATA_PATH="/home/node/test-data"
 RUN npm install -y \
-  && npm install nodemon -g
+    && npm install nodemon -g
 
 CMD ["/bin/bash", "/home/node/docker/boot.sh"]
 
