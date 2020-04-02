@@ -54,7 +54,7 @@ services:
       dockerfile: services/dy-jupyter/Dockerfile
       target: production
       args:
-        BASE_IMAGE: jupyter/scipy-notebook
+        BASE_IMAGE: jupyter/scipy-notebook:31b807ec9e83
         INSTALL_PYTHON2: 1
       labels:
         io.simcore.key: '{"key": "simcore/services/dynamic/jupyter-scipy-notebook"}'
