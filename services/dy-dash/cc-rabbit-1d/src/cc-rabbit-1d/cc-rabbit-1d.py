@@ -25,7 +25,8 @@ logger = logging.getLogger()
 
 DEVEL_MODE = False
 if DEVEL_MODE:
-    IN_OUT_PARENT_DIR = Path(Path(os.path.dirname(os.path.realpath(__file__))).parent).parent / 'validation'
+    IN_OUT_PARENT_DIR = Path(Path(os.path.dirname(
+        os.path.realpath(__file__))).parent).parent / 'validation'
 else:
     IN_OUT_PARENT_DIR = Path('/home/jovyan')
 INPUT_DIR = IN_OUT_PARENT_DIR / 'input'
@@ -33,16 +34,16 @@ INPUT_DIR = IN_OUT_PARENT_DIR / 'input'
 
 DEFAULT_PATH = '/'
 base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', DEFAULT_PATH)
-if base_pathname != DEFAULT_PATH :
+if base_pathname != DEFAULT_PATH:
     base_pathname = "/{}/".format(base_pathname.strip('/'))
 print('url_base_pathname', base_pathname)
 
 
 server = Flask(__name__)
 app = dash.Dash(__name__,
-    server=server,
-    url_base_pathname=base_pathname
-)
+                server=server,
+                url_base_pathname=base_pathname
+                )
 
 bp = Blueprint('myBlueprint', __name__)
 
@@ -50,15 +51,21 @@ bp = Blueprint('myBlueprint', __name__)
 # Data to service
 data_paths = None
 
+
 @bp.route("/healthcheck")
 def healthcheck():
     return Response("healthy", status=200, mimetype='application/json')
 
-def download_all_inputs(n_inputs = 2):
-    ports = node_ports.ports()
-    tasks = asyncio.gather(*[ports.inputs[n].get() for n in range(n_inputs)])
-    paths_to_inputs = asyncio.get_event_loop().run_until_complete( tasks )
+
+async def _download_inputs(n_inputs):
+    ports = await node_ports.ports()
+    paths_to_inputs = await asyncio.gather(*[(await ports.inputs)[n].get() for n in range(n_inputs)])
     return paths_to_inputs
+
+
+def download_all_inputs(n_inputs=2):
+    return asyncio.get_event_loop().run_until_complete(_download_inputs(n_inputs))
+
 
 @bp.route("/retrieve", methods=['GET', 'POST'])
 def retrieve():
@@ -84,14 +91,20 @@ def retrieve():
         logger.exception("Unexpected error when retrieving data")
         return Response("Unexpected error", status=500, mimetype='application/json')
 
+
+async def _upload_outputs(port_number, file):
+    ports = await node_ports.ports()
+    await (await ports.outputs)[port_number].set(file)
+
+
 def pandas_dataframe_to_output_data(data_frame, title, header=False, port_number=0):
     title = title.replace(" ", "_") + ".csv"
     dummy_file_path = Path(title)
-    data_frame.to_csv(dummy_file_path, sep=',', header=header, index=False, encoding='utf-8')
+    data_frame.to_csv(dummy_file_path, sep=',', header=header,
+                      index=False, encoding='utf-8')
+    asyncio.get_event_loop().run_until_complete(
+        _upload_outputs(port_number, dummy_file_path))
 
-    ports = node_ports.ports()
-    task = ports.outputs[port_number].set(dummy_file_path)
-    asyncio.get_event_loop().run_until_complete( task )
 
 #---------------------------------------------------------#
 # Styling
@@ -118,6 +131,7 @@ dcc_input_button = {
 
 GRAPH_HEIGHT = 400
 
+
 def give_fig_osparc_style2(fig):
     margin = 10
     y_label_padding = 50
@@ -141,6 +155,7 @@ def give_fig_osparc_style2(fig):
     )
     return fig
 
+
 def give_fig_osparc_style(fig, xLabels=['x'], yLabels=['y']):
     for idx, xLabel in enumerate(xLabels):
         suffix = str(idx)
@@ -161,6 +176,7 @@ def give_fig_osparc_style(fig, xLabels=['x'], yLabels=['y']):
     fig = give_fig_osparc_style2(fig)
     return fig
 
+
 def get_empty_graph(xLabel='x', yLabel='y'):
     fig = go.Figure(data=[], layout={})
     fig = give_fig_osparc_style(fig, [xLabel], [yLabel])
@@ -179,12 +195,12 @@ app.layout = html.Div(children=[
 
 def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
     data = [
-            go.Scatter(
-                x=data_frame[data_frame.columns[0]],
-                y=data_frame[data_frame.columns[i]],
-                name=str(data_frame.columns[i])
-            )
-            for i in range(1,data_frame.columns.size)
+        go.Scatter(
+            x=data_frame[data_frame.columns[0]],
+            y=data_frame[data_frame.columns[i]],
+            name=str(data_frame.columns[i])
+        )
+        for i in range(1, data_frame.columns.size)
     ]
 
     fig = get_empty_graph(x_axis_title, y_axis_title)
@@ -192,42 +208,47 @@ def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
     fig = go.Figure(data=data, layout=layout)
     return fig
 
+
 #---------------------------------------------------------#
 # Data to plot in memory
 data_frame_a = None
-data_frame_JJ  = None
+data_frame_JJ = None
+
 
 def plot_ECG():
     x_label = 'Time (sec)'
     y_label = 'ECGs'
-    axis_colums = [0,1]
-    plot_1 = data_frame_a.filter(items=[data_frame_a.columns[i] for i in axis_colums])
+    axis_colums = [0, 1]
+    plot_1 = data_frame_a.filter(
+        items=[data_frame_a.columns[i] for i in axis_colums])
     pandas_dataframe_to_output_data(plot_1, y_label, [x_label, y_label], 0)
-    fig = create_graph(data_frame=plot_1, x_axis_title=x_label, y_axis_title=y_label)
+    fig = create_graph(data_frame=plot_1,
+                       x_axis_title=x_label, y_axis_title=y_label)
     return fig
+
 
 def ap_surface_1D():
     out_v = data_frame_JJ
 
     num_cells = 165
     # point ranges you want to plot
-    minimum = 0 #90000;
-    maximum = out_v.shape[0]-1 # 4 #100000;
+    minimum = 0  # 90000;
+    maximum = out_v.shape[0]-1  # 4 #100000;
     diff = (maximum - minimum + 1)
 
-    t = np.array(out_v.iloc[range(minimum,maximum+1), 0]).reshape(diff, 1)
+    t = np.array(out_v.iloc[range(minimum, maximum+1), 0]).reshape(diff, 1)
     T = t
-    #creates a matrix of t matricies (1 for each cell)
-    for _b in range(1,(num_cells)):
+    # creates a matrix of t matricies (1 for each cell)
+    for _b in range(1, (num_cells)):
         T = np.hstack((T, t))
 
-    #creats an array of cell numbers
+    # creats an array of cell numbers
     celln = [x+1 for x in range(num_cells)]
     cellnum = np.array(celln).reshape(1, num_cells)
 
-    #creates a square matrix of cell numbers on the diagonal
-    cellm = np.ones((diff,1)) @ cellnum
-    vm = out_v.iloc[range(minimum,maximum+1), range(1,num_cells+1)]
+    # creates a square matrix of cell numbers on the diagonal
+    cellm = np.ones((diff, 1)) @ cellnum
+    vm = out_v.iloc[range(minimum, maximum+1), range(1, num_cells+1)]
 
     colormap = [
         [0, 'rgb(40.0, 40.0, 40.0)'],
@@ -246,7 +267,7 @@ def ap_surface_1D():
 
     camera = dict(
         up=dict(x=-1, y=0, z=0),
-        center=dict(x=0,y=0,z=0),
+        center=dict(x=0, y=0, z=0),
         eye=dict(x=1, y=0, z=2)
     )
 
@@ -257,6 +278,7 @@ def ap_surface_1D():
     fig = go.Figure(data=data, layout=layout)
     fig = give_fig_osparc_style2(fig)
     return fig
+
 
 def preprocess_inputs():
     global data_frame_a
@@ -271,6 +293,8 @@ def preprocess_inputs():
 
 # When pressing 'Load' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the four input graphs.
+
+
 @app.callback(
     [
         Output('graph-1', 'figure'),
@@ -291,6 +315,7 @@ def read_input_files(_n_clicks):
         figs = [get_empty_graph() for i in range(2)]
     return figs
 
+
 @bp.route("/")
 def serve_index():
     read_input_files(1)
@@ -308,6 +333,7 @@ class AnyThreadEventLoopPolicy(asyncio.DefaultEventLoopPolicy):
             loop = self.new_event_loop()
             self.set_event_loop(loop)
             return loop
+
 
 if __name__ == '__main__':
     # the following line is needed for async calls
