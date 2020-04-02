@@ -563,7 +563,7 @@ async def _upload_data(output_files):
     ports = await node_ports.ports()
     for idx, path in enumerate(output_files):
         if path.exists():
-            task = await (await ports.outputs)[idx].set(path)
+            await (await ports.outputs)[idx].set(path)
 
 
 def push_output_data():
