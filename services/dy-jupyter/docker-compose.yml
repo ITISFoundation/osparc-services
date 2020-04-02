@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 services:
   jupyter-base-notebook:
     image: ${DOCKER_REGISTRY}/jupyter-base-notebook:${DOCKER_IMAGE_TAG}
@@ -27,17 +27,17 @@ services:
           "output_2":{"label": "output 2", "displayOrder":1, "description": "Output 2", "type": "data:*/*"}
           }}'
         simcore.service.settings: '[
-                                    {"name": "ports", "type": "int", "value": 8888},
-                                    {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]},
-                                    {"name": "resources", "type": "resources", "value":
-                                      {
-                                        "Limits": {
-                                          "NanoCPUs": 4000000000,
-                                          "MemoryBytes": 8589934592
-                                        }
-                                      }
-                                    }
-                                  ]'
+          {"name": "ports", "type": "int", "value": 8888},
+          {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]},
+          {"name": "resources", "type": "resources", "value":
+          {
+          "Limits": {
+          "NanoCPUs": 4000000000,
+          "MemoryBytes": 8589934592
+          }
+          }
+          }
+          ]'
         # simcore.service.bootsettings: '[
         #   {"name": "entry_point", "type": "string", "value": "?token=simcore"}]'
         org.label-schema.schema-version: "1.0"
@@ -45,7 +45,7 @@ services:
         org.label-schema.vcs-url: "${VCS_URL}"
         org.label-schema.vcs-ref: "${VCS_REF}"
     ports:
-      - '8888:8888'
+      - "8888:8888"
   jupyter-scipy-notebook:
     image: ${DOCKER_REGISTRY}/jupyter-scipy-notebook:${DOCKER_IMAGE_TAG}
     init: true
@@ -73,17 +73,17 @@ services:
           "output_2":{"label": "output 2", "displayOrder":1, "description": "Output 2", "type": "data:*/*"}
           }}'
         simcore.service.settings: '[
-                                    {"name": "ports", "type": "int", "value": 8888},
-                                    {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]},
-                                    {"name": "resources", "type": "resources", "value":
-                                      {
-                                        "Limits": {
-                                          "NanoCPUs": 4000000000,
-                                          "MemoryBytes": 8589934592
-                                        }
-                                      }
-                                    }
-                                  ]'
+          {"name": "ports", "type": "int", "value": 8888},
+          {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]},
+          {"name": "resources", "type": "resources", "value":
+          {
+          "Limits": {
+          "NanoCPUs": 4000000000,
+          "MemoryBytes": 8589934592
+          }
+          }
+          }
+          ]'
         # simcore.service.bootsettings: '[
         #   {"name": "entry_point", "type": "string", "value": "?token=${NOTEBOOK_TOKEN}"}]'
         org.label-schema.schema-version: "1.0"
@@ -91,8 +91,7 @@ services:
         org.label-schema.vcs-url: "${VCS_URL}"
         org.label-schema.vcs-ref: "${VCS_REF}"
     ports:
-      - '8889:8888'
-
+      - "8889:8888"
   jupyter-r-notebook:
     image: ${DOCKER_REGISTRY}/jupyter-r-notebook:${DOCKER_IMAGE_TAG}
     init: true
@@ -120,17 +119,17 @@ services:
           "output_2":{"label": "output 2", "displayOrder":1, "description": "Output 2", "type": "data:*/*"}
           }}'
         simcore.service.settings: '[
-                                    {"name": "ports", "type": "int", "value": 8888},
-                                    {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]},
-                                    {"name": "resources", "type": "resources", "value":
-                                      {
-                                        "Limits": {
-                                          "NanoCPUs": 4000000000,
-                                          "MemoryBytes": 8589934592
-                                        }
-                                      }
-                                    }
-                                  ]'
+          {"name": "ports", "type": "int", "value": 8888},
+          {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]},
+          {"name": "resources", "type": "resources", "value":
+          {
+          "Limits": {
+          "NanoCPUs": 4000000000,
+          "MemoryBytes": 8589934592
+          }
+          }
+          }
+          ]'
         # simcore.service.bootsettings: '[
         #   {"name": "entry_point", "type": "string", "value": "?token=${NOTEBOOK_TOKEN}"}]'
         org.label-schema.schema-version: "1.0"
@@ -138,4 +137,4 @@ services:
         org.label-schema.vcs-url: "${VCS_URL}"
         org.label-schema.vcs-ref: "${VCS_REF}"
     ports:
-      - '8890:8888'
+      - "8890:8888"
