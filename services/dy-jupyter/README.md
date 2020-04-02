@@ -14,7 +14,7 @@ It brings the jupyter notebook application as an example of how easy one can int
 
 ### dependencies
 
-To run the services, apihub:latest and storage:latest shall be available on the local machine. They can be built using [Makefile](Makefile)
+To run the services, storage:latest shall be available on the local machine. They can be built using [Makefile](Makefile)
 
 ## production
 

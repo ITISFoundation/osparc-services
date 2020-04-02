@@ -1,11 +1,11 @@
-version: '3.6'
+version: "3.6"
 services:
   csv-table:
     image: csv-table
     build:
       target: development
     ports:
-      - '4000:4000'
+      - "4000:4000"
     volumes:
       - ../../services/storage/client-sdk:/home/scu/services/storage/client-sdk
       - ../../scripts:/home/scu/scripts
@@ -27,14 +27,10 @@ services:
       - POSTGRES_PORT=${POSTGRES_PORT}
       - SIMCORE_NODE_BASEPATH=${SIMCORE_NODE_BASEPATH}
     depends_on:
-        - storage
-        - postgres
-        - minio
+      - storage
+      - postgres
+      - minio
   #--------------------------------------------------------------------
-  apihub:
-    image: itisfoundation/apihub:staging-latest
-    ports:
-      - 8043:8043
   storage:
     image: services_storage:latest
     ports:
@@ -53,12 +49,9 @@ services:
       - S3_SECURE=${S3_SECURE}
       - BF_API_SECRET=none
       - BF_API_KEY=none
-      - APIHUB_HOST=${APIHUB_HOST}
-      - APIHUB_PORT=${APIHUB_PORT}
     restart: always
     depends_on:
       - postgres
-      - apihub
   #--------------------------------------------------------------------
   postgres:
     image: postgres:10

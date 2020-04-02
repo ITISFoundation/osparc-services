@@ -1,4 +1,4 @@
-version: '3.4'
+version: "3.4"
 services:
   cc-0d:
     image: services_cc-0d-viewer-dev
@@ -132,11 +132,6 @@ services:
       - postgres
       - minio
   #--------------------------------------------------------------------
-  apihub:
-    image: itisfoundation/apihub:staging-latest
-    ports:
-      - 8043:8043
-  #--------------------------------------------------------------------
   storage:
     image: itisfoundation/storage:staging-latest
     ports:
@@ -155,13 +150,10 @@ services:
       - S3_SECURE=${S3_SECURE}
       - BF_API_SECRET=none
       - BF_API_KEY=none
-      - APIHUB_HOST=${APIHUB_HOST}
-      - APIHUB_PORT=${APIHUB_PORT}
 
     restart: always
     depends_on:
       - postgres
-      - apihub
   #--------------------------------------------------------------------
   postgres:
     image: postgres:10
