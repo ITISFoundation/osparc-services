@@ -8,7 +8,7 @@ services:
       dockerfile: services/dy-jupyter/Dockerfile
       target: production
       args:
-        BASE_IMAGE: jupyter/base-notebook
+        BASE_IMAGE: jupyter/base-notebook:python-3.7.4
         INSTALL_PYTHON2: 1
       labels:
         io.simcore.key: '{"key": "simcore/services/dynamic/jupyter-base-notebook"}'
