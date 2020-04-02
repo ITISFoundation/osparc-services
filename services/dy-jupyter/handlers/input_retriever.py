@@ -14,10 +14,11 @@ from simcore_sdk import node_ports
 
 logger = logging.getLogger(__name__)
 
-_INPUTS_FOLDER =  os.environ.get("INPUTS_FOLDER", "~/inputs")
+_INPUTS_FOLDER = os.environ.get("INPUTS_FOLDER", "~/inputs")
 _OUTPUTS_FOLDER = os.environ.get("OUTPUTS_FOLDER", "~/outputs")
 _FILE_TYPE_PREFIX = "data:"
 _KEY_VALUE_FILE_NAME = "key_values.json"
+
 
 def _compress_files_in_folder(folder: Path, one_file_not_compress: bool = True) -> Path:
     list_files = list(folder.glob("*"))
@@ -36,6 +37,7 @@ def _compress_files_in_folder(folder: Path, one_file_not_compress: bool = True) 
 
     return Path(temp_file.name)
 
+
 def _no_relative_path_zip(members: zipfile.ZipFile):
     for zipinfo in members.infolist():
         path = Path(zipinfo.filename)
@@ -47,6 +49,7 @@ def _no_relative_path_zip(members: zipfile.ZipFile):
             continue
         yield zipinfo.filename
 
+
 async def get_time_wrapped(port):
     logger.info("transfer started for %s", port.key)
     start_time = time.perf_counter()
@@ -55,8 +58,10 @@ async def get_time_wrapped(port):
     logger.info("transfer completed in %ss", elapsed_time)
     if isinstance(ret, Path):
         size_mb = ret.stat().st_size / 1024 / 1024
-        logger.info("%s: data size: %sMB, transfer rate %sMB/s", ret.name, size_mb, size_mb / elapsed_time)
+        logger.info("%s: data size: %sMB, transfer rate %sMB/s",
+                    ret.name, size_mb, size_mb / elapsed_time)
     return (port, ret)
+
 
 async def set_time_wrapped(port, value):
     logger.info("transfer started for %s", port.key)
@@ -66,28 +71,29 @@ async def set_time_wrapped(port, value):
     logger.info("transfer completed in %ss", elapsed_time)
     if isinstance(value, Path):
         size_bytes = value.stat().st_size
-        logger.info("%s: data size: %sMB, transfer rate %sMB/s", value.name, size_bytes / 1024 / 1024, size_bytes / 1024 / 1024 / elapsed_time)
+        logger.info("%s: data size: %sMB, transfer rate %sMB/s", value.name,
+                    size_bytes / 1024 / 1024, size_bytes / 1024 / 1024 / elapsed_time)
         return size_bytes
     return sys.getsizeof(value)
+
 
 async def download_data(port_keys: List[str]) -> int:
     logger.info("retrieving data from simcore...")
     start_time = time.perf_counter()
-    PORTS = node_ports.ports()
+    PORTS = await node_ports.ports()
     inputs_path = Path(_INPUTS_FOLDER).expanduser()
     data = {}
 
     # let's gather all the data
     download_tasks = []
-    for node_input in PORTS.inputs:
+    for node_input in await PORTS.inputs:
         # if port_keys contains some keys only download them
         logger.info("Checking node %s", node_input.key)
         if port_keys and node_input.key not in port_keys:
-            continue        
+            continue
         # collect coroutines
         download_tasks.append(get_time_wrapped(node_input))
     logger.info("retrieving %s data", len(download_tasks))
-
 
     transfer_bytes = 0
     if download_tasks:
@@ -116,7 +122,8 @@ async def download_data(port_keys: List[str]) -> int:
                 if zipfile.is_zipfile(downloaded_file):
                     logger.info("unzipping %s", downloaded_file)
                     with zipfile.ZipFile(downloaded_file) as zip_file:
-                        zip_file.extractall(dest_path, members=_no_relative_path_zip(zip_file))
+                        zip_file.extractall(
+                            dest_path, members=_no_relative_path_zip(zip_file))
                     logger.info("all unzipped in %s", dest_path)
                 else:
                     logger.info("moving %s", downloaded_file)
@@ -134,24 +141,27 @@ async def download_data(port_keys: List[str]) -> int:
             data = {**current_data, **data}
         data_file.write_text(json.dumps(data))
     stop_time = time.perf_counter()
-    logger.info("all data retrieved from simcore in %sseconds: %s", stop_time - start_time, data)
+    logger.info("all data retrieved from simcore in %sseconds: %s",
+                stop_time - start_time, data)
     return transfer_bytes
 
-async def upload_data(port_keys: List[str]) -> int: #pylint: disable=too-many-branches
+
+async def upload_data(port_keys: List[str]) -> int:  # pylint: disable=too-many-branches
     logger.info("uploading data to simcore...")
     start_time = time.perf_counter()
-    PORTS = node_ports.ports()
+    PORTS = await node_ports.ports()
     outputs_path = Path(_OUTPUTS_FOLDER).expanduser()
 
     # let's gather the tasks
     temp_files = []
     upload_tasks = []
     transfer_bytes = 0
-    for port in PORTS.outputs:
+    for port in await PORTS.outputs:
         logger.info("Checking port %s", port.key)
         if port_keys and port.key not in port_keys:
             continue
-        logger.debug("uploading data to port '%s' with value '%s'...", port.key, port.value)
+        logger.debug(
+            "uploading data to port '%s' with value '%s'...", port.key, port.value)
         if _FILE_TYPE_PREFIX in port.type:
             src_folder = outputs_path / port.key
             list_files = list(src_folder.glob("*"))
@@ -185,5 +195,6 @@ async def upload_data(port_keys: List[str]) -> int: #pylint: disable=too-many-br
                 Path(file_path).unlink()
 
     stop_time = time.perf_counter()
-    logger.info("all data uploaded to simcore in %sseconds", stop_time-start_time)
+    logger.info("all data uploaded to simcore in %sseconds",
+                stop_time-start_time)
     return transfer_bytes
