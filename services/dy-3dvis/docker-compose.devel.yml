@@ -1,4 +1,4 @@
-version: '2.3'
+version: "2.3"
 services:
   simcore-paraviewweb:
     image: 3d-viewer-dev
@@ -69,12 +69,6 @@ services:
       - ./simcoreparaviewweb/config:/home/root/config
       - ./simcoreparaviewweb/handlers:/home/root/handlers
   #--------------------------------------------------------------------
-  apihub:
-    image: itisfoundation/apihub:latest
-    init: true
-    ports:
-      - '8043:8043'
-  #--------------------------------------------------------------------
   storage:
     image: itisfoundation/storage:latest
     init: true
@@ -94,8 +88,6 @@ services:
       - S3_SECURE=${S3_SECURE}
       - BF_API_SECRET=none
       - BF_API_KEY=none
-      - APIHUB_HOST=${APIHUB_HOST}
-      - APIHUB_PORT=${APIHUB_PORT}
       - STORAGE_LOGLEVEL=INFO
       - STORAGE_MONITORING_ENABLED=1
     restart: always

@@ -25,7 +25,8 @@ logger = logging.getLogger()
 
 DEVEL_MODE = False
 if DEVEL_MODE:
-    IN_OUT_PARENT_DIR = Path(Path(os.path.dirname(os.path.realpath(__file__))).parent).parent / 'validation'
+    IN_OUT_PARENT_DIR = Path(Path(os.path.dirname(
+        os.path.realpath(__file__))).parent).parent / 'validation'
 else:
     IN_OUT_PARENT_DIR = Path('/home/jovyan')
 INPUT_DIR = IN_OUT_PARENT_DIR / 'input'
@@ -33,16 +34,16 @@ INPUT_DIR = IN_OUT_PARENT_DIR / 'input'
 
 DEFAULT_PATH = '/'
 base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', DEFAULT_PATH)
-if base_pathname != DEFAULT_PATH :
+if base_pathname != DEFAULT_PATH:
     base_pathname = "/{}/".format(base_pathname.strip('/'))
 print('url_base_pathname', base_pathname)
 
 
 server = Flask(__name__)
 app = dash.Dash(__name__,
-    server=server,
-    url_base_pathname=base_pathname
-)
+                server=server,
+                url_base_pathname=base_pathname
+                )
 
 bp = Blueprint('myBlueprint', __name__)
 
@@ -50,15 +51,21 @@ bp = Blueprint('myBlueprint', __name__)
 # Data to service
 data_paths = None
 
+
 @bp.route("/healthcheck")
 def healthcheck():
     return Response("healthy", status=200, mimetype='application/json')
 
-def download_all_inputs(n_inputs = 1):
-    ports = node_ports.ports()
-    tasks = asyncio.gather(*[ports.inputs[n].get() for n in range(n_inputs)])
-    paths_to_inputs = asyncio.get_event_loop().run_until_complete( tasks )
+
+async def _download_inputs(n_inputs):
+    ports = await node_ports.ports()
+    paths_to_inputs = await asyncio.gather(*[(await ports.inputs)[n].get() for n in range(n_inputs)])
     return paths_to_inputs
+
+
+def download_all_inputs(n_inputs=1):
+    return asyncio.get_event_loop().run_until_complete(_download_inputs(n_inputs))
+
 
 @bp.route("/retrieve", methods=['GET', 'POST'])
 def retrieve():
@@ -84,17 +91,24 @@ def retrieve():
         logger.exception("Unexpected error when retrieving data")
         return Response("Unexpected error", status=500, mimetype='application/json')
 
+
+async def _upload_outputs(port_number, file):
+    ports = await node_ports.ports()
+    await (await ports.outputs)[port_number].set(file)
+
+
 def pandas_dataframe_to_output_data(data_frame, title, header=False, port_number=0):
     title = title.replace(" ", "_") + ".csv"
     dummy_file_path = Path(title)
-    data_frame.to_csv(dummy_file_path, sep=',', header=header, index=False, encoding='utf-8')
+    data_frame.to_csv(dummy_file_path, sep=',', header=header,
+                      index=False, encoding='utf-8')
+    asyncio.get_event_loop().run_until_complete(
+        _upload_outputs(port_number, dummy_file_path))
 
-    ports = node_ports.ports()
-    task = ports.outputs[port_number].set(dummy_file_path)
-    asyncio.get_event_loop().run_until_complete( task )
 
 #---------------------------------------------------------#
 # Styling
+
 
 app.css.append_css({
     "external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"
@@ -121,6 +135,7 @@ X_LABEL_TIME_SEC = "Time (sec)"
 Y_LABEL_1 = "Action potential (Vm)"
 Y_LABEL_2 = "Calcium cytosol (mM)"
 
+
 def give_fig_osparc_style2(fig):
     margin = 10
     y_label_padding = 50
@@ -144,6 +159,7 @@ def give_fig_osparc_style2(fig):
     )
     return fig
 
+
 def give_fig_osparc_style(fig, xLabels=['x'], yLabels=['y']):
     for idx, xLabel in enumerate(xLabels):
         suffix = str(idx)
@@ -164,17 +180,19 @@ def give_fig_osparc_style(fig, xLabels=['x'], yLabels=['y']):
     fig = give_fig_osparc_style2(fig)
     return fig
 
+
 def get_empty_graph(xLabel='x', yLabel='y'):
     fig = go.Figure(data=[], layout={})
     fig = give_fig_osparc_style(fig, [xLabel], [yLabel])
     return fig
 
+
 def get_empty_cols_graphs(labelPairs=[['x', 'y']]):
     fig = subplots.make_subplots(rows=1,
-                            cols=len(labelPairs),
-                            shared_xaxes=True,
-                            vertical_spacing=0.05
-    )
+                                 cols=len(labelPairs),
+                                 shared_xaxes=True,
+                                 vertical_spacing=0.05
+                                 )
     xLabels = []
     yLabels = []
     for labelPair in labelPairs:
@@ -183,12 +201,13 @@ def get_empty_cols_graphs(labelPairs=[['x', 'y']]):
     fig = give_fig_osparc_style(fig, xLabels, yLabels)
     return fig
 
+
 def get_empty_rows_graphs(xLabel='x', yLabels=['y']):
     fig = subplots.make_subplots(rows=len(yLabels),
-                            cols=1,
-                            shared_xaxes=True,
-                            horizontal_spacing=0.05
-    )
+                                 cols=1,
+                                 shared_xaxes=True,
+                                 horizontal_spacing=0.05
+                                 )
     fig = give_fig_osparc_style(fig, [xLabel], yLabels)
     return fig
 
@@ -205,17 +224,18 @@ app.layout = html.Div(children=[
 
 SLICING = 10
 
+
 def create_graphs(data_frames, **kwargs):
     data = [
         go.Scatter(
-            x=data_frames[df_index].iloc[0::SLICING,0],
-            y=data_frames[df_index].iloc[0::SLICING,i],
-            #opacity=1,
+            x=data_frames[df_index].iloc[0::SLICING, 0],
+            y=data_frames[df_index].iloc[0::SLICING, i],
+            # opacity=1,
             xaxis=("x" + str(df_index + 1)),
             yaxis=("y" + str(df_index + 1)),
             name=str(data_frames[df_index].columns[i])
         ) for df_index in range(0, len(data_frames))
-        for i in range(1,data_frames[df_index].columns.size)
+        for i in range(1, data_frames[df_index].columns.size)
     ]
 
     layout = go.Layout(**kwargs)
@@ -223,19 +243,21 @@ def create_graphs(data_frames, **kwargs):
     fig = give_fig_osparc_style2(fig)
     return fig
 
+
 def create_graph(data_frame, x_axis_title=None, y_axis_title=None):
     data = [
         go.Scatter(
-            x=data_frame.iloc[0::SLICING,0],
-            y=data_frame.iloc[0::SLICING,i]
+            x=data_frame.iloc[0::SLICING, 0],
+            y=data_frame.iloc[0::SLICING, i]
         )
-        for i in range(1,data_frame.columns.size)
+        for i in range(1, data_frame.columns.size)
     ]
 
     fig = get_empty_graph(x_axis_title, y_axis_title)
     layout = go.Layout(fig['layout'])
     fig = go.Figure(data=data, layout=layout)
     return fig
+
 
 #---------------------------------------------------------#
 # Data to plot in memory
@@ -247,7 +269,7 @@ def compute_ynid():
     syids = 9
     yids = [30, 31, 32, 33, 34, 36, 37, 38, 39]
     ynid_l = [0] * 206
-    for i in range(1,syids):
+    for i in range(1, syids):
         ynid_l[yids[i]] = i
     return ynid_l
 
@@ -268,25 +290,32 @@ def compute_ynid():
 # ICFTR = 15
 # Incx = 16
 
+
 def create_graph_1():
     # Action potential (Vm): col 9th
     axis_colums = [0, 8]
-    plot_0 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_0, "ActionPotential", [X_LABEL_TIME_SEC, Y_LABEL_1], 0)
+    plot_0 = data_frame_ty.filter(
+        items=[data_frame_ty.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_0, "ActionPotential", [
+                                    X_LABEL_TIME_SEC, Y_LABEL_1], 0)
     fig = create_graph(data_frame=plot_0,
-                x_axis_title=X_LABEL_TIME_SEC,
-                y_axis_title=Y_LABEL_1)
+                       x_axis_title=X_LABEL_TIME_SEC,
+                       y_axis_title=Y_LABEL_1)
     return fig
+
 
 def create_graph_2():
     # Calcium cytosol (mM): col 10th
     axis_colums = [0, 9]
-    plot_1 = data_frame_ty.filter(items=[data_frame_ty.columns[i] for i in axis_colums])
-    pandas_dataframe_to_output_data(plot_1, "CalciumCytosol", [X_LABEL_TIME_SEC, Y_LABEL_2], 1)
+    plot_1 = data_frame_ty.filter(
+        items=[data_frame_ty.columns[i] for i in axis_colums])
+    pandas_dataframe_to_output_data(plot_1, "CalciumCytosol", [
+                                    X_LABEL_TIME_SEC, Y_LABEL_2], 1)
     fig = create_graph(data_frame=plot_1,
-                x_axis_title=X_LABEL_TIME_SEC,
-                y_axis_title=Y_LABEL_2)
+                       x_axis_title=X_LABEL_TIME_SEC,
+                       y_axis_title=Y_LABEL_2)
     return fig
+
 
 def preprocess_inputs():
     global data_frame_ty
@@ -298,11 +327,13 @@ def preprocess_inputs():
             data_frame_ty = pd.read_csv(data_path_ty, sep='\t', header=None)
 
             # scale time
-            f = lambda x: x/1000.0
+            def f(x): return x/1000.0
             data_frame_ty[0] = data_frame_ty[0].apply(f)
 
 # When pressing 'Load' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the four input graphs.
+
+
 @app.callback(
     [
         Output('graph-1', 'figure'),
@@ -323,6 +354,7 @@ def read_input_files(_n_clicks):
         figs = [get_empty_graph() for i in range(11)]
     return figs
 
+
 @bp.route("/")
 def serve_index():
     read_input_files(1)
@@ -340,6 +372,7 @@ class AnyThreadEventLoopPolicy(asyncio.DefaultEventLoopPolicy):
             loop = self.new_event_loop()
             self.set_event_loop(loop)
             return loop
+
 
 if __name__ == '__main__':
     # the following line is needed for async calls

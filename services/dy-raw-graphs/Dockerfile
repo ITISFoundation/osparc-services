@@ -29,6 +29,7 @@ RUN apk add --no-cache --virtual .build-deps \
     git \
     python3-dev \
     postgresql-dev && \
+    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/service-library &&\
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python &&\
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/postgres-database &&\
@@ -62,7 +63,7 @@ RUN npm config set unsafe-perm true
 
 ARG BRANCH_NAME
 RUN apk add --no-cache --virtual .build-deps \
-      git &&\
+    git &&\
     git clone https://github.com/ITISFoundation/raw.git --branch ${BRANCH_NAME} &&\
     cd raw &&\
     npm install -g bower &&\
@@ -70,7 +71,7 @@ RUN apk add --no-cache --virtual .build-deps \
     apk del --no-cache .build-deps
 
 RUN apk add --no-cache \
-  postgresql-libs
+    postgresql-libs
 
 # --------------- Healthcheck -------------------
 COPY --chown=scu:scu scripts/docker/healthcheck.py $HOME/healthcheck/healthcheck.py

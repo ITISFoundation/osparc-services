@@ -15,7 +15,7 @@ USER root
 # Create a global kernelspec in the image and modify it so that it properly activates
 # the python2 conda environment.
 RUN if [ "x${INSTALL_PYTHON2}" = "1" ] ; then $CONDA_DIR/envs/python2/bin/python -m ipykernel install && \
-$CONDA_DIR/envs/python2/bin/kernda -o -y /usr/local/share/jupyter/kernels/python2/kernel.json ; fi
+    $CONDA_DIR/envs/python2/bin/kernda -o -y /usr/local/share/jupyter/kernels/python2/kernel.json ; fi
 RUN apt-get update &&\
     apt-get install -y \
     git \
@@ -54,7 +54,8 @@ RUN pip install --upgrade pip && \
 ENV PYTHONPATH=/home/jovyan/handlers
 # ----------------------------------------------------------------
 # install simcore-sdk
-RUN pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
+RUN pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/service-library &&\
+    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
     pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python &&\
     pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/postgres-database &&\
     pip install blackfynn

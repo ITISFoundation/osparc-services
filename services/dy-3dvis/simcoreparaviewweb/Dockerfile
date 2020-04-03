@@ -54,6 +54,7 @@ RUN curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/py
 # install simcore-sdk
 RUN export PATH="${PYENV_ROOT}/bin:$PATH" && \
     eval "$(pyenv init -)" && \
+    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/service-library &&\
     pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
     pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python &&\
     pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/postgres-database

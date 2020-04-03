@@ -20,6 +20,8 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__file__ if __name__ == "__main__" else __name__)
 
 CACHE_FILE_PATH = Path(tempfile.gettempdir()) / "input_retriever.cache"
+
+
 class ExitCode(IntEnum):
     SUCCESS = 0
     FAIL = 1
@@ -31,23 +33,24 @@ def input_path() -> Path:
     return Path(path)
 
 
-
 async def task(node_key: str, fct, *args, **kwargs):
     return (node_key, await fct(*args, *kwargs))
+
 
 async def retrieve_data(ports: List[str], cache: Dict) -> int:
     # get all files in the local system and copy them to the input folder
     start_time = time.clock()
-    PORTS = node_ports.ports()
+    PORTS = await node_ports.ports()
     download_tasks = []
-    for node_input in PORTS.inputs:
+    for node_input in await PORTS.inputs:
         # if ports contains some keys only download them
         log.info("Checking node %s", node_input.key)
         if ports and node_input.key not in ports:
             continue
         # delete the corresponding file(s) if applicable
         if node_input.key in cache:
-            log.info("Deleting files from %s: %s", node_input.key, cache[node_input.key])
+            log.info("Deleting files from %s: %s",
+                     node_input.key, cache[node_input.key])
             for file_path in cache[node_input.key]:
                 Path(file_path).unlink()
             del cache[node_input.key]
@@ -73,7 +76,8 @@ async def retrieve_data(ports: List[str], cache: Dict) -> int:
                 zip_ref = zipfile.ZipFile(str(local_path), 'r')
                 zip_ref.extractall(str(input_path()))
                 cache[node_key] = \
-                    [str(input_path() / zipped_file) for zipped_file in zip_ref.namelist()]
+                    [str(input_path() / zipped_file)
+                     for zipped_file in zip_ref.namelist()]
                 zip_ref.close()
                 log.info("extraction completed")
             else:
@@ -84,7 +88,8 @@ async def retrieve_data(ports: List[str], cache: Dict) -> int:
                 cache[node_key] = [str(dest_path)]
                 log.info("move completed")
         end_time = time.clock()
-        log.info("retrieval complete: took %.2fseconds for %s bytes", end_time - start_time, transfer_bytes)
+        log.info("retrieval complete: took %.2fseconds for %s bytes",
+                 end_time - start_time, transfer_bytes)
     return transfer_bytes
 
 
@@ -95,8 +100,8 @@ def main(args=None) -> int:
                             type=str, nargs="*", required=False)
         options = parser.parse_args(args)
         log.info("has to retrieve the following ports: %s",
-                                    options.port_keys if options.port_keys else "all"
-                                    )
+                 options.port_keys if options.port_keys else "all"
+                 )
 
         if not input_path().exists():
             input_path().mkdir()
@@ -109,7 +114,8 @@ def main(args=None) -> int:
 
         loop = asyncio.get_event_loop()
         transfer_bytes = \
-            loop.run_until_complete(retrieve_data(options.port_keys, file_transfer_history))
+            loop.run_until_complete(retrieve_data(
+                options.port_keys, file_transfer_history))
         log.info("saving cache: %s", file_transfer_history)
         with CACHE_FILE_PATH.open("w") as fp:
             json.dump(file_transfer_history, fp)

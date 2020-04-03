@@ -1,4 +1,4 @@
-version: '3.7'
+version: "3.7"
 services:
   cc-rabbit-0d:
     build:
@@ -33,12 +33,6 @@ services:
       - adminer
       - storage
   #--------------------------------------------------------------------
-  apihub:
-    image: itisfoundation/apihub:staging-latest
-    init: true
-    ports:
-      - 8043:8043
-  #--------------------------------------------------------------------
   storage:
     image: itisfoundation/storage:staging-latest
     init: true
@@ -58,13 +52,10 @@ services:
       - S3_SECURE=${S3_SECURE}
       - BF_API_SECRET=none
       - BF_API_KEY=none
-      - APIHUB_HOST=${APIHUB_HOST}
-      - APIHUB_PORT=${APIHUB_PORT}
 
     restart: always
     depends_on:
       - postgres
-      - apihub
   #--------------------------------------------------------------------
   postgres:
     image: postgres:10
