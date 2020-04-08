@@ -136,4 +136,4 @@ pytest.ini
 
 # pylint-profile output
 prof/
-!ops/**/build
+!ci/**/build

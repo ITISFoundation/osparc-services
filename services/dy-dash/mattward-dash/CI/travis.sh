@@ -4,13 +4,13 @@ set -euo pipefail
 IFS=$'\n\t'
 
 before_install() {
-    bash ops/travis/helpers/install_docker_compose;
-    bash ops/travis/helpers/show_system_versions;
+    bash ci/travis/helpers/install_docker_compose;
+    bash ci/travis/helpers/show_system_versions;
     env
 }
 
 install() {
-    bash ops/travis/helpers/ensure_python_pip
+    bash ci/travis/helpers/ensure_python_pip
     pip3 install -r services/dy-dash/mattward-dash/tests/requirements.txt
 }
 
