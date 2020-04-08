@@ -27,14 +27,14 @@ services:
       - storage
       - traefik
     volumes:
-      - ./simcoreparaviewweb/devel:/home/root/devel
+      - ./src/3d-viewer/devel:/home/root/devel
       - ../../services:/home/root/services
       - ../../scripts/dy_services_helpers:/home/root/scripts/dy_services_helpers
       - ./test-data:/home/root/test-data
       - ./visualizer-data:/data
-      - ./simcoreparaviewweb/docker:/home/root/docker
-      - ./simcoreparaviewweb/config:/home/root/config
-      - ./simcoreparaviewweb/handlers:/home/root/handlers
+      - ./src/3d-viewer/docker:/home/root/docker
+      - ./src/3d-viewer/config:/home/root/config
+      - ./src/3d-viewer/handlers:/home/root/handlers
     deploy:
       labels:
         - traefik.enable=true
