@@ -44,7 +44,7 @@ def stringify_metadata(metadata: Dict) -> Dict[str, str]:
 
 
 def update_compose_labels(compose_cfg: Dict, metadata: Dict[str, str]) -> bool:
-    compose_labels = compose_cfg["services"]["osparc-python-runner"]["build"]["labels"]
+    compose_labels = compose_cfg["services"]["3d-viewer"]["build"]["labels"]
     changed = False
     for key, value in metadata.items():
         if key in compose_labels:
