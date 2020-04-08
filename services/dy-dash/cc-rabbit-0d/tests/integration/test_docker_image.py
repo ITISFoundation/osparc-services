@@ -23,18 +23,14 @@ import pytest
 def docker_client() -> docker.DockerClient:
     return docker.from_env()
 
-
 @pytest.fixture
 def docker_image_key(docker_client: docker.DockerClient) -> str:
     registry = os.environ.get("DOCKER_REGISTRY", "itisfoundation")
     tag = os.environ.get("DOCKER_IMAGE_TAG", "latest")
     image_key = "{}/cc-0d-viewer:{}".format(registry, tag)
-    docker_images = [image for image in docker_client.images.list() if any(
-        image_key in tag for tag in image.tags)]
-    assert len(docker_images) == 1, "could not find docker image {}".format(
-        image_key)
+    docker_images = [image for image in docker_client.images.list() if any(image_key in tag for tag in image.tags)]
+    assert len(docker_images) == 1, "could not find docker image {}".format(image_key)
     return docker_images[0].tags[0]
-
 
 @pytest.fixture
 def docker_image(docker_client: docker.DockerClient, docker_image_key: str) -> docker.models.images.Image:
@@ -42,13 +38,11 @@ def docker_image(docker_client: docker.DockerClient, docker_image_key: str) -> d
     assert docker_image
     return docker_image
 
-
 def _download_url(url: str, file: Path):
     # Download the file from `url` and save it locally under `file_name`:
     with urllib.request.urlopen(url) as response, file.open('wb') as out_file:
         shutil.copyfileobj(response, out_file)
     assert file.exists()
-
 
 @pytest.fixture
 def osparc_service_labels_jsonschema(tmp_path) -> Dict:
@@ -58,7 +52,6 @@ def osparc_service_labels_jsonschema(tmp_path) -> Dict:
     with file_name.open() as fp:
         json_schema = json.load(fp)
         return json_schema
-
 
 def _convert_to_simcore_labels(image_labels: Dict) -> Dict:
     io_simcore_labels = {}
@@ -93,10 +86,8 @@ def test_validate_docker_io_simcore_labels(docker_image: docker.models.images.Im
     io_simcore_labels = _convert_to_simcore_labels(image_labels)
     # validate schema
     try:
-        jsonschema.validate(io_simcore_labels,
-                            osparc_service_labels_jsonschema)
+        jsonschema.validate(io_simcore_labels, osparc_service_labels_jsonschema)
     except jsonschema.SchemaError:
-        pytest.fail("Schema {} contains errors".format(
-            osparc_service_labels_jsonschema))
+        pytest.fail("Schema {} contains errors".format(osparc_service_labels_jsonschema))
     except jsonschema.ValidationError:
         pytest.fail("Failed to validate docker image io labels against schema")
