@@ -3,7 +3,7 @@ services:
   simcore-paraviewweb:
     image: local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}
     context: ../../
-    dockerfile: services/dy-3dvis/simcoreparaviewweb/Dockerfile
+    dockerfile: services/dy-3dvis/src/simcoreparaviewweb/Dockerfile
     target: production
     args:
       BASE_IMAGE: kitware/paraviewweb:pv-v5.6.0-osmesa
