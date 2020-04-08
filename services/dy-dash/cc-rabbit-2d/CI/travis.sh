@@ -5,12 +5,12 @@ IFS=$'\n\t'
 
 before_install() {
     bash ci/travis/helpers/install_docker_compose;
-    bash ci/travis/helpers/show_system_versions;
+    bash ci/travis/helpers/show_system_versions.bash;
     env
 }
 
 install() {
-    bash ci/travis/helpers/ensure_python_pip
+    bash ci/helpers/ensure_python_pip.bash
     pip3 install -r services/dy-dash/cc-rabbit-2d/tests/requirements.txt
 }
 
