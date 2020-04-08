@@ -1,5 +1,4 @@
 pandas~=0.23
-pylint~=2.3.1
 dash~=0.43.0
 dash-daq~=0.1.0
 git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/service-library

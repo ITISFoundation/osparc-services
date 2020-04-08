@@ -8,21 +8,25 @@ from pathlib import Path
 
 import pytest
 
+
 def test_docker_dir(docker_dir: Path):
-    labels_dir = docker_dir / "labels" 
+    labels_dir = docker_dir / "labels"
     assert labels_dir.exists()
 
     labels = list(labels_dir.glob("*.json"))
     assert len(labels) > 0
 
-    assert Path(docker_dir / "boot.sh").exists()
+    assert Path(docker_dir / "boot.bash").exists()
+
 
 def test_tools_dir(tools_dir: Path):
     assert Path(tools_dir / "requirements.txt").exists()
     assert Path(tools_dir / "update_compose_labels.py").exists()
 
+
 def test_package_dir(src_dir: Path):
     assert Path(src_dir / "Dockerfile").exists()
+
 
 def test_slug_dir(project_slug_dir: Path):
     assert Path(project_slug_dir / ".bumpversion.cfg").exists()
