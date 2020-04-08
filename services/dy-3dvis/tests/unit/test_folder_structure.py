@@ -12,7 +12,7 @@ expected_files = (
     ".gitignore",
     ".pylintrc",
     "metadata:metadata.yml",
-    "docker/python:entrypoint.sh",
+    "docker/python:entrypoint.bash",
     "docker/python:Dockerfile",
     "service.cli:execute.sh",
     "tools:run_creator.py",

@@ -97,7 +97,7 @@ COPY services/dy-3dvis/src/3d-viewer/docker /home/root/docker
 COPY services/dy-3dvis/src/3d-viewer/config /home/root/config
 COPY services/dy-3dvis/src/3d-viewer/handlers/*.rpy /opt/paraview/share/paraview-5.6/web/visualizer/www/
 
-ENTRYPOINT [ "/bin/bash", "docker/boot.sh" ]
+ENTRYPOINT [ "/bin/bash", "docker/entrypoint.bash" ]
 #------------------------------------------
 FROM common as development
 VOLUME /home/root/devel
@@ -110,5 +110,5 @@ ENV CREATE_DUMMY_TABLE 1
 ENV USE_CASE_CONFIG_FILE="devel/port_config.json"
 ENV TEST_DATA_PATH="/test-data"
 # Need to use entrypoint as base image's entrypoint must be overriden
-ENTRYPOINT [ "/bin/bash", "docker/boot.sh" ]
+ENTRYPOINT [ "/bin/bash", "docker/entrypoint.bash" ]
 
