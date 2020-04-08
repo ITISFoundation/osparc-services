@@ -12,7 +12,7 @@ services:
   #   init: true
   #   build:
   #     context: ../../
-  #     dockerfile: services/dy-3dvis/src/simcoreparaviewweb/Dockerfile
+  #     dockerfile: services/dy-3dvis/src/3d-viewer/Dockerfile
   #     target: production
   #     args:
   #       BASE_IMAGE: kitware/paraviewweb:pv-v5.6.0-egl

@@ -6,8 +6,8 @@ WORKDIR /home/node
 ARG VISUALIZER_VERSION=v3.1.10
 RUN git clone --branch ${VISUALIZER_VERSION} https://github.com/Kitware/visualizer.git
 WORKDIR /home/node/visualizer
-COPY services/dy-3dvis/src/simcoreparaviewweb/rebrand-osparc/to-be-copied .
-COPY services/dy-3dvis/src/simcoreparaviewweb/rebrand-osparc/rebrand-osparc.patch rebrand-osparc.patch
+COPY services/dy-3dvis/src/3d-viewer/rebrand-osparc/to-be-copied .
+COPY services/dy-3dvis/src/3d-viewer/rebrand-osparc/rebrand-osparc.patch rebrand-osparc.patch
 RUN git apply rebrand-osparc.patch && \
     npm install && \
     npm run build:release && \
@@ -93,9 +93,9 @@ HEALTHCHECK --interval=10s --timeout=30s --start-period=1s --retries=3 CMD [ "py
 #------------------------------------------
 FROM common AS production
 # copy scripts
-COPY services/dy-3dvis/src/simcoreparaviewweb/docker /home/root/docker
-COPY services/dy-3dvis/src/simcoreparaviewweb/config /home/root/config
-COPY services/dy-3dvis/src/simcoreparaviewweb/handlers/*.rpy /opt/paraview/share/paraview-5.6/web/visualizer/www/
+COPY services/dy-3dvis/src/3d-viewer/docker /home/root/docker
+COPY services/dy-3dvis/src/3d-viewer/config /home/root/config
+COPY services/dy-3dvis/src/3d-viewer/handlers/*.rpy /opt/paraview/share/paraview-5.6/web/visualizer/www/
 
 ENTRYPOINT [ "/bin/bash", "docker/boot.sh" ]
 #------------------------------------------

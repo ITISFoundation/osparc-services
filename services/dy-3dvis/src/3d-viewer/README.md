@@ -6,7 +6,7 @@ It brings the paraview visualizer application as an example of how easy one can 
 
 ## local development
 
-1. go to /services/dy-3dvis/src/simcoreparaviewweb/
+1. go to /services/dy-3dvis/src/3d-viewer/
 2. execute `make build-devel`, this will build the service as "development" code together with a local minio S3 storage and a postgres DB
 3. execute `make up-devel`, this will run the service locally
 4. open a terminal (preferably bash)
