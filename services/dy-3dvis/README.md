@@ -1,4 +1,4 @@
-# Simcore - paraviewweb service
+# Simcore - 3d-viewer service
 
 This service is based on the official docker images [dockerhub](https://hub.docker.com/r/kitware/paraviewweb/).
 
@@ -16,7 +16,7 @@ It brings the paraview visualizer application as an example of how easy one can 
 
 ## production
 
-1. go to /service/dy-3dvis/simcoreparaviewweb/
+1. go to /service/dy-3dvis/src/3d-viewer/
 2. execute `make build`, this build the service as "production" code
 3. in the __Makefile__ change the version of __VERSION__ accordingly
 4. execute `make push`, this will upload the created docker images to the registry
