@@ -13,8 +13,7 @@ COPY --chown=jovyan:users src/requirements.txt .
 # TODO: tmp workaround for https://github.com/pypa/pip/issues/6197
 ENV VIRTUAL_VENV=/home/jovyan/.venv
 RUN python -m venv ${VIRTUAL_VENV} &&\    
-    ${VIRTUAL_VENV}/bin/pip --cache-dir=/tmp/.pipcache install -r requirements.txt &&\
-    rm -rf /tmp/.pipcache
+    ${VIRTUAL_VENV}/bin/pip --no-cache-dir install -r requirements.txt
 
 
 # prepare for booting ---------------------------------------------------------
