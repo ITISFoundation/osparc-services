@@ -1,6 +1,6 @@
 version: "3.7"
 services:
-  simcore-paraviewweb:
+  3d-viewer:
     build:
       labels:
         simcore.service.settings: '[

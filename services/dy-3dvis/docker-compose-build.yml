@@ -1,6 +1,6 @@
 version: "3.7"
 services:
-  simcore-paraviewweb:
+  3d-viewer:
     image: local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}
     context: ../../
     dockerfile: services/dy-3dvis/src/simcoreparaviewweb/Dockerfile

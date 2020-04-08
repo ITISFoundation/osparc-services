@@ -1,13 +1,13 @@
 version: "3.7"
 services:
-  simcore-paraviewweb:
+  3d-viewer:
     image: ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
     init: true
     # some defaults to test the service
     ports:
       - "8777:${SERVER_PORT}"
   #--------------------------------------------------------------------
-  # simcore-paraviewweb-gpu:
+  # 3d-viewer-gpu:
   #   image: ${DOCKER_REGISTRY}/3d-viewer-gpu:${DOCKER_IMAGE_TAG}
   #   init: true
   #   build:
