@@ -18,21 +18,24 @@ def call_python3(cmd, request):
     if process.returncode != 0:
         request.setResponseCode(500, message=str(err))
         return "FAILURE".encode('utf-8')
-    
+
     request.setResponseCode(200)
     return "SUCCESS".encode('utf-8')
 
+
 class MyResource(Resource):
-    def render_GET(self, request):        
+    def render_GET(self, request):
         log.info("pulling state from S3...")
-        cmd = "/home/root/docker/state_manager.py pull"
+        cmd = "/home/root/utils/state_manager.py pull"
         return call_python3(cmd, request)
 
     def render_POST(self, request):
         log.info("saving state...")
-        save_data = protocols.ParaViewWebSaveData(baseSavePath=os.environ.get("PARAVIEW_INPUT_PATH"))
+        save_data = protocols.ParaViewWebSaveData(
+            baseSavePath=os.environ.get("PARAVIEW_INPUT_PATH"))
         save_data.saveData(os.environ.get("SIMCORE_STATE_FILE"))
-        cmd = "/home/root/docker/state_manager.py push"
+        cmd = "/home/root/utils/state_manager.py push"
         return call_python3(cmd, request)
+
 
 resource = MyResource()

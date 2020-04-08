@@ -32,7 +32,8 @@ services:
       - ../../scripts/dy_services_helpers:/home/root/scripts/dy_services_helpers
       - ./test-data:/home/root/test-data
       - ./visualizer-data:/data
-      - ./src/3d-viewer/docker:/home/root/docker
+      - ./src/3d-viewer/docker/custom:/home/root/docker
+      - ./src/3d-viewer/utils:/home/root/utils
       - ./src/3d-viewer/config:/home/root/config
       - ./src/3d-viewer/handlers:/home/root/handlers
     deploy:
