@@ -139,3 +139,5 @@ pytest_*.xml
 !.dockerignore
 # git ignore
 !.gitignore
+# stack files
+.stack*
