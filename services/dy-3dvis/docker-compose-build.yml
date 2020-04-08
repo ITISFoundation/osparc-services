@@ -2,9 +2,10 @@ version: "3.7"
 services:
   3d-viewer:
     image: local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}
-    context: ../../
-    dockerfile: services/dy-3dvis/src/3d-viewer/Dockerfile
-    target: production
-    args:
-      BASE_IMAGE: kitware/paraviewweb:pv-v5.6.0-osmesa
-      VISUALIZER_VERSION: v3.1.6
+    build:
+      context: ../../
+      dockerfile: services/dy-3dvis/src/3d-viewer/Dockerfile
+      target: production
+      args:
+        BASE_IMAGE: kitware/paraviewweb:pv-v5.6.0-osmesa
+        VISUALIZER_VERSION: v3.1.6
