@@ -1,0 +1,24 @@
+name: 3d-viewer
+key: simcore/services/dynamic/3d-viewer
+type: dynamic
+integration-version: 1.0.0
+version: 3.0.0
+description: Paraview Web-based Visualizer
+contact: anderegg@itis.swiss
+authors:
+  - name: Sylvain Anderegg
+    email: anderegg@itis.swiss
+    affiliation: IT'IS Foundation
+inputs:
+  A:
+    displayOrder: 1
+    label: A
+    description: Any paraview compatible dataset. 1 dataset or N dataset compressed in a zip file.
+    type: data:*/*
+  B:
+    displayOrder: 1
+    label: B
+    description: Any paraview compatible dataset. 1 dataset or N dataset compressed in a zip file.
+    type: data:*/*
+
+outputs:

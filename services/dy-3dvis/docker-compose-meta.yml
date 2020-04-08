@@ -1,0 +1,26 @@
+version: "3.7"
+services:
+  simcore-paraviewweb:
+    build:
+      labels:
+        simcore.service.settings: '[
+          {"name": "ports", "type": "int", "value": ${SERVER_PORT}},
+          {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]},
+          {"name": "resources", "type": "resources", "value":
+          {
+          "Limits": {
+          "NanoCPUs": 4000000000,
+          "MemoryBytes": 17179869184
+          },
+          "Reservations": {
+          "NanoCPUs": 100000000,
+          "MemoryBytes": 536870912
+          }
+          }
+          }
+          ]'
+        simcore.service.bootsettings: "[]"
+        org.label-schema.build-date: ${BUILD_DATE}
+        org.label-schema.schema-version: "1.0"
+        org.label-schema.vcs-ref: ${VCS_REF}
+        org.label-schema.vcs-url: ${VCS_URL}
