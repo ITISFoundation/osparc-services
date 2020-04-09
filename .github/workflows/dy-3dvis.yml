@@ -2,13 +2,13 @@ name: dy-3dvis
 
 on:
   push:
+    paths:
+      - "services/dy-3dvis/**"
+      - "!**.md"
   pull_request:
-    paths-ignore:
-      - "*.md"
-      - "*.png"
-      - "*.svg"
-      - ".vscode/**"
-      - ".vscode-template/**"
+    paths:
+      - "services/dy-3dvis/**"
+      - "!**.md"
 
 env:
   # secrets can be set in settings/secrets on github
