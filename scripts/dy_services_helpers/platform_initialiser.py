@@ -95,7 +95,7 @@ async def _initialise_platform(port_configuration_path: Path, file_generator, de
             file_to_upload = file_generator(file_index, input_item["type"])
             if file_to_upload is not None:
                 # upload to S3
-                await (await PORTS.inputs[key]).set(Path(file_to_upload))
+                await (await PORTS.inputs)[key].set(Path(file_to_upload))
                 file_index += 1
                 if delete_file:
                     Path(file_to_upload).unlink()
