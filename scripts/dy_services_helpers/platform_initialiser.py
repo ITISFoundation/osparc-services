@@ -2,21 +2,24 @@
 import argparse
 import asyncio
 import json
+import os
 import sys
 import uuid
 from pathlib import Path
+from urllib.request import urlopen
 
-import tenacity
 import sqlalchemy as sa
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
-from s3wrapper.s3_client import S3Client
+import tenacity
 from simcore_sdk import node_ports
 from simcore_sdk.config.db import Config as db_config
 from simcore_sdk.config.s3 import Config as s3_config
-from simcore_sdk.models.pipeline_models import (Base, ComputationalPipeline,
-                                                ComputationalTask)
+from simcore_sdk.models.pipeline_models import (
+    Base,
+    ComputationalPipeline,
+    ComputationalTask,
+)
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 
 class DbSettings:
@@ -26,15 +29,6 @@ class DbSettings:
             self._db_config.endpoint, client_encoding='utf8')
         self.Session = sessionmaker(self.db)
         self.session = self.Session()
-
-
-class S3Settings:
-    def __init__(self):
-        self._config = s3_config()
-        self.client = S3Client(endpoint=self._config.endpoint,
-                               access_key=self._config.access_key, secret_key=self._config.secret_key)
-        self.bucket = self._config.bucket_name
-        self.client.create_bucket(self.bucket)
 
 
 @tenacity.retry(wait=tenacity.wait_fixed(2), stop=tenacity.stop_after_attempt(5) | tenacity.stop_after_delay(20))
@@ -54,9 +48,9 @@ def init_db():
 
 
 @tenacity.retry(wait=tenacity.wait_fixed(2), stop=tenacity.stop_after_attempt(5) | tenacity.stop_after_delay(20))
-def init_s3():
-    s3 = S3Settings()
-    return s3
+def init_storage():
+    if urlopen(f"http://{os.environ.get('STORAGE_ENDPOINT')}/v0/").getcode() != 200:
+        raise Exception("storage not ready...")
 
 
 async def _initialise_platform(port_configuration_path: Path, file_generator, delete_file):
@@ -69,7 +63,7 @@ async def _initialise_platform(port_configuration_path: Path, file_generator, de
             str(port_configuration_path), configuration))
 
     # init s3 to ensure we have a bucket
-    init_s3()
+    init_storage()
     # set up db
     db = init_db()
 
