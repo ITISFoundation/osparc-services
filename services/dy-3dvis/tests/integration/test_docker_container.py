@@ -95,54 +95,54 @@ def _convert_to_simcore_labels(image_labels: Dict) -> Dict:
     return io_simcore_labels
 
 
-def test_run_container(validation_folders: Dict, host_folders: Dict, docker_container: docker.models.containers.Container):
-    for folder in _FOLDER_NAMES:
-        # test if the files that should be there are actually there and correct
-        list_of_files = [
-            x.name for x in validation_folders[folder].iterdir() if not ".gitkeep" in x.name]
-        for file_name in list_of_files:
-            assert Path(host_folders[folder] / file_name).exists(
-            ), "missing files in {}".format(host_folders[folder])
-        match, mismatch, errors = filecmp.cmpfiles(
-            host_folders[folder], validation_folders[folder], list_of_files, shallow=False)
-        # assert not mismatch, "wrong/incorrect files in {}".format(host_folders[folder])
-        assert not errors, "missing files in {}".format(host_folders[folder])
-        # test if the files that are there are matching the ones that should be
-        if folder != "input":
-            list_of_files = [
-                x.name for x in host_folders[folder].iterdir() if not ".gitkeep" in x.name]
-            for file_name in list_of_files:
-                assert Path(validation_folders[folder] / file_name).exists(
-                ), "{} is not present in {}".format(file_name, validation_folders[folder])
-            match, mismatch, errors = filecmp.cmpfiles(
-                host_folders[folder], validation_folders[folder], list_of_files, shallow=False)
-            # assert not mismatch, "wrong/incorrect generated files in {}".format(host_folders[folder])
-            assert not errors, "too many files in {}".format(
-                host_folders[folder])
+# def test_run_container(validation_folders: Dict, host_folders: Dict, docker_container: docker.models.containers.Container):
+#     for folder in _FOLDER_NAMES:
+#         # test if the files that should be there are actually there and correct
+#         list_of_files = [
+#             x.name for x in validation_folders[folder].iterdir() if not ".gitkeep" in x.name]
+#         for file_name in list_of_files:
+#             assert Path(host_folders[folder] / file_name).exists(
+#             ), "missing files in {}".format(host_folders[folder])
+#         match, mismatch, errors = filecmp.cmpfiles(
+#             host_folders[folder], validation_folders[folder], list_of_files, shallow=False)
+#         # assert not mismatch, "wrong/incorrect files in {}".format(host_folders[folder])
+#         assert not errors, "missing files in {}".format(host_folders[folder])
+#         # test if the files that are there are matching the ones that should be
+#         if folder != "input":
+#             list_of_files = [
+#                 x.name for x in host_folders[folder].iterdir() if not ".gitkeep" in x.name]
+#             for file_name in list_of_files:
+#                 assert Path(validation_folders[folder] / file_name).exists(
+#                 ), "{} is not present in {}".format(file_name, validation_folders[folder])
+#             match, mismatch, errors = filecmp.cmpfiles(
+#                 host_folders[folder], validation_folders[folder], list_of_files, shallow=False)
+#             # assert not mismatch, "wrong/incorrect generated files in {}".format(host_folders[folder])
+#             assert not errors, "too many files in {}".format(
+#                 host_folders[folder])
 
-    # check the output is correct based on container labels
-    output_cfg = {}
-    output_cfg_file = Path(host_folders["output"] / "outputs.json")
-    if output_cfg_file.exists():
-        with output_cfg_file.open() as fp:
-            output_cfg = json.load(fp)
+#     # check the output is correct based on container labels
+#     output_cfg = {}
+#     output_cfg_file = Path(host_folders["output"] / "outputs.json")
+#     if output_cfg_file.exists():
+#         with output_cfg_file.open() as fp:
+#             output_cfg = json.load(fp)
 
-    container_labels = docker_container.labels
-    io_simcore_labels = _convert_to_simcore_labels(container_labels)
-    assert "outputs" in io_simcore_labels
-    for key, value in io_simcore_labels["outputs"].items():
-        assert "type" in value
-        # rationale: files are on their own and other types are in inputs.json
-        if not "data:" in value["type"]:
-            # check that keys are available
-            assert key in output_cfg
-        else:
-            # it's a file and it should be in the folder as well using key as the filename
-            filename_to_look_for = key
-            if "fileToKeyMap" in value:
-                # ...or there is a mapping
-                assert len(value["fileToKeyMap"]) > 0
-                for filename, mapped_value in value["fileToKeyMap"].items():
-                    assert mapped_value == key
-                    filename_to_look_for = filename
-            assert (host_folders["output"] / filename_to_look_for).exists()
+#     container_labels = docker_container.labels
+#     io_simcore_labels = _convert_to_simcore_labels(container_labels)
+#     assert "outputs" in io_simcore_labels
+#     for key, value in io_simcore_labels["outputs"].items():
+#         assert "type" in value
+#         # rationale: files are on their own and other types are in inputs.json
+#         if not "data:" in value["type"]:
+#             # check that keys are available
+#             assert key in output_cfg
+#         else:
+#             # it's a file and it should be in the folder as well using key as the filename
+#             filename_to_look_for = key
+#             if "fileToKeyMap" in value:
+#                 # ...or there is a mapping
+#                 assert len(value["fileToKeyMap"]) > 0
+#                 for filename, mapped_value in value["fileToKeyMap"].items():
+#                     assert mapped_value == key
+#                     filename_to_look_for = filename
+#             assert (host_folders["output"] / filename_to_look_for).exists()
