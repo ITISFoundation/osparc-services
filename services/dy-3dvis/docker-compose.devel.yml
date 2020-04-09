@@ -27,11 +27,10 @@ services:
       - traefik
     volumes:
       - ./src/3d-viewer/devel:/home/root/devel
-      - ../../services:/home/root/services
       - ../../scripts/dy_services_helpers:/home/root/scripts/dy_services_helpers
-      - ./test-data:/home/root/test-data
-      - ./visualizer-data:/data
-      - ./src/3d-viewer/docker/custom:/home/root/docker
+      - ./${COMPOSE_INPUT_DIR}:/home/root/test-data
+      # - ./visualizer-data:/data
+      - ./docker/custom:/home/root/docker
       - ./src/3d-viewer/utils:/home/root/utils
       - ./src/3d-viewer/config:/home/root/config
       - ./src/3d-viewer/handlers:/home/root/handlers
@@ -103,7 +102,7 @@ services:
     command: server /data
   #--------------------------------------------------------------------
   traefik:
-    image: traefik:v2.2
+    image: traefik:v2.1
     init: true
     ports:
       - "80:80"

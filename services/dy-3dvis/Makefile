@@ -137,6 +137,15 @@ version-integration-patch version-integration-minor version-integration-major: v
 
 
 # DEVELOPMENT ---------------------------------------- 
+# NOTE: since using docker-compose would create the folders automatically but as root user, which is inconvenient
+define _clean_output_dirs
+	# cleaning output directory
+	rm -rf $(COMPOSE_OUTPUT_DIR)/*
+endef
+$(COMPOSE_OUTPUT_DIR):
+	@$(call _clean_output_dirs)
+	mkdir -p $@
+	# created output directory $(COMPOSE_OUTPUT_DIR)
 docker-compose-configs = $(wildcard docker-compose.*yml)
 
 .stack-production.yml .stack-development.yml: $(docker-compose-configs)
@@ -146,7 +155,7 @@ docker-compose-configs = $(wildcard docker-compose.*yml)
 	docker-compose -f docker-compose.yml $(if $(findstring -development,$@), -f docker-compose.devel.yml,) --log-level=ERROR config > $@
 
 .PHONY: up up-devel down
-up up-devel: .env ## Starts the service for testing. Devel mode mounts the folders for direct development.
+up up-devel: .env $(COMPOSE_INPUT_DIR) $(COMPOSE_OUTPUT_DIR) ## Starts the service for testing. Devel mode mounts the folders for direct development.
 	$(eval docker_compose_path=.stack-$(if $(findstring devel,$@),development,production).yml)
 	$(MAKE) $(docker_compose_path)
 	docker stack deploy --compose-file $(docker_compose_path) $(APP_NAME)
