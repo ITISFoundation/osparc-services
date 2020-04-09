@@ -5,7 +5,7 @@ services:
     build:
       context: ../../
       dockerfile: services/dy-3dvis/docker/custom/Dockerfile
-      target: production
+      target: ${DOCKER_BUILD_TARGET}
       args:
         BASE_IMAGE: kitware/paraviewweb:pv-v5.6.0-osmesa
         VISUALIZER_VERSION: v3.1.6

@@ -145,18 +145,11 @@ docker-compose-configs = $(wildcard docker-compose.*yml)
 	export DOCKER_IMAGE_TAG=$(patsubst .stack-%.yml,%,$@); \
 	docker-compose -f docker-compose.yml $(if $(findstring -development,$@), -f docker-compose.devel.yml,) --log-level=ERROR config > $@
 
-define _docker_stack_cli
-	$(eval docker_compose_path=.stack-$(if $(findstring devel,$@),development,production).yml)
-	$(MAKE) $(docker_compose_path)
-	@docker stack --compose-file $(docker_compose_path) $(1)
-endef
-
-
 .PHONY: up up-devel down
-up up-devel: down .env ## Starts the service for testing. Devel mode mounts the folders for direct development.
+up up-devel: .env ## Starts the service for testing. Devel mode mounts the folders for direct development.
 	$(eval docker_compose_path=.stack-$(if $(findstring devel,$@),development,production).yml)
 	$(MAKE) $(docker_compose_path)
-	docker stack deploy --compose-file $(docker_compose_path) $< $(APP_NAME)
+	docker stack deploy --compose-file $(docker_compose_path) $(APP_NAME)
 
 down:
 	docker stack rm $(APP_NAME)
