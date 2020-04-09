@@ -64,11 +64,11 @@ jobs:
         name: deploy
         working-directory: services/dy-3dvis
         run: |
-          ./ci/helpers/dockerhub_login.bash
+          ./../../ci/helpers/dockerhub_login.bash
           make push
       - if: github.event_name == 'push' && github.ref != 'refs/heads/master'
         name: deploy
         working-directory: services/dy-3dvis
         run: |
-          ./ci/helpers/dockerhub_login.bash
+          ./../../ci/helpers/dockerhub_login.bash
           make push-version
