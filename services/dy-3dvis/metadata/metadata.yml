@@ -21,4 +21,4 @@ inputs:
     description: Any paraview compatible dataset. 1 dataset or N dataset compressed in a zip file.
     type: data:*/*
 
-outputs:
+outputs: {}
