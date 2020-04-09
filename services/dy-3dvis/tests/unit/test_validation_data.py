@@ -76,7 +76,7 @@ def test_validation_data_follows_definition(label_cfg: Dict, validation_cfg: Dic
                     filename_to_look_for = filename
                     assert (validation_folder / filename_to_look_for).exists()
             else:
-                assert (validation_folder / filename_to_look_for).exists()
+                assert (validation_folder.glob(filename_to_look_for))
 
     if validation_cfg:
         for key, value in validation_cfg.items():
@@ -96,7 +96,7 @@ def test_validation_data_follows_definition(label_cfg: Dict, validation_cfg: Dic
         if path.name in ["inputs.json", "outputs.json", ".gitkeep"]:
             continue
         assert path.is_file()
-        filename = path.name
+        filename = path.stem
         # this filename shall be available as a key in the labels somewhere
         key = next(_find_key_in_cfg(str(filename), label_cfg))
 
