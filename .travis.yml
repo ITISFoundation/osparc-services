@@ -47,30 +47,6 @@ jobs:
           on:
             all_branches: true
 
-    # build dy-3dvis images ----------------------------------------------------------------------
-    - stage: build / unit-testing
-      # in pull request we do not have credentials to push, checks that the build still passes
-      name: build dy-3dvis
-      sudo: required
-      before_install:
-        - sudo bash ci/travis/build/dy-3dvis before_install
-      install:
-        - unbuffer bash ci/travis/build/dy-3dvis install
-      before_script:
-        - unbuffer bash ci/travis/build/dy-3dvis before_script
-      script:
-        - unbuffer bash ci/travis/build/dy-3dvis script
-      after_success:
-        - unbuffer bash ci/travis/build/dy-3dvis after_success
-      after_failure:
-        - unbuffer bash ci/travis/build/dy-3dvis after_failure
-      deploy:
-        - provider: script
-          skip_cleanup: true
-          script: unbuffer bash ci/travis/build/dy-3dvis deploy
-          on:
-            all_branches: true
-
     # build dy-mattward-dash images ----------------------------------------------------------------------
     - stage: build / unit-testing
       # in pull request we do not have credentials to push, so this is useless
