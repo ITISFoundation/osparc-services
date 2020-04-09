@@ -41,6 +41,7 @@ services:
         - traefik.http.services.3d-viewer.loadbalancer.server.port=${SERVER_PORT}
         - traefik.http.routers.3d-viewer.rule=hostregexp(`{host:.+}`) && PathPrefix(`${SIMCORE_NODE_BASEPATH}`)
         - traefik.http.routers.3d-viewer.entrypoints=http
+        # the stipprefixregex is necessary
         - traefik.http.routers.3d-viewer.middlewares=gzip@docker, 3d-viewer_stripprefixregex
         - traefik.http.middlewares.3d-viewer_stripprefixregex.stripprefixregex.regex=^${SIMCORE_NODE_BASEPATH}
 
