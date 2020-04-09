@@ -43,7 +43,7 @@ echo
 # patch paraview
 echo
 echo "patching paraviewweb to allow for rpy scripts to run..."
-docker/patch_paraview.sh
+docker/patch_paraview.bash
 
 # set default parameters (note that port is the server local port, and host is used for the websocket location)
 echo
