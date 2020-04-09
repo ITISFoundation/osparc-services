@@ -87,11 +87,11 @@ ENV SERVER_PORT="80"  \
 RUN mkdir /home/root/trigger && \
     chmod 777 /home/root/trigger
 
-# will start to run after interval every interval. fails after timeout. fail do not count if during start-period. will do # retries
-HEALTHCHECK --interval=10s --timeout=30s --start-period=1s --retries=3 CMD [ "python3", "/home/root/docker/healthcheck_curl_host.py", "http://localhost", "/" ]
 
 #------------------------------------------
 FROM common AS production
+# will start to run after interval every interval. fails after timeout. fail do not count if during start-period. will do # retries
+HEALTHCHECK --interval=10s --timeout=30s --start-period=1s --retries=3 CMD [ "python3", "/home/root/docker/healthcheck_curl_host.py", "http://localhost", "/" ]
 # copy scripts
 COPY services/dy-3dvis/docker/custom /home/root/docker
 COPY services/dy-3dvis/src/3d-viewer/utils /home/root/utils
