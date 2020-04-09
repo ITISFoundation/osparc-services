@@ -15,11 +15,11 @@ def docker_client() -> docker.DockerClient:
     return docker.from_env()
 
 
-@pytest.fixture
-def docker_image_key(docker_client: docker.DockerClient) -> str:
-    image_key = "3d-viewer:"
+@pytest.fixture(params=["3d-viewer", "3d-viewer-gpu"])
+def docker_image_key(docker_client: docker.DockerClient, request) -> str:
+    image_key = f"local/{request.param}:production"
     docker_images = [image for image in docker_client.images.list() if any(
-        image_key in tag for tag in image.tags)]
+        image_key == tag for tag in image.tags)]
     return docker_images[0].tags[0]
 
 
