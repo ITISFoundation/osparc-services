@@ -5,7 +5,7 @@ IFS=$'\n\t'
 
 before_install() {
     bash ci/travis/helpers/install_docker_compose;
-    bash ci/travis/helpers/show_system_versions.bash;
+    bash ci/helpers/show_system_versions.bash;
     env
 }
 
