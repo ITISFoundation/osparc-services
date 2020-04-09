@@ -102,7 +102,7 @@ services:
     command: server /data
   #--------------------------------------------------------------------
   traefik:
-    image: traefik:v2.1
+    image: traefik:v2.2
     init: true
     ports:
       - "80:80"
