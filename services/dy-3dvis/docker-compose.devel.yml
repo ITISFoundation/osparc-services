@@ -47,7 +47,7 @@ services:
 
   #--------------------------------------------------------------------
   storage:
-    image: itisfoundation/storage:latest
+    image: itisfoundation/storage:master-latest
     init: true
     ports:
       - 11111:8080
