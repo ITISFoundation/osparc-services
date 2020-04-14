@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+  3d-viewer:
+    image: local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}
+    build:
+      context: ../../
+      dockerfile: services/dy-3dvis/docker/custom/Dockerfile
+      target: ${DOCKER_BUILD_TARGET}
+      args:
+        BASE_IMAGE: kitware/paraviewweb:pv-v5.6.0-osmesa
+        VISUALIZER_VERSION: v3.1.6
+  3d-viewer-gpu:
+    image: local/${DOCKER_IMAGE_NAME}-gpu:${DOCKER_BUILD_TARGET}
+    build:
+      context: ../../
+      dockerfile: services/dy-3dvis/docker/custom/Dockerfile
+      target: ${DOCKER_BUILD_TARGET}
+      args:
+        BASE_IMAGE: kitware/paraviewweb:pv-v5.6.0-egl
+        VISUALIZER_VERSION: v3.1.6

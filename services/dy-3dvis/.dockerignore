@@ -1,0 +1,5 @@
+*
+!src/
+!service.cli/
+!docker/
+Dockerfile

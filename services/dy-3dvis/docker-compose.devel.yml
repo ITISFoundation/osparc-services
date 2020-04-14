@@ -1,9 +1,8 @@
-version: "2.3"
+version: "3.7"
 services:
-  simcore-paraviewweb:
-    image: 3d-viewer-dev
-    build:
-      target: development
+  3d-viewer:
+    image: ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:development
+
     environment:
       - STORAGE_ENDPOINT=${STORAGE_ENDPOINT}
       - S3_ENDPOINT=${S3_ENDPOINT}
@@ -19,58 +18,36 @@ services:
       - SIMCORE_NODE_BASEPATH=${SIMCORE_NODE_BASEPATH}
       - SIMCORE_HOST_NAME=${SIMCORE_HOST_NAME}
       - TEST_DATA_PATH=/home/root/test-data
-      - SERVER_PORT=8777
-      - PARAVIEW_DEBUG=0
+      - SERVER_PORT=${SERVER_PORT}
+      - PARAVIEW_DEBUG=${PARAVIEW_DEBUG}
     depends_on:
       - postgres
       - minio
       - storage
+      - traefik
     volumes:
-      - ./simcoreparaviewweb/devel:/home/root/devel
-      - ../../services:/home/root/services
+      - ./src/3d-viewer/devel:/home/root/devel
       - ../../scripts/dy_services_helpers:/home/root/scripts/dy_services_helpers
-      - ./test-data:/home/root/test-data
-      - ./visualizer-data:/data
-      - ./simcoreparaviewweb/docker:/home/root/docker
-      - ./simcoreparaviewweb/config:/home/root/config
-      - ./simcoreparaviewweb/handlers:/home/root/handlers
-  simcore-paraviewweb-gpu:
-    image: 3d-viewer-gpu-dev
-    build:
-      target: development
-    environment:
-      - STORAGE_ENDPOINT=${STORAGE_ENDPOINT}
-      - S3_ENDPOINT=${S3_ENDPOINT}
-      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
-      - S3_SECRET_KEY=${S3_SECRET_KEY}
-      - S3_BUCKET_NAME=${S3_BUCKET_NAME}
-      - POSTGRES_ENDPOINT=${POSTGRES_ENDPOINT}
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_HOST=${POSTGRES_HOST}
-      - POSTGRES_PORT=${POSTGRES_PORT}
-      - SIMCORE_NODE_BASEPATH=${SIMCORE_NODE_BASEPATH}
-      - SIMCORE_HOST_NAME=${SIMCORE_HOST_NAME}
-      - TEST_DATA_PATH=/home/root/test-data
-      - SERVER_PORT=8777
-      - PARAVIEW_DEBUG=0
-    depends_on:
-      - postgres
-      - minio
-      - storage
-    volumes:
-      - ./simcoreparaviewweb/devel:/home/root/devel
-      - ../../services:/home/root/services
-      - ../../scripts/dy_services_helpers:/home/root/scripts/dy_services_helpers
-      - ./test-data:/home/root/test-data
-      - ./visualizer-data:/data
-      - ./simcoreparaviewweb/docker:/home/root/docker
-      - ./simcoreparaviewweb/config:/home/root/config
-      - ./simcoreparaviewweb/handlers:/home/root/handlers
+      - ./${COMPOSE_INPUT_DIR}:/home/root/test-data
+      # - ./visualizer-data:/data
+      - ./docker/custom:/home/root/docker
+      - ./src/3d-viewer/utils:/home/root/utils
+      - ./src/3d-viewer/config:/home/root/config
+      - ./src/3d-viewer/handlers:/home/root/handlers
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=3d-viewer_default
+        - traefik.http.services.3d-viewer.loadbalancer.server.port=${SERVER_PORT}
+        - traefik.http.routers.3d-viewer.rule=hostregexp(`{host:.+}`) && PathPrefix(`${SIMCORE_NODE_BASEPATH}`)
+        - traefik.http.routers.3d-viewer.entrypoints=http
+        # the stipprefixregex is necessary
+        - traefik.http.routers.3d-viewer.middlewares=gzip@docker, 3d-viewer_stripprefixregex
+        - traefik.http.middlewares.3d-viewer_stripprefixregex.stripprefixregex.regex=^${SIMCORE_NODE_BASEPATH}
+
   #--------------------------------------------------------------------
   storage:
-    image: itisfoundation/storage:latest
+    image: itisfoundation/storage:master-latest
     init: true
     ports:
       - 11111:8080
@@ -90,6 +67,9 @@ services:
       - BF_API_KEY=none
       - STORAGE_LOGLEVEL=INFO
       - STORAGE_MONITORING_ENABLED=1
+      - TRACING_ENABLED=${TRACING_ENABLED:-True}
+      - TRACING_ZIPKIN_ENDPOINT=${TRACING_ZIPKIN_ENDPOINT}
+
     restart: always
     depends_on:
       - postgres
@@ -121,3 +101,37 @@ services:
     ports:
       - "9001:9000"
     command: server /data
+  #--------------------------------------------------------------------
+  traefik:
+    image: traefik:v2.2
+    init: true
+    ports:
+      - "80:80"
+      - "8080:8080"
+    command:
+      - "--api=true"
+      - "--api.dashboard=true"
+      - "--log.level=DEBUG"
+      - "--accesslog=true"
+      - "--entryPoints.http.address=:80"
+      - "--entryPoints.traefik_dashboard.address=:8080"
+      - "--providers.docker.endpoint=unix:///var/run/docker.sock"
+      - "--providers.docker.swarmMode=true"
+      - "--providers.docker.exposedByDefault=false"
+
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
+
+    deploy:
+      labels:
+        - traefik.enable=true
+        # gzip compression
+        - traefik.http.middlewares.gzip.compress=true
+        # traefik UI
+        - traefik.docker.network=paraviewweb_default
+        - traefik.http.routers.api.service=api@internal
+        - traefik.http.routers.api.rule=PathPrefix(`/dashboard`) || PathPrefix(`/api`)
+        - traefik.http.routers.api.entrypoints=traefik_dashboard
+        - traefik.http.routers.api.middlewares=gzip@docker
+        - traefik.http.services.api.loadbalancer.server.port=8080

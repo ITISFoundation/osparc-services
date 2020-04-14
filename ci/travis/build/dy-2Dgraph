@@ -10,20 +10,17 @@ before_install() {
 }
 
 install() {
-    bash ci/helpers/ensure_python_pip.bash
-    pip3 install -r services/dy-dash/cc-rabbit-1d/tests/requirements.txt
+    echo "nothing to install..."
 }
 
 before_script() {
-    cd services/dy-dash/cc-rabbit-1d
+    cd services/dy-2Dgraph/use-cases
     make pull || true
 }
 
 script() {
-    cd services/dy-dash/cc-rabbit-1d
-    make build
-    make unit-test
-    make integration-test
+    cd services/dy-2Dgraph/use-cases
+    make build-travis
 }
 
 after_success() {
@@ -42,8 +39,8 @@ deploy() {
     # these variable must be available securely from travis
     echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
     # push the local images
-    cd services/dy-dash/cc-rabbit-1d
-    make push
+    cd services/dy-2Dgraph/use-cases
+    make push-travis
 }
 
 # Check if the function exists (bash specific)

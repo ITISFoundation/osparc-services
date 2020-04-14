@@ -2,7 +2,7 @@
 
 # files and folders recursively
 /api/                                             @sanderegg, @pcrespov
-/ops/                                             @sanderegg, @pcrespov
+/ci/                                             @sanderegg, @pcrespov
 
 /services/dy-2Dgraph                              @sanderegg
 /services/dy-2Dgraph/use-cases/cc/cc-oned         @sanderegg
