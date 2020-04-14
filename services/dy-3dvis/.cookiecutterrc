@@ -21,7 +21,7 @@ default_context:
     _template:                 'gh:ITISFoundation/cookiecutter-osparc-service'
     author_affiliation:        "IT'IS Foundation"
     author_email:              'anderegg@itis.swiss'
-    author_name:               'Sylvain Anderegg and Pedro Crespo'
+    author_name:               'Sylvain Anderegg'
     contact_email:             'anderegg@itis.swiss'
     default_docker_registry:   'itisfoundation'
     docker_base:               'custom'

@@ -120,12 +120,12 @@ push push-force: ## pushes (resp. force) services to the registry if service not
 		$(if $(call version_exists,$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)),$(error $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG) already exists on $(DOCKER_REGISTRY)), $(info no version found on $(DOCKER_REGISTRY)))\
 		$(if $(call version_exists,$(DOCKER_IMAGE_NAME)-gpu:$(DOCKER_IMAGE_TAG)),$(error $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG) already exists on $(DOCKER_REGISTRY)), $(info no version found on $(DOCKER_REGISTRY)))\
 	)
-	@$(MAKE) push-version;
-	@$(MAKE) push-latest;
+	@$(MAKE) --no-print-directory push-version;
+	@$(MAKE) --no-print-directory push-latest;
 
 push-latest push-version: ## publish service to registry with latest/version tag
 	# pushing '$(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'...
-	@$(MAKE) tag-$(subst push-,,$@)
+	@$(MAKE) --no-print-directory tag-$(subst push-,,$@)
 	@docker push $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)	
 	# pushed '$(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'
 	@docker push $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-gpu:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
@@ -164,7 +164,7 @@ docker-compose-configs = $(wildcard docker-compose.*yml)
 .PHONY: up up-devel down
 up up-devel: .env $(COMPOSE_INPUT_DIR) $(COMPOSE_OUTPUT_DIR) ## Starts the service for testing. Devel mode mounts the folders for direct development.
 	$(eval docker_compose_path=.stack-$(if $(findstring devel,$@),development,production).yml)
-	$(MAKE) $(docker_compose_path)
+	$(MAKE) --no-print-directory $(docker_compose_path)
 	docker stack deploy --compose-file $(docker_compose_path) $(APP_NAME)
 
 down:
