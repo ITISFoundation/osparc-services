@@ -2,13 +2,11 @@ services:
   3d-viewer:
     build:
       labels:
-        io.simcore.authors:
-          '{"authors": [{"name": "Sylvain Anderegg", "email": "anderegg@itis.swiss",
+        io.simcore.authors: '{"authors": [{"name": "Sylvain Anderegg", "email": "anderegg@itis.swiss",
           "affiliation": "IT''IS Foundation"}]}'
         io.simcore.contact: '{"contact": "anderegg@itis.swiss"}'
         io.simcore.description: '{"description": "Paraview Web-based Visualizer"}'
-        io.simcore.inputs:
-          '{"inputs": {"A": {"displayOrder": 1, "label": "A", "description":
+        io.simcore.inputs: '{"inputs": {"A": {"displayOrder": 1, "label": "A", "description":
           "Any paraview compatible dataset. 1 dataset or N dataset compressed in a
           zip file.", "type": "data:*/*"}, "B": {"displayOrder": 1, "label": "B",
           "description": "Any paraview compatible dataset. 1 dataset or N dataset
@@ -18,14 +16,14 @@ services:
         io.simcore.name: '{"name": "3d-viewer"}'
         io.simcore.outputs: '{"outputs": {}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "3.0.0"}'
+        io.simcore.version: '{"version": "3.0.1"}'
         org.label-schema.build-date: ${BUILD_DATE}
-        org.label-schema.schema-version: "1.0"
+        org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: ${VCS_URL}
-        simcore.service.bootsettings: "[]"
-        simcore.service.settings:
-          '[ {"name": "ports", "type": "int", "value": ${SERVER_PORT}},
+        simcore.service.bootsettings: '[]'
+        simcore.service.reverse-proxy-settings: '{"strip_path":true}'
+        simcore.service.settings: '[ {"name": "ports", "type": "int", "value": ${SERVER_PORT}},
           {"name": "constraints", "type": "string", "value": ["node.platform.os ==
           linux"]}, {"name": "resources", "type": "resources", "value": { "Limits":
           { "NanoCPUs": 4000000000, "MemoryBytes": 17179869184 }, "Reservations":
@@ -33,13 +31,11 @@ services:
   3d-viewer-gpu:
     build:
       labels:
-        io.simcore.authors:
-          '{"authors": [{"name": "Sylvain Anderegg", "email": "anderegg@itis.swiss",
+        io.simcore.authors: '{"authors": [{"name": "Sylvain Anderegg", "email": "anderegg@itis.swiss",
           "affiliation": "IT''IS Foundation"}]}'
         io.simcore.contact: '{"contact": "anderegg@itis.swiss"}'
         io.simcore.description: '{"description": "Paraview Web-based Visualizer"}'
-        io.simcore.inputs:
-          '{"inputs": {"A": {"displayOrder": 1, "label": "A", "description":
+        io.simcore.inputs: '{"inputs": {"A": {"displayOrder": 1, "label": "A", "description":
           "Any paraview compatible dataset. 1 dataset or N dataset compressed in a
           zip file.", "type": "data:*/*"}, "B": {"displayOrder": 1, "label": "B",
           "description": "Any paraview compatible dataset. 1 dataset or N dataset
@@ -49,18 +45,17 @@ services:
         io.simcore.name: '{"name": "3d-viewer"}'
         io.simcore.outputs: '{"outputs": {}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "3.0.0"}'
+        io.simcore.version: '{"version": "3.0.1"}'
         org.label-schema.build-date: ${BUILD_DATE}
-        org.label-schema.schema-version: "1.0"
+        org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: ${VCS_URL}
+        simcore.service.bootsettings: '[]'
         simcore.service.reverse-proxy-settings: '{"strip_path":true}'
-        simcore.service.bootsettings: "[]"
-        simcore.service.settings:
-          '[ {"name": "ports", "type": "int", "value": ${SERVER_PORT}},
+        simcore.service.settings: '[ {"name": "ports", "type": "int", "value": ${SERVER_PORT}},
           {"name": "constraints", "type": "string", "value": [ "node.platform.os ==
           linux" ]}, {"name": "Resources", "type": "Resources", "value": { "Limits":
           { "NanoCPUs": 4000000000, "MemoryBytes": 17179869184 }, "Reservations":
           { "NanoCPUs": 100000000, "MemoryBytes": 536870912, "GenericResources": [
           { "DiscreteResourceSpec": { "Kind": "VRAM", "Value": 1 } } ] } } } ]'
-version: "3.7"
+version: '3.7'
