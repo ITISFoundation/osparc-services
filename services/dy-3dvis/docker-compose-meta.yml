@@ -23,6 +23,7 @@ services:
         org.label-schema.schema-version: "1.0"
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: ${VCS_URL}
+        simcore.service.reverse-proxy-settings: '{"strip_path":true}'
         simcore.service.bootsettings: "[]"
         simcore.service.settings:
           '[ {"name": "ports", "type": "int", "value": ${SERVER_PORT}},
