@@ -35,4 +35,4 @@ default_context:
     project_slug:              '3d-viewer'
     project_type:              'dynamic'
     release_date:              '2020'
-    version:                   '3.0.1'
+    version:                   '3.0.2'
