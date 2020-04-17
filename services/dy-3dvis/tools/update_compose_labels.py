@@ -68,17 +68,18 @@ def main(args=None) -> int:
         # get available jsons
         compose_cfg = get_compose_file(options.compose)
         metadata = get_metadata_file(options.metadata)
+        service_name = metadata["name"]
         json_metadata = stringify_metadata(metadata)
-        for service_name in ["3d-viewer", "3d-viewer-gpu"]:
-            if update_compose_labels(compose_cfg, json_metadata, service_name):
-                log.info("Updating %s using labels in %s",
-                         options.compose, options.metadata)
-                # write the file back
-                with options.compose.open('w') as fp:
-                    yaml.safe_dump(compose_cfg, fp, default_flow_style=False)
-                    log.info("Update completed")
-            else:
-                log.info("No update necessary")
+
+        if update_compose_labels(compose_cfg, json_metadata, service_name):
+            log.info("Updating %s using labels in %s",
+                     options.compose, options.metadata)
+            # write the file back
+            with options.compose.open('w') as fp:
+                yaml.safe_dump(compose_cfg, fp, default_flow_style=False)
+                log.info("Update completed")
+        else:
+            log.info("No update necessary")
         return ExitCode.SUCCESS
     except:  # pylint: disable=bare-except
         log.exception("Unexpected error:")

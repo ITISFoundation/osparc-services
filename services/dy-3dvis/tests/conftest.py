@@ -4,6 +4,9 @@
 
 import sys
 from pathlib import Path
+from typing import Dict
+
+import yaml
 
 import pytest
 
@@ -58,11 +61,28 @@ def package_dir(src_dir: Path) -> Path:
     assert package_dir.exists()
     return package_dir
 
-@pytest.fixture(scope='session')
-def metadata_file(project_slug_dir: Path) -> Path:
-    metadata_file = project_slug_dir / "metadata" / "metadata.yml"
+
+@pytest.fixture(scope='session', params=["3d-viewer", "3d-viewer-gpu"])
+def service_name(request):
+    yield request.param
+
+
+@pytest.fixture(scope='function')
+def metadata_file(project_slug_dir: Path, service_name: str) -> Path:
+    """NOTE: service_name is a parametrization
+    """
+    metadata_file = project_slug_dir / "metadata" / \
+        f"metadata{service_name[len('3d-viewer'):]}.yml"
     assert metadata_file.exists()
     return metadata_file
+
+
+@pytest.fixture(scope='function')
+def metadata_labels(metadata_file: Path) -> Dict:
+    with metadata_file.open() as fp:
+        metadata = yaml.safe_load(fp)
+        return metadata
+
 
 @pytest.fixture(scope='session')
 def git_root_dir() -> Path:
