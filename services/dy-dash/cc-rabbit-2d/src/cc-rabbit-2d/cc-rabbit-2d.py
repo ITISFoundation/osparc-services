@@ -90,15 +90,16 @@ def preprocess_inputs():
     global out_images_path
 
     temp_folder = tempfile.mkdtemp()
-    for file_path in data_paths:
-        if file_path and zipfile.is_zipfile(file_path):
-            with zipfile.ZipFile(file_path) as zip_file:
-                zip_file.extractall(temp_folder)
+    if data_paths:
+        for file_path in data_paths:
+            if file_path and zipfile.is_zipfile(file_path):
+                with zipfile.ZipFile(file_path) as zip_file:
+                    zip_file.extractall(temp_folder)
 
-        # get the list of files
-        dat_files = sorted([os.path.join(temp_folder, x) for x in os.listdir(
-            temp_folder) if x.endswith(".dat")], key=lambda f: int(''.join(filter(str.isdigit, f))))
-        out_images_path = tempfile.gettempdir()
+            # get the list of files
+            dat_files = sorted([os.path.join(temp_folder, x) for x in os.listdir(
+                temp_folder) if x.endswith(".dat")], key=lambda f: int(''.join(filter(str.isdigit, f))))
+            out_images_path = tempfile.gettempdir()
 
 
 def plot_contour(dat_file):
