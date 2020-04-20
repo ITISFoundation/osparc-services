@@ -47,14 +47,7 @@ def osparc_service_labels_jsonschema(tmp_path) -> Dict:
         return json_schema
 
 
-@pytest.fixture(scope='session')
-def metadata_labels(metadata_file: Path) -> Dict:
-    with metadata_file.open() as fp:
-        metadata = yaml.safe_load(fp)
-        return metadata
-
 # TESTS
-
 
 def test_docker_io_simcore_labels_against_files(docker_image: docker.models.images.Image, metadata_labels: Dict):
     image_labels = docker_image.labels
