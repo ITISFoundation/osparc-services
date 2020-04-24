@@ -1,0 +1,147 @@
+authors:
+- affiliation: University of Anywhere, Department of something
+  email: zhuang@itis.swiss
+  name: Katie Zhuang
+contact: zhuang@itis.swiss
+description: opencorservice_demo
+inputs:
+  endtime:
+    defaultValue: 1000
+    description: ending time of simulation (s)
+    displayOrder: 2
+    label: simulation ending time
+    type: number
+  input_0:
+    defaultValue: 1.0116666666666656
+    description: antidiuretic_hormone/total_ADH_secretion/ADH1
+    displayOrder: 4
+    label: ADH1
+    type: number
+  input_1:
+    defaultValue: 103.525
+    description: antidiuretic_hormone/PA1
+    displayOrder: 5
+    label: PA1
+    type: number
+  input_10:
+    defaultValue: 0.0
+    description: antidiuretic_hormone/parameter_values/ADHINF
+    displayOrder: 14
+    label: ADHINF
+    type: number
+  input_11:
+    defaultValue: 0.2
+    description: antidiuretic_hormone/parameter_values/ADHKLL
+    displayOrder: 15
+    label: ADHKLL
+    type: number
+  input_12:
+    defaultValue: 85.0
+    description: antidiuretic_hormone/parameter_values/ADHPUL
+    displayOrder: 16
+    label: ADHPUL
+    type: number
+  input_13:
+    defaultValue: 0.93617
+    description: antidiuretic_hormone/parameter_values/ADHVLL
+    displayOrder: 17
+    label: ADHVLL
+    type: number
+  input_14:
+    defaultValue: 0.0
+    description: antidiuretic_hormone/pressure_control_of_ADH_secretion/ADHPR
+    displayOrder: 18
+    label: ADHPR
+    type: number
+  input_15:
+    defaultValue: 1.0116666666666656
+    description: antidiuretic_hormone/osmotic_control_of_ADH_secretion/ADHNA
+    displayOrder: 19
+    label: ADHNA
+    type: number
+  input_16:
+    defaultValue: 139.0
+    description: antidiuretic_hormone/parameter_values/CNR
+    displayOrder: 20
+    label: CNR
+    type: number
+  input_17:
+    defaultValue: 15.0
+    description: antidiuretic_hormone/parameter_values/ADHTC
+    displayOrder: 21
+    label: ADHTC
+    type: number
+  input_2:
+    defaultValue: 1.0116666666666656
+    description: antidiuretic_hormone/total_ADH_secretion/ADH
+    displayOrder: 6
+    label: ADH
+    type: number
+  input_3:
+    defaultValue: 2.5
+    description: antidiuretic_hormone/parameter_values/ADHVUL
+    displayOrder: 7
+    label: ADHVUL
+    type: number
+  input_4:
+    defaultValue: 85.0
+    description: antidiuretic_hormone/pressure_control_of_ADH_secretion/ADHPA
+    displayOrder: 8
+    label: ADHPA
+    type: number
+  input_5:
+    defaultValue: 1.0116666666666656
+    description: antidiuretic_hormone/osmotic_control_of_ADH_secretion/ADHNA1
+    displayOrder: 9
+    label: ADHNA1
+    type: number
+  input_6:
+    defaultValue: 142.035
+    description: antidiuretic_hormone/CNA
+    displayOrder: 10
+    label: CNA
+    type: number
+  input_7:
+    defaultValue: 5.0
+    description: antidiuretic_hormone/parameter_values/ADHKUL
+    displayOrder: 11
+    label: ADHKUL
+    type: number
+  input_8:
+    defaultValue: 0.3
+    description: antidiuretic_hormone/parameter_values/ADHPAM
+    displayOrder: 12
+    label: ADHPAM
+    type: number
+  input_9:
+    defaultValue: 1.0
+    description: antidiuretic_hormone/ADH_in_blood/ADHC
+    displayOrder: 13
+    label: ADHC
+    type: number
+  starttime:
+    defaultValue: 0
+    description: starting time of simulation (s)
+    displayOrder: 1
+    label: simulation start time
+    type: number
+  timeincr:
+    defaultValue: 1
+    description: time step for running simulation (s)
+    displayOrder: 3
+    label: simulation time increment
+    type: number
+integration-version: 1.0.0
+key: simcore/services/comp/opencorservice_demo
+name: opencorservice_demo
+outputs:
+  model_output:
+    description: The time-series output of the simulation in comma-delimited .csv
+      format
+    displayOrder: 1
+    fileToKeyMap:
+      outputs.csv: model_output
+    label: Simulation result (CSV-format)
+    type: data:application/csv
+type: computational
+version: 0.1.0
