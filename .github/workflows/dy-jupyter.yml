@@ -21,7 +21,7 @@ env:
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
 jobs:
-  build:
+  build-jupyter:
     name: building dy-jupyter
     runs-on: ${{ matrix.os }}
     strategy:
@@ -79,6 +79,7 @@ jobs:
   build-2d-graph:
     name: building dy-2Dgraph
     runs-on: ${{ matrix.os }}
+    needs: [build-jupyter]
     strategy:
       matrix:
         python: [3.6]
