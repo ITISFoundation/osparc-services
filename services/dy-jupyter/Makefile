@@ -90,9 +90,9 @@ pull:
 
 test:
 	# tests https://github.com/ITISFoundation/osparc-services/issues/15
-	docker run -it --entrypoint python3 ${DOCKER_REGISTRY}/jupyter-base-notebook:${DOCKER_IMAGE_TAG} -c "import psycopg2"
-	docker run -it --entrypoint python3 ${DOCKER_REGISTRY}/jupyter-scipy-notebook:${DOCKER_IMAGE_TAG} -c "import psycopg2"
-	docker run -it --entrypoint python3 ${DOCKER_REGISTRY}/jupyter-r-notebook:${DOCKER_IMAGE_TAG} -c "import psycopg2"
+	docker run --entrypoint python3 ${DOCKER_REGISTRY}/jupyter-base-notebook:${DOCKER_IMAGE_TAG} -c "import psycopg2"
+	docker run --entrypoint python3 ${DOCKER_REGISTRY}/jupyter-scipy-notebook:${DOCKER_IMAGE_TAG} -c "import psycopg2"
+	docker run --entrypoint python3 ${DOCKER_REGISTRY}/jupyter-r-notebook:${DOCKER_IMAGE_TAG} -c "import psycopg2"
 	@echo 'test passed'
 
 ## -------------------------------
