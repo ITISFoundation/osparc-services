@@ -3,12 +3,12 @@ name: cc-0d-viewer
 on:
   push:
     paths:
-      - ".github/worfklows/cc-0d-viewer.yml"
+      - ".github/workflows/cc-0d-viewer.yml"
       - "services/dy-dash/cc-rabbit-0d/**"
       - "!**.md"
   pull_request:
     paths:
-      - ".github/worfklows/cc-0d-viewer.yml"
+      - ".github/workflows/cc-0d-viewer.yml"
       - "services/dy-dash/cc-rabbit-0d/**"
       - "!**.md"
 
