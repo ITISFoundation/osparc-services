@@ -1,0 +1,75 @@
+name: dy-tissue-properties
+
+on:
+  push:
+    paths:
+      - ".github/workflows/dy-tissue-properties.yml"
+      - "services/dy-tissue-properties/**"
+      - "!**.md"
+  pull_request:
+    paths:
+      - ".github/workflows/dy-tissue-properties.yml"
+      - "services/dy-tissue-properties/**"
+      - "!**.md"
+
+env:
+  # secrets can be set in settings/secrets on github
+  DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+jobs:
+  build:
+    name: building dy-tissue-properties
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python: [3.6]
+        os: [ubuntu-18.04]
+        node: [10]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup python environment
+        uses: actions/setup-python@v1.1.1
+        with:
+          python-version: ${{ matrix.python }}
+      - name: show versions
+        run: ./ci/helpers/show_system_versions.bash
+      - uses: actions/cache@v1
+        name: getting cached data
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: set owner variable
+        run: echo ::set-env name=OWNER::${GITHUB_REPOSITORY%/*}
+      - name: set docker image tag
+        if: github.ref != 'refs/heads/master'
+        run: echo ::set-env name=DOCKER_IMAGE_TAG::${GITHUB_REF##*/}
+      - if: github.event_name == 'pull_request'
+        name: set docker registry env
+        run: echo ::set-env name=DOCKER_REGISTRY::itisfoundation
+      - name: set dev environs
+        working-directory: services/dy-tissue-properties
+        run: make .venv
+      - name: get current image if available
+        working-directory: services/dy-tissue-properties
+        run: make pull || true
+      - name: build
+        working-directory: services/dy-tissue-properties
+        run: |
+          source .venv/bin/activate
+          make build
+      - name: test
+        working-directory: services/dy-tissue-properties
+        run: |
+          source .venv/bin/activate
+          make test
+      - if: github.event_name == 'push'
+        name: deploy
+        working-directory: services/dy-tissue-properties
+        run: |
+          ./../../ci/helpers/dockerhub_login.bash
+          make push
