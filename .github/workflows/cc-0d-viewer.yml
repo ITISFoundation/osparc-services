@@ -66,7 +66,7 @@ jobs:
           pip install -r tests/requirements.txt
           make unit-test
           make integration-test
-      - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+      - if: github.event_name == 'push'
         name: deploy
         working-directory: services/dy-dash/cc-rabbit-0d
         run: |
