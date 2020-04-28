@@ -104,7 +104,7 @@ jobs:
       - name: set owner variable
         run: echo ::set-env name=OWNER::${GITHUB_REPOSITORY%/*}
       - name: set docker image tag
-        if: github.ref != 'refs/heads/master'
+        if: github.ref != 'refs/heads/master' && github.event_name != 'pull_request'
         run: echo ::set-env name=DOCKER_IMAGE_TAG::${GITHUB_REF##*/}
       - if: github.event_name == 'pull_request'
         name: set docker registry env
