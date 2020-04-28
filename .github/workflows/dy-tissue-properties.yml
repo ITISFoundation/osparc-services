@@ -68,5 +68,5 @@ jobs:
         name: deploy
         working-directory: services/dy-tissue-properties
         run: |
-          ./../../../ci/helpers/dockerhub_login.bash
+          ./../../ci/helpers/dockerhub_login.bash
           make push
