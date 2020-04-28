@@ -68,5 +68,5 @@ jobs:
         name: deploy
         working-directory: services/dy-jupyter
         run: |
-          ./../../../ci/helpers/dockerhub_login.bash
+          ./../../ci/helpers/dockerhub_login.bash
           make push
