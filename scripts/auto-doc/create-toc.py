@@ -11,6 +11,7 @@ import traceback
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Dict, List, Optional
 
 import yaml
 from pytablewriter import MarkdownTableWriter
@@ -20,6 +21,7 @@ current_dir = current_file.parent
 repo_dir = current_dir.parent.parent
 readme_path = repo_dir / "README.md"
 services_dir = repo_dir / "services"
+workflows_dir: Path = repo_dir / ".github/workflows"
 timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 def debug_it(fun):
@@ -64,6 +66,8 @@ def parse_repo():
                     content = yaml.safe_load(fh)
 
                 for service_name, service in content['services'].items():
+                    if not "build" in service:
+                        continue
                     if 'labels' in service['build']:
                         info = {
                             'folder': f'services/{relbase}/' + os.path.dirname(service['build'].get('dockerfile','')),
@@ -83,19 +87,32 @@ def parse_repo():
 
     return services_info
 
-def create_markdown(services_info, stream):
+def get_github_workflows() -> List[Path]:
+    return list(workflows_dir.glob("*.yml"))
+
+def find_corresponding_workflow(service_info: Dict[str, str], workflow_files: List[Path]) -> Optional[Path]:
+    possible_names = [service_info["key"].split("/")[-1], service_info["name"]]
+    for workflow in workflow_files:
+        if any(name in workflow.stem for name in possible_names):
+            return workflow
+
+
+def create_markdown(services_info, workflow_files: List[Path], stream):
     writer = MarkdownTableWriter()
     writer.stream = stream
-    writer.headers = ['name', 'description', 'type', 'latest version']
+    writer.headers = ['name', 'description', 'type', 'latest version', 'build status']
     writer.value_matrix = []
     for key in sorted(services_info.keys()):
         row = services_info[key]
         image_key = "{}:{}".format(row['key'].rsplit('/', 1)[-1], row['version'])
+        # try to find the corresponding workflow
+        workflow_file: Path = find_corresponding_workflow(row, workflow_files)
         writer.value_matrix.append( [
             "[{name}]({folder})".format(**row),
             row['description'],
             row['type'],
-            "[![](https://images.microbadger.com/badges/version/itisfoundation/{}.svg)](https://microbadger.com/images/itisfoundation/{} 'Get your own version badge on microbadger.com')".format(image_key, image_key)
+            "[![](https://images.microbadger.com/badges/version/itisfoundation/{}.svg)](https://microbadger.com/images/itisfoundation/{} 'Get your own version badge on microbadger.com')".format(image_key, image_key),
+            f"![{row['name']}](https://github.com/ITISFoundation/osparc-services/workflows/{workflow_file.stem}/badge.svg?branch=master)" if workflow_file else ""
         ] )
 
     writer.margin = 2  # add a whitespace for both sides of each cell
@@ -125,6 +142,7 @@ def stamp_message():
 @debug_it
 def main():
     services_info = parse_repo()
+    workflow_files = get_github_workflows()
 
     print(json.dumps(services_info, indent=3, sort_keys=True))
 
@@ -139,7 +157,7 @@ def main():
         print(TOC_BEGIN, file=fh)
         print(stamp_message(), file=fh)
         print("## Available services [%d]" % len(services_info), file=fh)
-        create_markdown(services_info, fh)
+        create_markdown(services_info, workflow_files, fh)
         print(f"*Updated on {timestamp}*\n", file=fh)
         print(TOC_END, file=fh)
         print(post, file=fh)
