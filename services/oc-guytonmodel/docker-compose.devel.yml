@@ -1,0 +1,9 @@
+version: "3.7"
+services:
+  opencorservice_demo:
+    # bypass normal start by going directly as root in starting folder
+    image: ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:development
+    volumes:
+      - ./src:/home/scu/src
+      - ./docker/ubuntu:/home/scu/docker
+      - ./service.cli:/home/scu/service.cli

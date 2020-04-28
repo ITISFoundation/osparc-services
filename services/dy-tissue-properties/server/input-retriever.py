@@ -18,10 +18,11 @@ if not _OUTPUTS_FOLDER.exists():
 
 async def upload_data():
     logger.info("uploading data to simcore...")
-    PORTS = node_ports.ports()
+    PORTS = await node_ports.ports()
     outputs_path = Path(_OUTPUTS_FOLDER).expanduser()
-    for port in PORTS.outputs:
-        logger.debug("uploading data to port '%s' with value '%s'...", port.key, port.value)
+    for port in await PORTS.outputs:
+        logger.debug(
+            "uploading data to port '%s' with value '%s'...", port.key, port.value)
         src_folder = outputs_path / port.key
         list_files = list(src_folder.glob("*"))
         if len(list_files) == 1:

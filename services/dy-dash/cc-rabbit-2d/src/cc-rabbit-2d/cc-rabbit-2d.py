@@ -25,26 +25,33 @@ logger = logging.getLogger()
 
 DEFAULT_PATH = '/'
 base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', DEFAULT_PATH)
-if base_pathname != DEFAULT_PATH :
+if base_pathname != DEFAULT_PATH:
     base_pathname = "/{}/".format(base_pathname.strip('/'))
 logger.info('url_base_pathname %s', base_pathname)
 
 
-bp = Blueprint('myBlueprint', __name__, static_folder='static', template_folder='templates')
+bp = Blueprint('myBlueprint', __name__, static_folder='static',
+               template_folder='templates')
 
 #---------------------------------------------------------#
 # Data to service
 data_paths = None
 
+
 @bp.route("/healthcheck")
 def healthcheck():
     return Response("healthy", status=200, mimetype='application/json')
 
-def download_all_inputs(n_inputs = 1):
-    ports = node_ports.ports()
-    tasks = asyncio.gather(*[ports.inputs[n].get() for n in range(n_inputs)])
-    paths_to_inputs = asyncio.get_event_loop().run_until_complete( tasks )
+
+async def _download_inputs(n_inputs):
+    ports = await node_ports.ports()
+    paths_to_inputs = await asyncio.gather(*[(await ports.inputs)[n].get() for n in range(n_inputs)])
     return paths_to_inputs
+
+
+def download_all_inputs(n_inputs=1):
+    return asyncio.get_event_loop().run_until_complete(_download_inputs(n_inputs))
+
 
 @bp.route("/retrieve", methods=['GET', 'POST'])
 def retrieve():
@@ -83,24 +90,29 @@ def preprocess_inputs():
     global out_images_path
 
     temp_folder = tempfile.mkdtemp()
-    for file_path in data_paths:
-        if file_path and zipfile.is_zipfile(file_path):
-            with zipfile.ZipFile(file_path) as zip_file:
-                zip_file.extractall(temp_folder)
+    if data_paths:
+        for file_path in data_paths:
+            if file_path and zipfile.is_zipfile(file_path):
+                with zipfile.ZipFile(file_path) as zip_file:
+                    zip_file.extractall(temp_folder)
 
-        # get the list of files
-        dat_files = sorted([os.path.join(temp_folder, x) for x in os.listdir(temp_folder) if x.endswith(".dat")], key=lambda f: int(''.join(filter(str.isdigit, f))))
-        out_images_path = tempfile.gettempdir()
+            # get the list of files
+            dat_files = sorted([os.path.join(temp_folder, x) for x in os.listdir(
+                temp_folder) if x.endswith(".dat")], key=lambda f: int(''.join(filter(str.isdigit, f))))
+            out_images_path = tempfile.gettempdir()
 
 
 def plot_contour(dat_file):
     plt.clf()
     data_frame = pd.read_csv(dat_file, sep='\t', header=None)
     if data_frame.shape[0] == 1:
-        data_frame = pd.concat([data_frame]*data_frame.shape[1], ignore_index=True)
-    plt.contourf(data_frame.values, cmap=plt.get_cmap('jet'), levels=np.arange(-100.0, 51.0, 1.0))
+        data_frame = pd.concat(
+            [data_frame]*data_frame.shape[1], ignore_index=True)
+    plt.contourf(data_frame.values, cmap=plt.get_cmap(
+        'jet'), levels=np.arange(-100.0, 51.0, 1.0))
     plt.axis("off")
     plt.colorbar()
+
 
 def create_movie_writer():
     FFMpegWriter = animation.writers["ffmpeg"]
@@ -110,7 +122,8 @@ def create_movie_writer():
     pixel_size = 600
     dpi = 96.0
     plt.ioff()
-    fig = plt.figure(frameon=False, figsize=(pixel_size/dpi, pixel_size/dpi), dpi=dpi)
+    fig = plt.figure(frameon=False, figsize=(
+        pixel_size/dpi, pixel_size/dpi), dpi=dpi)
 
     movie_name = "output_movie.mp4"
     number_of_frames = len(dat_files)

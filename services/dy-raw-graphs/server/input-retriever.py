@@ -28,6 +28,7 @@ if not _OUTPUTS_FOLDER.exists():
     _OUTPUTS_FOLDER.mkdir()
     logger.debug("Created output folder at %s", _OUTPUTS_FOLDER)
 
+
 def _no_relative_path_tar(members: tarfile.TarFile):
     for tarinfo in members:
         path = Path(tarinfo.name)
@@ -38,6 +39,7 @@ def _no_relative_path_tar(members: tarfile.TarFile):
             # relative paths are not allowed
             continue
         yield tarinfo
+
 
 def _no_relative_path_zip(members: zipfile.ZipFile):
     for zipinfo in members.infolist():
@@ -50,13 +52,14 @@ def _no_relative_path_zip(members: zipfile.ZipFile):
             continue
         yield zipinfo.filename
 
+
 async def download_data():
     logger.info("retrieving data from simcore...")
     print("retrieving data from simcore...")
 
     # get all files in the local system and copy them to the input folder
-    PORTS = node_ports.ports()
-    for port in PORTS.inputs:
+    PORTS = await node_ports.ports()
+    for port in await PORTS.inputs:
         if not port or port.value is None:
             continue
 
@@ -73,18 +76,22 @@ async def download_data():
         # check if local_path is a compressed file
         if zipfile.is_zipfile(local_path):
             with zipfile.ZipFile(local_path) as zip_file:
-                zip_file.extractall(dest_path, members=_no_relative_path_zip(zip_file))
+                zip_file.extractall(
+                    dest_path, members=_no_relative_path_zip(zip_file))
         else:
-            dest_path_name = _INPUTS_FOLDER / (port.key + ":" + Path(local_path).name)
+            dest_path_name = _INPUTS_FOLDER / \
+                (port.key + ":" + Path(local_path).name)
             shutil.move(local_path, dest_path_name)
             shutil.rmtree(Path(local_path).parents[0])
 
+
 async def upload_data():
     logger.info("uploading data to simcore...")
-    PORTS = node_ports.ports()
+    PORTS = await node_ports.ports()
     outputs_path = Path(_OUTPUTS_FOLDER).expanduser()
-    for port in PORTS.outputs:
-        logger.debug("uploading data to port '%s' with value '%s'...", port.key, port.value)
+    for port in await PORTS.outputs:
+        logger.debug(
+            "uploading data to port '%s' with value '%s'...", port.key, port.value)
         src_folder = outputs_path / port.key
         list_files = list(src_folder.glob("*"))
         if len(list_files) == 1:
@@ -98,14 +105,16 @@ async def upload_data():
             for _file in list_files:
                 with tarfile.open(temp_file.name, mode='w:gz') as tar_ptr:
                     for file_path in list_files:
-                        tar_ptr.add(file_path, arcname=file_path.name, recursive=False)
+                        tar_ptr.add(
+                            file_path, arcname=file_path.name, recursive=False)
             try:
                 await port.set(temp_file.name)
             finally:
-                #clean up
+                # clean up
                 Path(temp_file.name).unlink()
 
     logger.info("all data uploaded to simcore")
+
 
 async def sync_data():
     try:

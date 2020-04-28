@@ -1,7 +1,7 @@
-dist: xenial
+dist: bionic
 env:
   global:
-    - DOCKER_COMPOSE_VERSION=1.23.2
+    - DOCKER_COMPOSE_VERSION=1.25.3
 services:
   - docker
 addons:
@@ -29,45 +29,21 @@ jobs:
       name: build dy-jupyter
       sudo: required
       before_install:
-        - sudo bash ops/travis/build/dy-jupyter before_install
+        - sudo bash ci/travis/build/dy-jupyter before_install
       install:
-        - unbuffer bash ops/travis/build/dy-jupyter install
+        - unbuffer bash ci/travis/build/dy-jupyter install
       before_script:
-        - unbuffer bash ops/travis/build/dy-jupyter before_script
+        - unbuffer bash ci/travis/build/dy-jupyter before_script
       script:
-        - unbuffer bash ops/travis/build/dy-jupyter script
+        - unbuffer bash ci/travis/build/dy-jupyter script
       after_success:
-        - unbuffer bash ops/travis/build/dy-jupyter after_success
+        - unbuffer bash ci/travis/build/dy-jupyter after_success
       after_failure:
-        - unbuffer bash ops/travis/build/dy-jupyter after_failure
+        - unbuffer bash ci/travis/build/dy-jupyter after_failure
       deploy:
         - provider: script
           skip_cleanup: true
-          script: unbuffer bash ops/travis/build/dy-jupyter deploy
-          on:
-            all_branches: true
-
-    # build dy-3dvis images ----------------------------------------------------------------------
-    - stage: build / unit-testing
-      # in pull request we do not have credentials to push, checks that the build still passes
-      name: build dy-3dvis
-      sudo: required
-      before_install:
-        - sudo bash ops/travis/build/dy-3dvis before_install
-      install:
-        - unbuffer bash ops/travis/build/dy-3dvis install
-      before_script:
-        - unbuffer bash ops/travis/build/dy-3dvis before_script
-      script:
-        - unbuffer bash ops/travis/build/dy-3dvis script
-      after_success:
-        - unbuffer bash ops/travis/build/dy-3dvis after_success
-      after_failure:
-        - unbuffer bash ops/travis/build/dy-3dvis after_failure
-      deploy:
-        - provider: script
-          skip_cleanup: true
-          script: unbuffer bash ops/travis/build/dy-3dvis deploy
+          script: unbuffer bash ci/travis/build/dy-jupyter deploy
           on:
             all_branches: true
 
@@ -182,21 +158,69 @@ jobs:
       name: build dy-raw-graphs
       sudo: required
       before_install:
-        - sudo bash ops/travis/build/dy-raw-graphs before_install
+        - sudo bash ci/travis/build/dy-raw-graphs before_install
       install:
-        - unbuffer bash ops/travis/build/dy-raw-graphs install
+        - unbuffer bash ci/travis/build/dy-raw-graphs install
       before_script:
-        - unbuffer bash ops/travis/build/dy-raw-graphs before_script
+        - unbuffer bash ci/travis/build/dy-raw-graphs before_script
       script:
-        - unbuffer bash ops/travis/build/dy-raw-graphs script
+        - unbuffer bash ci/travis/build/dy-raw-graphs script
       after_success:
-        - unbuffer bash ops/travis/build/dy-raw-graphs after_success
+        - unbuffer bash ci/travis/build/dy-raw-graphs after_success
       after_failure:
-        - unbuffer bash ops/travis/build/dy-raw-graphs after_failure
+        - unbuffer bash ci/travis/build/dy-raw-graphs after_failure
       deploy:
         - provider: script
           skip_cleanup: true
-          script: unbuffer bash ops/travis/build/dy-raw-graphs deploy
+          script: unbuffer bash ci/travis/build/dy-raw-graphs deploy
+          on:
+            all_branches: true
+
+    # build dy-tissue-properties images ----------------------------------------------------------------------
+    - stage: build / unit-testing
+      # in pull request we do not have credentials to push, checks that the build still passes
+      name: build dy-tissue-properties
+      sudo: required
+      before_install:
+        - sudo bash ci/travis/build/dy-tissue-properties before_install
+      install:
+        - unbuffer bash ci/travis/build/dy-tissue-properties install
+      before_script:
+        - unbuffer bash ci/travis/build/dy-tissue-properties before_script
+      script:
+        - unbuffer bash ci/travis/build/dy-tissue-properties script
+      after_success:
+        - unbuffer bash ci/travis/build/dy-tissue-properties after_success
+      after_failure:
+        - unbuffer bash ci/travis/build/dy-tissue-properties after_failure
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          script: unbuffer bash ci/travis/build/dy-tissue-properties deploy
+          on:
+            all_branches: true
+
+    # build dy-csv-table images ----------------------------------------------------------------------
+    - stage: build / unit-testing
+      # in pull request we do not have credentials to push, checks that the build still passes
+      name: build dy-csv-table
+      sudo: required
+      before_install:
+        - sudo bash ci/travis/build/dy-csv-table before_install
+      install:
+        - unbuffer bash ci/travis/build/dy-csv-table install
+      before_script:
+        - unbuffer bash ci/travis/build/dy-csv-table before_script
+      script:
+        - unbuffer bash ci/travis/build/dy-csv-table script
+      after_success:
+        - unbuffer bash ci/travis/build/dy-csv-table after_success
+      after_failure:
+        - unbuffer bash ci/travis/build/dy-csv-table after_failure
+      deploy:
+        - provider: script
+          skip_cleanup: true
+          script: unbuffer bash ci/travis/build/dy-csv-table deploy
           on:
             all_branches: true
 
@@ -255,21 +279,21 @@ jobs:
     #   name: build dy-jupyter-extensions
     #   sudo: required
     #   before_install:
-    #     - sudo bash ops/travis/build/dy-jupyter-extensions before_install
+    #     - sudo bash ci/travis/build/dy-jupyter-extensions before_install
     #   install:
-    #     - unbuffer bash ops/travis/build/dy-jupyter-extensions install
+    #     - unbuffer bash ci/travis/build/dy-jupyter-extensions install
     #   before_script:
-    #     - unbuffer bash ops/travis/build/dy-jupyter-extensions before_script
+    #     - unbuffer bash ci/travis/build/dy-jupyter-extensions before_script
     #   script:
-    #     - unbuffer bash ops/travis/build/dy-jupyter-extensions script
+    #     - unbuffer bash ci/travis/build/dy-jupyter-extensions script
     #   after_success:
-    #     - unbuffer bash ops/travis/build/dy-jupyter-extensions after_success
+    #     - unbuffer bash ci/travis/build/dy-jupyter-extensions after_success
     #   after_failure:
-    #     - unbuffer bash ops/travis/build/dy-jupyter-extensions after_failure
+    #     - unbuffer bash ci/travis/build/dy-jupyter-extensions after_failure
     #   deploy:
     #     - provider: script
     #       skip_cleanup: true
-    #       script: unbuffer bash ops/travis/build/dy-jupyter-extensions deploy
+    #       script: unbuffer bash ci/travis/build/dy-jupyter-extensions deploy
     #       on:
     #         all_branches: true
 
@@ -280,21 +304,21 @@ jobs:
     #   name: build dy-modeling
     #   sudo: required
     #   before_install:
-    #     - sudo bash ops/travis/build/dy-modeling before_install
+    #     - sudo bash ci/travis/build/dy-modeling before_install
     #   install:
-    #     - unbuffer bash ops/travis/build/dy-modeling install
+    #     - unbuffer bash ci/travis/build/dy-modeling install
     #   before_script:
-    #     - unbuffer bash ops/travis/build/dy-modeling before_script
+    #     - unbuffer bash ci/travis/build/dy-modeling before_script
     #   script:
-    #     - unbuffer bash ops/travis/build/dy-modeling script
+    #     - unbuffer bash ci/travis/build/dy-modeling script
     #   after_success:
-    #     - unbuffer bash ops/travis/build/dy-modeling after_success
+    #     - unbuffer bash ci/travis/build/dy-modeling after_success
     #   after_failure:
-    #     - unbuffer bash ops/travis/build/dy-modeling after_failure
+    #     - unbuffer bash ci/travis/build/dy-modeling after_failure
     #   deploy:
     #     - provider: script
     #       skip_cleanup: true
-    #       script: unbuffer bash ops/travis/build/dy-modeling deploy
+    #       script: unbuffer bash ci/travis/build/dy-modeling deploy
     #       on:
     #         all_branches: true
 
@@ -304,21 +328,21 @@ jobs:
       name: build dy-2Dgraph
       sudo: required
       before_install:
-        - sudo bash ops/travis/build/dy-2Dgraph before_install
+        - sudo bash ci/travis/build/dy-2Dgraph before_install
       install:
-        - unbuffer bash ops/travis/build/dy-2Dgraph install
+        - unbuffer bash ci/travis/build/dy-2Dgraph install
       before_script:
-        - unbuffer bash ops/travis/build/dy-2Dgraph before_script
+        - unbuffer bash ci/travis/build/dy-2Dgraph before_script
       script:
-        - unbuffer bash ops/travis/build/dy-2Dgraph script
+        - unbuffer bash ci/travis/build/dy-2Dgraph script
       after_success:
-        - unbuffer bash ops/travis/build/dy-2Dgraph after_success
+        - unbuffer bash ci/travis/build/dy-2Dgraph after_success
       after_failure:
-        - unbuffer bash ops/travis/build/dy-2Dgraph after_failure
+        - unbuffer bash ci/travis/build/dy-2Dgraph after_failure
       deploy:
         - provider: script
           skip_cleanup: true
-          script: unbuffer bash ops/travis/build/dy-2Dgraph deploy
+          script: unbuffer bash ci/travis/build/dy-2Dgraph deploy
           on:
             all_branches: true
 

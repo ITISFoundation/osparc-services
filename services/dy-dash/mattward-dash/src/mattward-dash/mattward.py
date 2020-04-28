@@ -25,7 +25,8 @@ logger = logging.getLogger()
 
 DEVEL_MODE = False
 if DEVEL_MODE:
-    IN_OUT_PARENT_DIR = Path(Path(os.path.dirname(os.path.realpath(__file__))).parent).parent / 'validation'
+    IN_OUT_PARENT_DIR = Path(Path(os.path.dirname(
+        os.path.realpath(__file__))).parent).parent / 'validation'
 else:
     IN_OUT_PARENT_DIR = Path('/home/jovyan')
 INPUT_DIR = IN_OUT_PARENT_DIR / 'input'
@@ -34,15 +35,15 @@ OUTPUT_DIR = IN_OUT_PARENT_DIR / 'output'
 
 DEFAULT_PATH = '/'
 base_pathname = os.environ.get('SIMCORE_NODE_BASEPATH', DEFAULT_PATH)
-if base_pathname != DEFAULT_PATH :
+if base_pathname != DEFAULT_PATH:
     base_pathname = "/{}/".format(base_pathname.strip('/'))
 print('url_base_pathname', base_pathname)
 
 server = flask.Flask(__name__)
 app = dash.Dash(__name__,
-    server=server,
-    url_base_pathname=base_pathname
-)
+                server=server,
+                url_base_pathname=base_pathname
+                )
 app.css.append_css({
     "external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"
 })
@@ -112,10 +113,10 @@ dcc_input_pair = {
 
 def get_empty_input_graph():
     fig = subplots.make_subplots(rows=4,
-                            cols=1,
-                            shared_xaxes=True,
-                            vertical_spacing=0.05
-    )
+                                 cols=1,
+                                 shared_xaxes=True,
+                                 vertical_spacing=0.05
+                                 )
 
     fig['layout']['xaxis'].update(
         title='Conduction Velocity (m/s)',
@@ -158,6 +159,7 @@ def get_empty_input_graph():
         )
     )
     return fig
+
 
 def get_empty_output_1_graph(fixed_tst=True, plot_vs_qst=False, plot_vs_tCNAP=False):
     margin = 10
@@ -225,6 +227,7 @@ def get_empty_output_1_graph(fixed_tst=True, plot_vs_qst=False, plot_vs_tCNAP=Fa
     }
     return fig
 
+
 def get_empty_output_2_graph(fixed_tst=True, plot_vs_qst=False, plot_vs_tCNAP=False):
     margin = 10
     y_label_padding = 50
@@ -274,6 +277,7 @@ def get_empty_output_2_graph(fixed_tst=True, plot_vs_qst=False, plot_vs_tCNAP=Fa
         'data': []
     }
 
+
 empty_input_graph = get_empty_input_graph()
 empty_output_1_graph = get_empty_output_1_graph()
 empty_output_2_graph = get_empty_output_2_graph()
@@ -316,13 +320,16 @@ app.layout = html.Div(children=[
                 dcc.Checklist(
                     id='input-plot-options',
                     options=[
-                        {'label': 'Plot against Charge-Phase', 'value': 'charge_phase_cb'},
-                        {'label': 'Plot CNAP versus Time (ms)', 'value': 'time_cb'}
+                        {'label': 'Plot against Charge-Phase',
+                            'value': 'charge_phase_cb'},
+                        {'label': 'Plot CNAP versus Time (ms)',
+                         'value': 'time_cb'}
                     ],
                     values=[]
                 ),
 
-                html.Button('Load', id='load-input-button', style=dcc_input_button)
+                html.Button('Load', id='load-input-button',
+                            style=dcc_input_button)
             ], style=options_layout),
 
             html.Div([
@@ -385,7 +392,8 @@ app.layout = html.Div(children=[
                                     )
                                 ], style=dcc_input_pair),
 
-                                html.Button('Predict CNAPs', id='predict-current-button', style=dcc_input_button),
+                                html.Button(
+                                    'Predict CNAPs', id='predict-current-button', style=dcc_input_button),
                             ]
                         ),
                         dcc.Tab(
@@ -442,7 +450,8 @@ app.layout = html.Div(children=[
                                     )
                                 ], style=dcc_input_pair),
 
-                                html.Button('Predict CNAPs', id='predict-duration-button', style=dcc_input_button),
+                                html.Button(
+                                    'Predict CNAPs', id='predict-duration-button', style=dcc_input_button),
                             ]
                         )
                     ],
@@ -477,7 +486,7 @@ def get_selected_checkboxes(string_from_components):
 
 
 def create_learned_model_input(path, plot_vs_tcnap):
-    column_names = ['t_ms', 'CV', 'Vmax','M_mod', 'B_mod', 'tauSD']
+    column_names = ['t_ms', 'CV', 'Vmax', 'M_mod', 'B_mod', 'tauSD']
     data = pd.read_csv(path, sep=',', names=column_names)
 
     # dpi = 96
@@ -500,7 +509,8 @@ def create_learned_model_input(path, plot_vs_tcnap):
         }
     }
 
-def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, qst_path, vpred_path, lpred_path, fixed_tst, plot_vs_qst, plot_vs_tCNAP): # pylint:disable=too-many-arguments
+
+def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, qst_path, vpred_path, lpred_path, fixed_tst, plot_vs_qst, plot_vs_tCNAP):  # pylint:disable=too-many-arguments
     data_cv = pd.read_csv(cv_path, sep=',', header=None)
     data_tcnap = pd.read_csv(t_path, sep=',', header=None)
     data_ist = None
@@ -518,7 +528,7 @@ def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, 
     # width = 800
     # fontsize = 16
 
-    data_cv[data_cv>100] = None
+    data_cv[data_cv > 100] = None
     x_axis = data_cv
     if plot_vs_tCNAP:
         x_axis = data_tcnap
@@ -529,8 +539,8 @@ def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, 
     if plot_vs_qst:
         y_axis = data_CAP
 
-    x_axis = x_axis.values[:,0]
-    y_axis = y_axis.values[0,:]
+    x_axis = x_axis.values[:, 0]
+    y_axis = y_axis.values[0, :]
 
     return {
         "fixed_tst": fixed_tst,
@@ -549,29 +559,35 @@ def create_predicted_compound_nerve_action(cv_path, t_path, ist_path, tst_path, 
     }
 
 
+async def _upload_data(output_files):
+    ports = await node_ports.ports()
+    for idx, path in enumerate(output_files):
+        if path.exists():
+            await (await ports.outputs)[idx].set(path)
+
+
 def push_output_data():
-    input_path= OUTPUT_DIR / 'input.csv'
-    cv_path= OUTPUT_DIR / 'CV_plot.csv'
-    t_path= OUTPUT_DIR / 't_plot.csv'
-    ist_path= OUTPUT_DIR / 'Ist_plot.csv'
-    tst_path= OUTPUT_DIR / 'tst_plot.csv'
-    qst_path= OUTPUT_DIR / 'CAP_plot.csv'
-    vpred_path= OUTPUT_DIR / 'V_pred_plot.csv'
-    lpred_path= OUTPUT_DIR / 'Lpred_plot.csv'
-    output_files = [input_path, cv_path, t_path, ist_path, tst_path, qst_path, vpred_path, lpred_path]
+    input_path = OUTPUT_DIR / 'input.csv'
+    cv_path = OUTPUT_DIR / 'CV_plot.csv'
+    t_path = OUTPUT_DIR / 't_plot.csv'
+    ist_path = OUTPUT_DIR / 'Ist_plot.csv'
+    tst_path = OUTPUT_DIR / 'tst_plot.csv'
+    qst_path = OUTPUT_DIR / 'CAP_plot.csv'
+    vpred_path = OUTPUT_DIR / 'V_pred_plot.csv'
+    lpred_path = OUTPUT_DIR / 'Lpred_plot.csv'
+    output_files = [input_path, cv_path, t_path, ist_path,
+                    tst_path, qst_path, vpred_path, lpred_path]
     for p in output_files:
         logger.info('file %s', str(p))
         logger.info('exsits %s', p.exists())
-    ports = node_ports.ports()
-    for idx, path in enumerate(output_files):
-        if path.exists():
-            task = ports.outputs[idx].set(path)
-            asyncio.get_event_loop().run_until_complete( task )
+    asyncio.get_event_loop().run_until_complete(_upload_data(output_files))
+
     # ports = node_ports.ports()
     # tasks = asyncio.gather(*[ports.outputs[idx].set(path) for idx, path in enumerate(output_files)])
     # paths_to_outputs = asyncio.get_event_loop().run_until_complete( tasks )
     # assert all( p.exists() for p in paths_to_outputs )
     # return paths_to_outputs
+
 
 def run_solver(*args):
     if DEVEL_MODE:
@@ -579,11 +595,13 @@ def run_solver(*args):
 
     subprocess.call(["execute_cnap.sh", *args], cwd=OUTPUT_DIR)
 
+
 def create_input_files(model_id, plot_vs_tCNAP):
     # !execute_cnap.sh $model_id 0 0.0 1.0 0.5 0.4
     run_solver(str(model_id), "0", "0.0", "1.0", "0.5", "0.4")
     path = OUTPUT_DIR / 'input.csv'
     return create_learned_model_input(path, plot_vs_tCNAP)
+
 
 def build_input_graphs(data):
     marker_size = 2
@@ -597,44 +615,44 @@ def build_input_graphs(data):
         x=x_data,
         y=data["y_axis"]["Vmax"],
         mode='lines+markers',
-        marker = dict(
-            size = marker_size
+        marker=dict(
+            size=marker_size
         ),
-        line = dict(
-            width = line_width
+        line=dict(
+            width=line_width
         )
     )
     trace2 = go.Scatter(
         x=x_data,
         y=data["y_axis"]["M_mod"],
         mode='lines+markers',
-        marker = dict(
-            size = marker_size
+        marker=dict(
+            size=marker_size
         ),
-        line = dict(
-            width = line_width
+        line=dict(
+            width=line_width
         )
     )
     trace3 = go.Scatter(
         x=x_data,
         y=data["y_axis"]["B_mod"],
         mode='lines+markers',
-        marker = dict(
-            size = marker_size
+        marker=dict(
+            size=marker_size
         ),
-        line = dict(
-            width = line_width
+        line=dict(
+            width=line_width
         )
     )
     trace4 = go.Scatter(
         x=x_data,
         y=data["y_axis"]["tauSD"],
         mode='lines+markers',
-        marker = dict(
-            size = marker_size
+        marker=dict(
+            size=marker_size
         ),
-        line = dict(
-            width = line_width
+        line=dict(
+            width=line_width
         )
     )
 
@@ -658,6 +676,8 @@ def build_input_graphs(data):
 
 # When pressing 'Load' this callback will be triggered.
 # Also, its output will trigger the rebuilding of the four input graphs.
+
+
 @app.callback(
     Output('graph-ins', 'figure'),
     [Input('load-input-button', 'n_clicks')],
@@ -690,7 +710,7 @@ def update_output_label(button_current_ts, button_duration_ts):
         button_duration_ts = 0
 
     base_text = 'Predicted Compound Nerve Action Potentials'
-    if button_current_ts<button_duration_ts:
+    if button_current_ts < button_duration_ts:
         return base_text + ' (Duration)'
     return base_text + ' (Current)'
 
@@ -699,7 +719,8 @@ def build_graph_out_1(data):
     fig = get_empty_output_1_graph()
     if not data:
         return fig
-    fig = get_empty_output_1_graph(data["fixed_tst"], data["plot_vs_qst"], data["plot_vs_tCNAP"])
+    fig = get_empty_output_1_graph(
+        data["fixed_tst"], data["plot_vs_qst"], data["plot_vs_tCNAP"])
 
     dummy_wireframe = False
     if dummy_wireframe:
@@ -713,7 +734,8 @@ def build_graph_out_1(data):
         lines = []
         line_marker = dict(color='#0066FF', width=2)
         for i, j, k in zip(xGrid, yGrid, z):
-            lines.append(go.Scatter3d(x=i, y=j, z=k, mode='lines', line=line_marker))
+            lines.append(go.Scatter3d(
+                x=i, y=j, z=k, mode='lines', line=line_marker))
 
         fig['data'] = lines
         return fig
@@ -727,16 +749,19 @@ def build_graph_out_1(data):
     lines = []
     line_marker = dict(color='#0066FF', width=2)
     for i, j, k in zip(xGrid, yGrid, z):
-        lines.append(go.Scatter3d(x=i, y=j, z=k, mode='lines', line=line_marker))
+        lines.append(go.Scatter3d(
+            x=i, y=j, z=k, mode='lines', line=line_marker))
 
     fig['data'] = lines
     return fig
+
 
 def build_graph_out_2(data):
     fig = get_empty_output_2_graph()
     if not data:
         return fig
-    fig = get_empty_output_2_graph(data["fixed_tst"], data["plot_vs_qst"], data["plot_vs_tCNAP"])
+    fig = get_empty_output_2_graph(
+        data["fixed_tst"], data["plot_vs_qst"], data["plot_vs_tCNAP"])
 
     data_heatmap = data["heatmap"]
     x = data_heatmap["x"]
@@ -746,6 +771,7 @@ def build_graph_out_2(data):
 
     fig['data'] = [data]
     return fig
+
 
 @app.callback(
     [
@@ -769,12 +795,12 @@ def build_graph_out_2(data):
         State(component_id='duration_in_4', component_property='value')
     ]
 )
-def predict( # pylint:disable=too-many-arguments
-    button_current_ts, button_duration_ts,
-    input_nerve_profile,
-    input_plot_options,
-    current_1, current_2, current_3, current_4,
-    duration_1, duration_2, duration_3, duration_4):
+def predict(  # pylint:disable=too-many-arguments
+        button_current_ts, button_duration_ts,
+        input_nerve_profile,
+        input_plot_options,
+        current_1, current_2, current_3, current_4,
+        duration_1, duration_2, duration_3, duration_4):
     if button_current_ts is None:
         button_current_ts = 0
     if button_duration_ts is None:
@@ -787,28 +813,34 @@ def predict( # pylint:disable=too-many-arguments
     selected_cb = get_selected_checkboxes(input_plot_options)
     plot_vs_qst = selected_cb[0]
     plot_vs_tCNAP = selected_cb[1]
-    cv_path= OUTPUT_DIR / 'CV_plot.csv'
-    t_path= OUTPUT_DIR / 't_plot.csv'
-    ist_path= OUTPUT_DIR / 'Ist_plot.csv'
-    tst_path= OUTPUT_DIR / 'tst_plot.csv'
-    qst_path= OUTPUT_DIR / 'CAP_plot.csv'
-    vpred_path= OUTPUT_DIR / 'V_pred_plot.csv'
-    lpred_path= OUTPUT_DIR / 'Lpred_plot.csv'
+    cv_path = OUTPUT_DIR / 'CV_plot.csv'
+    t_path = OUTPUT_DIR / 't_plot.csv'
+    ist_path = OUTPUT_DIR / 'Ist_plot.csv'
+    tst_path = OUTPUT_DIR / 'tst_plot.csv'
+    qst_path = OUTPUT_DIR / 'CAP_plot.csv'
+    vpred_path = OUTPUT_DIR / 'V_pred_plot.csv'
+    lpred_path = OUTPUT_DIR / 'Lpred_plot.csv'
     data = None
-    if button_current_ts>button_duration_ts:
+    if button_current_ts > button_duration_ts:
         sweep_param = 1
-        fixed_tst=True
-        print("Current clicked.", model_id, sweep_param, plot_vs_qst, plot_vs_tCNAP, current_1, current_2, current_3, current_4)
+        fixed_tst = True
+        print("Current clicked.", model_id, sweep_param, plot_vs_qst,
+              plot_vs_tCNAP, current_1, current_2, current_3, current_4)
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
-        run_solver(str(model_id), str(sweep_param), str(current_1), str(current_2), str(current_3), str(current_4))
-        data = create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
+        run_solver(str(model_id), str(sweep_param), str(current_1),
+                   str(current_2), str(current_3), str(current_4))
+        data = create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path,
+                                                      vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
     else:
         sweep_param = 0
-        fixed_tst=False
-        print("Duration clicked.", model_id, sweep_param, plot_vs_qst, plot_vs_tCNAP, duration_1, duration_2, duration_3, duration_4)
+        fixed_tst = False
+        print("Duration clicked.", model_id, sweep_param, plot_vs_qst,
+              plot_vs_tCNAP, duration_1, duration_2, duration_3, duration_4)
         # !execute_cnap.sh $model_id $sweep_param $start_ist.value $end_ist.value $step_size_current.value $fixed_tst.value
-        run_solver(str(model_id), str(sweep_param), str(duration_1), str(duration_2), str(duration_3), str(duration_4))
-        data = create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path, vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
+        run_solver(str(model_id), str(sweep_param), str(duration_1),
+                   str(duration_2), str(duration_3), str(duration_4))
+        data = create_predicted_compound_nerve_action(cv_path=cv_path, t_path=t_path, ist_path=ist_path, tst_path=tst_path, qst_path=qst_path,
+                                                      vpred_path=vpred_path, lpred_path=lpred_path, fixed_tst=fixed_tst, plot_vs_qst=plot_vs_qst, plot_vs_tCNAP=plot_vs_tCNAP)
 
     graph1 = build_graph_out_1(data)
     graph2 = build_graph_out_2(data)
@@ -826,6 +858,7 @@ class AnyThreadEventLoopPolicy(asyncio.DefaultEventLoopPolicy):
             loop = self.new_event_loop()
             self.set_event_loop(loop)
             return loop
+
 
 if __name__ == '__main__':
     # the following line is needed for async calls

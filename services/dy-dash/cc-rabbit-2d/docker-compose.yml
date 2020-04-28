@@ -18,7 +18,7 @@ services:
         io.simcore.name: '{"name": "2D cardiac model viewer"}'
         io.simcore.outputs: '{"outputs": {}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "3.0.3"}'
+        io.simcore.version: '{"version": "3.0.4"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
