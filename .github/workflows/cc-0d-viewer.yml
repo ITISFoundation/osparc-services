@@ -70,5 +70,5 @@ jobs:
         name: deploy
         working-directory: services/dy-dash/cc-rabbit-0d
         run: |
-          ./../../ci/helpers/dockerhub_login.bash
+          ./../../../ci/helpers/dockerhub_login.bash
           make push
