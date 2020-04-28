@@ -49,19 +49,19 @@ jobs:
         if: github.ref != 'refs/heads/master'
         run: echo ::set-env name=DOCKER_IMAGE_TAG::${GITHUB_REF##*/}
       - name: set dev environs
-        working-directory: services/dy-2Dgraph
+        working-directory: services/dy-2Dgraph/use-cases
         run: make .venv
       - name: get current image if available
-        working-directory: services/dy-2Dgraph
+        working-directory: services/dy-2Dgraph/use-cases
         run: make pull || true
       - name: build
-        working-directory: services/dy-2Dgraph
+        working-directory: services/dy-2Dgraph/use-cases
         run: |
           source .venv/bin/activate
           make build-travis
       - if: github.event_name == 'push'
         name: deploy
-        working-directory: services/dy-2Dgraph
+        working-directory: services/dy-2Dgraph/use-cases
         run: |
           ./../../../ci/helpers/dockerhub_login.bash
           make push-travis
