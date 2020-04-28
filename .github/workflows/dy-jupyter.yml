@@ -63,7 +63,6 @@ jobs:
         working-directory: services/dy-jupyter
         run: |
           source .venv/bin/activate
-          pip install -r tests/requirements.txt
           make test
       - if: github.event_name == 'push'
         name: deploy

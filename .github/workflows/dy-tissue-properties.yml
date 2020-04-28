@@ -64,8 +64,7 @@ jobs:
         run: |
           source .venv/bin/activate
           pip install -r tests/requirements.txt
-          make unit-test
-          make integration-test
+          make test
       - if: github.event_name == 'push'
         name: deploy
         working-directory: services/dy-tissue-properties
