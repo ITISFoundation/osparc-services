@@ -28,6 +28,7 @@ if not _OUTPUTS_FOLDER.exists():
     _OUTPUTS_FOLDER.mkdir()
     logger.debug("Created output folder at %s", _OUTPUTS_FOLDER)
 
+
 def _no_relative_path_tar(members: tarfile.TarFile):
     for tarinfo in members:
         path = Path(tarinfo.name)
@@ -39,6 +40,7 @@ def _no_relative_path_tar(members: tarfile.TarFile):
             continue
         yield tarinfo
 
+
 def _no_relative_path_zip(members: zipfile.ZipFile):
     for zipinfo in members.infolist():
         path = Path(zipinfo.filename)
@@ -49,6 +51,7 @@ def _no_relative_path_zip(members: zipfile.ZipFile):
             # relative paths are not allowed
             continue
         yield zipinfo.filename
+
 
 async def download_data():
     logger.info("retrieving data from simcore...")
@@ -134,6 +137,7 @@ async def upload_data():
                 Path(temp_file.name).unlink()
 
     logger.info("all data uploaded to simcore")
+
 
 async def sync_data():
     try:

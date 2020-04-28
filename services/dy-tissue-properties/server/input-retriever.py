@@ -32,6 +32,7 @@ async def upload_data():
 
     logger.info("all data uploaded to simcore")
 
+
 async def sync_data():
     try:
         await upload_data()
