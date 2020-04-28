@@ -3,7 +3,7 @@
 """ Creates a sh script that uses jq tool to retrieve variables
     to use in sh from a json file for use in an osparc service.
 
-    Usage python run_creator --folder path/to/inputs.json --runscript path/to/put/the/script
+    Usage python run_creator --folder path/to/input.json --runscript path/to/put/the/script
 :return: error code
 """
 
@@ -56,7 +56,7 @@ set -o errexit
 set -o nounset
 IFS=$(printf '\\n\\t')
 cd "$(dirname "$0")"
-json_input=$INPUT_FOLDER/inputs.json
+json_input=$INPUT_FOLDER/input.json
         """
                         ]
         input_config = get_input_config(options.metadata)

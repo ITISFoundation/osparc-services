@@ -32,7 +32,7 @@ def validation_folder(validation_dir: Path, port_type: str) -> Path:
 @pytest.fixture
 def validation_cfg(validation_dir: Path, port_type: str) -> Dict:
     validation_file = validation_dir / \
-        port_type / (f"{port_type}s.json")
+        port_type / (f"{port_type}.json")
     if validation_file.exists():
         with validation_file.open() as fp:
             return json.load(fp)
@@ -93,7 +93,7 @@ def test_validation_data_follows_definition(label_cfg: Dict, validation_cfg: Dic
                 assert isinstance(value, label2types[label_cfg[key]["type"]])
 
     for path in validation_folder.glob("**/*"):
-        if path.name in ["inputs.json", "outputs.json", ".gitkeep"]:
+        if path.name in ["input.json", "output.json", ".gitkeep"]:
             continue
         assert path.is_file()
         filename = path.name

@@ -8,7 +8,7 @@ set -o errexit
 set -o nounset
 IFS=$(printf '\n\t')
 cd "$(dirname "$0")"
-json_input=$INPUT_FOLDER/inputs.json
+json_input=$INPUT_FOLDER/input.json
         
 ENDTIME=$(< "$json_input" jq '.endtime')
 export ENDTIME
