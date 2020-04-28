@@ -23,54 +23,6 @@ stages:
 
 jobs:
   include:
-    # build dy-jupyter images ----------------------------------------------------------------------
-    - stage: build / unit-testing
-      # in pull request we do not have credentials to push, checks that the build still passes
-      name: build dy-jupyter
-      sudo: required
-      before_install:
-        - sudo bash ci/travis/build/dy-jupyter before_install
-      install:
-        - unbuffer bash ci/travis/build/dy-jupyter install
-      before_script:
-        - unbuffer bash ci/travis/build/dy-jupyter before_script
-      script:
-        - unbuffer bash ci/travis/build/dy-jupyter script
-      after_success:
-        - unbuffer bash ci/travis/build/dy-jupyter after_success
-      after_failure:
-        - unbuffer bash ci/travis/build/dy-jupyter after_failure
-      deploy:
-        - provider: script
-          skip_cleanup: true
-          script: unbuffer bash ci/travis/build/dy-jupyter deploy
-          on:
-            all_branches: true
-
-    # build dy-raw-graphs images ----------------------------------------------------------------------
-    - stage: build / unit-testing
-      # in pull request we do not have credentials to push, checks that the build still passes
-      name: build dy-raw-graphs
-      sudo: required
-      before_install:
-        - sudo bash ci/travis/build/dy-raw-graphs before_install
-      install:
-        - unbuffer bash ci/travis/build/dy-raw-graphs install
-      before_script:
-        - unbuffer bash ci/travis/build/dy-raw-graphs before_script
-      script:
-        - unbuffer bash ci/travis/build/dy-raw-graphs script
-      after_success:
-        - unbuffer bash ci/travis/build/dy-raw-graphs after_success
-      after_failure:
-        - unbuffer bash ci/travis/build/dy-raw-graphs after_failure
-      deploy:
-        - provider: script
-          skip_cleanup: true
-          script: unbuffer bash ci/travis/build/dy-raw-graphs deploy
-          on:
-            all_branches: true
-
     # build dy-tissue-properties images ----------------------------------------------------------------------
     - stage: build / unit-testing
       # in pull request we do not have credentials to push, checks that the build still passes
