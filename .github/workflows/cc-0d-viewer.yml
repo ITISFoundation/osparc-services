@@ -3,10 +3,12 @@ name: cc-0d-viewer
 on:
   push:
     paths:
+      - ".github/worfklows/cc-0d-viewer.yml"
       - "services/dy-dash/cc-rabbit-0d/**"
       - "!**.md"
   pull_request:
     paths:
+      - ".github/worfklows/cc-0d-viewer.yml"
       - "services/dy-dash/cc-rabbit-0d/**"
       - "!**.md"
 
@@ -48,27 +50,24 @@ jobs:
         run: echo ::set-env name=DOCKER_IMAGE_TAG::${GITHUB_REF##*/}
       - name: set dev environs
         working-directory: services/dy-dash/cc-rabbit-0d
-        run: make devenv
+        run: make .venv
       - name: get current image if available
         working-directory: services/dy-dash/cc-rabbit-0d
-        run: make pull-latest || true
+        run: make pull || true
       - name: build
         working-directory: services/dy-dash/cc-rabbit-0d
         run: |
+          source .venv/bin/activate
           make build
-          make info-build
       - name: test
         working-directory: services/dy-dash/cc-rabbit-0d
-        run: make tests
+        run: |
+          source .venv/bin/activate
+          make unit-test
+          make integration-test
       - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         name: deploy
         working-directory: services/dy-dash/cc-rabbit-0d
         run: |
           ./../../ci/helpers/dockerhub_login.bash
           make push
-      - if: github.event_name == 'push' && github.ref != 'refs/heads/master'
-        name: deploy
-        working-directory: services/dy-dash/cc-rabbit-0d
-        run: |
-          ./../../ci/helpers/dockerhub_login.bash
-          make push-version
