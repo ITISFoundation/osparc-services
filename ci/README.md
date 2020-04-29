@@ -1,8 +1,8 @@
-# Travis CI
+# Github CI
 
-The Travis continuous integration tool is used.
+The Github continuous integration tool is used.
 
-## Travis configuration
+## Github configuration
 
 The following Environment variables shall be set up to allow automatic deployment to Dockerhub.
 
@@ -12,7 +12,7 @@ DOCKER_USERNAME = %your username%
 DOCKER_PASSWORD = %your password%
 ```
 
-> **Note:** On the main Travis CI the DOCKER_REGISTRY variable is set to **itisfoundation**. All the built docker images are then deployed to itisfoundation/%imageName%.
+> **Note:** On the main Github CI the DOCKER_REGISTRY variable is set to **itisfoundation**. All the built docker images are then deployed to itisfoundation/%imageName%.
 
 ## Release workflow
 
