@@ -1,0 +1,22 @@
+{
+    "starttime": "starttime",
+    "endtime": "endtime",
+    "timeincr": "timeincr",
+    "input_0": "membrane/stim_amplitude",
+    "input_1": "membrane/stim_duration",
+    "input_2": "membrane/C_n",
+    "input_3": "membrane/E_Na",
+    "input_4": "membrane/E_K",
+    "input_5": "membrane/E_Lk",
+    "input_6": "fast_sodium_channel/g_Naf",
+    "input_7": "persistent_sodium_channel/g_Nap",
+    "input_8": "slow_potassium_channel/g_Ks",
+    "input_9": "juxtaparanodal_fast_potassium_channel/g_Kf",
+    "input_10": "leakage_channel/g_Lk",
+    "input_11": "membrane/V_m",
+    "input_12": "fast_sodium_channel/fast_sodium_channel_m_gate/m",
+    "input_13": "fast_sodium_channel/fast_sodium_channel_h_gate/h",
+    "input_14": "persistent_sodium_channel/persistent_sodium_channel_p_gate/p",
+    "input_15": "slow_potassium_channel/slow_potassium_channel_s_gate/s",
+    "input_16": "juxtaparanodal_fast_potassium_channel/juxtaparanodal_fast_potassium_channel_n_gate/n"
+}
