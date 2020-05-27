@@ -5,7 +5,7 @@ services:
         io.simcore.authors: '{"authors": [{"affiliation": "ITIS Foundation", "email":
           "zhuang@itis.swiss", "name": "Katie Zhuang"}]}'
         io.simcore.contact: '{"contact": "zhuang@itis.swiss"}'
-        io.simcore.description: '{"description": "MRG neuron model from the physiome model repository https://models.physiomeproject.org/e/5f7/mcintyre_richardson_grill_model_2001.cellml/view"}'
+        io.simcore.description: '{"description": "pmr_mrg"}'
         io.simcore.inputs: '{"inputs": {"endtime": {"defaultValue": 1000, "description":
           "ending time of simulation (s)", "displayOrder": 2, "label": "simulation
           ending time", "type": "number"}, "input_0": {"defaultValue": 0.05, "description":
