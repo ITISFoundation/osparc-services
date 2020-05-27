@@ -3,17 +3,13 @@ name: Github-CI Push/PR pmr_mrg
 on:
   push:
      paths:
+      - ".github/workflows/oc-pmrmrg.yml"
       - "services/oc-pmrmrg/**"
-      - "!**.md"
-     paths:
-      - "services/oc-pmr-mrg/**"
       - "!**.md"
   pull_request:
      paths:
+      - ".github/workflows/oc-pmrmrg.yml"
       - "services/oc-pmrmrg/**"
-      - "!**.md"
-     paths:
-      - "services/oc-pmr-mrg/**"
       - "!**.md"
 
 env:
