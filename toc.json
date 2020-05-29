@@ -1,8 +1,8 @@
 {
   "3d-viewer": {
     "description": "Paraview Web-based Visualizer",
-    "folder": "services/dy-3dvis/services/dy-3dvis/docker/custom",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
+    "folder": "services/dy-3dvis/",
+    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/dynamic/3d-viewer",
     "name": "3d-viewer",
     "type": "dynamic",
@@ -10,7 +10,7 @@
   },
   "3d-viewer-gpu": {
     "description": "Paraview Web-based Visualizer",
-    "folder": "services/dy-3dvis/services/dy-3dvis/docker/custom",
+    "folder": "services/dy-3dvis/",
     "image": "local/${DOCKER_IMAGE_NAME}-gpu:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/dynamic/3d-viewer-gpu",
     "name": "3d-viewer-gpu",
@@ -145,10 +145,19 @@
   },
   "opencorservice_demo": {
     "description": "opencorservice_demo",
-    "folder": "services/oc-guytonmodel/docker/ubuntu",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
+    "folder": "services/oc-guytonmodel/",
+    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/comp/opencorservice_demo",
     "name": "opencorservice_demo",
+    "type": "computational",
+    "version": "1.0.0"
+  },
+  "pmr_mrg": {
+    "description": "Creates a simulation of the MRG fiber based on the model found on the PMR https://models.physiomeproject.org/e/5f7/mcintyre_richardson_grill_model_2001.cellml/view",
+    "folder": "services/oc-pmrmrg/",
+    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
+    "key": "simcore/services/comp/pmr_mrg",
+    "name": "pmr_mrg",
     "type": "computational",
     "version": "1.0.0"
   },
