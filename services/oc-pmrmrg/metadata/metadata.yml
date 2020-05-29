@@ -3,7 +3,7 @@ authors:
   email: zhuang@itis.swiss
   name: Katie Zhuang
 contact: zhuang@itis.swiss
-description: pmr_mrg
+description: Creates a simulation of the MRG fiber based on the model found on the PMR https://models.physiomeproject.org/e/5f7/mcintyre_richardson_grill_model_2001.cellml/view
 inputs:
   endtime:
     defaultValue: 1000

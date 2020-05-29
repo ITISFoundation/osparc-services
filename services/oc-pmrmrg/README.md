@@ -1,6 +1,6 @@
 # pmr_mrg
 
-pmr_mrg
+Creates a simulation of the MRG fiber based on the model found on the PMR https://models.physiomeproject.org/e/5f7/mcintyre_richardson_grill_model_2001.cellml/view
 
 ## Usage
 
