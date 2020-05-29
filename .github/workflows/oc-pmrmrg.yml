@@ -1,4 +1,4 @@
-name: Github-CI Push/PR pmr_mrg
+name: Github-CI Push/PR oc-pmr_mrg
 
 on:
   push:

@@ -13,7 +13,7 @@ RUN apt-get -qq update && apt-get install -y \
  libx11-xcb1 \
  libxext6 \
  libxslt1.1 \
- sqlite3
+ sqlite3 && rm --recursive --force /var/lib/apt/lists/*
 
 RUN apt-get -qq update && \
     apt-get install -y \

@@ -4,7 +4,7 @@ set -o errexit
 set -o nounset
 IFS=$(printf '\n\t')
 
-cd /home/scu/pmr_mrg
+cd ~/pmr_mrg
 
 echo "starting service as"
 echo   User    : "$(id "$(whoami)")"
