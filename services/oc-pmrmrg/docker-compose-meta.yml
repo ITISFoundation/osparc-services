@@ -1,0 +1,62 @@
+services:
+  pmr_mrg:
+    build:
+      labels:
+        io.simcore.authors: '{"authors": [{"affiliation": "ITIS Foundation", "email":
+          "zhuang@itis.swiss", "name": "Katie Zhuang"}]}'
+        io.simcore.contact: '{"contact": "zhuang@itis.swiss"}'
+        io.simcore.description: '{"description": "Creates a simulation of the MRG
+          fiber based on the model found on the PMR https://models.physiomeproject.org/e/5f7/mcintyre_richardson_grill_model_2001.cellml/view"}'
+        io.simcore.inputs: '{"inputs": {"endtime": {"defaultValue": 1000, "description":
+          "ending time of simulation (s)", "displayOrder": 2, "label": "simulation
+          ending time", "type": "number"}, "input_0": {"defaultValue": 0.05, "description":
+          "membrane/stim_amplitude, units: mA_per_cm2", "displayOrder": 4, "label":
+          "stim_amplitude", "type": "number"}, "input_1": {"defaultValue": 0.5, "description":
+          "membrane/stim_duration, units: ms", "displayOrder": 5, "label": "stim_duration",
+          "type": "number"}, "input_10": {"defaultValue": 0.007, "description": "leakage_channel/g_Lk,
+          units: S_per_cm2", "displayOrder": 14, "label": "g_Lk", "type": "number"},
+          "input_11": {"defaultValue": -88.5901439103062, "description": "membrane/V_m,
+          units: mV", "displayOrder": 15, "label": "V_m", "type": "number"}, "input_12":
+          {"defaultValue": 0.0302964457761589, "description": "fast_sodium_channel/fast_sodium_channel_m_gate/m,
+          units: dimensionless", "displayOrder": 16, "label": "m", "type": "number"},
+          "input_13": {"defaultValue": 0.841520865130776, "description": "fast_sodium_channel/fast_sodium_channel_h_gate/h,
+          units: dimensionless", "displayOrder": 17, "label": "h", "type": "number"},
+          "input_14": {"defaultValue": 0.0969864645712442, "description": "persistent_sodium_channel/persistent_sodium_channel_p_gate/p,
+          units: dimensionless", "displayOrder": 18, "label": "p", "type": "number"},
+          "input_15": {"defaultValue": 0.00997371545602793, "description": "slow_potassium_channel/slow_potassium_channel_s_gate/s,
+          units: dimensionless", "displayOrder": 19, "label": "s", "type": "number"},
+          "input_16": {"defaultValue": 0.000886041197111556, "description": "juxtaparanodal_fast_potassium_channel/juxtaparanodal_fast_potassium_channel_n_gate/n,
+          units: dimensionless", "displayOrder": 20, "label": "n", "type": "number"},
+          "input_2": {"defaultValue": 0.002, "description": "membrane/C_n, units:
+          mF_per_cm2", "displayOrder": 6, "label": "C_n", "type": "number"}, "input_3":
+          {"defaultValue": 50.0, "description": "membrane/E_Na, units: mV", "displayOrder":
+          7, "label": "E_Na", "type": "number"}, "input_4": {"defaultValue": -90.0,
+          "description": "membrane/E_K, units: mV", "displayOrder": 8, "label": "E_K",
+          "type": "number"}, "input_5": {"defaultValue": -90.0, "description": "membrane/E_Lk,
+          units: mV", "displayOrder": 9, "label": "E_Lk", "type": "number"}, "input_6":
+          {"defaultValue": 3.0, "description": "fast_sodium_channel/g_Naf, units:
+          S_per_cm2", "displayOrder": 10, "label": "g_Naf", "type": "number"}, "input_7":
+          {"defaultValue": 0.01, "description": "persistent_sodium_channel/g_Nap,
+          units: S_per_cm2", "displayOrder": 11, "label": "g_Nap", "type": "number"},
+          "input_8": {"defaultValue": 0.08, "description": "slow_potassium_channel/g_Ks,
+          units: S_per_cm2", "displayOrder": 12, "label": "g_Ks", "type": "number"},
+          "input_9": {"defaultValue": 0.0, "description": "juxtaparanodal_fast_potassium_channel/g_Kf,
+          units: S_per_cm2", "displayOrder": 13, "label": "g_Kf", "type": "number"},
+          "starttime": {"defaultValue": 0, "description": "starting time of simulation
+          (s)", "displayOrder": 1, "label": "simulation start time", "type": "number"},
+          "timeincr": {"defaultValue": 1, "description": "time step for running simulation
+          (s)", "displayOrder": 3, "label": "simulation time increment", "type": "number"}}}'
+        io.simcore.integration-version: '{"integration-version": "1.0.0"}'
+        io.simcore.key: '{"key": "simcore/services/comp/pmr_mrg"}'
+        io.simcore.name: '{"name": "pmr_mrg"}'
+        io.simcore.outputs: '{"outputs": {"model_output": {"description": "The time-series
+          output of the simulation in comma-delimited .csv format", "displayOrder":
+          1, "fileToKeyMap": {"outputs.csv": "model_output"}, "label": "Simulation
+          result (CSV-format)", "type": "data:application/csv"}}}'
+        io.simcore.type: '{"type": "computational"}'
+        io.simcore.version: '{"version": "1.0.0"}'
+        org.label-schema.build-date: ${BUILD_DATE}
+        org.label-schema.schema-version: '1.0'
+        org.label-schema.vcs-ref: ${VCS_REF}
+        org.label-schema.vcs-url: https://github.com/ITISFoundation/pmr_mrg
+version: '3.7'

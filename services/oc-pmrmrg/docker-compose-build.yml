@@ -1,0 +1,8 @@
+version: "3.7"
+services:
+  pmr_mrg:
+    image: local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}
+    build:
+      context: ./
+      dockerfile: docker/ubuntu/Dockerfile
+      target: production

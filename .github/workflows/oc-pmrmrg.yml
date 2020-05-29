@@ -1,0 +1,77 @@
+name: Github-CI Push/PR oc-pmr_mrg
+
+on:
+  push:
+     paths:
+      - ".github/workflows/oc-pmrmrg.yml"
+      - "services/oc-pmrmrg/**"
+      - "!**.md"
+  pull_request:
+     paths:
+      - ".github/workflows/oc-pmrmrg.yml"
+      - "services/oc-pmrmrg/**"
+      - "!**.md"
+
+env:
+  # secrets can be set in settings/secrets on github
+  DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+
+jobs:
+  build:
+    name: building pmr_mrg
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python: [3.8]
+        os: [ubuntu-18.04]
+        node: [10]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup python environment
+        uses: actions/setup-python@v1.1.1
+        with:
+          python-version: ${{ matrix.python }}
+      - name: show versions
+        run: ./ci/helpers/show_system_versions.bash
+      - uses: actions/cache@v1
+        name: getting cached data
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: set owner variable
+        run: echo ::set-env name=OWNER::${GITHUB_REPOSITORY%/*}
+      - name: set docker image tag
+        if: github.ref != 'refs/heads/master'
+        run: echo ::set-env name=DOCKER_IMAGE_TAG::${GITHUB_REF##*/}
+      - name: set dev environs
+        working-directory: services/oc-pmrmrg
+        run: make devenv
+      - name: get current image if available
+        working-directory: services/oc-pmrmrg
+        run: make pull-latest || true
+      - name: build
+        working-directory: services/oc-pmrmrg
+        run: |
+          make build
+          make info-build
+      - name: test
+        working-directory: services/oc-pmrmrg
+        run: make tests
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        name: deploy
+        working-directory: services/oc-pmrmrg
+        run: |
+          ./ci/helpers/dockerhub_login.bash
+          make push
+      - if: github.event_name == 'push' && github.ref != 'refs/heads/master'
+        name: deploy
+        working-directory: services/oc-pmrmrg
+        run: |
+          ./ci/helpers/dockerhub_login.bash
+          make push-version
