@@ -159,7 +159,7 @@
     "key": "simcore/services/comp/pmr_mrg",
     "name": "pmr_mrg",
     "type": "computational",
-    "version": "1.0.0"
+    "version": "1.0.1"
   },
   "raw-graphs": {
     "description": "2D plots powered by RAW Graphs",

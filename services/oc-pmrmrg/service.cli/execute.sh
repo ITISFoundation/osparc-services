@@ -16,7 +16,7 @@ echo
 # The inputs defined in ${INPUT_FOLDER}/inputs.json are available as env variables by their key in capital letters
 # For example: input_1 -> $INPUT_1
 
-/home/opencor/OpenCOR-2020-02-14-Linux/pythonshell /home/pmr_mrg/run_model_2020.py ${INPUT_FOLDER}/inputs.json /home/pmr_mrg/mcintyre_richardson_grill_model_2001.cellml /home/pmr_mrg/input_keymap.json
+/home/opencor/OpenCOR-2020-02-14-Linux/pythonshell /home/pmr_mrg/run_model_2020.py ${INPUT_FOLDER}/inputs.json /home/pmr_mrg/mcintyre_richardson_grill_model_2001.sedml /home/pmr_mrg/input_keymap.json
 
 cp outputs.csv ${OUTPUT_FOLDER}/outputs.csv
 
