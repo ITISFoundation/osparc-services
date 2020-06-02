@@ -35,4 +35,4 @@ default_context:
     project_slug:              'pmr_mrg'
     project_type:              'computational'
     release_date:              '2020'
-    version:                   '1.0.0'
+    version:                   '1.0.1'
