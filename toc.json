@@ -168,7 +168,7 @@
     "key": "simcore/services/dynamic/raw-graphs",
     "name": "2D plot",
     "type": "dynamic",
-    "version": "2.10.5"
+    "version": "2.10.6"
   },
   "raw-graphs-table": {
     "description": "Table view powered by RAW Graphs",
@@ -177,7 +177,7 @@
     "key": "simcore/services/dynamic/raw-graphs-table",
     "name": "Table view",
     "type": "dynamic",
-    "version": "2.10.5"
+    "version": "2.10.6"
   },
   "server": {
     "description": "Modeler viewer",
