@@ -1,7 +1,7 @@
 {
-    "starttime": 0,
-    "endtime": 1000,
-    "timeincr": 1,
+    "starttime": 0.0,
+    "endtime": 100.0,
+    "timeincr": 0.1,
     "input_0": 0.05,
     "input_1": 0.5,
     "input_2": 0.002,
