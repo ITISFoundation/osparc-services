@@ -127,7 +127,7 @@ inputs:
     displayOrder: 3
     label: simulation time increment
     type: number
-integration-version: 1.0.1
+integration-version: 1.0.0
 key: simcore/services/comp/pmr_mrg
 name: pmr_mrg
 outputs:
