@@ -4,8 +4,8 @@
         "inputs":{
             "input_1": {
                 "displayOrder": 0,
-                "label": "The input file name",
-                "description": "Some 3D data",
+                "label": "The input file",
+                "description": "Some delimited text data",
                 "type": "data:*/*"
             }
         },

@@ -89,7 +89,7 @@ pull:
 
 test:
 	# tests https://github.com/ITISFoundation/osparc-services/issues/15
-	docker run -it ${DOCKER_REGISTRY}/raw-graphs:${DOCKER_IMAGE_TAG} python3 -c "import psycopg2; import simcore_sdk.models"
+	docker run ${DOCKER_REGISTRY}/raw-graphs:${DOCKER_IMAGE_TAG} python3 -c "import psycopg2; import simcore_sdk.models"
 	@echo 'test passed'
 
 ## -------------------------------
