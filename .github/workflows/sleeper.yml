@@ -2,14 +2,19 @@ name: Github-CI Push/PR sleeper
 
 on:
   push:
+    paths:
+      - "services/sleeper/**"
+      - "!**.md"
   pull_request:
+    paths:
+      - "services/sleeper/**"
+      - "!**.md"
 
 env:
   # secrets can be set in settings/secrets on github
   DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-
 
 jobs:
   build:
@@ -54,10 +59,10 @@ jobs:
       - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         name: deploy
         run: |
-          ./ci/helpers/dockerhub_login.bash
+          ./../../ci/helpers/dockerhub_login.bash
           make push
       - if: github.event_name == 'push' && github.ref != 'refs/heads/master'
         name: deploy
         run: |
-          ./ci/helpers/dockerhub_login.bash
+          ./../../ci/helpers/dockerhub_login.bash
           make push-version
