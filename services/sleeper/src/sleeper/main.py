@@ -70,7 +70,8 @@ def main():
     sleep_interval = int(get_from_environ("INPUT_2", get_random_sleep()))
     fail_after_sleep = cast_bool(get_from_environ("INPUT_3", "false"))
     output_folder = get_from_environ("OUTPUT_FOLDER")
-    with_gpu_payload = get_from_environ("SOMETHING") is not None
+    # if this was scheduled on a node with GPU support this env variable will exist
+    with_gpu_payload = get_from_environ("DOCKER_RESOURCE_VRAM") is not None
 
     sleep_from_file = get_random_sleep()
     if os.path.isfile(file_with_int_number):
