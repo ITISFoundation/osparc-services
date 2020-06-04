@@ -1,6 +1,10 @@
 # sleeper
 
 A service which awaits for time to pass used for system validation.
+Before waiting a payload function is run. This function may contain code which must be run
+on a specific type of resource, example GPU.
+It is also possible to make this service fail after it finishes all its activity,
+as a final step.
 
 ## Usage
 
@@ -8,7 +12,7 @@ A service which awaits for time to pass used for system validation.
 $ make help
 
 $ make devenv
-$ source .venv/bin/activate
+$ . .venv/bin/activate
 
 (.venv)$ make build
 (.venv)$ make info-build
@@ -31,13 +35,3 @@ Two versions:
 - integration version (e.g. [src/sleeper/VERSION_INTEGRATION]) is updated with ``make version-integration-*``
 - service version (e.g. [src/sleeper/VERSION]) is updated with ``make version-service-*``
 
-## CI/CD Integration
-
-### Gitlab
-
-add the following in your __gitlab-ci.yml__ file:
-
-```yaml
-include:
-  - local: '/services/sleeper/ci/gitlab-ci.yml'
-```
