@@ -31,8 +31,7 @@ def validation_folder(validation_dir: Path, port_type: str) -> Path:
 
 @pytest.fixture
 def validation_cfg(validation_dir: Path, port_type: str) -> Dict:
-    validation_file = validation_dir / \
-        port_type / (f"{port_type}s.json")
+    validation_file = validation_dir / port_type / (f"{port_type}s.json")
     if validation_file.exists():
         with validation_file.open() as fp:
             return json.load(fp)
@@ -53,11 +52,10 @@ def _find_key_in_cfg(filename: str, value: Dict) -> str:
                 yield result
 
 
-@pytest.mark.parametrize("port_type", [
-    "input",
-    "output"
-])
-def test_validation_data_follows_definition(label_cfg: Dict, validation_cfg: Dict, validation_folder: Path):
+@pytest.mark.parametrize("port_type", ["input", "output"])
+def test_validation_data_follows_definition(
+    label_cfg: Dict, validation_cfg: Dict, validation_folder: Path
+):
     for key, value in label_cfg.items():
         assert "type" in value
 
@@ -86,7 +84,7 @@ def test_validation_data_follows_definition(label_cfg: Dict, validation_cfg: Dic
                 "number": (float, int),
                 "integer": int,
                 "boolean": bool,
-                "string": str
+                "string": str,
             }
             if not "data:" in label_cfg[key]["type"]:
                 # check the type is correct
