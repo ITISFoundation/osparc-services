@@ -26,8 +26,10 @@ def validate_not_negative_int(number):
 
 def test_gpu_cuda_code(n=1_000_000):
     """Dose some computation on the GPU with CUDA"""
-    return os.system("nvidia-smi")
+    # if the command exists it can run on the hardware below
+    assert os.WEXITSTATUS(os.system("nvidia-smi")) == 0
 
+    # leving here for future usaage
     # from numba import vectorize, cuda
     # import numpy as np
 
