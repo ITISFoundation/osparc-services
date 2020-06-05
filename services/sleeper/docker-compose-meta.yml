@@ -33,6 +33,7 @@ services:
         org.label-schema.schema-version: "1.0"
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: https://github.com/ITISFoundation/osparc-services.git
+        simcore.service.settings: '[{ "name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
   sleeper-gpu:
     build:
       labels:
@@ -70,6 +71,6 @@ services:
         simcore.service.settings:
           '[{ "name": "constraints", "type": "string", "value":
           ["node.platform.os == linux"]},{"name": "Resources", "type": "Resources", "value":
-          { "Reservations": { "NanoCPUs": 100000000, "MemoryBytes": 536870912,
-          "GenericResources": [{"DiscreteResourceSpec": { "Kind": "VRAM", "Value": 1}}]}}}]'
+          { "Reservations": { "GenericResources": [{"DiscreteResourceSpec": {
+          "Kind": "VRAM", "Value": 1}}]}}}]'
 version: "3.7"
