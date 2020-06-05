@@ -75,6 +75,7 @@ endef
 .PHONY: build build-devel build-kit-devel build-x build-devel-x
 build build-devel build-kit build-kit-devel build-x build-devel-x: docker-compose-build.yml docker-compose-meta.yml service.cli/run ## builds images, -devel in development mode, -kit using docker buildkit, -x using docker buildX (if installed)
 	# building image local/${DOCKER_IMAGE_NAME}...
+	docker-compose --version
 	@$(call _docker_compose_build)
 
 define show-meta
