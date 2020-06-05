@@ -71,7 +71,7 @@ echo "  input dir : $(ls -al "${INPUT_FOLDER}")"
 echo "  output dir : $(ls -al "${OUTPUT_FOLDER}")"
 
 # properly activate conda enviornment
-. /opt/conda/etc/profile.d/conda.sh
-conda activate base
+# . /opt/conda/etc/profile.d/conda.sh
+# conda activate base
 
 su --command "export PATH=${PATH}:/home/$SC_USER_NAME/service.cli; $*" "$SC_USER_NAME"
