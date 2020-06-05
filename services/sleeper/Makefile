@@ -65,7 +65,7 @@ export DOCKER_BUILD_TARGET=$(if $(findstring -devel,$@),development,$(if $(finds
 $(if $(findstring -x,$@),\
 	docker buildx > /dev/null; export DOCKER_CLI_EXPERIMENTAL=enabled; docker buildx bake  --file docker-compose-build.yml --file docker-compose-meta.yml $(if $(findstring -nc,$@),--no-cache,);,\
 	$(if $(findstring -kit,$@),export DOCKER_BUILDKIT=1;export COMPOSE_DOCKER_CLI_BUILD=1;,) \
-	docker-compose --file docker-compose-build.yml --file docker-compose-meta.yml build $(if $(findstring -nc,$@),--no-cache,) --parallel;\
+	docker-compose --file docker-compose-build.yml --file docker-compose-meta.yml build $(if $(findstring -nc,$@),--no-cache,);\
 )
 endef
 
@@ -75,7 +75,7 @@ endef
 .PHONY: build build-devel build-kit-devel build-x build-devel-x
 build build-devel build-kit build-kit-devel build-x build-devel-x: docker-compose-build.yml docker-compose-meta.yml service.cli/run ## builds images, -devel in development mode, -kit using docker buildkit, -x using docker buildX (if installed)
 	# building image local/${DOCKER_IMAGE_NAME}...
-	docker-compose --version
+	docker-compose --help
 	@$(call _docker_compose_build)
 
 define show-meta
