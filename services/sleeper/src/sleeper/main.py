@@ -2,6 +2,7 @@ import os
 import json
 import random
 import time
+import subprocess
 
 
 def get_from_environ(key, default=None):
@@ -24,16 +25,24 @@ def validate_not_negative_int(number):
     return number if number >= 0 else get_random_sleep()
 
 
-def test_gpu_cuda_code(n=1_000_000):
+def test_gpu_cuda_code():
     """Dose some computation on the GPU with CUDA"""
+    if get_from_environ("DISABLE_GPU_FOR_TESTING") is not None:
+        print("GPU payload disabled for testing")
+        return
+
     # if the command exists it can run on the hardware below
-    assert os.WEXITSTATUS(os.system("nvidia-smi")) == 0
+    proc = subprocess.Popen(["nvidia-smi"], stdout=subprocess.PIPE)
+    stdout, _ = proc.communicate()
+    str_stdout = stdout.decode()
+    assert "NVIDIA-SMI" in str_stdout, str_stdout
+    assert proc.returncode == 0
 
     # leving here for future usaage
     # from numba import vectorize, cuda
     # import numpy as np
 
-    # a = np.ones(n, dtype=np.float64)
+    # a = np.ones(1_000_000, dtype=np.float64)
 
     # @vectorize(["float64(float64)"], target="cuda")
     # def gpu_function(x):

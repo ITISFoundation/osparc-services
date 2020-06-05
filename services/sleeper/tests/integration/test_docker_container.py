@@ -69,6 +69,8 @@ def docker_container(
         should_run_with_gpu_support = request.param == "gpu"
         if should_run_with_gpu_support:
             container_variables["DOCKER_RESOURCE_VRAM"] = "1"
+            container_variables["DISABLE_GPU_FOR_TESTING"] = "1"
+
         volumes = {
             host_folders[folder]: {
                 "bind": container_variables["{}_FOLDER".format(str(folder).upper())]
