@@ -83,24 +83,6 @@ WORKDIR /home/${SC_USER_NAME}
 # && apt-get -y install --no-install-recommends \
 # && rm -rf /var/lib/apt/lists/*
 
-
-# This might be used in the future
-# Install MINICONDA
-# RUN wget https://repo.anaconda.com/miniconda/Miniconda3-4.7.12-Linux-x86_64.sh -O Miniconda.sh && \
-#    /bin/bash Miniconda.sh -b -p /opt/conda && \
-#    rm Miniconda.sh
-
-# ENV PATH /opt/conda/bin:$PATH
-
-#RUN /opt/conda/bin/conda install --yes --freeze-installed \
-#    numba==0.49.1 \
-#    cudatoolkit==10.2.89 \
-#    nomkl \
-#    && /opt/conda/bin/conda clean -afy \
-#    && find /opt/conda/ -follow -type f -name '*.a' -delete \
-#    && find /opt/conda/ -follow -type f -name '*.pyc' -delete \
-#    && find /opt/conda/ -follow -type f -name '*.js.map' -delete
-
 # ------------------------------------------------------------------------------------
 
 # copy docker bootup scripts

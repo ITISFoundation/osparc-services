@@ -37,19 +37,7 @@ def test_gpu_cuda_code():
     str_stdout = stdout.decode()
     assert "NVIDIA-SMI" in str_stdout, str_stdout
     assert proc.returncode == 0
-
-    # leving here for future usaage
-    # from numba import vectorize, cuda
-    # import numpy as np
-
-    # a = np.ones(1_000_000, dtype=np.float64)
-
-    # @vectorize(["float64(float64)"], target="cuda")
-    # def gpu_function(x):
-    #     """sum 1 to all values in array"""
-    #     return x + 1
-
-    # gpu_function(a)
+    # search the history for the CUDA implementation
 
 
 def sleep_with_payload(amount_to_sleep, target_payload=lambda: True):
