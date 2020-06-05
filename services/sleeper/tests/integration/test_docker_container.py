@@ -51,8 +51,9 @@ def validation_folders(validation_dir: Path) -> Dict:
     return {folder: (validation_dir / folder) for folder in _FOLDER_NAMES}
 
 
-@pytest.fixture
+@pytest.fixture(params=["cpu", "gpu"])
 def docker_container(
+    request,
     validation_folders: Dict,
     host_folders: Dict,
     docker_client: docker.DockerClient,
@@ -65,6 +66,9 @@ def docker_container(
     assert Path(host_folders["input"]).exists()
     # run the container (this may take some time)
     try:
+        should_run_with_gpu_support = request.param == "gpu"
+        if should_run_with_gpu_support:
+            container_variables["DOCKER_RESOURCE_VRAM"] = "1"
         volumes = {
             host_folders[folder]: {
                 "bind": container_variables["{}_FOLDER".format(str(folder).upper())]
