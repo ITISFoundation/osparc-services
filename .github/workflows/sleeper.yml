@@ -47,22 +47,28 @@ jobs:
         if: github.ref != 'refs/heads/master'
         run: echo ::set-env name=DOCKER_IMAGE_TAG::${GITHUB_REF##*/}
       - name: set dev environs
+        working-directory: "services/sleeper"
         run: make devenv
       - name: get current image if available
+        working-directory: "services/sleeper"
         run: make pull-latest || true
       - name: build
+        working-directory: "services/sleeper"
         run: |
           make build
           make info-build
       - name: test
+        working-directory: "services/sleeper"
         run: make tests
       - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         name: deploy
+        working-directory: "services/sleeper"
         run: |
           ./../../ci/helpers/dockerhub_login.bash
           make push
       - if: github.event_name == 'push' && github.ref != 'refs/heads/master'
         name: deploy
+        working-directory: "services/sleeper"
         run: |
           ./../../ci/helpers/dockerhub_login.bash
           make push-version
