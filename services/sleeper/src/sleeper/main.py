@@ -26,17 +26,19 @@ def validate_not_negative_int(number):
 
 def test_gpu_cuda_code(n=1_000_000):
     """Dose some computation on the GPU with CUDA"""
-    from numba import vectorize, cuda
-    import numpy as np
+    return os.system("nvidia-smi")
 
-    a = np.ones(n, dtype=np.float64)
+    # from numba import vectorize, cuda
+    # import numpy as np
 
-    @vectorize(["float64(float64)"], target="cuda")
-    def gpu_function(x):
-        """sum 1 to all values in array"""
-        return x + 1
+    # a = np.ones(n, dtype=np.float64)
 
-    gpu_function(a)
+    # @vectorize(["float64(float64)"], target="cuda")
+    # def gpu_function(x):
+    #     """sum 1 to all values in array"""
+    #     return x + 1
+
+    # gpu_function(a)
 
 
 def sleep_with_payload(amount_to_sleep, target_payload=lambda: True):
