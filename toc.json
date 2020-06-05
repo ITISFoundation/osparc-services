@@ -2,7 +2,7 @@
   "3d-viewer": {
     "description": "Paraview Web-based Visualizer",
     "folder": "services/dy-3dvis/",
-    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
+    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/3d-viewer",
     "name": "3d-viewer",
     "type": "dynamic",
@@ -96,7 +96,7 @@
     "key": "simcore/services/dynamic/jupyter-neuron",
     "name": "jupyter-neuron",
     "type": "dynamic",
-    "version": "1.1.0"
+    "version": "2.13.0"
   },
   "jupyter-r-notebook": {
     "description": "Jupyter R notebook",
@@ -146,7 +146,7 @@
   "opencorservice_demo": {
     "description": "opencorservice_demo",
     "folder": "services/oc-guytonmodel/",
-    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
+    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/comp/opencorservice_demo",
     "name": "opencorservice_demo",
     "type": "computational",
@@ -155,7 +155,7 @@
   "pmr_mrg": {
     "description": "Creates a simulation of the MRG fiber based on the model found on the PMR https://models.physiomeproject.org/e/5f7/mcintyre_richardson_grill_model_2001.cellml/view",
     "folder": "services/oc-pmrmrg/",
-    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
+    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/comp/pmr_mrg",
     "name": "pmr_mrg",
     "type": "computational",
@@ -187,6 +187,24 @@
     "name": "modeler",
     "type": "dynamic",
     "version": "0.1.1"
+  },
+  "sleeper": {
+    "description": "A service which awaits for time to pass, used for system validation.",
+    "folder": "services/sleeper/",
+    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
+    "key": "simcore/services/comp/sleeper",
+    "name": "sleeper",
+    "type": "computational",
+    "version": "2.0.0"
+  },
+  "sleeper-gpu": {
+    "description": "A service which awaits for time to pass, used for system validation.",
+    "folder": "services/sleeper/",
+    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-gpu:${DOCKER_IMAGE_TAG}",
+    "key": "simcore/services/comp/sleeper-gpu",
+    "name": "sleeper-gpu",
+    "type": "computational",
+    "version": "2.0.0"
   },
   "tissue-properties": {
     "description": "Tissue properties compiled in an extensive, critical literature review by the ITIS Foundation. Visit [itis.swiss/database](https://itis.swiss/database) for additional information, e.g., on tissue parameter variability/uncertainty, quality assurance, and the explored sources. Please use the following citation when referring to the database: Hasgall PA, Di Gennaro F, Baumgartner C, Neufeld E, Lloyd B, Gosselin MC, Payne D, Klingenb\u00f6ck A, Kuster N, ITIS Database for thermal and electromagnetic parameters of biological tissues, Version 4.0, May 15, 2018, DOI: 10.13099/VIP21000-04-0. [itis.swiss/database](https://itis.swiss/database). Powered by [csv-to-html-table](https://github.com/derekeder/csv-to-html-table)",
