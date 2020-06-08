@@ -28,19 +28,9 @@ RUN apt-get update --fix-missing && \
 FROM base as build
 
 ENV SC_BUILD_TARGET build
-ENV SC_PIP pip3
 
-# ------------------------------------------------------------------------------------
-#TODO:
-# uncomment and adapt if build dependencies shall be installed
-#RUN apt-get update \
-# && apt-get -y install --no-install-recommends \
-# gcc \
-# git \
-# && rm -rf /var/lib/apt/lists/*
-
-# Instlling python and numba
-RUN $SC_PIP install --upgrade pip wheel setuptools
+# Instlling python
+RUN pip3 install --upgrade pip wheel setuptools
 
 # ------------------------------------------------------------------------------------
 
@@ -50,8 +40,7 @@ RUN mkdir --parents /build/bin
 # copy src code
 COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} src/sleeper src/sleeper
 # ------------------------------------------------------------------------------------
-#TODO:
-# uncomment and adapt if build steps are necessary
+
 RUN cp -R src/sleeper/* /build/bin
 # ------------------------------------------------------------------------------------
 
@@ -73,17 +62,7 @@ ENV SC_BOOT_MODE production
 ENV INPUT_FOLDER="/input" \
     OUTPUT_FOLDER="/output"
 
-
 WORKDIR /home/${SC_USER_NAME}
-
-# ------------------------------------------------------------------------------------
-#TODO:
-# uncomment and adapt to install runtime dependencies
-#RUN apt-get update \
-# && apt-get -y install --no-install-recommends \
-# && rm -rf /var/lib/apt/lists/*
-
-# ------------------------------------------------------------------------------------
 
 # copy docker bootup scripts
 COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} docker/custom/*.sh docker/
@@ -94,16 +73,6 @@ ENV PATH="/home/${SC_USER_NAME}/service.cli:${PATH}"
 
 # copy binaries from build
 COPY --from=build --chown=${SC_USER_NAME}:${SC_USER_NAME} /build/bin sleeper
-
-# ------------------------------------------------------------------------------------
-#TODO:
-# uncomment and provide a healtchecker if possible
-# HEALTHCHECK --interval=30s \
-#             --timeout=120s \
-#             --start-period=30s \
-#             --retries=3 \
-#             CMD ["healthchecker app"]
-# ------------------------------------------------------------------------------------
 
 ENTRYPOINT [ "/bin/sh", "docker/entrypoint.sh", "/bin/sh", "-c" ]
 CMD ["run"]
