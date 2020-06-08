@@ -96,13 +96,15 @@ def main() -> None:
         ensure_sleep_policy(sleep_interval) + ensure_sleep_policy(sleep_from_file)
     ) // 2
 
+    sleep_payload_function = None
+
     # check if there is GPU support for this container
-    # in the future add here more types of payloads like for MPI
     if with_gpu_payload:
-        sleep_with_payload(amount_to_sleep, target_payload=test_gpu_cuda_code)
-    else:
-        # sleep with no payload (CPU only)
-        sleep_with_payload(amount_to_sleep)
+        sleep_payload_function = test_gpu_cuda_code
+
+    sleep_with_payload(
+        amount_to_sleep=amount_to_sleep, target_payload=sleep_payload_function
+    )
 
     # writing program outputs
     output_3_file = output_folder / "single_number.txt"
