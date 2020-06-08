@@ -6,6 +6,9 @@ version: 2.0.0
 description: A service which awaits for time to pass, used for system validation.
 contact: neagu@itis.swiss
 authors:
+  - name: "Odei Maiz"
+    email: maiz@itis.swiss
+    affiliation: "IT'IS Foundation"
   - name: "Andrei Neagu"
     email: neagu@itis.swiss
     affiliation: "IT'IS Foundation"
