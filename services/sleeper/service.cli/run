@@ -1,0 +1,21 @@
+
+#!/bin/sh
+#---------------------------------------------------------------
+# AUTO-GENERATED CODE, do not modify this will be overwritten!!!
+#---------------------------------------------------------------
+# shell strict mode:
+set -o errexit
+set -o nounset
+IFS=$(printf '\n\t')
+cd "$(dirname "$0")"
+json_input=$INPUT_FOLDER/inputs.json
+        
+INPUT_1=$INPUT_FOLDER/single_number.txt
+export INPUT_1
+INPUT_2=$(< "$json_input" jq '.input_2')
+export INPUT_2
+INPUT_3=$(< "$json_input" jq '.input_3')
+export INPUT_3
+
+exec execute.sh
+        

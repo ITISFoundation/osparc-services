@@ -1,0 +1,50 @@
+name: sleeper-gpu
+key: simcore/services/comp/sleeper-gpu
+type: computational
+integration-version: 1.0.0
+version: 2.0.0
+description: A service which awaits for time to pass, used for system validation.
+contact: neagu@itis.swiss
+authors:
+  - name: "Odei Maiz"
+    email: maiz@itis.swiss
+    affiliation: "IT'IS Foundation"
+  - name: "Andrei Neagu"
+    email: neagu@itis.swiss
+    affiliation: "IT'IS Foundation"
+inputs:
+  input_1:
+    displayOrder: 1
+    label: File with int number
+    description: Pick a file containing only one integer
+    type: "data:text/plain"
+    defaultValue: "single_number.txt"
+    fileToKeyMap:
+      single_number.txt: input_1
+  input_2:
+    displayOrder: 2
+    label: Sleep interval
+    description: Choose an amount of time to sleep
+    type: integer
+    defaultValue: 2
+  input_3:
+    displayOrder: 3
+    label: Fail after sleep
+    description: If set to true will cause service to fail after it sleeps
+    type: boolean
+    defaultValue: false
+
+outputs:
+  output_1:
+    displayOrder: 1
+    label: output_1_label
+    description: A file containing one integer
+    type: "data:text/plain"
+    fileToKeyMap:
+      single_number.txt: output_1
+  output_2:
+    displayOrder: 2
+    label: output_2_label
+    description: Sleep interval
+    type: integer
+  

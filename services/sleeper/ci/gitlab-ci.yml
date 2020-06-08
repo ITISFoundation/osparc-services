@@ -1,0 +1,159 @@
+image: itisfoundation/gitlab-runner-docker:stable
+variables:
+  # docker in docker variant, see https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#use-docker-in-docker-executor
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+  # have some prefix so it may help for garbage collecting in the registry
+  SC_CI_PROJECT_PATH_NAME: ci/$CI_PROJECT_PATH_SLUG/$CI_COMMIT_REF_SLUG
+  SC_CI_TEST_IMAGE_PREFIX: $SC_CI_TESTING_REGISTRY/ci/$CI_PROJECT_PATH_SLUG/$CI_COMMIT_REF_SLUG
+services:
+   - docker:dind
+before_script:
+  - docker info
+# --------------------------------------------------------------------------------------------
+# ------- sleeper
+# --------------------------------------------------------------------------------------------
+sleeper-build:
+  tags:
+    - ubuntu_DOCKER
+  stage: build
+  tags:
+    - ubuntu_DOCKER
+  except:
+    refs:
+      - staging
+  script:
+    - echo "$SC_CI_TESTING_REGISTRY_PASSWORD" | docker login -u "$SC_CI_TESTING_REGISTRY_USER" --password-stdin $SC_CI_TESTING_REGISTRY
+    - cd $SC_CI_SLEEPER_LOCATION
+    - export DOCKER_REGISTRY=$SC_CI_MASTER_REGISTRY
+    - make pull-latest || true
+    - export DOCKER_REGISTRY=$SC_CI_TEST_IMAGE_PREFIX
+    - make build
+    - make push-force
+  only:
+    refs:
+      - branches
+      - merge_requests
+    changes:
+      - "**/sleeper/**/*"
+  environment:
+    name: $CI_PROJECT_PATH_SLUG/$CI_COMMIT_REF_SLUG/sleeper
+    on_stop: remove_sleeper_builds
+
+remove_sleeper_builds:
+  tags:
+    - ubuntu_DOCKER
+  stage: build
+  only:
+    refs:
+      - branches
+      - merge_requests
+  script:
+    - export DOCKER_REGISTRY=$SC_CI_TESTING_REGISTRY
+    - export DOCKER_PROJECT=$SC_CI_PROJECT_PATH_NAME/simcore/services/comp/sleeper
+    - export API_USER=$SC_CI_TESTING_REGISTRY_USER
+    - export API_TOKEN=$SC_CI_TESTING_REGISTRY_PORTUS_TOKEN
+    - bash $SC_CI_SLEEPER_LOCATION/CI/delete-image-from-registry-portus.bash # this will fail if registry is not available through Portus
+  when: manual
+  environment:
+    name: $CI_PROJECT_PATH_SLUG/$CI_COMMIT_REF_SLUG/sleeper
+    action: stop
+
+sleeper-unit-test:
+  tags:
+    - ubuntu_DOCKER
+  stage: test
+  tags:
+    - ubuntu_DOCKER
+  except:
+    refs:
+      - staging
+  script:
+    - pip install -r $SC_CI_SLEEPER_LOCATION/requirements.txt
+    - cd $SC_CI_SLEEPER_LOCATION
+    - make unit-test
+  only:
+    refs:
+      - branches
+      - merge_requests
+    changes:
+      - "**/sleeper/**/*"
+  artifacts:
+    reports:
+      junit:
+        - $SC_CI_SLEEPER_LOCATION/pytest_unittest.xml
+    paths:
+      - $SC_CI_SLEEPER_LOCATION/pytest_unittest.xml
+
+sleeper-integration-test:
+  tags:
+    - ubuntu_DOCKER
+  stage: test
+  tags:
+    - ubuntu_DOCKER
+  except:
+    refs:
+      - staging
+  script:
+    - echo "$SC_CI_TESTING_REGISTRY_PASSWORD" | docker login -u "$SC_CI_TESTING_REGISTRY_USER" --password-stdin $SC_CI_TESTING_REGISTRY
+    - pip install -r $SC_CI_SLEEPER_LOCATION/requirements.txt
+    - cd $SC_CI_SLEEPER_LOCATION
+    - export DOCKER_REGISTRY=$SC_CI_TEST_IMAGE_PREFIX
+    - make pull-latest
+    - make integration-test  
+  only:
+    refs:
+      - branches
+      - merge_requests
+    changes:
+      - "**/sleeper/**/*"
+  artifacts:
+    reports:
+      junit:
+        - $SC_CI_SLEEPER_LOCATION/pytest_integrationtest.xml
+    paths:
+      - $SC_CI_SLEEPER_LOCATION/pytest_integrationtest.xml
+
+sleeper-master:
+  tags:
+    - ubuntu_DOCKER
+  stage: deploy
+  tags:
+    - ubuntu_DOCKER
+  only:
+    refs:
+      - master
+  script:
+    - echo "$SC_CI_TESTING_REGISTRY_PASSWORD" | docker login -u "$SC_CI_TESTING_REGISTRY_USER" --password-stdin $SC_CI_TESTING_REGISTRY
+    - echo "$SC_CI_MASTER_REGISTRY_PASSWORD" | docker login -u "$SC_CI_MASTER_REGISTRY_USER" --password-stdin $SC_CI_MASTER_REGISTRY
+    - cd $SC_CI_SLEEPER_LOCATION
+    - export DOCKER_REGISTRY=$SC_CI_TEST_IMAGE_PREFIX
+    - make pull-latest
+    - docker tag $SC_CI_TEST_IMAGE_PREFIX/simcore/services/comp/sleeper $SC_CI_MASTER_REGISTRY/simcore/services/comp/sleeper
+    - export DOCKER_REGISTRY=$SC_CI_MASTER_REGISTRY
+    - make push
+  environment:
+    name: sleeper-master
+    url: $SC_CI_MASTER_REGISTRY
+
+sleeper-staging:
+  tags:
+    - ubuntu_DOCKER
+  stage: deploy
+  tags:
+    - ubuntu_DOCKER
+  only:
+    refs:
+      - staging
+  script:
+    - echo "$SC_CI_MASTER_REGISTRY_PASSWORD" | docker login -u "$SC_CI_MASTER_REGISTRY_USER" --password-stdin $SC_CI_MASTER_REGISTRY
+    - echo "$SC_CI_STAGING_REGISTRY_PASSWORD" | docker login -u "$SC_CI_STAGING_REGISTRY_USER" --password-stdin $SC_CI_STAGING_REGISTRY
+    - cd $SC_CI_SLEEPER_LOCATION
+    - export DOCKER_REGISTRY=$SC_CI_MASTER_REGISTRY
+    - make pull-latest
+    - docker tag $SC_CI_MASTER_REGISTRY/simcore/services/comp/sleeper $SC_CI_STAGING_REGISTRY/simcore/services/comp/sleeper
+    - export DOCKER_REGISTRY=$SC_CI_STAGING_REGISTRY
+    - make push
+  environment:
+    name: sleeper-production
+    url: $SC_CI_STAGING_REGISTRY
