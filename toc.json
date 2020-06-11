@@ -192,7 +192,7 @@
     "description": "A service which awaits for time to pass, used for system validation.",
     "folder": "services/sleeper/",
     "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
-    "key": "simcore/services/comp/sleeper",
+    "key": "simcore/services/comp/itis/sleeper",
     "name": "sleeper",
     "type": "computational",
     "version": "2.0.0"
@@ -201,7 +201,7 @@
     "description": "A service which awaits for time to pass, used for system validation.",
     "folder": "services/sleeper/",
     "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-gpu:${DOCKER_IMAGE_TAG}",
-    "key": "simcore/services/comp/sleeper-gpu",
+    "key": "simcore/services/comp/itis/sleeper-gpu",
     "name": "sleeper-gpu",
     "type": "computational",
     "version": "2.0.0"
