@@ -1,5 +1,5 @@
 name: sleeper-gpu
-key: simcore/services/comp/sleeper-gpu
+key: simcore/services/comp/itis/sleeper-gpu
 type: computational
 integration-version: 1.0.0
 version: 2.0.0
