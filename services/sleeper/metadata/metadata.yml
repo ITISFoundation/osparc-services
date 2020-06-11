@@ -6,6 +6,9 @@ version: 2.0.0
 description: A service which awaits for time to pass, used for system validation.
 contact: neagu@itis.swiss
 authors:
+  - name: "Odei Maiz"
+    email: maiz@itis.swiss
+    affiliation: "IT'IS Foundation"
   - name: "Andrei Neagu"
     email: neagu@itis.swiss
     affiliation: "IT'IS Foundation"
@@ -15,7 +18,6 @@ inputs:
     label: File with int number
     description: Pick a file containing only one integer
     type: "data:text/plain"
-    defaultValue: "single_number.txt"
     fileToKeyMap:
       single_number.txt: input_1
   input_2:
@@ -34,14 +36,14 @@ inputs:
 outputs:
   output_1:
     displayOrder: 1
-    label: output_1_label
+    label: A file containing one integer
     description: A file containing one integer
     type: "data:text/plain"
     fileToKeyMap:
       single_number.txt: output_1
   output_2:
     displayOrder: 2
-    label: output_2_label
+    label: Sleep interval
     description: Sleep interval
     type: integer
   
