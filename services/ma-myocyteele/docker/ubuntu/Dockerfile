@@ -1,4 +1,4 @@
-FROM ${SC_CI_MASTER_REGISTRY:-masu.speag.com}/simcore/base-images/mat2019b_ubu1804:0.1.0 as base
+FROM ${DOCKER_REGISTRY:-itisfoundation}/mat2019b_ubu1804:0.1.0 as base
 #
 #  USAGE:
 #     cd services/cardiac_myocyte_grandi
