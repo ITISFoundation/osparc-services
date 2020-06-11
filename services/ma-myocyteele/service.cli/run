@@ -1,0 +1,23 @@
+
+#!/bin/sh
+#---------------------------------------------------------------
+# AUTO-GENERATED CODE, do not modify this will be overwritten!!!
+#---------------------------------------------------------------
+# shell strict mode:
+set -o errexit
+set -o nounset
+IFS=$(printf '\n\t')
+cd "$(dirname "$0")"
+json_input=$INPUT_FOLDER/inputs.json
+        
+INPUT_000=$INPUT_FOLDER/exp_APc_data_5Hz.mat
+export INPUT_000
+INPUT_001=$INPUT_FOLDER/yfin_WT_5Hz.mat
+export INPUT_001
+INPUT_002=$(< "$json_input" jq '.input_002')
+export INPUT_002
+INPUT_003=$(< "$json_input" jq '.input_003')
+export INPUT_003
+
+exec execute.sh
+        
