@@ -25,6 +25,7 @@ cardiac_myocyte_grandi-build:
       - staging
   script:
     - echo "$SC_CI_TESTING_REGISTRY_PASSWORD" | docker login -u "$SC_CI_TESTING_REGISTRY_USER" --password-stdin $SC_CI_TESTING_REGISTRY
+    - echo "$SC_CI_MASTER_REGISTRY_PASSWORD" | docker login -u "$SC_CI_MASTER_REGISTRY_USER" --password-stdin $SC_CI_MASTER_REGISTRY 
     - cd $SC_CI_CARDIAC_MYOCYTE_GRANDI_LOCATION
     - export DOCKER_REGISTRY=$SC_CI_MASTER_REGISTRY
     - make pull-latest || true
