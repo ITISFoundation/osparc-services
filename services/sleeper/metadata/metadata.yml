@@ -36,14 +36,14 @@ inputs:
 outputs:
   output_1:
     displayOrder: 1
-    label: A file containing one integer
-    description: A file containing one integer
+    label: File containing one random integer
+    description: Integer is generated in range [1-9]
     type: "data:text/plain"
     fileToKeyMap:
       single_number.txt: output_1
   output_2:
     displayOrder: 2
-    label: Sleep interval
-    description: Sleep interval
+    label: Random sleep interval
+    description: Interval is generated in range [1-9]
     type: integer
   
