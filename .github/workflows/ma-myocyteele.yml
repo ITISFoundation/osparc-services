@@ -5,13 +5,7 @@ on:
      paths:
       - "services/ma-myocyteele/**"
       - "!**.md"
-     paths:
-      - "services/ma-myocyteele/**"
-      - "!**.md"
   pull_request:
-     paths:
-      - "services/ma-myocyteele/**"
-      - "!**.md"
      paths:
       - "services/ma-myocyteele/**"
       - "!**.md"
