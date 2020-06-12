@@ -24,7 +24,7 @@ default_context:
     author_name:               'Katie Zhuang'
     contact_email:             'zhuang@itis.swiss'
     default_docker_registry:   'itisfoundation'
-    docker_base:               'ubuntu:18.04'
+    docker_base:               'matlab2019b_ubuntu18.04'
     git_username:              'KZzizzle'
     number_of_inputs:          '4'
     number_of_outputs:         '10'

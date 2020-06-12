@@ -4,5 +4,5 @@ services:
     image: local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}
     build:
       context: ./
-      dockerfile: docker/ubuntu/Dockerfile
+      dockerfile: docker/custom/Dockerfile
       target: production

@@ -5,5 +5,5 @@ services:
     image: ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:development
     volumes:
       - ./src:/home/scu/src
-      - ./docker/ubuntu:/home/scu/docker
+      - ./docker/custom:/home/scu/docker
       - ./service.cli:/home/scu/service.cli
