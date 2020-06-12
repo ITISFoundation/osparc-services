@@ -2,7 +2,7 @@
   "3d-viewer": {
     "description": "Paraview Web-based Visualizer",
     "dockerfile": "dy-3dvis/docker/custom/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
+    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/dynamic/3d-viewer",
     "name": "3d-viewer",
     "type": "dynamic",
@@ -19,8 +19,8 @@
   },
   "cardiac_myocyte_grandi": {
     "description": "This is the mouse cardiac myocyte electrophysiology model from Eleonora Grandi at UC Davis.",
-    "dockerfile": "ma-myocyteele/docker/ubuntu/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
+    "dockerfile": "ma-myocyteele/docker/custom/Dockerfile",
+    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/comp/cardiac_myocyte_grandi",
     "name": "cardiac_myocyte_grandi",
     "type": "computational",
@@ -155,7 +155,7 @@
   "opencorservice_demo": {
     "description": "opencorservice_demo",
     "dockerfile": "oc-guytonmodel/docker/ubuntu/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
+    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/comp/opencorservice_demo",
     "name": "opencorservice_demo",
     "type": "computational",
@@ -164,7 +164,7 @@
   "pmr_mrg": {
     "description": "Creates a simulation of the MRG fiber based on the model found on the PMR https://models.physiomeproject.org/e/5f7/mcintyre_richardson_grill_model_2001.cellml/view",
     "dockerfile": "oc-pmrmrg/docker/ubuntu/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
+    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/comp/pmr_mrg",
     "name": "pmr_mrg",
     "type": "computational",
@@ -200,7 +200,7 @@
   "sleeper": {
     "description": "A service which awaits for time to pass, used for system validation.",
     "dockerfile": "sleeper/docker/custom/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
+    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/comp/sleeper",
     "name": "sleeper",
     "type": "computational",
@@ -209,7 +209,7 @@
   "sleeper-gpu": {
     "description": "A service which awaits for time to pass, used for system validation.",
     "dockerfile": "sleeper/docker/custom/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-gpu:${DOCKER_IMAGE_TAG}",
+    "image": "local/${DOCKER_IMAGE_NAME}-gpu:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/comp/sleeper-gpu",
     "name": "sleeper-gpu",
     "type": "computational",
