@@ -16,12 +16,13 @@ from typing import Dict, List, Optional
 import yaml
 from pytablewriter import MarkdownTableWriter
 
-current_file = Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve()
-current_dir = current_file.parent
-repo_dir = current_dir.parent.parent
-readme_path = repo_dir / "README.md"
-services_dir = repo_dir / "services"
+current_file: Path = Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve()
+current_dir: Path = current_file.parent
+repo_dir: Path = current_dir.parent.parent
+readme_path: Path = repo_dir / "README.md"
+services_dir: Path = repo_dir / "services"
 workflows_dir: Path = repo_dir / ".github/workflows"
+
 timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
@@ -29,8 +30,8 @@ def debug_it(fun):
     def wrap(*args, **kargs):
         try:
             return fun(*args, **kargs)
-        except:
-            extype, value, tb = sys.exc_info()
+        except:  # pylint: disable=bare-except
+            _extype, _value, tb = sys.exc_info()
             traceback.print_exc()
             pdb.post_mortem(tb)
 
@@ -42,7 +43,7 @@ def parse_repo():
     version_files = defaultdict(dict)
     services_info = defaultdict(dict)
 
-    for base, dirs, files in os.walk(services_dir):
+    for base, _dirs, files in os.walk(services_dir):
         base = Path(base)
         relbase = os.path.relpath(base, services_dir)
 
@@ -54,7 +55,7 @@ def parse_repo():
                     title = os.path.basename(relbase.replace("/" + title, ""))
                 title = re.sub(r"^(dy-)", "", title)
 
-                docker_files[relbase].update({"title": title, "folder": relbase})
+                docker_files[relbase].update({"title": title, "dockefile": relbase})
 
             elif file_name == "VERSION":
                 # Every service is published with a name and a version
@@ -70,12 +71,24 @@ def parse_repo():
                     info = {}
 
                     if "image" in service:
-                        info["image"] = service["image"]
+                        new_image = service["image"]
+                        prev_image = services_info[service_name].get("image")
+                        if prev_image and new_image.count("{") < prev_image.count("{"):
+                            info["image"] = new_image
+                        else:
+                            info["image"] = new_image
 
                     if "build" in service:
-                        info["folder"] = f"services/{relbase}/" + os.path.dirname(
-                            service["build"].get("dockerfile", "")
-                        )
+
+                        if "dockerfile" in service["build"]:
+                            context = service["build"].get("context", ".")
+                            dockerfile = base / context / service["build"]["dockerfile"]
+                            assert (
+                                dockerfile.exists()
+                            ), f"Invalid path for Dockerfile: {dockerfile}"
+                            info["dockerfile"] = os.path.relpath(
+                                dockerfile.resolve(), services_dir
+                            )
 
                         if "labels" in service["build"]:
                             for key in [
@@ -91,14 +104,28 @@ def parse_repo():
 
                     services_info[service_name].update(info)
 
-    services_info_clean = {k:v for k,v in services_info.items() if "key" in v }
+    services_info_clean = {k: v for k, v in services_info.items() if "key" in v}
+
+    def _get_closest_version_file(dockerfile: Path) -> Dict:
+        max_score = 0
+        result = None
+        for relbase in version_files:
+            parts = Path(relbase).parts
+            score = 0
+            try:
+                for i, part in enumerate(Path(dockerfile).parts):
+                    assert part == parts[i]
+                    score += 1
+            except (IndexError, AssertionError):
+                pass
+            if score > max_score:
+                result = version_files[relbase]
+        return result
 
     for service in services_info_clean.values():
         if service.get("version") == "${DOCKER_IMAGE_TAG}":
-            folder = service["folder"].lstrip("services/")
-            for relbase in version_files:
-                if relbase in folder:
-                    service["version"] = version_files[relbase]["version"]
+            dockerfile = service["dockerfile"]
+            service["version"] = _get_closest_version_file(dockerfile)["version"]
 
     return services_info_clean
 
@@ -128,7 +155,7 @@ def create_markdown(services_info, workflow_files: List[Path], stream):
         workflow_file: Path = find_corresponding_workflow(row, workflow_files)
         writer.value_matrix.append(
             [
-                "[{name}]({folder})".format(**row),
+                "[{name}](services/{dockerfile})".format(**row),
                 row["description"],
                 row["type"],
                 f"[![](https://images.microbadger.com/badges/version/itisfoundation/{image_key}.svg)](https://microbadger.com/images/itisfoundation/{image_key} 'See Image Version')",
