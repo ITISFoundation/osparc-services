@@ -3,9 +3,12 @@ key: simcore/services/comp/itis/sleeper-gpu
 type: computational
 integration-version: 1.0.0
 version: 2.0.0
-description: A service which awaits for time to pass, used for system validation.
+description: A service which awaits for time to pass.
 contact: neagu@itis.swiss
 authors:
+  - name: "Manuel Guidon"
+    email: guidon@itis.swiss
+    affiliation: "IT'IS Foundation"
   - name: "Odei Maiz"
     email: maiz@itis.swiss
     affiliation: "IT'IS Foundation"
