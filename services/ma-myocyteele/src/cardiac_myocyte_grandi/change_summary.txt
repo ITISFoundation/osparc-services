@@ -1,0 +1,91 @@
+morotti_et_al_mouse_eccODEfile
+
+Changed morotti_et_al_mouse_masterCompute.m into a function (main)
+Line 19 : function main(APDmode, Clampmode)
+
+Added Clampmode as last param in p:
+Line 91:	global p
+Line 92:	p = [cycleLength,recoveryTime,variablePar,CaMtotDyad,BtotDyad,CaMKIItotDyad,...
+				CaNtotDyad,PP1totDyad,CaMtotSL,BtotSL,CaMKIItotSL,CaNtotSL,PP1totSL,...
+				CaMtotCyt,BtotCyt,CaMKIItotCyt,CaNtotCyt,PP1totCyt,...
+				LCCtotDyad,RyRtot,PP1_dyad,PP2A_dyad,OA,PLBtot,LCCtotSL,PP1_SL,...
+				Ligtot,LCCtotBA,RyRtotBA,PLBtotBA,TnItotBA,IKstotBA,ICFTRtotBA,...
+				PP1_PLBtot,IKurtotBA,PLMtotBA,CKIIOE,Clampmode];
+
+Added logic to comment/uncomment code, change APD_modulation
+APD fixed: APDmode = 0
+APD modulation (mouselike) : APDmode = 1
+APD modulation (rabbitlike) : APDmode = 2
+Line 154 : 	if APDmode ==0
+				APD_modulation =0;
+			else
+				APD_modulation = 1;
+			end
+Line 159:	if APD_modulation == 0
+				% constant
+				APD_mod = 0.621*ones(1,length(stim_t));
+				disp('Constant APD')
+Line 163:	elseif APDmode == 1
+				% increase and decrease (MOUSE default)
+				APD_mod1 = 1; APD_mod2 = 1.26; t1 = 10e3; tau1 = 8e3; t2 = 40e3; tau2 = 6e3;
+				APD_mod = APD_mod1 - (APD_mod2-APD_mod1)*exp(-(stim_t-t1)/tau1).*(stim_t>=t1) + (APD_mod2-APD_mod1)*1./(1+exp(+(stim_t-t2)/tau2)).*(stim_t>=t1);
+				APD_mod = 0.621*APD_mod;
+				disp('APD modulation - increase and decrease')
+Line 169:	elseif APDmode == 2
+				% exponential decrease (RABBIT default)
+				APD_mod1 = 1; APD_mod2 = 0.8; t1 = 10e3; tau = 11e3;
+				APD_mod = APD_mod2 - (APD_mod2-APD_mod1)*(stim_t<t1) - (APD_mod2-APD_mod1)*exp(-(stim_t-t1)/tau).*(stim_t>=t1);
+				APD_mod = 0.621*APD_mod;
+				disp('APD modulation - decrease (RABBIT)')
+			else 
+				disp('Invalid APD mode: must be 0 (default), 1 (mouse) or 2 (rabbit)')
+Line 177 :    end
+
+Removed plot results and instead save results in csv and .mat files (I included variables you plot as well as the variables you commented as "output variables" as .csv, while the .mat file has everything. 
+
+Line 344: 	save('output.mat');
+		
+Line 346:	csvwrite('stimt.csv', stim_t'*1e-3)
+			csvwrite('t_beat.csv', time_beat*1e-3')
+			csvwrite('F_beat.csv', freq_beat')
+			csvwrite('APD80.csv', APD80')
+			csvwrite('t.csv', t')
+			csvwrite('Na_i_conc', y(:,34)')
+			csvwrite('CaTt', CaTt63')   
+			csvwrite('freq_beat.csv', freq_beat')
+			csvwrite('CaT_amp.csv', CaT_amp')
+			csvwrite('Ca_syst.csv', Ca_syst')
+			csvwrite('Ca_diast.csv', Ca_diast')
+		
+Line 358:	filename = 'currents.csv';
+			varnames = 'tArray, Ica, Ito, Itof, Itos, INa, IK1, s1, k1, Jserca, Iks, Jleak1, Jleak2, ICFTR, Incx, Ikur1, Ikur2, Iss, dVm,  Ipca,  INaK,  INabk,  Ikr';
+			vardata = [tArray; Ica; Ito; Itof; Itos; INa; IK1; s1; k1; Jserca; Iks; Jleak(:,1)'; Jleak(:,2)'; ICFTR; Incx; Ikur1; Ikur2; Iss; dVm;  Ipca;  INaK;  INabk;  Ikr]';
+			fid = fopen(filename,'w');
+			fprintf(fid,'%s\r\n',varnames);
+			fclose(fid);
+			dlmwrite(filename, vardata,'-append','delimiter',',');
+===============================================================================
+morotti_et_al_mouse_masterODEfile
+
+Line 1: 	function dydt = morotti_et_al_mouse_masterODEfile(t,y,p_tot)
+
+Line 4:    	p = p_tot(1:end-1);
+Line 5:    	Clampmode = p_tot(end);
+
+Line 77: 	pECC = [cycleLength,LCC_CKdyadp,RyR_CKp,PLB_CKp,...
+				LCCa_PKAp,LCCb_PKAp,PLB_PKAn,RyR_PKAp,TnI_PKAp,IKs_PKAp,ICFTR_PKAp,...
+				CKIIOE,recoveryTime,variablePar,Ligtot,IKur_PKAp,PLM_PKAp, Clampmode];
+===============================================================================
+morotti_et_al_mouse_eccODEfile.m
+	Line 1: function ydot = morotti_et_al_mouse_eccODEfile(t,y,p_tot)
+
+	Line 8: %% Assign passed-in parameters
+	Line 9: p = p_tot(1:end-1);
+	Line 10: Clampmode = p_tot(end);
+
+	Line 38: % Protocol
+	Line 39: if Clampmode == 0
+	Line 40:     protocol = 'pace_hr_control';
+	Line 41: else
+	Line 42:     protocol = 'AP_clamp_hr_control';
+	Line 43: end

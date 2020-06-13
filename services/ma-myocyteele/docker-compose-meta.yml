@@ -1,0 +1,54 @@
+services:
+  cardiac_myocyte_grandi:
+    build:
+      labels:
+        io.simcore.authors: '{"authors": [{"affiliation": "IT''IS Foundation", "email":
+          "zhuang@itis.swiss", "name": "Katie Zhuang"}]}'
+        io.simcore.contact: '{"contact": "zhuang@itis.swiss"}'
+        io.simcore.description: '{"description": "This is the mouse cardiac myocyte
+          electrophysiology model from Eleonora Grandi at UC Davis."}'
+        io.simcore.inputs: '{"inputs": {"input_000": {"defaultValue": "exp_APc_data_5Hz.mat",
+          "description": "Example AP .mat file - must contain variables named APc_t
+          and APc_Vm", "displayOrder": 1, "fileToKeyMap": {"exp_APc_data_5Hz.mat":
+          "input_000"}, "label": "AP Example", "type": "data:*/*"}, "input_001": {"defaultValue":
+          "yfin_WT_5Hz.mat", "description": "The simulation initial conditions - .mat
+          file must contain a variable named yfinal", "displayOrder": 2, "fileToKeyMap":
+          {"yfin_WT_5Hz.mat": "input_001"}, "label": "intial condition .mat file",
+          "type": "data:*/*"}, "input_002": {"defaultValue": "1", "description": "The
+          modulation mode (0 for constant APD, 1 for increase and decrease - mouselike,
+          2 for decrease - rabbitlike)", "displayOrder": 3, "label": "APD modulation",
+          "type": "number"}, "input_003": {"defaultValue": "0", "description": "The
+          stimulation protocol (0 for pace hr control, 1 for current clamp)o", "displayOrder":
+          4, "label": "stimulation protocol", "type": "number"}}}'
+        io.simcore.integration-version: '{"integration-version": "1.0.0"}'
+        io.simcore.key: '{"key": "simcore/services/comp/cardiac_myocyte_grandi"}'
+        io.simcore.name: '{"name": "cardiac_myocyte_grandi"}'
+        io.simcore.outputs: '{"outputs": {"output_000": {"description": "apd thresholded
+          at 0.8", "displayOrder": 1, "fileToKeyMap": {"APD80.csv": "output_000"},
+          "label": "apd80", "type": "data:application/csv"}, "output_001": {"description":
+          "calcium diastolic", "displayOrder": 2, "fileToKeyMap": {"Ca_diast.csv":
+          "output_001"}, "label": "ca_diast", "type": "data:application/csv"}, "output_002":
+          {"description": "calcium systolic", "displayOrder": 3, "fileToKeyMap": {"Ca_syst.csv":
+          "output_002"}, "label": "ca_syst", "type": "data:application/csv"}, "output_003":
+          {"description": "cat amplitude", "displayOrder": 4, "fileToKeyMap": {"CaT_amp.csv":
+          "output_003"}, "label": "cat_amp", "type": "data:application/csv"}, "output_004":
+          {"description": "cat time", "displayOrder": 5, "fileToKeyMap": {"CaTt.csv":
+          "output_004"}, "label": "catt", "type": "data:application/csv"}, "output_005":
+          {"description": "beat frequency", "displayOrder": 6, "fileToKeyMap": {"freq_beat.csv":
+          "output_005"}, "label": "freq_beat", "type": "data:application/csv"}, "output_006":
+          {"description": "sodium concentration", "displayOrder": 7, "fileToKeyMap":
+          {"Na_i_conc.csv": "output_006"}, "label": "na_i_conc", "type": "data:application/csv"},
+          "output_007": {"description": "stimulation time", "displayOrder": 8, "fileToKeyMap":
+          {"stimt.csv": "output_007"}, "label": "stimt", "type": "data:application/csv"},
+          "output_008": {"description": "various ion currents", "displayOrder": 9,
+          "fileToKeyMap": {"currents.csv": "output_008"}, "label": "currents", "type":
+          "data:application/csv"}, "output_009": {"description": "mat file with all
+          variables", "displayOrder": 10, "fileToKeyMap": {"outputs.mat": "output_009"},
+          "label": "all_outputs", "type": "data:*/*"}}}'
+        io.simcore.type: '{"type": "computational"}'
+        io.simcore.version: '{"version": "1.0.0"}'
+        org.label-schema.build-date: ${BUILD_DATE}
+        org.label-schema.schema-version: '1.0'
+        org.label-schema.vcs-ref: ${VCS_REF}
+        org.label-schema.vcs-url: https://github.com/ITISFoundation/cardiac_myocyte_grandi
+version: '3.7'

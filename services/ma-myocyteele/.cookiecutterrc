@@ -1,0 +1,38 @@
+# This file exists so you can easily regenerate your project.
+#
+# `cookiepatcher` is a convenient shim around `cookiecutter`
+# for regenerating projects (it will generate a .cookiecutterrc
+# automatically for any template). To use it:
+#
+#    pip install cookiepatcher
+#    cookiepatcher gh:itisfoundation/cookiecutter-osparc-service project-path
+#
+# See:
+#    https://pypi.python.org/pypi/cookiepatcher
+#
+# Alternatively, you can run:
+#
+#    cookiecutter --overwrite-if-exists --config-file=project-path/.cookiecutterrc gh:itisfoundation/cookiecutter-osparc-service
+#
+
+default_context:
+
+    _extensions:               ['jinja2_time.TimeExtension']
+    _template:                 'https://github.com/ITISFoundation/cookiecutter-osparc-service'
+    author_affiliation:        "IT'IS Foundation"
+    author_email:              'zhuang@itis.swiss'
+    author_name:               'Katie Zhuang'
+    contact_email:             'zhuang@itis.swiss'
+    default_docker_registry:   'itisfoundation'
+    docker_base:               'mat2019b_ubu1804:0.1.0'
+    git_username:              'KZzizzle'
+    number_of_inputs:          '4'
+    number_of_outputs:         '10'
+    project_git_repo:          'https://github.com/ITISFoundation/cardiac_myocyte_grandi'
+    project_name:              'cardiac_myocyte_grandi'
+    project_package_name:      'cardiac_myocyte_grandi'
+    project_short_description: 'This is the mouse cardiac myocyte electrophysiology model from Eleonora Grandi at UC Davis.'
+    project_slug:              'cardiac_myocyte_grandi'
+    project_type:              'computational'
+    release_date:              '2020'
+    version:                   '1.0.0'
