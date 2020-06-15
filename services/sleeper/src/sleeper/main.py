@@ -3,13 +3,9 @@ import json
 import random
 import time
 import subprocess
-import logging
 
 from pathlib import Path
 from typing import Any, Optional, Callable
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 
 def get_from_environ(key: str, default: Any = None) -> str:
@@ -37,7 +33,7 @@ def ensure_sleep_policy(sleep_interval: int) -> int:
 def test_gpu_cuda_code() -> None:
     """Dose some computation on the GPU with CUDA"""
     if get_from_environ("DISABLE_GPU_FOR_TESTING") is not None:
-        logger.warning("GPU payload disabled for testing")
+        print("GPU payload disabled for testing")
         return
 
     # if the command exists it can run on the hardware below
@@ -56,16 +52,16 @@ def sleep_with_payload(
     Used for validating different types of payloads based on their
     resource requirements.
     """
-    logger.info("Will sleep for %s seconds", amount_to_sleep)
+    print("Will sleep for %s seconds", amount_to_sleep)
     for seconds in range(amount_to_sleep):
-        logger.info("[PROGRESS] %s/%s...", seconds + 1, amount_to_sleep)
+        print("[PROGRESS] %s/%s...", seconds + 1, amount_to_sleep)
 
         start = time.time()
         if target_payload:
             target_payload()
         # take into account the runtime of the target_payload
         time_to_sleep = max(0.0, 1.0 - (time.time() - start))
-        logger.info("Remaining sleep time %s", time_to_sleep)
+        print("Remaining sleep time %s", time_to_sleep)
 
         time.sleep(time_to_sleep)
 
@@ -90,7 +86,7 @@ def main() -> None:
     if file_with_int_number.is_file():
         sleep_from_file = int(file_with_int_number.read_text().strip())
     else:
-        logger.warning("Could not find file %s", file_with_int_number)
+        print("Could not find file %s", file_with_int_number)
 
     amount_to_sleep = (
         ensure_sleep_policy(sleep_interval) + ensure_sleep_policy(sleep_from_file)
