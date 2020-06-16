@@ -15,9 +15,9 @@ then
     pushd /home/jovyan/scripts/dy_services_helpers; pip install -r requirements.txt; popd
 
     echo "Creating dummy tables ... using ${USE_CASE_CONFIG_FILE}"
-    result="$(python scripts/dy_services_helpers/platform_initialiser.py ${USE_CASE_CONFIG_FILE} --folder ${TEST_DATA_PATH})"
+    result="$(python scripts/dy_services_helpers/platform_initialiser.py "${USE_CASE_CONFIG_FILE}" --folder "${TEST_DATA_PATH}")"
     echo "Received result of $result";
-    IFS=, read -a array <<< "$result";
+    IFS=, read -ra array <<< "$result";
     echo "Received result pipeline id of ${array[0]}";
     echo "Received result node uuid of ${array[1]}";
     # the fake SIMCORE_NODE_UUID is exported to be available to the service
