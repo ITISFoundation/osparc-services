@@ -2,7 +2,7 @@ name: opencor
 key: simcore/services/comp/opencor
 type: computational
 integration-version: 1.0.0
-version: 0.1.0
+version: 1.0.0
 description: OpenCOR is a cross-platform modelling environment, which can be used to organise, edit, simulate and analy
 contact: zhuang@itis.swiss
 authors:
