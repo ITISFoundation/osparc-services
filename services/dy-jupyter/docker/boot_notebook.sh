@@ -6,13 +6,13 @@ IFS=$'\n\t'
 # create output folder
 echo
 echo "creating inputs/outputs folder"
-mkdir -p ${INPUTS_FOLDER:-~/inputs}
-mkdir -p ${OUTPUTS_FOLDER:-~/outputs}
+mkdir -p "${INPUTS_FOLDER:-~/inputs}"
+mkdir -p "${OUTPUTS_FOLDER:-~/outputs}"
 
 # try to pull data from S3
 echo
 echo "trying to restore state..."
-python /docker/state_puller.py ${SIMCORE_NODE_APP_STATE_PATH} --silent
+python /docker/state_puller.py "${SIMCORE_NODE_APP_STATE_PATH}" --silent
 
 # the notebooks in the folder shall be trusted by default
 # jupyter trust ${SIMCORE_NODE_APP_STATE_PATH}/*
@@ -20,7 +20,7 @@ python /docker/state_puller.py ${SIMCORE_NODE_APP_STATE_PATH} --silent
 # Trust all notebooks in the notbooks folder
 echo
 echo "trust all notebooks in path..."
-find ${SIMCORE_NODE_APP_STATE_PATH} -name '*.ipynb' | xargs jupyter trust
+find "${SIMCORE_NODE_APP_STATE_PATH}" -name '*.ipynb' -exec jupyter trust \;
 
 # prevents notebook to open in separate tab
 cat > ~/.jupyter/custom/custom.js <<EOF
