@@ -32,8 +32,6 @@ ENV SC_BUILD_TARGET build
 WORKDIR /build
 # defines the output of the build
 RUN mkdir --parents /build/bin
-# copy src code
-COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} src/opencor src/opencor
 
 # --------------------------Production stage -------------------
 # Final cleanup up to reduce image size and startup setup
