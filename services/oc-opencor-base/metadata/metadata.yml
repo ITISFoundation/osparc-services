@@ -13,7 +13,7 @@ inputs:
   model_url:
     displayOrder: 1
     label: model url
-    description: the URL of a CellML / SED-ML file you would like to run
+    description: the url of a CellML / SED-ML file you would like to run
     type: string
     defaultValue: https://models.physiomeproject.org/workspace/5f5/rawfile/125f548ce204c1d815298d2c8c1d9b774d89e3a7/mcintyre_richardson_grill_model_2001.sedml
   config_file:
@@ -29,7 +29,7 @@ outputs:
   output_1:
     displayOrder: 1
     label: simulation output
-    description: JSON file containing outputs of the simulation
+    description: JSON file containing output of the simulation
     type: data:application/json
     fileToKeyMap:
       output_data.json: output_1
