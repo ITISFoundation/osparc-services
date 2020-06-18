@@ -12,9 +12,8 @@ services:
           "model url", "description": "the url of a CellML / SED-ML file you would
           like to run", "type": "string", "defaultValue": "https://models.physiomeproject.org/workspace/5f5/rawfile/125f548ce204c1d815298d2c8c1d9b774d89e3a7/mcintyre_richardson_grill_model_2001.sedml"},
           "config_file": {"displayOrder": 2, "label": "configuration file (JSON)",
-          "description": "Used to configure the simulation (using the information
-          in the simulation section, if present), customise the initial state of the
-          model (using the information in the parameters section, if present).", "type":
+          "description": "Used to configure the simulation, customise the initial
+          state of the model, and  specify the data that is to be outputted.", "type":
           "data:application/json", "defaultValue": "config.json", "fileToKeyMap":
           {"config.json": "config_file"}}}}'
         io.simcore.integration-version: '{"integration-version": "1.0.0"}'

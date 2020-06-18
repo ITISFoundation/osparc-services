@@ -31,7 +31,7 @@ default_context:
     project_git_repo:          'https://github.com/ITISFoundation/opencor'
     project_name:              'opencor'
     project_package_name:      'opencor'
-    project_short_description: 'OpenCOR is a cross-platform modelling environment, which can be used to organise, edit, simulate and analy'
+    project_short_description: 'OpenCOR is a cross-platform modelling environment, which can be used to organise, edit, simulate and analyze CellML and SED-ML files'
     project_slug:              'opencor'
     project_type:              'computational'
     release_date:              '2020'
