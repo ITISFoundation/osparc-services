@@ -1,0 +1,19 @@
+{
+  "simulation": {
+    "Starting point": 5,
+    "Ending point": 50,
+    "Point interval": 0.5
+  },
+  "parameters": {
+    "fast_sodium_channel/g_Naf": 3.5,
+    "membrane/V_m": -35
+  },
+  "output": [
+    "fast_sodium_channel/i_Naf",
+    "leakage_channel/i_Lk",
+    "membrane/V_m",
+    "membrane/V_m/prime",
+    "persistent_sodium_channel/i_Nap",
+    "slow_potassium_channel/i_Ks"
+  ]
+}
