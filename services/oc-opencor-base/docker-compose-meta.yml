@@ -24,7 +24,7 @@ services:
           simulation", "type": "data:application/json", "fileToKeyMap": {"output_data.json":
           "output_1"}}}}'
         io.simcore.type: '{"type": "computational"}'
-        io.simcore.version: '{"version": "1.0.0"}'
+        io.simcore.version: '{"version": "1.0.1"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
