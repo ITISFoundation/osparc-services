@@ -6,7 +6,7 @@ services:
           "affiliation": "IT''IS Foundation"}]}'
         io.simcore.contact: '{"contact": "zhuang@itis.swiss"}'
         io.simcore.description: '{"description": "OpenCOR is a cross-platform modelling
-          environment, which can be used to organise, edit, simulate and analyze CellML
+          environment, which can be used to organise, edit, simulate and analyse CellML
           and SED-ML files"}'
         io.simcore.inputs: '{"inputs": {"model_url": {"displayOrder": 1, "label":
           "model url", "description": "the url of a CellML / SED-ML file you would
