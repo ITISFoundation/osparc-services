@@ -153,7 +153,7 @@
     "version": "3.0.4"
   },
   "opencor": {
-    "description": "OpenCOR is a cross-platform modelling environment, which can be used to organise, edit, simulate and analyze CellML and SED-ML files",
+    "description": "OpenCOR is a cross-platform modelling environment, which can be used to organise, edit, simulate and analyse CellML and SED-ML files",
     "dockerfile": "oc-opencor-base/docker/custom/Dockerfile",
     "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/comp/opencor",
