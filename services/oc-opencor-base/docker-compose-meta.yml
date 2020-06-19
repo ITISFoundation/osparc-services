@@ -14,8 +14,8 @@ services:
           "config_file": {"displayOrder": 2, "label": "configuration file (JSON)",
           "description": "Used to configure the simulation, customise the initial
           state of the model, and  specify the data that is to be outputted.", "type":
-          "data:application/json", "defaultValue": "config.json", "fileToKeyMap":
-          {"config.json": "config_file"}}}}'
+          "data:*/*", "defaultValue": "config file", "fileToKeyMap": {"config.json":
+          "config_file"}}}}'
         io.simcore.integration-version: '{"integration-version": "1.0.0"}'
         io.simcore.key: '{"key": "simcore/services/comp/opencor"}'
         io.simcore.name: '{"name": "opencor"}'
@@ -24,7 +24,7 @@ services:
           simulation", "type": "data:application/json", "fileToKeyMap": {"output_data.json":
           "output_1"}}}}'
         io.simcore.type: '{"type": "computational"}'
-        io.simcore.version: '{"version": "1.0.0"}'
+        io.simcore.version: '{"version": "1.0.1"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
