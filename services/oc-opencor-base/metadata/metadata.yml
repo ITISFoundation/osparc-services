@@ -20,8 +20,8 @@ inputs:
     displayOrder: 2
     label: configuration file (JSON)
     description: Used to configure the simulation, customise the initial state of the model, and  specify the data that is to be outputted.
-    type: data:application/json
-    defaultValue: config.json
+    type: data:*/*
+    defaultValue: config file
     fileToKeyMap:
       config.json: config_file
   
