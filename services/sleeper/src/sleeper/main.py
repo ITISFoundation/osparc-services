@@ -52,16 +52,16 @@ def sleep_with_payload(
     Used for validating different types of payloads based on their
     resource requirements.
     """
-    print("Will sleep for %s seconds", amount_to_sleep)
+    print(f"Will sleep for {amount_to_sleep} seconds")
     for seconds in range(amount_to_sleep):
-        print("[PROGRESS] %s/%s...", seconds + 1, amount_to_sleep)
+        print(f"[PROGRESS] {seconds + 1}/{amount_to_sleep}...")
 
         start = time.time()
         if target_payload:
             target_payload()
         # take into account the runtime of the target_payload
         time_to_sleep = max(0.0, 1.0 - (time.time() - start))
-        print("Remaining sleep time %s", time_to_sleep)
+        print(f"Remaining sleep time {time_to_sleep}")
 
         time.sleep(time_to_sleep)
 
@@ -86,7 +86,7 @@ def main() -> None:
     if file_with_int_number.is_file():
         sleep_from_file = int(file_with_int_number.read_text().strip())
     else:
-        print("Could not find file %s", file_with_int_number)
+        print(f"Could not find file {file_with_int_number}")
 
     amount_to_sleep = (
         ensure_sleep_policy(sleep_interval) + ensure_sleep_policy(sleep_from_file)
