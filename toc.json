@@ -159,7 +159,7 @@
     "key": "simcore/services/comp/opencor",
     "name": "opencor",
     "type": "computational",
-    "version": "1.0.1"
+    "version": "1.0.2"
   },
   "opencorservice_demo": {
     "description": "opencorservice_demo",
