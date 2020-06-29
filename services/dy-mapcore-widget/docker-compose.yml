@@ -12,7 +12,7 @@ services:
         io.simcore.type: '{"type": "dynamic"}'
         io.simcore.name: '{"name": "Mapcore Flatmap"}'
         io.simcore.description: '{"description": "Interactive maps reveal the anatomy and functional relationships of the autonomic nerves and the organs that they innervate. 2D and 3D maps render spatial dynamics, connectivity, and physiology across a range of species and nerve-organ systems."}'
-        io.simcore.authors: '{"authors": [{"name": "odeimaiz", "email": "maiz@itis.swiss", "affiliation": "ITIS Foundation"}]}'
+        io.simcore.authors: '{"authors": [{"name": "alanwu", "email": "alan.wu@auckland.ac.nz", "affiliation": "Auckland Bioengineering Institute"}, {"name": "odeimaiz", "email": "maiz@itis.swiss", "affiliation": "ITIS Foundation"}]}'
         io.simcore.contact: '{"contact": "maiz@itis.swiss"}'
         io.simcore.inputs: '{"inputs": {}}'
         io.simcore.outputs: '{"outputs": {}}'
