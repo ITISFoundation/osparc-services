@@ -57,9 +57,8 @@ ENV SIMCORE_NODE_UUID="-1" \
 #-----------------Production----------------------
 FROM base AS production
 
-COPY --chown=scu:scu services/dy-mapcore-widget/mapcore-widget $HOME/mapcore-widget
+COPY --chown=scu:scu services/dy-mapcore-widget/mapintegratedvuer $HOME/mapintegratedvuer
 COPY --chown=scu:scu services/dy-mapcore-widget/inputs $HOME/inputs
-COPY --chown=scu:scu services/dy-mapcore-widget/inputs/TissueProperties.csv $HOME/mapcore-widget/data/TissueProperties.csv
 
 RUN apk add --no-cache \
     postgresql-libs
@@ -73,7 +72,7 @@ WORKDIR $HOME
 COPY --chown=scu:scu services/dy-mapcore-widget/docker $HOME/docker
 COPY --chown=scu:scu services/dy-mapcore-widget/server $HOME/server
 
-WORKDIR $HOME/mapcore-widget
+WORKDIR $HOME/mapintegratedvuer
 CMD ["/bin/bash", "../docker/boot.sh"]
 
 #-----------------Development-----------------------
@@ -82,7 +81,7 @@ FROM base as development
 VOLUME $HOME/scripts
 VOLUME $HOME/services/storage/client-sdk
 
-VOLUME $HOME/mapcore-widget
+VOLUME $HOME/mapintegratedvuer
 VOLUME $HOME/docker
 VOLUME $HOME/server
 VOLUME $HOME/devel
@@ -94,5 +93,5 @@ ENV CREATE_DUMMY_TABLE 1
 ENV USE_CASE_CONFIG_FILE="/home/scu/devel/port_config.json"
 ENV INIT_OPTIONS="50 6 1 tab"
 
-WORKDIR $HOME/mapcore-widget
+WORKDIR $HOME/mapintegratedvuer
 ENTRYPOINT ["/bin/bash", "../docker/boot.sh"]

@@ -9,7 +9,7 @@ services:
     volumes:
       - ../../services/storage/client-sdk:/home/scu/services/storage/client-sdk
       - ../../scripts:/home/scu/scripts
-      - ./mapcore-widget:/home/scu/mapcore-widget
+      - ./mapintegratedvuer:/home/scu/mapintegratedvuer
       - ./docker:/home/scu/docker
       - ./server:/home/scu/server
       - ./devel:/home/scu/devel
