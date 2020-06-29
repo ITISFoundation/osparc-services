@@ -35,6 +35,15 @@ RUN apk add --no-cache --virtual .build-deps \
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/postgres-database &&\
     apk del --no-cache .build-deps
 
+# ----------------------------------------------------------------
+# install service related resources
+
+RUN git clone --depth=1 --branch master https://github.com/ABI-Software/mapintegratedvuer.git mapintegratedvuer &&\
+    cd mapintegratedvuer &&\
+    git reset --hard bd5b1c0316a35504222ce7823cc951a4c73e6d51 &&\
+    sed -i 's/MapIntegratedVuer/MapContent/g' src/App.vue &&\
+    npm install --save &&\
+    ./node_modules/.bin/vue-cli-service build
 
 RUN npm install express
 
@@ -57,7 +66,7 @@ ENV SIMCORE_NODE_UUID="-1" \
 #-----------------Production----------------------
 FROM base AS production
 
-COPY --chown=scu:scu services/dy-mapcore-widget/mapintegratedvuer $HOME/mapintegratedvuer
+COPY --from=base --chown=scu:scu $HOME/mapintegratedvuer $HOME/mapintegratedvuer
 COPY --chown=scu:scu services/dy-mapcore-widget/inputs $HOME/inputs
 
 RUN apk add --no-cache \
