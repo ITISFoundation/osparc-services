@@ -41,8 +41,9 @@ RUN apk add --no-cache --virtual .build-deps \
 # - replace string in main vue file to render only the interesting content
 # - build/compile
 
-RUN git clone --depth 1 https://github.com/ABI-Software/mapintegratedvuer.git mapintegratedvuer &&\
-    cd mapintegratedvuer &&\
+
+RUN git clone --depth 1 https://github.com/ABI-Software/flatmapvuer.git flatmapvuer &&\
+    cd flatmapvuer &&\
     git reset --hard bd5b1c0316a35504222ce7823cc951a4c73e6d51 &&\
     sed -i 's/MapIntegratedVuer/MapContent/g' src/App.vue &&\
     npm install --save &&\
@@ -71,7 +72,7 @@ ENV SIMCORE_NODE_UUID="-1" \
 #-----------------Production----------------------
 FROM base AS production
 
-COPY --from=base --chown=scu:scu $HOME/mapintegratedvuer $HOME/mapintegratedvuer
+COPY --from=base --chown=scu:scu $HOME/flatmapvuer $HOME/flatmapvuer
 COPY --chown=scu:scu services/dy-mapcore-widget/inputs $HOME/inputs
 
 RUN apk add --no-cache \
@@ -86,7 +87,7 @@ WORKDIR $HOME
 COPY --chown=scu:scu services/dy-mapcore-widget/docker $HOME/docker
 COPY --chown=scu:scu services/dy-mapcore-widget/server $HOME/server
 
-WORKDIR $HOME/mapintegratedvuer
+WORKDIR $HOME/flatmapvuer
 CMD ["/bin/bash", "../docker/boot.sh"]
 
 #-----------------Development-----------------------
@@ -95,7 +96,7 @@ FROM base as development
 VOLUME $HOME/scripts
 VOLUME $HOME/services/storage/client-sdk
 
-VOLUME $HOME/mapintegratedvuer
+VOLUME $HOME/flatmapvuer
 VOLUME $HOME/docker
 VOLUME $HOME/server
 VOLUME $HOME/devel
@@ -104,5 +105,5 @@ ENV CREATE_DUMMY_TABLE 1
 ENV USE_CASE_CONFIG_FILE="/home/scu/devel/port_config.json"
 ENV INIT_OPTIONS="50 6 1 tab"
 
-WORKDIR $HOME/mapintegratedvuer
+WORKDIR $HOME/flatmapvuer
 ENTRYPOINT ["/bin/bash", "../docker/boot.sh"]
