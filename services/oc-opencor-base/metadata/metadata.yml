@@ -3,7 +3,7 @@ key: simcore/services/comp/opencor
 type: computational
 integration-version: 1.0.0
 version: 1.0.2
-description: OpenCOR is a cross-platform modelling environment, which can be used to organise, edit, simulate and analyse CellML and SED-ML files
+description: OpenCOR is a cross-platform modelling environment, which can be used to organise, edit, simulate and analyse CellML and SED-ML files.
 contact: zhuang@itis.swiss
 authors:
   - name: Katie Zhuang
