@@ -1,5 +1,4 @@
 /* global require */
-/* global process */
 /* global __dirname */
 /* global module */
 
