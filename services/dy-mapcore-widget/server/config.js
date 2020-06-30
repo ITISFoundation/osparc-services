@@ -3,6 +3,7 @@
 /* global module */
 
 const path = require('path');
+const process = require('process');
 
 module.exports = {
   // webserver configs
