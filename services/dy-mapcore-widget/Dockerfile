@@ -55,7 +55,6 @@ RUN npm install express
 ENV SIMCORE_NODE_UUID="-1" \
     SIMCORE_USER_ID="-1" \
     SIMCORE_NODE_BASEPATH="/mapcore-widget" \
-    MAPCOREWG_OUTPUT_PATH="../outputs" \
     STORAGE_ENDPOINT="=1" \
     S3_ENDPOINT="=1" \
     S3_ACCESS_KEY="-1" \
@@ -70,7 +69,6 @@ ENV SIMCORE_NODE_UUID="-1" \
 FROM base AS production
 
 COPY --from=base --chown=scu:scu $HOME/flatmapvuer $HOME/flatmapvuer
-COPY --chown=scu:scu services/dy-mapcore-widget/inputs $HOME/inputs
 
 RUN apk add --no-cache \
     postgresql-libs
