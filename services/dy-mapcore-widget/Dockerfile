@@ -32,18 +32,23 @@ RUN apk add --no-cache --virtual .build-deps \
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/service-library &&\
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python &&\
-    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/postgres-database &&\
-    apk del --no-cache .build-deps
+    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/postgres-database
 
 # ----------------------------------------------------------------
 # install service related resources
+# - clone repo
+# - fix it to bd5b1c0316a35504222ce7823cc951a4c73e6d51 commit
+# - replace string in main vue file to render only the interesting content
+# - build/compile
 
-RUN git clone --depth=1 --branch master https://github.com/ABI-Software/mapintegratedvuer.git mapintegratedvuer &&\
+RUN git clone --depth 1 https://github.com/ABI-Software/mapintegratedvuer.git mapintegratedvuer &&\
     cd mapintegratedvuer &&\
     git reset --hard bd5b1c0316a35504222ce7823cc951a4c73e6d51 &&\
     sed -i 's/MapIntegratedVuer/MapContent/g' src/App.vue &&\
     npm install --save &&\
     ./node_modules/.bin/vue-cli-service build
+
+RUN apk del --no-cache .build-deps
 
 RUN npm install express
 
