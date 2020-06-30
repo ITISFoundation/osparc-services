@@ -37,15 +37,15 @@ RUN apk add --no-cache --virtual .build-deps \
 # ----------------------------------------------------------------
 # install service related resources
 # - clone repo
-# - fix it to bd5b1c0316a35504222ce7823cc951a4c73e6d51 commit
 # - replace string in main vue file to render only the interesting content
+# - fix it to 394364e85c3725e26ce601b4671cd4c70bc05a91 commit
 # - build/compile
 
 
 RUN git clone --depth 1 https://github.com/ABI-Software/flatmapvuer.git flatmapvuer &&\
     cd flatmapvuer &&\
-    git reset --hard bd5b1c0316a35504222ce7823cc951a4c73e6d51 &&\
     sed -i 's/MapIntegratedVuer/MapContent/g' src/App.vue &&\
+    git reset --hard 394364e85c3725e26ce601b4671cd4c70bc05a91 &&\
     npm install --save &&\
     ./node_modules/.bin/vue-cli-service build
 
