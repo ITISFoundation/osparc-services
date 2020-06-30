@@ -100,9 +100,6 @@ VOLUME $HOME/docker
 VOLUME $HOME/server
 VOLUME $HOME/devel
 
-COPY --chown=scu /scripts/dy_services_helpers/requirements.txt $HOME/scripts/dy_services_helpers/requirements.txt
-RUN pip3 install -r $HOME/scripts/dy_services_helpers/requirements.txt
-
 ENV CREATE_DUMMY_TABLE 1
 ENV USE_CASE_CONFIG_FILE="/home/scu/devel/port_config.json"
 ENV INIT_OPTIONS="50 6 1 tab"
