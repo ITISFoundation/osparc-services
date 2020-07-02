@@ -3,7 +3,7 @@ ARG BASE_IMAGE=kitware/paraviewweb:pv-v5.6.0-osmesa
 # apply patch to visualizer
 FROM node:8.12.0 AS visualizer
 WORKDIR /home/node
-ARG VISUALIZER_VERSION=v3.1.10
+ARG VISUALIZER_VERSION=v3.2.0
 RUN git clone --branch ${VISUALIZER_VERSION} https://github.com/Kitware/visualizer.git
 WORKDIR /home/node/visualizer
 COPY services/dy-3dvis/src/3d-viewer/rebrand-osparc/to-be-copied .
