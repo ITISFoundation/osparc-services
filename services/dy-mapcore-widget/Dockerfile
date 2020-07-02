@@ -39,12 +39,15 @@ RUN apk add --no-cache --virtual .build-deps \
 # - clone repo
 # - fix it to 394364e85c3725e26ce601b4671cd4c70bc05a91 commit
 # - build/compile
+# - replace the first slash from href=/ and src=/ in index.html
 
 RUN git clone --depth 1 https://github.com/ABI-Software/flatmapvuer.git flatmapvuer &&\
     cd flatmapvuer &&\
     git reset --hard 394364e85c3725e26ce601b4671cd4c70bc05a91 &&\
     npm install --save &&\
-    ./node_modules/.bin/vue-cli-service build
+    ./node_modules/.bin/vue-cli-service build &&\
+    sed -i s%href=/%href=%g dist/index.html &&\
+    sed -i s%src=/%src=%g dist/index.html
 
 RUN apk del --no-cache .build-deps
 
