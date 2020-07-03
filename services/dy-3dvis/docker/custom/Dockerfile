@@ -12,7 +12,7 @@ RUN git apply rebrand-osparc.patch && \
     npm install && \
     npm run build:release && \
     npm link && \
-    sed -i s%domain:{min:.1,max:1,step:.01}%domain:{min:.1,max:0.99,step:.01}%g dist/Visualizer.js && \
+    sed -i s%domain:{min:.1,max:1,step:.01}%domain:{min:.1,max:.9,step:.01}%g dist/Visualizer.js && \
     cp src/*.png dist
 
 # ----------------------------------------------------------------
