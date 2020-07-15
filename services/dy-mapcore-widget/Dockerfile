@@ -37,13 +37,13 @@ RUN apk add --no-cache --virtual .build-deps \
 # ----------------------------------------------------------------
 # install service related resources
 # - clone repo
-# - fix it to 394364e85c3725e26ce601b4671cd4c70bc05a91 commit
+# - fix it to 0613639f9161488d7b636974f69a118edd40cee8 commit
 # - build/compile
 # - replace the first slash from href=/ and src=/ in index.html
 
 RUN git clone --depth 1 https://github.com/ABI-Software/flatmapvuer.git flatmapvuer &&\
     cd flatmapvuer &&\
-    git reset --hard 394364e85c3725e26ce601b4671cd4c70bc05a91 &&\
+    git reset --hard 0613639f9161488d7b636974f69a118edd40cee8 &&\
     npm install --save &&\
     ./node_modules/.bin/vue-cli-service build &&\
     sed -i s%href=/%href=%g dist/index.html &&\
