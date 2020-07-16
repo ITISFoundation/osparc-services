@@ -90,7 +90,7 @@ def preprocess_inputs():
     global out_images_path
 
     temp_folder = tempfile.mkdtemp()
-    if data_paths:
+    if data_paths is not None:
         for file_path in data_paths:
             if file_path and zipfile.is_zipfile(file_path):
                 with zipfile.ZipFile(file_path) as zip_file:
