@@ -3,7 +3,7 @@
 Dynamic service that renders mapcore's flatmap widget.
 
 For building the backend we:
-- clone ABI-Software/flatmapvuer repo
+- clone ABI-Software/mapintegratedvuer repo
 - fix it to a specific commit
 - build/compile
 - serve

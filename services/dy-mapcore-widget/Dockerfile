@@ -37,13 +37,13 @@ RUN apk add --no-cache --virtual .build-deps \
 # ----------------------------------------------------------------
 # install service related resources
 # - clone repo
-# - fix it to 0613639f9161488d7b636974f69a118edd40cee8 commit
+# - fix it to 43c61c2361dbbb73aab108abeffbb23027d681b7 commit
 # - build/compile
 # - replace the first slash from href=/ and src=/ in index.html
 
-RUN git clone --depth 1 https://github.com/ABI-Software/flatmapvuer.git flatmapvuer &&\
-    cd flatmapvuer &&\
-    git reset --hard 0613639f9161488d7b636974f69a118edd40cee8 &&\
+RUN git clone --depth 1 https://github.com/ABI-Software/mapintegratedvuer.git mapintegratedvuer &&\
+    cd mapintegratedvuer &&\
+    git reset --hard 43c61c2361dbbb73aab108abeffbb23027d681b7 &&\
     npm install --save &&\
     ./node_modules/.bin/vue-cli-service build &&\
     sed -i s%href=/%href=%g dist/index.html &&\
@@ -71,7 +71,7 @@ ENV SIMCORE_NODE_UUID="-1" \
 #-----------------Production----------------------
 FROM base AS production
 
-COPY --from=base --chown=scu:scu $HOME/flatmapvuer $HOME/flatmapvuer
+COPY --from=base --chown=scu:scu $HOME/mapintegratedvuer $HOME/mapintegratedvuer
 
 RUN apk add --no-cache \
     postgresql-libs
@@ -85,7 +85,7 @@ WORKDIR $HOME
 COPY --chown=scu:scu services/dy-mapcore-widget/docker $HOME/docker
 COPY --chown=scu:scu services/dy-mapcore-widget/server $HOME/server
 
-WORKDIR $HOME/flatmapvuer
+WORKDIR $HOME/mapintegratedvuer
 CMD ["/bin/bash", "../docker/boot.sh"]
 
 #-----------------Development-----------------------
@@ -94,7 +94,7 @@ FROM base as development
 VOLUME $HOME/scripts
 VOLUME $HOME/services/storage/client-sdk
 
-VOLUME $HOME/flatmapvuer
+VOLUME $HOME/mapintegratedvuer
 VOLUME $HOME/docker
 VOLUME $HOME/server
 VOLUME $HOME/devel
@@ -103,5 +103,5 @@ ENV CREATE_DUMMY_TABLE 1
 ENV USE_CASE_CONFIG_FILE="/home/scu/devel/port_config.json"
 ENV INIT_OPTIONS="50 6 1 tab"
 
-WORKDIR $HOME/flatmapvuer
+WORKDIR $HOME/mapintegratedvuer
 ENTRYPOINT ["/bin/bash", "../docker/boot.sh"]

@@ -10,5 +10,5 @@ module.exports = {
   HOSTNAME: '0.0.0.0',
   PORT: 4000,
   BASEPATH: process.env.SIMCORE_NODE_BASEPATH || '',
-  APP_PATH: path.resolve(__dirname, '../flatmapvuer/dist'),
+  APP_PATH: path.resolve(__dirname, '../mapintegratedvuer/dist'),
 };
