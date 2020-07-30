@@ -240,6 +240,6 @@
     "key": "simcore/services/dynamic/tissue-properties",
     "name": "Tissue properties",
     "type": "dynamic",
-    "version": "1.0.0"
+    "version": "1.0.1"
   }
 }

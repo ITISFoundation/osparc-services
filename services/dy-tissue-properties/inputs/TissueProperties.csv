@@ -1,4 +1,4 @@
-Tissue Name;Density (kg/m3);Heat Capacity (J/kg/°C);Thermal Conductivity (W/m/°C);Heat Transfer Rate (ml/min/kg);Heat Generation Rate (W/kg);"LF Conductivity ";Magnetic Conductivity [S/m];Magnetic Relative Permeability;Tissue Speed of Sound [m/s];Tissue Dependent Parameter of the Non Linearity Prameter B/A;Attenuation Constant - α0 [Np/m/MHz];Attenuation Constant - b;1.5T- T1 [ms];1.5T- T2 [ms];3.0T- T1 [ms];3.0T- T2 [ms]
+Tissue Name;Density (kg/m3);Heat Capacity (J/kg/°C);Thermal Conductivity (W/m/°C);Heat Transfer Rate (ml/min/kg);Heat Generation Rate (W/kg);"LF Electrical Conductivity (S/m)";Magnetic Conductivity (S/m);Magnetic Relative Permeability;Tissue Speed of Sound (m/s);Tissue Dependent Parameter of the Non Linearity Prameter B/A;Attenuation Constant - α0 (Np/m/MHz);Attenuation Constant - b;1.5T- T1 (ms);1.5T- T2 (ms);3.0T- T1 (ms);3.0T- T2 (ms)
 Adrenal Gland;1027,50;3512,5;0,44325;1457,755102;22,57609758;0,4811;0;1;1500;;15,492;1;;;;
 Air;1,16;1003,666667;0,027381779;0;0;0;0;1;343;;0,039143947;2;;;;
 Bile;928,00;4037;0,58325;0;0;1,468333333;0;1;1500;6;0,255;1,31;;;;
