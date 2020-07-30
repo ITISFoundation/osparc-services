@@ -37,14 +37,14 @@ RUN apk add --no-cache --virtual .build-deps \
 # ----------------------------------------------------------------
 # install service related resources
 # - clone repo
-# - fix it to 43c61c2361dbbb73aab108abeffbb23027d681b7 commit
+# - fix it to b155ae2e151b607b149f9c4aa6a5825469cd801b commit
 # - remove the lines that refer to the NavBar that we want to remove
 # - build/compile
 # - replace the first slash from href=/ and src=/ in index.html
 
 RUN git clone --depth 1 https://github.com/ABI-Software/mapintegratedvuer.git mapintegratedvuer &&\
     cd mapintegratedvuer &&\
-    git reset --hard 43c61c2361dbbb73aab108abeffbb23027d681b7 &&\
+    git reset --hard b155ae2e151b607b149f9c4aa6a5825469cd801b &&\
     npm install --save &&\
     sed -i '/NavBar/d' src/components/MapIntegratedVuer.vue &&\
     ./node_modules/.bin/vue-cli-service build &&\
