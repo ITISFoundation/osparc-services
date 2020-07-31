@@ -10,6 +10,7 @@ RUN adduser --uid ${SC_USER_ID} --disabled-password --gecos "" --shell /bin/sh -
 RUN apt -qq update && \
     apt install -y \
     jq \
+    curl \
     python3-pip &&\
     rm -rf /var/lib/apt/lists/*
 
@@ -28,11 +29,13 @@ RUN apt-get update && apt-get install -y \
     g++ \
     git \
     python3-dev \
-    postgresql-dev && \
+    postgresql-server-dev-10 && \
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/service-library &&\
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python &&\
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/postgres-database
+RUN curl -sL https://deb.nodesource.com/setup_14.x |  bash -
+RUN  apt -y install nodejs
 
 # ----------------------------------------------------------------
 # install service related resources
@@ -51,7 +54,6 @@ RUN git clone --depth 1 https://github.com/ABI-Software/mapintegratedvuer.git ma
     sed -i s%href=/%href=%g dist/index.html &&\
     sed -i s%src=/%src=%g dist/index.html
 
-RUN apk del --no-cache .build-deps
 
 RUN npm install express
 
@@ -75,8 +77,8 @@ FROM base AS production
 
 COPY --from=base --chown=scu:scu $HOME/mapintegratedvuer $HOME/mapintegratedvuer
 
-RUN apk add --no-cache \
-    postgresql-libs
+RUN apt install \
+    libpq-dev
 
 # --------------- Healthcheck -------------------
 COPY --chown=scu:scu scripts/docker/healthcheck.py $HOME/healthcheck/healthcheck.py
