@@ -1,12 +1,17 @@
-FROM node:8.15.0-alpine as base
+FROM ubuntu:18.04 as base
 
 LABEL maintainer=odeimaiz
 
 # non-root user 'scu'
-RUN adduser -D -u 8004 scu
+ENV SC_USER_ID 8004
+ENV SC_USER_NAME scu
+RUN adduser --uid ${SC_USER_ID} --disabled-password --gecos "" --shell /bin/sh --home /home/${SC_USER_NAME} ${SC_USER_NAME}
 
-RUN apk add --no-cache \
-    su-exec
+RUN apt -qq update && \
+    apt install -y \
+    jq \
+    python3-pip &&\
+    rm -rf /var/lib/apt/lists/*
 
 ENV HOME /home/scu
 
@@ -14,17 +19,12 @@ EXPOSE 4000
 
 WORKDIR $HOME
 
-RUN apk update &&\
-    apk add --no-cache \
-    python3 \
-    bash
-
 
 RUN pip3 install --upgrade pip wheel setuptools
 
 # ----------------------------------------------------------------
 # install simcore-sdk
-RUN apk add --no-cache --virtual .build-deps \
+RUN apt-get update && apt-get install -y \
     g++ \
     git \
     python3-dev \
