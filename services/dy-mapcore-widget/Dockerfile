@@ -1,12 +1,18 @@
-FROM node:8.15.0-alpine as base
+FROM ubuntu:18.04 as base
 
 LABEL maintainer=odeimaiz
 
 # non-root user 'scu'
-RUN adduser -D -u 8004 scu
+ENV SC_USER_ID 8004
+ENV SC_USER_NAME scu
+RUN adduser --uid ${SC_USER_ID} --disabled-password --gecos "" --shell /bin/sh --home /home/${SC_USER_NAME} ${SC_USER_NAME}
 
-RUN apk add --no-cache \
-    su-exec
+RUN apt -qq update && \
+    apt install -y \
+    jq \
+    curl \
+    python3-pip &&\
+    rm -rf /var/lib/apt/lists/*
 
 ENV HOME /home/scu
 
@@ -14,42 +20,40 @@ EXPOSE 4000
 
 WORKDIR $HOME
 
-RUN apk update &&\
-    apk add --no-cache \
-    python3 \
-    bash
-
 
 RUN pip3 install --upgrade pip wheel setuptools
 
 # ----------------------------------------------------------------
 # install simcore-sdk
-RUN apk add --no-cache --virtual .build-deps \
+RUN apt-get update && apt-get install -y \
     g++ \
     git \
     python3-dev \
-    postgresql-dev && \
+    postgresql-server-dev-10 && \
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/service-library &&\
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python &&\
     pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/postgres-database
+RUN curl -sL https://deb.nodesource.com/setup_14.x |  bash -
+RUN  apt -y install nodejs
 
 # ----------------------------------------------------------------
 # install service related resources
 # - clone repo
-# - fix it to 394364e85c3725e26ce601b4671cd4c70bc05a91 commit
+# - fix it to b155ae2e151b607b149f9c4aa6a5825469cd801b commit
+# - remove the lines that refer to the NavBar that we want to remove
 # - build/compile
 # - replace the first slash from href=/ and src=/ in index.html
 
-RUN git clone --depth 1 https://github.com/ABI-Software/flatmapvuer.git flatmapvuer &&\
-    cd flatmapvuer &&\
-    git reset --hard 394364e85c3725e26ce601b4671cd4c70bc05a91 &&\
+RUN git clone --depth 1 https://github.com/ABI-Software/mapintegratedvuer.git mapintegratedvuer &&\
+    cd mapintegratedvuer &&\
+    git reset --hard b155ae2e151b607b149f9c4aa6a5825469cd801b &&\
     npm install --save &&\
+    sed -i '/NavBar/d' src/components/MapIntegratedVuer.vue &&\
     ./node_modules/.bin/vue-cli-service build &&\
     sed -i s%href=/%href=%g dist/index.html &&\
     sed -i s%src=/%src=%g dist/index.html
 
-RUN apk del --no-cache .build-deps
 
 RUN npm install express
 
@@ -71,10 +75,10 @@ ENV SIMCORE_NODE_UUID="-1" \
 #-----------------Production----------------------
 FROM base AS production
 
-COPY --from=base --chown=scu:scu $HOME/flatmapvuer $HOME/flatmapvuer
+COPY --from=base --chown=scu:scu $HOME/mapintegratedvuer $HOME/mapintegratedvuer
 
-RUN apk add --no-cache \
-    postgresql-libs
+RUN apt install \
+    libpq-dev
 
 # --------------- Healthcheck -------------------
 COPY --chown=scu:scu scripts/docker/healthcheck.py $HOME/healthcheck/healthcheck.py
@@ -85,7 +89,7 @@ WORKDIR $HOME
 COPY --chown=scu:scu services/dy-mapcore-widget/docker $HOME/docker
 COPY --chown=scu:scu services/dy-mapcore-widget/server $HOME/server
 
-WORKDIR $HOME/flatmapvuer
+WORKDIR $HOME/mapintegratedvuer
 CMD ["/bin/bash", "../docker/boot.sh"]
 
 #-----------------Development-----------------------
@@ -94,7 +98,7 @@ FROM base as development
 VOLUME $HOME/scripts
 VOLUME $HOME/services/storage/client-sdk
 
-VOLUME $HOME/flatmapvuer
+VOLUME $HOME/mapintegratedvuer
 VOLUME $HOME/docker
 VOLUME $HOME/server
 VOLUME $HOME/devel
@@ -103,5 +107,5 @@ ENV CREATE_DUMMY_TABLE 1
 ENV USE_CASE_CONFIG_FILE="/home/scu/devel/port_config.json"
 ENV INIT_OPTIONS="50 6 1 tab"
 
-WORKDIR $HOME/flatmapvuer
+WORKDIR $HOME/mapintegratedvuer
 ENTRYPOINT ["/bin/bash", "../docker/boot.sh"]
