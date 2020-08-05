@@ -20,12 +20,11 @@ echo
 # For example:
 env
 echo "Using model: ${MODEL_URL}"
-
-if [[ -f ${CONFIG_FILE//\"} ]]; then
+if jq -e . >/dev/null ${CONFIG_FILE//\"}; then
     echo "Using the config file detected: ${CONFIG_FILE//\"}"
     ./OpenCOR/pythonshell opencor.py < ${CONFIG_FILE//\"} ${MODEL_URL//\"} > $OUTPUT_FOLDER/output_data.json
 else
-    echo "No config file detected"
+    echo "No config file detected or file is not a valid JSON"
     ./OpenCOR/pythonshell opencor.py ${MODEL_URL//\"} > $OUTPUT_FOLDER/output_data.json
 fi
 

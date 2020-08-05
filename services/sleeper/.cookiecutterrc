@@ -35,4 +35,4 @@ default_context:
     project_slug:              'sleeper'
     project_type:              'computational'
     release_date:              '2020'
-    version:                   '2.0.0'
+    version:                   '2.0.1'

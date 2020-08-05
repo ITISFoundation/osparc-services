@@ -7,24 +7,23 @@ services:
         io.simcore.contact: '{"contact": "zhuang@itis.swiss"}'
         io.simcore.description: '{"description": "OpenCOR is a cross-platform modelling
           environment, which can be used to organise, edit, simulate and analyse CellML
-          and SED-ML files"}'
+          and SED-ML files."}'
         io.simcore.inputs: '{"inputs": {"model_url": {"displayOrder": 1, "label":
-          "model url", "description": "the url of a CellML / SED-ML file you would
-          like to run", "type": "string", "defaultValue": "https://models.physiomeproject.org/workspace/5f5/rawfile/125f548ce204c1d815298d2c8c1d9b774d89e3a7/mcintyre_richardson_grill_model_2001.sedml"},
-          "config_file": {"displayOrder": 2, "label": "configuration file (JSON)",
-          "description": "Used to configure the simulation, customise the initial
-          state of the model, and  specify the data that is to be outputted.", "type":
-          "data:*/*", "defaultValue": "config file", "fileToKeyMap": {"config.json":
-          "config_file"}}}}'
+          "Model URL", "description": "The URL of a CellML / SED-ML file that you
+          would like to run.", "type": "string", "defaultValue": "https://models.physiomeproject.org/workspace/5f5/rawfile/125f548ce204c1d815298d2c8c1d9b774d89e3a7/mcintyre_richardson_grill_model_2001.sedml"},
+          "config_file": {"displayOrder": 2, "label": "Configuration file (JSON) -
+          optional", "description": "Used to configure the simulation, customise the
+          initial state of the model, and  specify the data that is to be outputted.",
+          "type": "data:*/*", "fileToKeyMap": {"config.json": "config_file"}}}}'
         io.simcore.integration-version: '{"integration-version": "1.0.0"}'
         io.simcore.key: '{"key": "simcore/services/comp/opencor"}'
-        io.simcore.name: '{"name": "opencor"}'
+        io.simcore.name: '{"name": "OpenCOR"}'
         io.simcore.outputs: '{"outputs": {"output_1": {"displayOrder": 1, "label":
-          "simulation output", "description": "JSON file containing output of the
-          simulation", "type": "data:application/json", "fileToKeyMap": {"output_data.json":
+          "Simulation output", "description": "JSON file containing output of the
+          simulation.", "type": "data:application/json", "fileToKeyMap": {"output_data.json":
           "output_1"}}}}'
         io.simcore.type: '{"type": "computational"}'
-        io.simcore.version: '{"version": "1.0.1"}'
+        io.simcore.version: '{"version": "1.0.3"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}

@@ -8,8 +8,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.2] - 2020-08-05
 ### Added
-- this changelog
 - `sleeper-mpi` which emulates MPI services
 
 ### Changed
+- changelog format
 - bumped the version for `sleeper` and `sleeper-gpu` images
+
+## [2.0.1] - 2020-07-14
+### Added
+- changelog to project
+
+### Fixed
+- issue with print not formatting output properly
+
+# 2.0.1 24 June 2020
+
+- Fixed an 
+- Added changelog to project
