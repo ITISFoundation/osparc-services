@@ -12,3 +12,9 @@ services:
       context: ./
       dockerfile: docker/custom/Dockerfile
       target: production
+  sleeper-mpi:
+    image: local/${DOCKER_IMAGE_NAME}-mpi:${DOCKER_BUILD_TARGET}
+    build:
+      context: ./
+      dockerfile: docker/custom/Dockerfile
+      target: production
