@@ -51,7 +51,7 @@ def validation_folders(validation_dir: Path) -> Dict:
     return {folder: (validation_dir / folder) for folder in _FOLDER_NAMES}
 
 
-@pytest.fixture(params=["cpu", "gpu"])
+@pytest.fixture(params=["cpu", "gpu", "mpi"])
 def docker_container(
     request,
     validation_folders: Dict,
@@ -70,6 +70,10 @@ def docker_container(
         if should_run_with_gpu_support:
             container_variables["DOCKER_RESOURCE_VRAM"] = "1"
             container_variables["DISABLE_GPU_FOR_TESTING"] = "1"
+
+        should_run_with_mpi_support = request.param == "mpi"
+        if should_run_with_mpi_support:
+            container_variables["DOCKER_RESOURCE_MPI"] = "1"
 
         volumes = {
             host_folders[folder]: {

@@ -30,6 +30,11 @@ def ensure_sleep_policy(sleep_interval: int) -> int:
     return sleep_interval if sleep_interval >= 0 else get_random_sleep()
 
 
+def test_mpi_code() -> None:
+    """Does nothing for now, not interested in checking MPI capabilities"""
+    print("MPI code checking is disabled")
+
+
 def test_gpu_cuda_code() -> None:
     """Dose some computation on the GPU with CUDA"""
     if get_from_environ("DISABLE_GPU_FOR_TESTING") is not None:
@@ -79,8 +84,10 @@ def main() -> None:
     sleep_interval = int(get_from_environ("INPUT_2", get_random_sleep()))
     fail_after_sleep = cast_bool(get_from_environ("INPUT_3", "false"))
     output_folder = Path(get_from_environ("OUTPUT_FOLDER"))
-    # if the service needs to always check the usage of the GPU
+    # if the service needs to confirm GPU is working
     enforce_gpu_support = get_from_environ("DOCKER_RESOURCE_VRAM") is not None
+    # if the service needs to confirm MPI is working
+    enforce_mpi_support = get_from_environ("DOCKER_RESOURCE_MPI") is not None
 
     sleep_from_file = get_random_sleep()
     if file_with_int_number.is_file():
@@ -94,9 +101,11 @@ def main() -> None:
 
     sleep_payload_function = None
 
-    # if gpu check 
     if enforce_gpu_support:
         sleep_payload_function = test_gpu_cuda_code
+
+    if enforce_mpi_support:
+        sleep_payload_function = test_mpi_code
 
     sleep_with_payload(
         amount_to_sleep=amount_to_sleep, target_payload=sleep_payload_function
