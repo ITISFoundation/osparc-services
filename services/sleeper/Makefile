@@ -87,9 +87,11 @@ info-build: ## displays info on the built image
 	# Built images
 	@docker images */$(DOCKER_IMAGE_NAME):*
 	@docker images */$(DOCKER_IMAGE_NAME)-gpu:*
+	@docker images */$(DOCKER_IMAGE_NAME)-mpi:*
 	# Tags and labels
 	@$(call show-meta,$(DOCKER_IMAGE_NAME))
 	@$(call show-meta,$(DOCKER_IMAGE_NAME)-gpu)
+	@$(call show-meta,$(DOCKER_IMAGE_NAME)-mpi)
 
 
 
@@ -121,6 +123,7 @@ version-service-patch version-service-minor version-service-major: versioning/se
 tag-latest tag-version:
 	docker tag local/$(DOCKER_IMAGE_NAME):production $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
 	docker tag local/$(DOCKER_IMAGE_NAME)-gpu:production $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-gpu:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
+	docker tag local/$(DOCKER_IMAGE_NAME)-mpi:production $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-mpi:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
 
 version_valid = $(shell test $$(echo $(DOCKER_IMAGE_TAG) | cut --fields=1 --delimiter=.) -gt 0 > /dev/null && echo "image version is valid")
 version_exists = $(shell DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG) > /dev/null && echo "image already exists on $(DOCKER_REGISTRY)")
@@ -129,6 +132,7 @@ push push-force: ## pushes (resp. force) services to the registry if service not
 		$(if $(call version_valid),$(info version is valid), $(error $(DOCKER_IMAGE_TAG) is not a valid version (major>=1)))\
 		$(if $(call version_exists),$(error $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG) already exists on $(DOCKER_REGISTRY)), $(info no version found on $(DOCKER_REGISTRY)))\
 		$(if $(call version_exists),$(error $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-gpu:$(DOCKER_IMAGE_TAG) already exists on $(DOCKER_REGISTRY)), $(info no version found on $(DOCKER_REGISTRY)))\
+		$(if $(call version_exists),$(error $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-mpi:$(DOCKER_IMAGE_TAG) already exists on $(DOCKER_REGISTRY)), $(info no version found on $(DOCKER_REGISTRY)))\
 	)
 	@$(MAKE) push-version;
 	@$(MAKE) push-latest;
@@ -140,10 +144,12 @@ push-latest push-version: ## publish service to registry with latest/version tag
 	# pushed '$(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'
 	@docker push $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-gpu:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
 	# pushed '$(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-gpu:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'
-
+	@docker push $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-mpi:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
+	# pushed '$(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-mpi:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'
 pull-latest pull-version: ## pull service from registry
 	@docker pull $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
 	@docker pull $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-gpu:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
+	@docker pull $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-mpi:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
 
 
 .PHONY: version-integration-patch version-integration-minor version-integration-major
