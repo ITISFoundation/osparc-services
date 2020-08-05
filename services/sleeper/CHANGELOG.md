@@ -21,7 +21,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - issue with print not formatting output properly
 
-# 2.0.1 24 June 2020
-
-- Fixed an 
-- Added changelog to project
