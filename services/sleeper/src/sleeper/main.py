@@ -79,8 +79,8 @@ def main() -> None:
     sleep_interval = int(get_from_environ("INPUT_2", get_random_sleep()))
     fail_after_sleep = cast_bool(get_from_environ("INPUT_3", "false"))
     output_folder = Path(get_from_environ("OUTPUT_FOLDER"))
-    # if this was scheduled on a node with GPU support this env variable will exist
-    with_gpu_payload = get_from_environ("DOCKER_RESOURCE_VRAM") is not None
+    # if the service needs to always check the usage of the GPU
+    enforce_gpu_support = get_from_environ("DOCKER_RESOURCE_VRAM") is not None
 
     sleep_from_file = get_random_sleep()
     if file_with_int_number.is_file():
@@ -94,8 +94,8 @@ def main() -> None:
 
     sleep_payload_function = None
 
-    # check if there is GPU support for this container
-    if with_gpu_payload:
+    # if gpu check 
+    if enforce_gpu_support:
         sleep_payload_function = test_gpu_cuda_code
 
     sleep_with_payload(
