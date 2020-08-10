@@ -104,5 +104,5 @@ services:
         simcore.service.settings: '[{ "name": "constraints", "type": "string", "value":
           ["node.platform.os == linux"]},{"name": "Resources", "type": "Resources",
           "value": { "Reservations": { "GenericResources": [{"DiscreteResourceSpec":
-          { "Kind": "VRAM", "Value": 1}}]}}}]'
+          { "Kind": "MPI", "Value": 1}}]}}}]'
 version: '3.7'
