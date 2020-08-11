@@ -1,4 +1,4 @@
-FROM nvidia/cuda:10.2-base-ubuntu18.04 as base
+FROM nvidia/cuda:10.0-base-ubuntu18.04 as base
 #
 #  USAGE:
 #     cd services/sleeper
