@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - changelog format
 - bumped the version for `sleeper` and `sleeper-gpu` images
+- `nidia/cuda:10.0-base` is now used, down from 10.2
 
 ## [2.0.1] - 2020-07-14
 ### Added
