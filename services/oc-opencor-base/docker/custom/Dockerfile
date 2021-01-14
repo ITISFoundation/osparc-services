@@ -1,4 +1,4 @@
-FROM opencor/opencor:2020-06-19 as base
+FROM opencor/opencor:2021-01-13 as base
 #
 #  USAGE:
 #     cd services/opencor
