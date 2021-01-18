@@ -111,4 +111,4 @@ outputs:
     label: all_outputs
     type: data:*/*
 type: computational
-version: 1.0.0
+version: 1.0.1
