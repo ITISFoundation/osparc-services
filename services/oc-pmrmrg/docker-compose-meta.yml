@@ -54,7 +54,7 @@ services:
           1, "fileToKeyMap": {"outputs.csv": "model_output"}, "label": "Simulation
           result (CSV-format)", "type": "data:application/csv"}}}'
         io.simcore.type: '{"type": "computational"}'
-        io.simcore.version: '{"version": "1.0.1"}'
+        io.simcore.version: '{"version": "1.0.2"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
