@@ -21,8 +21,6 @@ For each use-case a jupyter notebook-based service is created that will:
     make build-devel
     make up-devel
     ```
-3. open url [localhost:1234](localhost:1234) to see 0d use case graphs
-4. open url [localhost:1235](localhost:1235) to see 1d use case graphs
-5. open url [localhost:1236](localhost:1236) to see 2d use case graphs
+3. open url [localhost:1234](localhost:1237) to see kember use case
 6. open url [localhost:9001](localhost:9001) to see the s3 file manager UI
 7. open url [localhost:18080](localhost:18080) to see the adminer (db visualiser)

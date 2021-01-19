@@ -32,13 +32,13 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
-      - name: setup python environment
-        uses: actions/setup-python@v1.1.1
+      - name: setup python environmentactions/setup-python@v2
+        uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
       - name: show versions
         run: ./ci/helpers/show_system_versions.bash
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         name: getting cached data
         with:
           path: ~/.cache/pip
@@ -46,13 +46,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: set owner variable
-        run: echo ::set-env name=OWNER::${GITHUB_REPOSITORY%/*}
+        run: echo "OWNER=${GITHUB_REPOSITORY%/*}" >> $GITHUB_ENV
       - name: set docker image tag
         if: github.ref != 'refs/heads/master'
-        run: echo ::set-env name=DOCKER_IMAGE_TAG::${GITHUB_REF##*/}
+        run: echo "DOCKER_IMAGE_TAG=${GITHUB_REF##*/}" >> $GITHUB_ENV
       - if: github.event_name == 'pull_request'
         name: set docker registry env
-        run: echo ::set-env name=DOCKER_REGISTRY::itisfoundation
+        run: echo "DOCKER_REGISTRY=itisfoundation" >> $GITHUB_ENV
       - name: set dev environs
         working-directory: services/dy-jupyter
         run: make .venv
@@ -89,12 +89,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: setup python environment
-        uses: actions/setup-python@v1.1.1
+        uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
       - name: show versions
         run: ./ci/helpers/show_system_versions.bash
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         name: getting cached data
         with:
           path: ~/.cache/pip
@@ -102,13 +102,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
       - name: set owner variable
-        run: echo ::set-env name=OWNER::${GITHUB_REPOSITORY%/*}
+        run: echo "OWNER=${GITHUB_REPOSITORY%/*}" >> $GITHUB_ENV
       - name: set docker image tag
         if: github.ref != 'refs/heads/master' && github.event_name != 'pull_request'
-        run: echo ::set-env name=DOCKER_IMAGE_TAG::${GITHUB_REF##*/}
+        run: echo "DOCKER_IMAGE_TAG=${GITHUB_REF##*/}" >> $GITHUB_ENV
       - if: github.event_name == 'pull_request'
         name: set docker registry env
-        run: echo ::set-env name=DOCKER_REGISTRY::itisfoundation
+        run: echo "DOCKER_REGISTRY=itisfoundation" >> $GITHUB_ENV
       - name: set dev environs
         working-directory: services/dy-2Dgraph/use-cases
         run: make .venv

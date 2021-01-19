@@ -53,9 +53,9 @@ endif
 
 # FIXME: currently the mattward requires a specific image that is not on dockerhub
 build-travis:
-	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel cc-0d cc-1d cc-2d kember
+	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel kember
 push-travis:
-	${DOCKER_COMPOSE} -f docker-compose.yml push cc-0d cc-1d cc-2d kember
+	${DOCKER_COMPOSE} -f docker-compose.yml push kember
 ##################
 
 .PHONY: build rebuild
