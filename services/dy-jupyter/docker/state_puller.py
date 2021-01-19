@@ -34,7 +34,7 @@ def main(args = None) -> int:
         loop.run_until_complete(data_manager.pull(options.path))
         return ExitCode.SUCCESS
 
-    except exceptions.S3InvalidPathError:
+    except (exceptions.S3InvalidPathError,exceptions.InvalidDownloadLinkError):
         if options.silent:
             log.warning("Could not retrieve state from S3 for %s", options.path)
             return ExitCode.SUCCESS
