@@ -51,12 +51,6 @@ ifdef tools
 	$(error "Can't find tools:${tools}")
 endif
 
-# FIXME: currently the mattward requires a specific image that is not on dockerhub
-build-travis:
-	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel cc-0d cc-1d cc-2d kember
-push-travis:
-	${DOCKER_COMPOSE} -f docker-compose.yml push cc-0d cc-1d cc-2d kember
-##################
 
 .PHONY: build rebuild
 # target: build, rebuild: – Builds all service images. Use `rebuild` to build w/o cache.
