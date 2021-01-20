@@ -20,7 +20,7 @@ python /docker/state_puller.py "${SIMCORE_NODE_APP_STATE_PATH}" --silent
 # Trust all notebooks in the notbooks folder
 echo
 echo "trust all notebooks in path..."
-find "${SIMCORE_NODE_APP_STATE_PATH}" -name '*.ipynb' -exec jupyter trust \;
+find "${SIMCORE_NODE_APP_STATE_PATH}" -name '*.ipynb' -exec jupyter trust --debug \;
 
 # prevents notebook to open in separate tab
 cat > ~/.jupyter/custom/custom.js <<EOF
