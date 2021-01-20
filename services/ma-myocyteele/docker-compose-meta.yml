@@ -46,7 +46,7 @@ services:
           variables", "displayOrder": 10, "fileToKeyMap": {"outputs.mat": "output_009"},
           "label": "all_outputs", "type": "data:*/*"}}}'
         io.simcore.type: '{"type": "computational"}'
-        io.simcore.version: '{"version": "1.0.0"}'
+        io.simcore.version: '{"version": "1.0.1"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}

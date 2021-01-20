@@ -144,4 +144,4 @@ outputs:
     label: Simulation result (CSV-format)
     type: data:application/csv
 type: computational
-version: 1.0.0
+version: 1.0.1
