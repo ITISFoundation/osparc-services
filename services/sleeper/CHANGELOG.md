@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.0] - 2020-02-15
 ### Added
-- Unit (s) added to the number input and output
+- Unit (seconds) field added to the input#2 and output#2
 
 
 ## [2.0.2] - 2020-08-05
