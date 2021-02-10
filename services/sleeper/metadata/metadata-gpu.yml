@@ -2,7 +2,7 @@ name: sleeper-gpu
 key: simcore/services/comp/itis/sleeper-gpu
 type: computational
 integration-version: 1.0.0
-version: 2.0.2
+version: 2.1.0
 description: A service which awaits for time to pass.
 contact: neagu@itis.swiss
 authors:
