@@ -28,13 +28,13 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
-      - name: setup python environment
-        uses: actions/setup-python@v1.1.1
+      - name: setup python environmentactions/setup-python@v2
+        uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
       - name: show versions
         run: ./ci/helpers/show_system_versions.bash
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         name: getting cached data
         with:
           path: ~/.cache/pip
