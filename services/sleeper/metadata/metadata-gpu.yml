@@ -28,7 +28,8 @@ inputs:
     label: Sleep interval
     description: Choose an amount of time to sleep
     type: integer
-    unit: seconds
+    unitShort: s
+    unitLong: seconds
     defaultValue: 2
   input_3:
     displayOrder: 3
@@ -50,5 +51,6 @@ outputs:
     label: Random sleep interval
     description: Interval is generated in range [1-9]
     type: integer
-    unit: seconds
+    unitShort: s
+    unitLong: seconds
   
