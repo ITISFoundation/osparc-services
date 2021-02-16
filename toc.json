@@ -222,7 +222,7 @@
     "key": "simcore/services/comp/itis/sleeper",
     "name": "sleeper",
     "type": "computational",
-    "version": "2.0.2"
+    "version": "2.1.0"
   },
   "sleeper-gpu": {
     "description": "A service which awaits for time to pass.",
@@ -231,7 +231,7 @@
     "key": "simcore/services/comp/itis/sleeper-gpu",
     "name": "sleeper-gpu",
     "type": "computational",
-    "version": "2.0.2"
+    "version": "2.1.0"
   },
   "sleeper-mpi": {
     "description": "A service which awaits for time to pass.",
@@ -240,7 +240,7 @@
     "key": "simcore/services/comp/itis/sleeper-mpi",
     "name": "sleeper-mpi",
     "type": "computational",
-    "version": "2.0.2"
+    "version": "2.1.0"
   },
   "tissue-properties": {
     "description": "Tissue properties compiled in an extensive, critical literature review by the ITIS Foundation. Visit [itis.swiss/database](https://itis.swiss/database) for additional information, e.g., on tissue parameter variability/uncertainty, quality assurance, and the explored sources. Please use the following citation when referring to the database: Hasgall PA, Di Gennaro F, Baumgartner C, Neufeld E, Lloyd B, Gosselin MC, Payne D, Klingenb\u00f6ck A, Kuster N, ITIS Database for thermal and electromagnetic parameters of biological tissues, Version 4.0, May 15, 2018, DOI: 10.13099/VIP21000-04-0. [itis.swiss/database](https://itis.swiss/database). Powered by [csv-to-html-table](https://github.com/derekeder/csv-to-html-table)",
