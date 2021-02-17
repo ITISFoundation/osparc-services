@@ -59,7 +59,7 @@ def sleep_with_payload(
     """
     print(f"Will sleep for {amount_to_sleep} seconds")
     for seconds in range(amount_to_sleep):
-        print(f"[PROGRESS] {seconds + 1}/{amount_to_sleep}...")
+        print(f"[PROGRESS] {seconds + 1}/{amount_to_sleep}")
 
         start = time.time()
         if target_payload:
