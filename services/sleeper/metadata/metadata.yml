@@ -2,9 +2,9 @@ name: sleeper
 key: simcore/services/comp/itis/sleeper
 type: computational
 integration-version: 1.0.0
-version: 2.1.0
-description: A service which awaits for time to pass.
-contact: neagu@itis.swiss
+version: 2.1.1
+description: A service which awaits for time to pass, two times.
+contact: maiz@itis.swiss
 authors:
   - name: "Manuel Guidon"
     email: guidon@itis.swiss
@@ -36,6 +36,13 @@ inputs:
     description: If set to true will cause service to fail after it sleeps
     type: boolean
     defaultValue: false
+  input_4:
+    displayOrder: 4
+    label: Distance to bed
+    description: It will first walk the distance to bed
+    type: integer
+    unit: meter
+    defaultValue: 0
 
 outputs:
   output_1:
