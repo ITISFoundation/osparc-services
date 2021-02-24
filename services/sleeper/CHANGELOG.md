@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.1.1] - 2020-02-24
 ### Added
-- Forth input added, "Distance to bed" (meters). Before sleeping, it will walk this distance
+- Fourth input added, "Distance to bed" (meters). Before sleeping, it will walk this distance
 
 
 ## [2.1.0] - 2020-02-15
