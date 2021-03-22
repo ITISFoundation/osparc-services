@@ -16,7 +16,7 @@ services:
         io.simcore.name: '{"name": "3d-viewer"}'
         io.simcore.outputs: '{"outputs": {}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "3.0.2"}'
+        io.simcore.version: '{"version": "3.0.3"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
@@ -45,7 +45,7 @@ services:
         io.simcore.name: '{"name": "3d-viewer-gpu"}'
         io.simcore.outputs: '{"outputs": {}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "3.0.2"}'
+        io.simcore.version: '{"version": "3.0.3"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
