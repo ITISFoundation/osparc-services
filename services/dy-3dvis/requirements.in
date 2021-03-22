@@ -2,10 +2,10 @@
 pyyaml
 
 # tests
-coverage==4.5.1 # TODO: Downgraded because of a bug https://github.com/nedbat/coveragepy/issues/716
+coverage
 docker
 jsonschema
-pytest~=5.3.5  # Bug in pytest-sugar https://github.com/Teemu/pytest-sugar/issues/187
+pytest
 pytest-cookies
 pytest-cov
 pytest-instafail
