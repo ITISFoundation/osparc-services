@@ -2,7 +2,7 @@ name: 3d-viewer-gpu
 key: simcore/services/dynamic/3d-viewer-gpu
 type: dynamic
 integration-version: 1.0.0
-version: 3.0.2
+version: 3.0.3
 description: Paraview Web-based Visualizer
 contact: anderegg@itis.swiss
 authors:

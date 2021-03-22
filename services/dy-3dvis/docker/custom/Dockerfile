@@ -54,10 +54,12 @@ RUN curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/py
 # install simcore-sdk
 RUN export PATH="${PYENV_ROOT}/bin:$PATH" && \
     eval "$(pyenv init -)" && \
-    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/service-library &&\
-    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
-    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python &&\
-    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/postgres-database
+    pip install git+git://github.com/ITISFoundation/osparc-simcore.git@aa717c7c83a789738dfa37bf52b29e400a5d8e90#subdirectory=packages/service-library \
+    git+git://github.com/ITISFoundation/osparc-simcore.git@aa717c7c83a789738dfa37bf52b29e400a5d8e90#subdirectory=packages/models-library \
+    git+git://github.com/ITISFoundation/osparc-simcore.git@aa717c7c83a789738dfa37bf52b29e400a5d8e90#subdirectory=packages/simcore-sdk \
+    git+git://github.com/ITISFoundation/osparc-simcore.git@aa717c7c83a789738dfa37bf52b29e400a5d8e90#subdirectory=services/storage/client-sdk/python \
+    git+git://github.com/ITISFoundation/osparc-simcore.git@aa717c7c83a789738dfa37bf52b29e400a5d8e90#subdirectory=packages/postgres-database
+
 
 # get the patched visualizer
 COPY --from=visualizer /home/node/visualizer/dist /opt/paraview/share/paraview-5.6/web/visualizer/www
