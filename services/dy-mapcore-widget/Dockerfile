@@ -47,13 +47,12 @@ RUN  apt -y install nodejs
 
 RUN git clone https://github.com/ABI-Software/mapintegratedvuer.git mapintegratedvuer &&\
     cd mapintegratedvuer &&\
-    git reset --hard b155ae2e151b607b149f9c4aa6a5825469cd801b &&\
+    # git reset --hard b155ae2e151b607b149f9c4aa6a5825469cd801b &&\
     npm install --save &&\
-    sed -i '/NavBar/d' src/components/MapIntegratedVuer.vue &&\
+    # sed -i '/NavBar/d' src/components/MapIntegratedVuer.vue &&\
     ./node_modules/.bin/vue-cli-service build &&\
-    sed -i s%href=/%href=%g dist/index.html &&\
-    sed -i s%src=/%src=%g dist/index.html
-
+    sed -i 's%href="/%href="%g' dist/index.html &&\
+    sed -i 's%src="/%src="%g' dist/index.html
 
 RUN npm install express
 
