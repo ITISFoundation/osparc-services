@@ -45,7 +45,7 @@ RUN  apt -y install nodejs
 # - build/compile
 # - replace the first slash from href=/ and src=/ in index.html
 
-RUN git clone --depth 1 https://github.com/ABI-Software/mapintegratedvuer.git mapintegratedvuer &&\
+RUN git clone https://github.com/ABI-Software/mapintegratedvuer.git mapintegratedvuer &&\
     cd mapintegratedvuer &&\
     git reset --hard b155ae2e151b607b149f9c4aa6a5825469cd801b &&\
     npm install --save &&\
