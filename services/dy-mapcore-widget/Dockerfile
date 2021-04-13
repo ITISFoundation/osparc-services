@@ -50,8 +50,9 @@ RUN git clone https://github.com/alan-wu/mapintegratedvuer.git mapintegratedvuer
     git checkout 13-Apr-Simcore &&\
     git reset --hard 638edaa37f8743300f1253fcd347b72a3a1e6a09 &&\
     npm install --save &&\
+    sed -i "s/openAnalyzer: false/openAnalyzer: false, analyzerMode: 'disabled'/" vue.config.js &&\
     # sed -i '/NavBar/d' src/components/MapIntegratedVuer.vue &&\
-    ./node_modules/.bin/vue-cli-service build --dest dist --mode static &&\
+    ./node_modules/.bin/vue-cli-service build --mode static &&\
     sed -i 's%href="/%href="%g' dist/index.html &&\
     sed -i 's%src="/%src="%g' dist/index.html
 
