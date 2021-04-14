@@ -40,21 +40,25 @@ RUN  apt -y install nodejs
 # ----------------------------------------------------------------
 # install service related resources
 # - clone repo
-# - fix it to b155ae2e151b607b149f9c4aa6a5825469cd801b commit
-# - remove the lines that refer to the NavBar that we want to remove
+# - checkout Alan Wu branch from his repo https://github.com/alan-wu/mapintegratedvuer/tree/13-Apr-Simcore
+# - fix it to 638edaa37f8743300f1253fcd347b72a3a1e6a09 commit
+# - we build in static mode (only mode that seem to work out of the box) and for this we need to disable the webpack analyzer that blocks in the docker building phase
+# - replace the endpoint of the Mapcore API to access no-cors and actually access an existing endpoint
 # - build/compile
-# - replace the first slash from href=/ and src=/ in index.html
+# - replace the first slash from href="/ and src="/ in index.html to be able to access relative path
+
 
 RUN git clone https://github.com/alan-wu/mapintegratedvuer.git mapintegratedvuer &&\
     cd mapintegratedvuer &&\
     git checkout 13-Apr-Simcore &&\
     git reset --hard 638edaa37f8743300f1253fcd347b72a3a1e6a09 &&\
     npm install --save &&\
-    sed -i "s/openAnalyzer: false/openAnalyzer: false, analyzerMode: 'disabled'/" vue.config.js &&\
-    # sed -i '/NavBar/d' src/components/MapIntegratedVuer.vue &&\
+    sed --in-place "s/openAnalyzer: false/openAnalyzer: false, analyzerMode: 'disabled'/" vue.config.js &&\
+    sed --in-place --regexp-extended 's%VUE_APP_API_LOCATION=(.*)%VUE_APP_API_LOCATION=https://mapcore-demo.org/current/sparc-api-v2/%' .env &&\
     ./node_modules/.bin/vue-cli-service build --mode static &&\
-    sed -i 's%href="/%href="%g' dist/index.html &&\
-    sed -i 's%src="/%src="%g' dist/index.html
+    sed --in-place 's%href="/%href="%g' dist/index.html &&\
+    sed --in-place 's%src="/%src="%g' dist/index.html
+
 
 RUN npm install express
 
