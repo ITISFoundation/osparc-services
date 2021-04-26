@@ -1,20 +1,4 @@
 VERSION := $(shell cat /proc/version)
-# SAN this is a hack so that docker-compose works in the linux virtual environment under Windows
-ifneq (,$(findstring Microsoft,$(VERSION)))
-# executing from bash
-$(echo 'detected WSL')
-export DOCKER_COMPOSE=docker-compose
-export DOCKER=docker
-else ifeq ($(OS), Windows_NT)
-$(echo 'detected Powershell/CMD')
-# executing from powershell
-export DOCKER_COMPOSE=docker-compose.exe
-export DOCKER=docker.exe
-else
-$(echo 'detected native linux')
-export DOCKER_COMPOSE=docker-compose
-export DOCKER=docker
-endif
 
 
 # using ?= will only set if absent
@@ -52,41 +36,41 @@ endif
 .PHONY: build rebuild
 # target: build, rebuild: – Builds all service images. Use `rebuild` to build w/o cache.
 build:
-	${DOCKER_COMPOSE} -f docker-compose.yml build --parallel
+	docker buildx > /dev/null; export DOCKER_CLI_EXPERIMENTAL=enabled; docker buildx bake --file docker-compose.yml
 
 rebuild:
-	${DOCKER_COMPOSE} -f docker-compose.yml build --no-cache --parallel
+	docker buildx > /dev/null; export DOCKER_CLI_EXPERIMENTAL=enabled; docker buildx bake --file docker-compose.yml --no-cache
 
 .PHONY: build-devel
 # target: build-devel: – Builds images of core services for development.
 build-devel:
-	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml build --parallel
+	docker buildx > /dev/null; export DOCKER_CLI_EXPERIMENTAL=enabled; docker buildx bake --file docker-compose.yml --file docker-compose.devel.yml
 
 .PHONY: up up-devel down
 # target: up, down: – starts/stops service
 # target: up-devel: – deploys service in devel mode together with minimal swarm-like environment
 up: .env
-	${DOCKER_COMPOSE} -f docker-compose.yml up
+	docker-compose --file docker-compose.yml up
 
 up-devel: .env
 	@mkdir -p notebook-inputs
 	@mkdir -p notebook-outputs
 	@mkdir -p retrieval-data
-	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml up
+	docker-compose --file docker-compose.yml --file docker-compose.devel.yml up
 
 down: .env
-	${DOCKER_COMPOSE} -f docker-compose.yml -f docker-compose.devel.yml down
-	${DOCKER_COMPOSE} -f docker-compose.yml down
+	docker-compose --file docker-compose.yml --file docker-compose.devel.yml down
+	docker-compose --file docker-compose.yml down
 
 
 .PHONY: push pull
 # target: push – Pushes the service images to ${DOCKER_REGISTRY}
 # target: pull - Pulls the service images from ${DOCKER_REGISTRY}
 push:
-	${DOCKER_COMPOSE} -f docker-compose.yml push
+	docker-compose --file docker-compose.yml push
 
 pull:
-	${DOCKER_COMPOSE} -f docker-compose.yml pull
+	docker-compose --file docker-compose.yml pull
 
 test:
 	# tests https://github.com/ITISFoundation/osparc-services/issues/15
