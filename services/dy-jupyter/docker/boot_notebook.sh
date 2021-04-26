@@ -15,7 +15,7 @@ mkdir -p "${OUTPUTS_FOLDER:-~/outputs}"
 # try to pull data from S3
 echo
 echo "trying to restore state..."
-python /docker/state_puller.py "${SIMCORE_NODE_APP_STATE_PATH}" --silent
+python /docker/state_puller.py "${SIMCORE_NODE_APP_STATE_PATH}"
 
 # the notebooks in the folder shall be trusted by default
 # jupyter trust ${SIMCORE_NODE_APP_STATE_PATH}/*
