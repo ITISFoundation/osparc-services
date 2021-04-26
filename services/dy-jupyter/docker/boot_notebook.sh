@@ -3,6 +3,9 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+echo
+echo "current directory is ${PWD}"
+
 # create output folder
 echo
 echo "creating inputs/outputs folder"
