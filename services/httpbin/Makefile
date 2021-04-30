@@ -79,6 +79,18 @@ transfer-to-local-registry:	## transfers images to local registry
 	@curl -s http://${LOCAL_REGISTRY}/v2/simcore/services/dynamic/httpbin-dynamic-sidecar/tags/list?n=50 | jq '.'
 	@curl -s http://${LOCAL_REGISTRY}/v2/simcore/services/dynamic/httpbin-dynamic-sidecar-compose/tags/list?n=50 | jq '.'
 
+.PHONY: push
+push:	## pushes existing images
+	${DOCKER_COMPOSE} -f docker-compose.yml push
+
+.PHONY: pull
+pull:	## pulls existing images
+	${DOCKER_COMPOSE} -f docker-compose.yml pull
+
+.PHONY: test
+test:	## runs tests
+	@echo 'test passed, nothing validated here'
+
 .PHONY: help
 # thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 help:
