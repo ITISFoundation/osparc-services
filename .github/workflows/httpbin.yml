@@ -1,0 +1,75 @@
+name: httpbin
+
+on:
+  push:
+    paths:
+      - ".github/workflows/httpbin.yml"
+      - "services/httpbin/**"
+      - "!**.md"
+  pull_request:
+    paths:
+      - ".github/workflows/httpbin.yml"
+      - "services/httpbin/**"
+      - "!**.md"
+
+env:
+  # secrets can be set in settings/secrets on github
+  DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+jobs:
+  build:
+    name: building httpbin
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python: [3.6]
+        os: [ubuntu-18.04]
+        node: [10]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v2
+      - name: setup python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+      - name: show versions
+        run: ./ci/helpers/show_system_versions.bash
+      - uses: actions/cache@v2
+        name: getting cached data
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: set owner variable
+        run: echo "OWNER=${GITHUB_REPOSITORY%/*}" >> $GITHUB_ENV
+      - name: set docker image tag
+        if: github.ref != 'refs/heads/master'
+        run: echo "DOCKER_IMAGE_TAG=${GITHUB_REF##*/}" >> $GITHUB_ENV
+      - if: github.event_name == 'pull_request'
+        name: set docker registry env
+        run: echo "DOCKER_REGISTRY=itisfoundation" >> $GITHUB_ENV
+      - name: set dev environs
+        working-directory: services/httpbin
+        run: make .venv
+      - name: get current image if available
+        working-directory: services/httpbin
+        run: make pull || true
+      - name: build
+        working-directory: services/httpbin
+        run: |
+          source .venv/bin/activate
+          make build
+      - name: test
+        working-directory: services/httpbin
+        run: |
+          source .venv/bin/activate
+          make test
+      - if: github.event_name == 'push'
+        name: deploy
+        working-directory: services/httpbin
+        run: |
+          ./../../ci/helpers/dockerhub_login.bash
+          make push
