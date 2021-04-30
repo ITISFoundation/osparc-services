@@ -53,7 +53,7 @@ jobs:
         run: echo "DOCKER_REGISTRY=itisfoundation" >> $GITHUB_ENV
       - name: set dev environs
         working-directory: services/httpbin
-        run: make .venv
+        run: make venv
       - name: get current image if available
         working-directory: services/httpbin
         run: make pull || true
