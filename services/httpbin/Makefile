@@ -56,11 +56,11 @@ build:	## builds and tags the images
 	$(call add_label,${DOCKER_REGISTRY}/httpbin-dynamic-sidecar-compose:${DOCKER_IMAGE_TAG},simcore.service.compose-spec,'$(shell cat ${HTTPBIN_COMPOSE_FILE} | yq -c -M)')
 
 	@echo "Image Labels => ${DOCKER_REGISTRY}/httpbin:${DOCKER_IMAGE_TAG}"
-	@docker inspect -f "{{json .Config.Labels }}" ${DOCKER_REGISTRY}/httpbin:${DOCKER_IMAGE_TAG} | jq
+	@docker inspect -f "{{json .Config.Labels }}" ${DOCKER_REGISTRY}/httpbin:${DOCKER_IMAGE_TAG}
 	@echo "Image Labels => ${DOCKER_REGISTRY}/httpbin-dynamic-sidecar:${DOCKER_IMAGE_TAG}"
-	@docker inspect -f "{{json .Config.Labels }}" ${DOCKER_REGISTRY}/httpbin-dynamic-sidecar:${DOCKER_IMAGE_TAG} | jq
+	@docker inspect -f "{{json .Config.Labels }}" ${DOCKER_REGISTRY}/httpbin-dynamic-sidecar:${DOCKER_IMAGE_TAG}
 	@echo "Image Labels => ${DOCKER_REGISTRY}/httpbin-dynamic-sidecar-compose:${DOCKER_IMAGE_TAG}"
-	@docker inspect -f "{{json .Config.Labels }}" ${DOCKER_REGISTRY}/httpbin-dynamic-sidecar-compose:${DOCKER_IMAGE_TAG} | jq
+	@docker inspect -f "{{json .Config.Labels }}" ${DOCKER_REGISTRY}/httpbin-dynamic-sidecar-compose:${DOCKER_IMAGE_TAG}
 
 
 .PHONY: transfer-to-local-registry
