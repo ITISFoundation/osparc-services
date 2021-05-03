@@ -72,7 +72,7 @@
     "version": "1.0.0"
   },
   "httpbin-dynamic-sidecar": {
-    "description": "Boot with dynaic-sidecar using service key and version",
+    "description": "Boot with dynamic-sidecar using service key and version",
     "dockerfile": "httpbin/Dockerfile",
     "image": "${DOCKER_REGISTRY}/httpbin-dynamic-sidecar:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/httpbin-dynamic-sidecar",
@@ -81,7 +81,7 @@
     "version": "1.0.0"
   },
   "httpbin-dynamic-sidecar-compose": {
-    "description": "Boot with dynaic-sidecar via docker-compose spec",
+    "description": "Boot with dynamic-sidecar via docker-compose spec",
     "dockerfile": "httpbin/Dockerfile",
     "image": "${DOCKER_REGISTRY}/httpbin-dynamic-sidecar-compose:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/httpbin-dynamic-sidecar-compose",
