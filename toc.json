@@ -69,7 +69,7 @@
     "key": "simcore/services/dynamic/httpbin",
     "name": "httpbin",
     "type": "dynamic",
-    "version": "1.0.0"
+    "version": "1.0.1"
   },
   "httpbin-dynamic-sidecar": {
     "description": "Boot with dynamic-sidecar using service key and version",
@@ -78,7 +78,7 @@
     "key": "simcore/services/dynamic/httpbin-dynamic-sidecar",
     "name": "httpbin-dynamic-sidecar",
     "type": "dynamic",
-    "version": "1.0.0"
+    "version": "1.0.1"
   },
   "httpbin-dynamic-sidecar-compose": {
     "description": "Boot with dynamic-sidecar via docker-compose spec",
@@ -87,7 +87,7 @@
     "key": "simcore/services/dynamic/httpbin-dynamic-sidecar-compose",
     "name": "httpbin-dynamic-sidecar-compose",
     "type": "dynamic",
-    "version": "1.0.0"
+    "version": "1.0.1"
   },
   "jupyter-base-notebook": {
     "description": "Jupyter notebook",
