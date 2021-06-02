@@ -2,9 +2,9 @@
 FROM ubuntu:latest as base 
 #
 #  USAGE:
-#     cd services/dy-httpbin
-#     docker build -f Dockerfile -t dy-httpbin:prod --target production ../../
-#     docker run dy-httpbin:prod
+#     cd services/dy-static-file-server
+#     docker build -f Dockerfile -t dy-static-file-server:prod --target production ../../
+#     docker run dy-static-file-server:prod
 #
 
 LABEL maintainer=sanderegg
@@ -46,11 +46,11 @@ WORKDIR /build
 # defines the output of the build
 RUN mkdir --parents /build/bin
 # copy src code
-COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} src/dy_httpbin src/dy_httpbin
+COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} src/dy_static-file-server src/dy_static-file-server
 # ------------------------------------------------------------------------------------
 #TODO:
 # uncomment and adapt if build steps are necessary
-# RUN cp -R src/dy_httpbin/* /build/bin
+# RUN cp -R src/dy_static-file-server/* /build/bin
 # ------------------------------------------------------------------------------------
 
 # --------------------------Production stage -------------------
@@ -58,7 +58,7 @@ COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} src/dy_httpbin src/dy_httpbin
 # Runs as ${SC_USER_NAME} (non-root user)
 #
 #  + /home/${SC_USER_NAME}     $HOME = WORKDIR
-#    + dy_httpbin [${SC_USER_NAME}:${SC_USER_NAME}]
+#    + dy_static-file-server [${SC_USER_NAME}:${SC_USER_NAME}]
 #    + docker [${SC_USER_NAME}:${SC_USER_NAME}]
 #    + service.cli [${SC_USER_NAME}:${SC_USER_NAME}]
 #
@@ -86,7 +86,7 @@ WORKDIR /home/${SC_USER_NAME}
 COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} docker/custom/*.sh docker/
 
 # copy binaries from build
-COPY --from=build --chown=${SC_USER_NAME}:${SC_USER_NAME} /build/bin dy_httpbin
+COPY --from=build --chown=${SC_USER_NAME}:${SC_USER_NAME} /build/bin dy_static-file-server
 
 # ------------------------------------------------------------------------------------
 #TODO:

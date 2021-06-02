@@ -1,6 +1,6 @@
 version: "3.7"
 services:
-  dy-httpbin:
+  dy-static-file-server:
     image: local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}
     build:
       context: ./

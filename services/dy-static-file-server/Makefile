@@ -17,13 +17,13 @@ export VCS_STATUS := $(if $(shell git status -s || echo unversioned),'modified/u
 export BUILD_DATE := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 export DOCKER_REGISTRY   ?= itisfoundation
-export DOCKER_IMAGE_NAME ?= dy-httpbin
+export DOCKER_IMAGE_NAME ?= dy-static-file-server
 export DOCKER_IMAGE_TAG  ?= $(shell cat VERSION)
 
 export COMPOSE_INPUT_DIR  := ./validation/input
 export COMPOSE_OUTPUT_DIR := .tmp/output
 
-APP_NAME := dy-httpbin
+APP_NAME := dy-static-file-server
 
 
 # ENVIRON ----------------------------------

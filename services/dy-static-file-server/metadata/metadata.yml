@@ -1,5 +1,5 @@
-name: dy-httpbin
-key: simcore/services/comp/dy-httpbin
+name: dy-static-file-server
+key: simcore/services/comp/dy-static-file-server
 type: computational
 integration-version: 1.0.0
 version: 0.1.0

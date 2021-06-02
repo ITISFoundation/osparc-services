@@ -1,6 +1,6 @@
 version: '3.7'
 services:
-  dy-httpbin:
+  dy-static-file-server:
     init: true
     image: ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
     
