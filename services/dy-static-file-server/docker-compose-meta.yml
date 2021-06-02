@@ -48,7 +48,7 @@ services:
           {"name": "ports", "type": "int", "value": 80}, 
           {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
         simcore.service.boot-mode: "dynamic-sidecar"
-        simcore.service.paths-mapping: '{"outputs_path": "/tmp/outputs", "inputs_path": "/tmp/inputs"}'
+        simcore.service.paths-mapping: '{"outputs_path": "/www/outputs", "inputs_path": "/www/inputs"}'
   dy-static-file-server-dynamic-sidecar-compose-spec:
     build:
       labels:
@@ -74,6 +74,6 @@ services:
           {"name": "ports", "type": "int", "value": 80}, 
           {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
         simcore.service.boot-mode: "dynamic-sidecar"
-        simcore.service.paths-mapping: '{"outputs_path": "/tmp/outputs", "inputs_path": "/tmp/inputs"}'
+        simcore.service.paths-mapping: '{"outputs_path": "/www/outputs", "inputs_path": "/www/inputs"}'
         simcore.service.container-http-entrypoint: "httpbin-docker-compose-spec"
 version: '3.7'
