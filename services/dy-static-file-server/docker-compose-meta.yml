@@ -18,6 +18,11 @@ services:
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: ${VCS_URL}
+        simcore.service.settings: 
+          '[{"name": "resources", "type": "Resources", "value": 
+          {"mem_limit":17179869184, "cpu_limit": 1000000000}}, 
+          {"name": "ports", "type": "int", "value": 80}, 
+          {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
   dy-static-file-server-dynamic-sidecar:
     build:
       labels:
@@ -37,6 +42,13 @@ services:
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: ${VCS_URL}
+        simcore.service.settings: 
+          '[{"name": "resources", "type": "Resources", "value": 
+          {"mem_limit":17179869184, "cpu_limit": 1000000000}}, 
+          {"name": "ports", "type": "int", "value": 80}, 
+          {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
+        simcore.service.boot-mode: "dynamic-sidecar"
+        simcore.service.paths-mapping: '{"outputs_path": "/tmp/outputs", "inputs_path": "/tmp/inputs"}'
   dy-static-file-server-dynamic-sidecar-compose-spec:
     build:
       labels:
@@ -56,4 +68,12 @@ services:
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: ${VCS_URL}
+        simcore.service.settings: 
+          '[{"name": "resources", "type": "Resources", "value": 
+          {"mem_limit":17179869184, "cpu_limit": 1000000000}}, 
+          {"name": "ports", "type": "int", "value": 80}, 
+          {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
+        simcore.service.boot-mode: "dynamic-sidecar"
+        simcore.service.paths-mapping: '{"outputs_path": "/tmp/outputs", "inputs_path": "/tmp/inputs"}'
+        simcore.service.container-http-entrypoint: "httpbin-docker-compose-spec"
 version: '3.7'
