@@ -1,9 +1,9 @@
 name: dy-static-file-server
-key: simcore/services/comp/dy-static-file-server
+key: simcore/services/comp/dy-static-file-server-dynamic-sidecar-compose-spec
 type: computational
 integration-version: 1.0.0
 version: 0.1.0
-description: Legacy test dynamic service (starts using original director-v0)
+description: Modern test dynamic service providing a docker-compose specificaiton file (with dynamic sidecar and compose-spec)
 contact: anderegg@itis.swiss
 authors:
   - name: Sylvain Anderegg
