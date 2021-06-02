@@ -9,7 +9,6 @@ authors:
   - name: Sylvain Anderegg
     email: anderegg@itis.swiss
     affiliation: IT'IS Foundation
-inputs:
-  
-outputs:
-  
+inputs: {}
+
+outputs: {}
