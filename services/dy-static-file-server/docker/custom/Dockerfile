@@ -16,19 +16,4 @@ ENV NGINX_SERVER_ROOT="/www"
 
 FROM base as production
 
-# # set up oSparc env variables
-# ENV SIMCORE_NODE_UUID="-1" \
-#     SIMCORE_USER_ID="-1" \
-#     SIMCORE_NODE_BASEPATH="" \
-#     SIMCORE_NODE_APP_STATE_PATH="/www" \
-#     STORAGE_ENDPOINT="=1" \
-#     S3_ENDPOINT="=1" \
-#     S3_ACCESS_KEY="-1" \
-#     S3_SECRET_KEY="-1" \
-#     S3_BUCKET_NAME="-1" \
-#     POSTGRES_ENDPOINT="-1" \
-#     POSTGRES_USER="-1" \
-#     POSTGRES_PASSWORD="-1" \
-#     POSTGRES_DB="-1"
-
 CMD [ "/bin/sh", "/boot.sh" ]
