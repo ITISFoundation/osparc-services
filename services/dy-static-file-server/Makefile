@@ -25,6 +25,8 @@ export COMPOSE_OUTPUT_DIR := .tmp/output
 
 APP_NAME := dy-static-file-server
 
+_yq = docker run --rm -i -v ${PWD}:/workdir mikefarah/yq:3.3.4 yq
+
 
 # ENVIRON ----------------------------------
 .PHONY: devenv
@@ -74,9 +76,10 @@ endef
 
 # DOCKER -----------------------------------
 .PHONY: build build-devel build-kit-devel build-x build-devel-x
-build build-devel build-kit build-kit-devel build-x build-devel-x: docker-compose-build.yml docker-compose-meta.yml ## builds images, -devel in development mode, -kit using docker buildkit, -x using docker buildX (if installed)
+build build-devel build-kit build-kit-devel build-x build-devel-x: dynamic-sidecar-compose-specs.yml docker-compose-build.yml docker-compose-meta.yml ## builds images, -devel in development mode, -kit using docker buildkit, -x using docker buildX (if installed)
 	# building image local/${DOCKER_IMAGE_NAME}...
-	@$(call _docker_compose_build)
+	export DOCKER_COMPOSE_SPECIFICATION='$(shell $(_yq) read dynamic-sidecar-compose-specs.yml --tojson)'; \
+	$(call _docker_compose_build)
 
 define show-meta
 	$(foreach iid,$(shell docker images */$(1)*:* -q | sort | uniq),\

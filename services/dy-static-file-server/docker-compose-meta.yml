@@ -76,4 +76,5 @@ services:
         simcore.service.boot-mode: "dynamic-sidecar"
         simcore.service.paths-mapping: '{"outputs_path": "/www/outputs", "inputs_path": "/www/inputs"}'
         simcore.service.container-http-entrypoint: "httpbin-docker-compose-spec"
+        simcore.service.compose-spec: ${DOCKER_COMPOSE_SPECIFICATION}
 version: '3.7'
