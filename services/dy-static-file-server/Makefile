@@ -79,13 +79,13 @@ build build-devel build-kit build-kit-devel build-x build-devel-x: docker-compos
 	@$(call _docker_compose_build)
 
 define show-meta
-	$(foreach iid,$(shell docker images */$(1):* -q | sort | uniq),\
+	$(foreach iid,$(shell docker images */$(1)*:* -q | sort | uniq),\
 		docker image inspect $(iid) | jq '.[0] | .RepoTags, .ContainerConfig.Labels, .Config.Labels';)
 endef
 
 info-build: ## displays info on the built image
 	# Built images
-	@docker images */$(DOCKER_IMAGE_NAME):*
+	@docker images */$(DOCKER_IMAGE_NAME)*:*
 	# Tags and labels
 	@$(call show-meta,$(DOCKER_IMAGE_NAME))
 
