@@ -4,16 +4,18 @@ services:
     init: true
     image: ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
     ports: 
-      - "38080:8080"
+      - "38080:80"
+    environment: 
+      - SIMCORE_NODE_BASEPATH=${SIMCORE_NODE_BASEPATH}
   
   dy-static-file-server-dynamic-sidecar:
     init: true
     image: ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-dynamic-sidecar:${DOCKER_IMAGE_TAG}
     ports: 
-      - "38081:8080"
+      - "38081:80"
     
   dy-static-file-server-dynamic-sidecar-compose-spec:
     init: true
-    image: ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-dynamic-sidecar-compose-spec:${DOCKER_IMAGE_TAG}
+    image: ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-dynamic-sidecar-compose-spec:${DOCKER_IMAGE_TAG}    
     ports: 
-      - "38082:8080"
+      - "38082:80"
