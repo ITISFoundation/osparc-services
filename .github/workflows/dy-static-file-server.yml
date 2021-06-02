@@ -1,13 +1,13 @@
-name: Github-CI Push/PR dy-httpbin
+name: Github-CI Push/PR dy-static-file-server
 
 on:
   push:
     paths:
-      - "services/dy-httpbin/**"
+      - "services/dy-static-file-server/**"
       - "!**.md"
   pull_request:
     paths:
-      - "services/dy-httpbin/**"
+      - "services/dy-static-file-server/**"
       - "!**.md"
 
 env:
@@ -18,7 +18,7 @@ env:
 
 jobs:
   build:
-    name: building dy-httpbin
+    name: building dy-static-file-server
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -47,28 +47,28 @@ jobs:
         if: github.ref != 'refs/heads/master'
         run: echo "DOCKER_IMAGE_TAG=${GITHUB_REF##*/}" >> $GITHUB_ENV
       - name: set dev environs
-        working-directory: services/dy-httpbin
+        working-directory: services/dy-static-file-server
         run: make devenv
       - name: get current image if available
-        working-directory: services/dy-httpbin
+        working-directory: services/dy-static-file-server
         run: make pull-latest || true
       - name: build
-        working-directory: services/dy-httpbin
+        working-directory: services/dy-static-file-server
         run: |
           make build
           make info-build
       - name: test
-        working-directory: services/dy-httpbin
+        working-directory: services/dy-static-file-server
         run: make tests
       - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         name: deploy
-        working-directory: services/dy-httpbin
+        working-directory: services/dy-static-file-server
         run: |
           ./ci/helpers/dockerhub_login.bash
           make push
       - if: github.event_name == 'push' && github.ref != 'refs/heads/master'
         name: deploy
-        working-directory: services/dy-httpbin
+        working-directory: services/dy-static-file-server
         run: |
           ./ci/helpers/dockerhub_login.bash
           make push-version
