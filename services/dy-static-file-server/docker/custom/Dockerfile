@@ -46,11 +46,11 @@ WORKDIR /build
 # defines the output of the build
 RUN mkdir --parents /build/bin
 # copy src code
-COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} src/dy_static-file-server src/dy_static-file-server
+COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} src/dy_static_file_server src/dy_static_file_server
 # ------------------------------------------------------------------------------------
 #TODO:
 # uncomment and adapt if build steps are necessary
-# RUN cp -R src/dy_static-file-server/* /build/bin
+# RUN cp -R src/dy_static_file_server/* /build/bin
 # ------------------------------------------------------------------------------------
 
 # --------------------------Production stage -------------------
@@ -58,7 +58,7 @@ COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} src/dy_static-file-server src/dy_st
 # Runs as ${SC_USER_NAME} (non-root user)
 #
 #  + /home/${SC_USER_NAME}     $HOME = WORKDIR
-#    + dy_static-file-server [${SC_USER_NAME}:${SC_USER_NAME}]
+#    + dy_static_file_server [${SC_USER_NAME}:${SC_USER_NAME}]
 #    + docker [${SC_USER_NAME}:${SC_USER_NAME}]
 #    + service.cli [${SC_USER_NAME}:${SC_USER_NAME}]
 #
@@ -86,7 +86,7 @@ WORKDIR /home/${SC_USER_NAME}
 COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} docker/custom/*.sh docker/
 
 # copy binaries from build
-COPY --from=build --chown=${SC_USER_NAME}:${SC_USER_NAME} /build/bin dy_static-file-server
+COPY --from=build --chown=${SC_USER_NAME}:${SC_USER_NAME} /build/bin dy_static_file_server
 
 # ------------------------------------------------------------------------------------
 #TODO:
