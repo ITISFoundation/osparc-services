@@ -151,10 +151,10 @@ push push-force: ## pushes (resp. force) services to the registry if service not
 
 push-latest push-version: ## publish service to registry with latest/version tag
 	@$(foreach service, $(SERVICES_LIST),\
-		# pushing '$(DOCKER_REGISTRY)/$(service):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'...\
+		echo pushing '$(DOCKER_REGISTRY)/$(service):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'...;\
 		$(MAKE) tag-$(subst push-,,$@);\
 		docker push $(DOCKER_REGISTRY)/$(service):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest);\
-		# pushed '$(DOCKER_REGISTRY)/$(service):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'\
+		echo pushed '$(DOCKER_REGISTRY)/$(service):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest);'\
 	)
 	
 
