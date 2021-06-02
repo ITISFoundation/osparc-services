@@ -109,7 +109,10 @@ tests-unit tests-integration: ## runs integration and unit tests
 tests: tests-unit tests-integration ## runs unit and integration tests
 
 
-
+SERVICES_LIST := \
+	dy-static-file-server \
+	dy-static-file-server-dynamic-sidecar \
+	dy-static-file-server-dynamic-sidecar-compose-spec
 
 # PUBLISHING -----------------------------------
 define _bumpversion
@@ -123,30 +126,42 @@ version-service-patch version-service-minor version-service-major: versioning/se
 
 .PHONY: tag-local
 tag-local:
-	docker tag ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:$(if $(findstring version,$@),$(DOCKER_IMAGE_NAME),latest) local/$(DOCKER_IMAGE_NAME):production
+	@$(foreach service, $(SERVICES_LIST),\
+		docker tag ${DOCKER_REGISTRY}/${service}:$(if $(findstring version,$@),$(DOCKER_IMAGE_NAME),latest) local/$(DOCKER_IMAGE_NAME):production;\
+	)
 
 .PHONY: push push-force push-version push-latest pull-latest pull-version tag-latest tag-version
 tag-latest tag-version:
-	docker tag local/$(DOCKER_IMAGE_NAME):production $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
+	@$(foreach service, $(SERVICES_LIST),\
+		docker tag local/$(service):production $(DOCKER_REGISTRY)/$(service):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest);\
+	)
+	
 
 version_valid  = $(shell test $$(echo $(DOCKER_IMAGE_TAG) | cut --fields=1 --delimiter=.) -gt 0 > /dev/null && echo "image version is valid")
-version_exists = $(shell DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG) > /dev/null && echo "image already exists on $(DOCKER_REGISTRY)")
+version_exists = $(shell DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect $(DOCKER_REGISTRY)/$(1):$(DOCKER_IMAGE_TAG) > /dev/null && echo "image already exists on $(DOCKER_REGISTRY)")
 push push-force: ## pushes (resp. force) services to the registry if service not available in registry.
 	@$(if $(findstring force,$@),,\
 		$(if $(call version_valid),$(info version is valid), $(error $(DOCKER_IMAGE_TAG) is not a valid version (major>=1)))\
-		$(if $(call version_exists),$(error $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG) already exists on $(DOCKER_REGISTRY)), $(info no version found on $(DOCKER_REGISTRY)))\
+		$(foreach service, $(SERVICES_LIST),\
+			$(if $(call version_exists,$(service)),$(error $(DOCKER_REGISTRY)/$(service):$(DOCKER_IMAGE_TAG) already exists on $(DOCKER_REGISTRY)), $(info no version found on $(DOCKER_REGISTRY)))\
+		)\
 	)
 	@$(MAKE) push-version;
 	@$(MAKE) push-latest;
 
 push-latest push-version: ## publish service to registry with latest/version tag
-	# pushing '$(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'...
-	@$(MAKE) tag-$(subst push-,,$@)
-	@docker push $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
-	# pushed '$(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'
+	@$(foreach service, $(SERVICES_LIST),\
+		# pushing '$(DOCKER_REGISTRY)/$(service):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'...\
+		$(MAKE) tag-$(subst push-,,$@);\
+		docker push $(DOCKER_REGISTRY)/$(service):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest);\
+		# pushed '$(DOCKER_REGISTRY)/$(service):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'\
+	)
+	
 
 pull-latest pull-version: ## pull service from registry
-	@docker pull $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
+	@$(foreach service, $(SERVICES_LIST),\
+		docker pull $(DOCKER_REGISTRY)/$(service):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)\
+	)
 
 
 .PHONY: version-integration-patch version-integration-minor version-integration-major
