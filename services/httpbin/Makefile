@@ -7,32 +7,14 @@ SHELL := /bin/bash
 
 HTTPBIN_COMPOSE_FILE := httpbin_compose_spec.yaml
 
-export LOCAL_REGISTRY:=registry:5000
-export DOCKER_REGISTRY:=itisfoundation
+export DOCKER_REGISTRY ?= itisfoundation
+export DOCKER_IMAGE_NAME ?= 3d-viewer
+export DOCKER_IMAGE_TAG ?= $(shell cat VERSION)
 
-export DOCKER_IMAGE_TAG=$(shell cat VERSION)
-
-export VCS_URL:=$(shell git config --get remote.origin.url)
-export VCS_REF:=$(shell git rev-parse --short HEAD)
+export VCS_URL:=$(shell git config --get remote.origin.url || echo unversioned)
+export VCS_REF:=$(shell git rev-parse --short HEAD || echo unversioned)
+export VCS_STATUS:=$(if $(shell git status -s || echo unversioned),'modified/untracked','clean')
 export BUILD_DATE:=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
-
-# SAN this is a hack so that docker-compose works in the linux virtual environment under Windows
-ifneq (,$(findstring Microsoft,$(VERSION)))
-# executing from bash
-$(echo 'detected WSL')
-export DOCKER_COMPOSE=docker-compose
-export DOCKER=docker
-else ifeq ($(OS), Windows_NT)
-$(echo 'detected Powershell/CMD')
-# executing from powershell
-export DOCKER_COMPOSE=docker-compose.exe
-export DOCKER=docker.exe
-else
-$(echo 'detected native linux')
-export DOCKER_COMPOSE=docker-compose
-export DOCKER=docker
-endif
-
 
 define add_label
 	@echo "Image	$(1)"
@@ -41,61 +23,142 @@ define add_label
     echo "FROM $(1)" | docker build --label $(2)=$(3) -t "$(1)" -
 endef
 
+# ENVIRON ----------------------------------
+.PHONY: devenv
+.venv:
+	python3 -m venv $@
+	# upgrading package managers
+	$@/bin/pip3 install --upgrade \
+		pip \
+		wheel \
+		setuptools
+	# tooling
+	$@/bin/pip3 install pip-tools
 
-.PHONY: venv
-venv: ## Creates a python virtual environment with tools for building
-	python3 -m venv .venv
-	.venv/bin/pip3 install --upgrade pip wheel setuptools
-	.venv/bin/pip3 install yq
-	@echo "To activate the venv, execute 'source .venv/bin/activate' or '.venv/bin/activate.bat' (WIN)"
+requirements.txt: .venv requirements.in
+	# freezes requirements
+	$</bin/pip-compile --upgrade --build-isolation --output-file $@ $(word2, $^)
+
+devenv: .venv requirements.txt ## create a python virtual environment with tools to dev, run and tests cookie-cutter
+	# installing extra tools
+	@$</bin/pip3 install -r  $(word 2,$^)
+	# your dev environment contains
+	@$</bin/pip3 list
+	@echo "To activate the virtual environment, run 'source $</bin/activate'"
 
 
-.PHONY: build
-build:	## builds and tags the images
-	${DOCKER_COMPOSE} -f docker-compose.yml build
-	$(call add_label,${DOCKER_REGISTRY}/httpbin-dynamic-sidecar-compose:${DOCKER_IMAGE_TAG},simcore.service.compose-spec,'$(shell cat ${HTTPBIN_COMPOSE_FILE} | yq -c -M)')
+# INTEGRATION -----------------------------------
+metatada := $(wildcard metadata/metadata*.yml)
+docker-compose-meta.yml: $(metatada)
+	# Injects metadata from $(metatada) as labels
+	@$(foreach meta,$(metatada), $(shell .venv/bin/python3 tools/update_compose_labels.py --compose $@ --metadata $(meta)))
 
-	@echo "Image Labels => ${DOCKER_REGISTRY}/httpbin:${DOCKER_IMAGE_TAG}"
-	@docker inspect -f "{{json .Config.Labels }}" ${DOCKER_REGISTRY}/httpbin:${DOCKER_IMAGE_TAG}
-	@echo "Image Labels => ${DOCKER_REGISTRY}/httpbin-dynamic-sidecar:${DOCKER_IMAGE_TAG}"
-	@docker inspect -f "{{json .Config.Labels }}" ${DOCKER_REGISTRY}/httpbin-dynamic-sidecar:${DOCKER_IMAGE_TAG}
-	@echo "Image Labels => ${DOCKER_REGISTRY}/httpbin-dynamic-sidecar-compose:${DOCKER_IMAGE_TAG}"
-	@docker inspect -f "{{json .Config.Labels }}" ${DOCKER_REGISTRY}/httpbin-dynamic-sidecar-compose:${DOCKER_IMAGE_TAG}
+define _docker_compose_build
+export DOCKER_BUILD_TARGET=$(if $(findstring -devel,$@),development,$(if $(findstring -cache,$@),cache,production)); \
+$(if $(findstring -x,$@),\
+	docker buildx > /dev/null; export DOCKER_CLI_EXPERIMENTAL=enabled; docker buildx bake  --file docker-compose-build.yml --file docker-compose-meta.yml $(if $(findstring -nc,$@),--no-cache,);,\
+	$(if $(findstring -kit,$@),export DOCKER_BUILDKIT=1;export COMPOSE_DOCKER_CLI_BUILD=1;,) \
+	docker-compose --file docker-compose-build.yml --file docker-compose-meta.yml build $(if $(findstring -nc,$@),--no-cache,) --parallel;\
+)
+endef
 
 
-.PHONY: transfer-to-local-registry
-transfer-to-local-registry:	## transfers images to local registry
-	@docker tag ${DOCKER_REGISTRY}/httpbin:${DOCKER_IMAGE_TAG} ${LOCAL_REGISTRY}/simcore/services/dynamic/httpbin:${DOCKER_IMAGE_TAG}
-	@docker push ${LOCAL_REGISTRY}/simcore/services/dynamic/httpbin:${DOCKER_IMAGE_TAG}
 
-	@docker tag ${DOCKER_REGISTRY}/httpbin-dynamic-sidecar:${DOCKER_IMAGE_TAG} ${LOCAL_REGISTRY}/simcore/services/dynamic/httpbin-dynamic-sidecar:${DOCKER_IMAGE_TAG}
-	@docker push ${LOCAL_REGISTRY}/simcore/services/dynamic/httpbin-dynamic-sidecar:${DOCKER_IMAGE_TAG}
+# DOCKER ----------------------------------- 
+.PHONY: build build-devel build-kit-devel build-x build-devel-x
+build build-devel build-kit build-kit-devel build-x build-devel-x: .env docker-compose-build.yml docker-compose-meta.yml ## builds images, -devel in development mode, -kit using docker buildkit, -x using docker buildX (if installed)
+	@$(call _docker_compose_build)
 
-	@docker tag ${DOCKER_REGISTRY}/httpbin-dynamic-sidecar-compose:${DOCKER_IMAGE_TAG} ${LOCAL_REGISTRY}/simcore/services/dynamic/httpbin-dynamic-sidecar-compose:${DOCKER_IMAGE_TAG}
-	@docker push ${LOCAL_REGISTRY}/simcore/services/dynamic/httpbin-dynamic-sidecar-compose:${DOCKER_IMAGE_TAG}
+define show-meta
+	$(foreach iid,$(shell docker images */$(1):* -q | sort | uniq),\
+		docker image inspect $(iid) | jq '.[0] | .RepoTags, .ContainerConfig.Labels, .Config.Labels';)
+endef
 
-	@curl -s ${LOCAL_REGISTRY}/v2/_catalog | jq '.repositories'
-	@curl -s http://${LOCAL_REGISTRY}/v2/simcore/services/dynamic/httpbin/tags/list?n=50 | jq '.'
-	@curl -s http://${LOCAL_REGISTRY}/v2/simcore/services/dynamic/httpbin-dynamic-sidecar/tags/list?n=50 | jq '.'
-	@curl -s http://${LOCAL_REGISTRY}/v2/simcore/services/dynamic/httpbin-dynamic-sidecar-compose/tags/list?n=50 | jq '.'
+info-build: ## displays info on the built image
+	# Built images
+	@docker images */$(DOCKER_IMAGE_NAME):*
+	@docker images */$(DOCKER_IMAGE_NAME)-gpu:*
+	# Tags and labels
+	@$(call show-meta,$(DOCKER_IMAGE_NAME))
+	@$(call show-meta,$(DOCKER_IMAGE_NAME)-gpu)
 
-.PHONY: push
-push:	## pushes existing images
-	${DOCKER_COMPOSE} -f docker-compose.yml push
+# TESTS----------------------------------- 
+.PHONY: tests tests-unit tests-integration
+tests-unit tests-integration: ## runs integration and unit tests
+	@.venv/bin/pytest -vv \
+		--basetemp=$(CURDIR)/tmp \
+		--exitfirst \
+		--failed-first \
+		--pdb \
+		--junitxml=pytest_$(subst tests-,,$@)test.xml \
+		$(CURDIR)/tests/$(subst tests-,,$@)
 
-.PHONY: pull
-pull:	## pulls existing images
-	${DOCKER_COMPOSE} -f docker-compose.yml pull
+tests: tests-unit tests-integration ## runs unit and integration tests
 
-.PHONY: test
-test:	## runs tests
-	@echo 'test passed, nothing validated here'
+
+# PUBLISHING ----------------------------------- 
+define _bumpversion
+	# upgrades as $(subst $(1),,$@) version, commits and tags
+	@bump2version --verbose --list --config-file $(1) $(subst $(2),,$@)
+endef
+
+.PHONY: version-service-patch version-service-minor version-service-major
+version-service-patch version-service-minor version-service-major: versioning/service.cfg ## kernel/service versioning as patch
+	@$(call _bumpversion,$<,version-service-)
+
+.PHONY: push push-force push-version push-latest pull-latest pull-version tag-latest tag-version
+tag-latest tag-version:
+	docker tag local/$(DOCKER_IMAGE_NAME):production $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
+	docker tag local/$(DOCKER_IMAGE_NAME)-gpu:production $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-gpu:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
+
+version_valid = $(shell test $$(echo $(DOCKER_IMAGE_TAG) | cut --fields=1 --delimiter=.) -gt 0 > /dev/null && echo "image version is valid")
+version_exists = $(shell DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect $(DOCKER_REGISTRY)/$(1) > /dev/null && echo "image already exists on $(DOCKER_REGISTRY)")
+push push-force: ## pushes (resp. force) services to the registry if service not available in registry.
+	@$(if $(findstring force,$@),,\
+		$(if $(call version_valid),$(info version is valid), $(error $(DOCKER_IMAGE_TAG) is not a valid version (major>=1)))\
+		$(if $(call version_exists,$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG)),$(error $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG) already exists on $(DOCKER_REGISTRY)), $(info no version found on $(DOCKER_REGISTRY)))\
+		$(if $(call version_exists,$(DOCKER_IMAGE_NAME)-gpu:$(DOCKER_IMAGE_TAG)),$(error $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG) already exists on $(DOCKER_REGISTRY)), $(info no version found on $(DOCKER_REGISTRY)))\
+	)
+	@$(MAKE) --no-print-directory push-version;
+	@$(MAKE) --no-print-directory push-latest;
+
+push-latest push-version: ## publish service to registry with latest/version tag
+	# pushing '$(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'...
+	@$(MAKE) --no-print-directory tag-$(subst push-,,$@)
+	@docker push $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)	
+	# pushed '$(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'
+	@docker push $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-gpu:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
+	# pushed '$(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-gpu:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'
+
+pull-latest pull-version: ## pull service from registry
+	@docker pull $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
+	@docker pull $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-gpu:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
+
+
+.PHONY: version-integration-patch version-integration-minor version-integration-major
+version-integration-patch version-integration-minor version-integration-major: versioning/integration.cfg ## integration versioning as patch (bug fixes not affecting API/handling), minor/major (backwards-compatible/INcompatible API changes)
+	@$(call _bumpversion,$<,version-integration-)
+
+
+# MISCELANEOUS -----------------------------------
+.env: .env-devel ## creates .env file from defaults in .env-devel
+	$(if $(wildcard $@), \
+	@echo "WARNING #####  $< is newer than $@ ####"; diff -uN $@ $<; false;,\
+	@echo "WARNING ##### $@ does not exist, copying $< ############"; cp $< $@)
 
 .PHONY: help
-# thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
-help:
-	@echo "General help commands devel"
-	@awk 'BEGIN {FS = ":.*?## "} /^[[:alpha:][:space:]_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+help: ## this colorful help
+	@echo "Recipes for '$(notdir $(CURDIR))':"
+	@echo ""
+	@awk --posix 'BEGIN {FS = ":.*?## "} /^[[:alpha:][:space:]_-]+:.*?## / {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 	@echo ""
 
 
+.PHONY: clean clean-force
+git_clean_args = -dxf -e .vscode/ -e .venv
+clean: ## cleans all unversioned files in project and temp files create by this makefile
+	# Cleaning unversioned
+	@git clean -n $(git_clean_args)
+	@echo -n "Are you sure? [y/N] " && read ans && [ $${ans:-N} = y ]
+	@echo -n "$(shell whoami), are you REALLY sure? [y/N] " && read ans && [ $${ans:-N} = y ]
+	@git clean $(git_clean_args)
