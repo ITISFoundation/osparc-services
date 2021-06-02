@@ -180,7 +180,7 @@ define _docker_compose_cli
 endef
 
 .PHONY: down up up-devel shell shell-devel
-up up-devel: $(COMPOSE_INPUT_DIR) $(COMPOSE_OUTPUT_DIR) down ## Starts the service for testing. Devel mode mounts the folders for direct development.
+up up-devel: $(COMPOSE_INPUT_DIR) $(COMPOSE_OUTPUT_DIR) .env down ## Starts the service for testing. Devel mode mounts the folders for direct development.
 	# starting a service
 	$(call _docker_compose_cli,up)
 
@@ -197,13 +197,19 @@ down: .compose-development.yml ## stops the service
 
 
 # MISCELANEOUS -----------------------------------
-.PHONY: replay
-replay: .cookiecutterrc ## re-applies cookiecutter
-	# Replaying gh:ITISFoundation/cookiecutter-osparc-service ...
-	@cookiecutter --no-input --overwrite-if-exists \
-		--config-file=$< \
-		--output-dir="$(abspath $(CURDIR)/..)" \
-		"gh:ITISFoundation/cookiecutter-osparc-service"
+.env: .env-devel ## creates .env file from defaults in .env-devel
+	$(if $(wildcard $@), \
+	@echo "WARNING #####  $< is newer than $@ ####"; diff -uN $@ $<; false;,\
+	@echo "WARNING ##### $@ does not exist, copying $< ############"; cp $< $@)
+
+# FIXME: when cookiecutter for dynamic service is ready then unleash that...
+# .PHONY: replay
+# replay: .cookiecutterrc ## re-applies cookiecutter
+# 	# Replaying gh:ITISFoundation/cookiecutter-osparc-service ...
+# 	@cookiecutter --no-input --overwrite-if-exists \
+# 		--config-file=$< \
+# 		--output-dir="$(abspath $(CURDIR)/..)" \
+# 		"gh:ITISFoundation/cookiecutter-osparc-service"
 
 
 .PHONY: help
