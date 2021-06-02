@@ -1,0 +1,15 @@
+name: dy-httpbin
+key: simcore/services/comp/dy-httpbin
+type: computational
+integration-version: 1.0.0
+version: 0.1.0
+description: Dynamic service for testing purpose
+contact: anderegg@itis.swiss
+authors:
+  - name: Sylvain Anderegg
+    email: anderegg@itis.swiss
+    affiliation: IT'IS Foundation
+inputs:
+  
+outputs:
+  
