@@ -10,7 +10,6 @@ The below command will build tag and push the containers to help with developmen
 
     make build transfer-to-local-registry
 
-
 Inside the registry the following images will be pushed:
 
 - simcore/services/dynamic/httpbin and exposed as `httpbin` to the user
@@ -19,8 +18,7 @@ Inside the registry the following images will be pushed:
 
 After pushing the images permissions must be granted manually via adminer.
 
-
-**Known limitations** 
+## Known limitations
 
 Only `httpbin` will be exposed on `some.domain/x/UUID` becaus it will be stated as a **legacy dynamic service**.
-The UI for this service dose not take into account the `/x/UUID` subpath.
+The UI for this service does not take into account the `/x/UUID` subpath.
