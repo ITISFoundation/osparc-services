@@ -55,7 +55,7 @@ jobs:
       - name: build
         working-directory: services/dy-static-file-server
         run: |
-          make build
+          make build-x
           make info-build
       - name: test
         working-directory: services/dy-static-file-server
