@@ -55,9 +55,6 @@ devenv: .venv requirements.txt ## create a python virtual environment with tools
 
 # INTEGRATION -----------------------------------
 metatada = metadata/metadata.yml
-service.cli/run: $(metatada)
-	# Updates adapter script from metadata in $<
-	@.venv/bin/python3 tools/run_creator.py --metadata $< --runscript $@
 
 docker-compose-meta.yml: $(metatada)
 	# Injects metadata from $< as labels
@@ -77,7 +74,7 @@ endef
 
 # DOCKER -----------------------------------
 .PHONY: build build-devel build-kit-devel build-x build-devel-x
-build build-devel build-kit build-kit-devel build-x build-devel-x: docker-compose-build.yml docker-compose-meta.yml service.cli/run ## builds images, -devel in development mode, -kit using docker buildkit, -x using docker buildX (if installed)
+build build-devel build-kit build-kit-devel build-x build-devel-x: docker-compose-build.yml docker-compose-meta.yml ## builds images, -devel in development mode, -kit using docker buildkit, -x using docker buildX (if installed)
 	# building image local/${DOCKER_IMAGE_NAME}...
 	@$(call _docker_compose_build)
 

@@ -70,4 +70,4 @@ echo "  local dir : $(ls -al)"
 echo "  input dir : $(ls -al "${INPUT_FOLDER}")"
 echo "  output dir : $(ls -al "${OUTPUT_FOLDER}")"
 
-su --command "export PATH=${PATH}:/home/$SC_USER_NAME/service.cli; $*" "$SC_USER_NAME"
+su --command "$*" "$SC_USER_NAME"

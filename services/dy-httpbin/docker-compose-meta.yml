@@ -1,10 +1,20 @@
-# NOTE: DO NOT MODIFY MANUALLY. Execute make docker-compose-meta.yml instead
-version: '3.7'
 services:
   dy-httpbin:
     build:
       labels:
-        org.label-schema.schema-version: "1.0"
-        org.label-schema.build-date: "${BUILD_DATE}"
+        io.simcore.authors: '{"authors": [{"name": "Sylvain Anderegg", "email": "anderegg@itis.swiss",
+          "affiliation": "IT''IS Foundation"}]}'
+        io.simcore.contact: '{"contact": "anderegg@itis.swiss"}'
+        io.simcore.description: '{"description": "Dynamic service for testing purpose"}'
+        io.simcore.inputs: '{"inputs": null}'
+        io.simcore.integration-version: '{"integration-version": "1.0.0"}'
+        io.simcore.key: '{"key": "simcore/services/comp/dy-httpbin"}'
+        io.simcore.name: '{"name": "dy-httpbin"}'
+        io.simcore.outputs: '{"outputs": null}'
+        io.simcore.type: '{"type": "computational"}'
+        io.simcore.version: '{"version": "0.1.0"}'
+        org.label-schema.build-date: ${BUILD_DATE}
+        org.label-schema.schema-version: '1.0'
+        org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: https://github.com/ITISFoundation/dy-httpbin
-        org.label-schema.vcs-ref: "${VCS_REF}"
+version: '3.7'

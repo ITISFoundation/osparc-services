@@ -6,4 +6,3 @@ services:
     volumes:
       - ./src:/home/scu/src
       - ./docker/custom:/home/scu/docker
-      - ./service.cli:/home/scu/service.cli

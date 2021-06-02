@@ -84,10 +84,6 @@ WORKDIR /home/${SC_USER_NAME}
 
 # copy docker bootup scripts
 COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} docker/custom/*.sh docker/
-# copy simcore service cli
-COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} service.cli/ service.cli/
-# necessary to be able to call run directly without sh in front
-ENV PATH="/home/${SC_USER_NAME}/service.cli:${PATH}"
 
 # copy binaries from build
 COPY --from=build --chown=${SC_USER_NAME}:${SC_USER_NAME} /build/bin dy_httpbin
