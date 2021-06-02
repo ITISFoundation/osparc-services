@@ -84,6 +84,7 @@ def main(args=None) -> int:
         metadata = get_metadata_file(options.metadata)
         service_name = metadata["name"]
         json_metadata = stringify_metadata(metadata)
+
         if update_compose_labels(compose_cfg, json_metadata, service_name):
             log.info(
                 "Updating %s using labels in %s", options.compose, options.metadata

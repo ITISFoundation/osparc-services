@@ -54,11 +54,11 @@ devenv: .venv requirements.txt ## create a python virtual environment with tools
 
 
 # INTEGRATION -----------------------------------
-metatada = metadata/metadata.yml
+metatada := $(wildcard metadata/metadata*.yml)
 
 docker-compose-meta.yml: $(metatada)
-	# Injects metadata from $< as labels
-	@.venv/bin/python3 tools/update_compose_labels.py --compose $@ --metadata $<
+	# Injects metadata from $(metatada) as labels
+	@$(foreach meta,$(metatada), $(shell .venv/bin/python3 tools/update_compose_labels.py --compose $@ --metadata $(meta)))
 
 define _docker_compose_build
 export DOCKER_BUILD_TARGET=$(if $(findstring -devel,$@),development,$(if $(findstring -cache,$@),cache,production)); \

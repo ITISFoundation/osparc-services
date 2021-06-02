@@ -1,4 +1,4 @@
-name: dy-static-file-server
+name: dy-static-file-server-dynamic-sidecar
 key: simcore/services/comp/dy-static-file-server-dynamic-sidecar
 type: computational
 integration-version: 1.0.0
@@ -10,5 +10,4 @@ authors:
     email: anderegg@itis.swiss
     affiliation: IT'IS Foundation
 inputs: {}
-
 outputs: {}
