@@ -6,3 +6,15 @@ services:
     volumes:
       - ./src:/home/scu/src
       - ./docker/custom:/home/scu/docker
+
+  dy-static-file-server-dynamic-sidecar:
+    image: ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-dynamic-sidecar:development
+    volumes:
+      - ./src:/home/scu/src
+      - ./docker/custom:/home/scu/docker
+    
+  dy-static-file-server-dynamic-sidecar-compose-spec:
+    image: ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-dynamic-sidecar-compose-spec:development
+    volumes:
+      - ./src:/home/scu/src
+      - ./docker/custom:/home/scu/docker
