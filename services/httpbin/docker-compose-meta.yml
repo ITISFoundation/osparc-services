@@ -1,0 +1,53 @@
+version: '3.6'
+services:
+  httpbin:
+    image: ${DOCKER_REGISTRY}/httpbin:${DOCKER_IMAGE_TAG}
+    build:
+      context: .
+      dockerfile: services/httpbin/legacy/Dockerfile
+      labels:        
+        org.label-schema.build-date: ${BUILD_DATE}
+        org.label-schema.schema-version: "1.0"
+        org.label-schema.vcs-ref: ${VCS_REF}
+        org.label-schema.vcs-url: ${VCS_URL}
+        simcore.service.settings: 
+          '[{"name": "resources", "type": "Resources", "value": 
+          {"mem_limit":17179869184, "cpu_limit": 1000000000}}, 
+          {"name": "ports", "type": "int", "value": 80}, 
+          {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
+  httpbin-dynamic-sidecar:
+      image: ${DOCKER_REGISTRY}/httpbin-dynamic-sidecar:${DOCKER_IMAGE_TAG}
+      build:
+        context: .
+        dockerfile: services/httpbin/Dockerfile
+        labels:          
+          org.label-schema.build-date: ${BUILD_DATE}
+          org.label-schema.schema-version: "1.0"
+          org.label-schema.vcs-ref: ${VCS_REF}
+          org.label-schema.vcs-url: ${VCS_URL}
+          simcore.service.settings: 
+            '[{"name": "resources", "type": "Resources", "value": 
+            {"mem_limit":17179869184, "cpu_limit": 1000000000}}, 
+            {"name": "ports", "type": "int", "value": 80}, 
+            {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
+          simcore.service.boot-mode: "dynamic-sidecar"
+          simcore.service.paths-mapping: '{"outputs_path": "/tmp/outputs", "inputs_path": "/tmp/inputs"}'
+
+  httpbin-dynamic-sidecar-compose:
+      image: ${DOCKER_REGISTRY}/httpbin-dynamic-sidecar-compose:${DOCKER_IMAGE_TAG}
+      build:
+        context: .
+        dockerfile: services/httpbin/Dockerfile
+        labels:
+          org.label-schema.build-date: ${BUILD_DATE}
+          org.label-schema.schema-version: "1.0"
+          org.label-schema.vcs-ref: ${VCS_REF}
+          org.label-schema.vcs-url: ${VCS_URL}
+          simcore.service.settings: 
+            '[{"name": "resources", "type": "Resources", "value": 
+            {"mem_limit":17179869184, "cpu_limit": 1000000000}}, 
+            {"name": "ports", "type": "int", "value": 80}, 
+            {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
+          simcore.service.boot-mode: "dynamic-sidecar"
+          simcore.service.paths-mapping: '{"outputs_path": "/tmp/outputs", "inputs_path": "/tmp/inputs"}'
+          simcore.service.container-http-entrypoint: "httpbin-docker-compose-spec"
