@@ -41,9 +41,7 @@ services:
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: ${VCS_URL}
-        simcore.service.boot-mode: dynamic-sidecar
-        simcore.service.paths-mapping: '{"outputs_path": "/www/outputs", "inputs_path":
-          "/www/inputs"}'
+        simcore.service.paths-mapping: '{"outputs_path": "/www/outputs", "inputs_path": "/www/inputs"}'
         simcore.service.settings: '[{"name": "resources", "type": "Resources", "value":
           {"mem_limit":17179869184, "cpu_limit": 1000000000}}, {"name": "ports", "type":
           "int", "value": 80}, {"name": "constraints", "type": "string", "value":
@@ -67,11 +65,9 @@ services:
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: ${VCS_URL}
-        simcore.service.boot-mode: dynamic-sidecar
         simcore.service.compose-spec: ${DOCKER_COMPOSE_SPECIFICATION}
         simcore.service.container-http-entrypoint: httpbin-docker-compose-spec
-        simcore.service.paths-mapping: '{"outputs_path": "/www/outputs", "inputs_path":
-          "/www/inputs"}'
+        simcore.service.paths-mapping: '{"outputs_path": "/www/outputs", "inputs_path": "/www/inputs"}'
         simcore.service.settings: '[{"name": "resources", "type": "Resources", "value":
           {"mem_limit":17179869184, "cpu_limit": 1000000000}}, {"name": "ports", "type":
           "int", "value": 80}, {"name": "constraints", "type": "string", "value":

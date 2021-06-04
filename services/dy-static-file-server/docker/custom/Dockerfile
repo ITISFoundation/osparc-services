@@ -9,8 +9,9 @@ FROM nginx:1.21.0-alpine as base
 
 LABEL maintainer=sanderegg
 COPY docker/custom/nginx.conf /etc/nginx/nginx.conf
-COPY docker/custom/hello-world.txt /www/hello-world.txt
 COPY docker/custom/boot.sh /boot.sh
+
+COPY src/dy_static_file_server/hello-world.txt /www/hello-world.txt
 
 ENV NGINX_SERVER_ROOT="/www"
 
