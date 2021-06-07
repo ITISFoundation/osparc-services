@@ -12,7 +12,6 @@ expected_files = (
     ".gitignore",
     ".pylintrc",
     "metadata:metadata.yml",
-    "docker/custom:hello-world.txt",
     "docker/custom:nginx.conf",
     "docker/custom:boot.sh",
     "docker/custom:Dockerfile",
