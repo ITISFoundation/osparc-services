@@ -18,7 +18,7 @@ import yaml
 # HELPERS
 def _download_url(url: str, file: Path):
     # Download the file from `url` and save it locally under `file_name`:
-    with urllib.request.urlopen(url) as response, file.open('wb') as out_file:
+    with urllib.request.urlopen(url) as response, file.open("wb") as out_file:
         shutil.copyfileobj(response, out_file)
     assert file.exists()
 
@@ -36,6 +36,22 @@ def _convert_to_simcore_labels(image_labels: Dict) -> Dict:
     assert len(io_simcore_labels) > 0
     return io_simcore_labels
 
+
+def _assert_validate_schema(
+    image_labels: Dict, osparc_service_labels_jsonschema: Dict
+) -> None:
+    io_simcore_labels = _convert_to_simcore_labels(image_labels)
+    # validate schema
+    try:
+        jsonschema.validate(io_simcore_labels, osparc_service_labels_jsonschema)
+    except jsonschema.SchemaError:
+        pytest.fail(
+            "Schema {} contains errors".format(osparc_service_labels_jsonschema)
+        )
+    except jsonschema.ValidationError:
+        pytest.fail("Failed to validate docker image io labels against schema")
+
+
 # FIXTURES
 @pytest.fixture
 def osparc_service_labels_jsonschema(tmp_path) -> Dict:
@@ -47,16 +63,19 @@ def osparc_service_labels_jsonschema(tmp_path) -> Dict:
         return json_schema
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def metadata_labels(metadata_file: Path) -> Dict:
     with metadata_file.open() as fp:
         metadata = yaml.safe_load(fp)
         return metadata
 
+
 # TESTS
 
 
-def test_docker_io_simcore_labels_against_files(docker_image: docker.models.images.Image, metadata_labels: Dict):
+def test_docker_io_simcore_labels_against_files(
+    docker_image: docker.models.images.Image, metadata_labels: Dict
+):
     image_labels = docker_image.labels
     io_simcore_labels = _convert_to_simcore_labels(image_labels)
     # check files are identical
@@ -65,16 +84,32 @@ def test_docker_io_simcore_labels_against_files(docker_image: docker.models.imag
         assert value == metadata_labels[key]
 
 
-def test_validate_docker_io_simcore_labels(docker_image: docker.models.images.Image, osparc_service_labels_jsonschema: Dict):
+def test_validate_docker_io_simcore_labels(
+    docker_image: docker.models.images.Image, osparc_service_labels_jsonschema: Dict
+):
     image_labels = docker_image.labels
-    # get io labels
-    io_simcore_labels = _convert_to_simcore_labels(image_labels)
-    # validate schema
-    try:
-        jsonschema.validate(io_simcore_labels,
-                            osparc_service_labels_jsonschema)
-    except jsonschema.SchemaError:
-        pytest.fail("Schema {} contains errors".format(
-            osparc_service_labels_jsonschema))
-    except jsonschema.ValidationError:
-        pytest.fail("Failed to validate docker image io labels against schema")
+    _assert_validate_schema(image_labels, osparc_service_labels_jsonschema)
+
+
+def test_required_dynamic_sidecar_labels(
+    docker_image_dynamic_sidecar: docker.models.images.Image,
+    osparc_service_labels_jsonschema: Dict,
+):
+    image_labels = docker_image_dynamic_sidecar.labels
+    _assert_validate_schema(image_labels, osparc_service_labels_jsonschema)
+
+    labels_keys = image_labels.keys()
+    assert "simcore.service.paths-mapping" in labels_keys
+
+
+def test_required_dynamic_sidecar_compose_spec_labels(
+    docker_image_dynamic_sidecar_compose_spec: docker.models.images.Image,
+    osparc_service_labels_jsonschema: Dict,
+):
+    image_labels = docker_image_dynamic_sidecar_compose_spec.labels
+    _assert_validate_schema(image_labels, osparc_service_labels_jsonschema)
+
+    labels_keys = image_labels.keys()
+    assert "simcore.service.paths-mapping" in labels_keys
+    assert "simcore.service.compose-spec" in labels_keys
+    assert "simcore.service.container-http-entrypoint" in labels_keys
