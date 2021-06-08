@@ -10,23 +10,26 @@ import pytest
 import docker
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def docker_client() -> docker.DockerClient:
     return docker.from_env()
 
 
-@pytest.fixture
-def docker_image_key(docker_client: docker.DockerClient) -> str:
-    image_key = "dy-static-file-server:"
+@pytest.fixture(scope="function")
+def docker_image_key(docker_client: docker.DockerClient, metadata_file: Path) -> str:
+    image_key = (
+        f"local/dy-static-file-server{metadata_file.stem[len('metadata'):]}:production"
+    )
+
     docker_images = [
         image
         for image in docker_client.images.list()
-        if any(image_key in tag for tag in image.tags)
+        if any(image_key == tag for tag in image.tags)
     ]
     return docker_images[0].tags[0]
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def docker_image(
     docker_client: docker.DockerClient, docker_image_key: str
 ) -> docker.models.images.Image:
