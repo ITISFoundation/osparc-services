@@ -15,41 +15,24 @@ def docker_client() -> docker.DockerClient:
     return docker.from_env()
 
 
-def _get_docker_image(
-    docker_client: docker.DockerClient, image_key: str
-) -> docker.models.images.Image:
-    # fetch labels
+@pytest.fixture
+def docker_image_key(docker_client: docker.DockerClient) -> str:
+    image_key = "dy-static-file-server:"
     docker_images = [
         image
         for image in docker_client.images.list()
         if any(image_key in tag for tag in image.tags)
     ]
-    docker_image_key = docker_images[0].tags[0]
-    # validate and return image
+    return docker_images[0].tags[0]
+
+
+@pytest.fixture
+def docker_image(
+    docker_client: docker.DockerClient, docker_image_key: str
+) -> docker.models.images.Image:
     docker_image = docker_client.images.get(docker_image_key)
     assert docker_image
     return docker_image
-
-
-@pytest.fixture
-def docker_image(docker_client: docker.DockerClient) -> docker.models.images.Image:
-    return _get_docker_image(docker_client, "dy-static-file-server:")
-
-
-@pytest.fixture
-def docker_image_dynamic_sidecar(
-    docker_client: docker.DockerClient,
-) -> docker.models.images.Image:
-    return _get_docker_image(docker_client, "dy-static-file-server-dynamic-sidecar:")
-
-
-@pytest.fixture
-def docker_image_dynamic_sidecar_compose_spec(
-    docker_client: docker.DockerClient,
-) -> docker.models.images.Image:
-    return _get_docker_image(
-        docker_client, "dy-static-file-server-dynamic-sidecar-compose-spec:"
-    )
 
 
 def _is_gitlab_executor() -> bool:
