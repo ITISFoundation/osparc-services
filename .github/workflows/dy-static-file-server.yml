@@ -3,10 +3,12 @@ name: Github-CI Push/PR dy-static-file-server
 on:
   push:
     paths:
+      - ".github/workflows/dy-static-file-server.yml"
       - "services/dy-static-file-server/**"
       - "!**.md"
   pull_request:
     paths:
+      - ".github/workflows/dy-static-file-server.yml"
       - "services/dy-static-file-server/**"
       - "!**.md"
 
