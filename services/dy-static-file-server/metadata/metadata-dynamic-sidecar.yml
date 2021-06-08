@@ -1,0 +1,13 @@
+name: dy-static-file-server-dynamic-sidecar
+key: simcore/services/dynamic/dy-static-file-server-dynamic-sidecar
+type: dynamic
+integration-version: 1.0.0
+version: 1.0.0
+description: Modern test dynamic service (with dynamic sidecar)
+contact: anderegg@itis.swiss
+authors:
+  - name: Sylvain Anderegg
+    email: anderegg@itis.swiss
+    affiliation: IT'IS Foundation
+inputs: {}
+outputs: {}

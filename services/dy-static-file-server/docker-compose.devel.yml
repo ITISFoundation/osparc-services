@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+  dy-static-file-server:
+    # bypass normal start by going directly as root in starting folder
+    image: ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:development
+    volumes:
+      - ./src:/home/scu/src
+      - ./docker/custom:/home/scu/docker
+
+  dy-static-file-server-dynamic-sidecar:
+    image: ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-dynamic-sidecar:development
+    volumes:
+      - ./src:/home/scu/src
+      - ./docker/custom:/home/scu/docker
+    
+  dy-static-file-server-dynamic-sidecar-compose-spec:
+    image: ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-dynamic-sidecar-compose-spec:development
+    volumes:
+      - ./src:/home/scu/src
+      - ./docker/custom:/home/scu/docker

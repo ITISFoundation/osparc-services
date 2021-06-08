@@ -1,0 +1,14 @@
+# tools
+pyyaml
+
+# tests
+coverage
+docker
+jsonschema
+pytest
+pytest-cookies
+pytest-cov
+pytest-instafail
+pytest-mock
+pytest-sugar
+pyyaml
