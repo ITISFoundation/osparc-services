@@ -13,7 +13,7 @@ services:
         io.simcore.name: '{"name": "dy-static-file-server"}'
         io.simcore.outputs: '{"outputs": {}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "1.0.0"}'
+        io.simcore.version: '{"version": "1.0.1"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
@@ -36,12 +36,13 @@ services:
         io.simcore.name: '{"name": "dy-static-file-server-dynamic-sidecar"}'
         io.simcore.outputs: '{"outputs": {}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "1.0.0"}'
+        io.simcore.version: '{"version": "1.0.1"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: ${VCS_URL}
-        simcore.service.paths-mapping: '{"outputs_path": "/www/outputs", "inputs_path": "/www/inputs"}'
+        simcore.service.paths-mapping: '{"outputs_path": "/www/outputs", "inputs_path":
+          "/www/inputs"}'
         simcore.service.settings: '[{"name": "resources", "type": "Resources", "value":
           {"mem_limit":17179869184, "cpu_limit": 1000000000}}, {"name": "ports", "type":
           "int", "value": 80}, {"name": "constraints", "type": "string", "value":
@@ -60,14 +61,15 @@ services:
         io.simcore.name: '{"name": "dy-static-file-server-dynamic-sidecar-compose-spec"}'
         io.simcore.outputs: '{"outputs": {}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "1.0.0"}'
+        io.simcore.version: '{"version": "1.0.1"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: ${VCS_URL}
         simcore.service.compose-spec: ${DOCKER_COMPOSE_SPECIFICATION}
         simcore.service.container-http-entrypoint: httpbin-docker-compose-spec
-        simcore.service.paths-mapping: '{"outputs_path": "/www/outputs", "inputs_path": "/www/inputs"}'
+        simcore.service.paths-mapping: '{"outputs_path": "/www/outputs", "inputs_path":
+          "/www/inputs"}'
         simcore.service.settings: '[{"name": "resources", "type": "Resources", "value":
           {"mem_limit":17179869184, "cpu_limit": 1000000000}}, {"name": "ports", "type":
           "int", "value": 80}, {"name": "constraints", "type": "string", "value":
