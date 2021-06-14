@@ -6,7 +6,7 @@ services:
     # deployed inside the platform
     # - SERVICE_VERSION will be replaced by the version of the service
     # to which this compos spec is attached
-    image: ${SIMCORE_REGISTRY}/dy-static-file-server-dynamic-sidecar-compose-spec:${SERVICE_VERSION}
+    image: ${SIMCORE_REGISTRY}/simcore/services/dynamic/dy-static-file-server-dynamic-sidecar-compose-spec:${SERVICE_VERSION}
     environment:
       - MOCK_VALUE=TheMockedValue
 
