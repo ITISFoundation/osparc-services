@@ -13,7 +13,7 @@ services:
         io.simcore.name: '{"name": "dy-static-file-server"}'
         io.simcore.outputs: '{"outputs": {}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "1.0.4"}'
+        io.simcore.version: '{"version": "1.0.5"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
@@ -36,7 +36,7 @@ services:
         io.simcore.name: '{"name": "dy-static-file-server-dynamic-sidecar"}'
         io.simcore.outputs: '{"outputs": {}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "1.0.4"}'
+        io.simcore.version: '{"version": "1.0.5"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
@@ -61,7 +61,7 @@ services:
         io.simcore.name: '{"name": "dy-static-file-server-dynamic-sidecar-compose-spec"}'
         io.simcore.outputs: '{"outputs": {}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "1.0.4"}'
+        io.simcore.version: '{"version": "1.0.5"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}

@@ -13,4 +13,4 @@ services:
   some-side-service:
     init: true
     image: busybox:latest
-    cmd: top
+    command: top
