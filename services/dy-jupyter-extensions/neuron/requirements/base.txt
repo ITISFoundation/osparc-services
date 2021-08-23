@@ -30,7 +30,7 @@ jupyter-highlight-selected-word==0.2.0
 jupyter-latex-envs==1.4.6
 jupyter-nbextensions-configurator==0.4.1
 jupyterhub==0.9.4
-jupyterlab==0.35.4
+jupyterlab==1.2.21
 jupyterlab-server==0.2.0
 jupyterthemes==0.20.0
 kiwisolver==1.1.0
