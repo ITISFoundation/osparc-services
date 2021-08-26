@@ -11,10 +11,10 @@ USER $NB_USER
 # install requirements --------------------------------------------------------
 COPY --chown=jovyan:users src/requirements.txt .
 # TODO: tmp workaround for https://github.com/pypa/pip/issues/6197
-ENV VIRTUAL_ENV=/home/jovyan/.venv
-RUN python -m venv ${VIRTUAL_ENV} &&\
-    ${VIRTUAL_ENV}/bin/pip --no-cache-dir install --upgrade pip~=21.2.3 wheel setuptools && \
-    ${VIRTUAL_ENV}/bin/pip --no-cache-dir install -r requirements.txt
+ENV VIRTUAL_VENV=/home/jovyan/.venv
+RUN python -m venv ${VIRTUAL_VENV} &&\
+    ${VIRTUAL_VENV}/bin/pip --no-cache-dir install --upgrade pip~=21.2.3 wheel setuptools && \
+    ${VIRTUAL_VENV}/bin/pip --no-cache-dir install -r requirements.txt
 
 
 # prepare for booting ---------------------------------------------------------
