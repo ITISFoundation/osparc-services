@@ -2,7 +2,7 @@ name: dy-static-file-server-dynamic-sidecar
 key: simcore/services/dynamic/dy-static-file-server-dynamic-sidecar
 type: dynamic
 integration-version: 1.0.0
-version: 1.0.5
+version: 1.0.6
 description: Modern test dynamic service (with dynamic sidecar)
 contact: anderegg@itis.swiss
 authors:
