@@ -24,6 +24,7 @@ export COMPOSE_INPUT_DIR  := ./validation/input
 export COMPOSE_OUTPUT_DIR := .tmp/output
 
 APP_NAME := dy-static-file-server
+LOCAL_REGISTRY = registry:5000/simcore/services/dynamic
 
 _yq = docker run --rm -i -v ${PWD}:/workdir mikefarah/yq:3.3.4 yq
 
@@ -169,7 +170,17 @@ version-integration-patch version-integration-minor version-integration-major: v
 	@$(call _bumpversion,$<,version-integration-)
 
 
+publish-local:  ## push to local throw away registry to test integration
+	$(foreach service,$(SERVICES_LIST),\
+		docker tag local/$(service):production $(LOCAL_REGISTRY)/$(service):${DOCKER_IMAGE_TAG} && \
+		docker push $(LOCAL_REGISTRY)/$(service):${DOCKER_IMAGE_TAG} && \
+	) echo done
 
+	# list transfered image tags from local registry
+	@curl -s registry:5000/v2/_catalog | jq '.repositories'
+	@curl -s http://registry:5000/v2/simcore/services/dynamic/dy-static-file-server/tags/list?n=50 | jq '.'
+	@curl -s http://registry:5000/v2/simcore/services/dynamic/dy-static-file-server-dynamic-sidecar/tags/list?n=50 | jq '.'
+	@curl -s http://registry:5000/v2/simcore/services/dynamic/dy-static-file-server-dynamic-sidecar-compose-spec/tags/list?n=50 | jq '.'
 
 
 # DEVELOPMENT ----------------------------------------
