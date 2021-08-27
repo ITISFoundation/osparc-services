@@ -12,6 +12,7 @@ COPY docker/custom/nginx.conf /etc/nginx/nginx.conf
 COPY docker/custom/boot.sh /boot.sh
 
 COPY src/dy_static_file_server/hello-world.txt /www/hello-world.txt
+RUN mkdir -p /www/inputs-outputs
 
 ENV NGINX_SERVER_ROOT="/www"
 
