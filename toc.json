@@ -62,32 +62,32 @@
     "type": "dynamic",
     "version": "1.0.0"
   },
-  "httpbin": {
-    "description": "Used to boot in legacy mode",
-    "dockerfile": "httpbin/legacy/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/httpbin:${DOCKER_IMAGE_TAG}",
-    "key": "simcore/services/dynamic/httpbin",
-    "name": "httpbin",
+  "dy-static-file-server": {
+    "description": "Legacy test dynamic service (starts using original director-v0)",
+    "dockerfile": "dy-static-file-server/docker/custom/Dockerfile",
+    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
+    "key": "simcore/services/dynamic/dy-static-file-server",
+    "name": "dy-static-file-server",
     "type": "dynamic",
-    "version": "1.0.1"
+    "version": "1.0.6"
   },
-  "httpbin-dynamic-sidecar": {
-    "description": "Boot with dynamic-sidecar using service key and version",
-    "dockerfile": "httpbin/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/httpbin-dynamic-sidecar:${DOCKER_IMAGE_TAG}",
-    "key": "simcore/services/dynamic/httpbin-dynamic-sidecar",
-    "name": "httpbin-dynamic-sidecar",
+  "dy-static-file-server-dynamic-sidecar": {
+    "description": "Modern test dynamic service (with dynamic sidecar)",
+    "dockerfile": "dy-static-file-server/docker/custom/Dockerfile",
+    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-dynamic-sidecar:${DOCKER_IMAGE_TAG}",
+    "key": "simcore/services/dynamic/dy-static-file-server-dynamic-sidecar",
+    "name": "dy-static-file-server-dynamic-sidecar",
     "type": "dynamic",
-    "version": "1.0.1"
+    "version": "1.0.6"
   },
-  "httpbin-dynamic-sidecar-compose": {
-    "description": "Boot with dynamic-sidecar via docker-compose spec",
-    "dockerfile": "httpbin/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/httpbin-dynamic-sidecar-compose:${DOCKER_IMAGE_TAG}",
-    "key": "simcore/services/dynamic/httpbin-dynamic-sidecar-compose",
-    "name": "httpbin-dynamic-sidecar-compose",
+  "dy-static-file-server-dynamic-sidecar-compose-spec": {
+    "description": "Modern test dynamic service providing a docker-compose specificaiton file (with dynamic sidecar and compose-spec)",
+    "dockerfile": "dy-static-file-server/docker/custom/Dockerfile",
+    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-dynamic-sidecar-compose-spec:${DOCKER_IMAGE_TAG}",
+    "key": "simcore/services/dynamic/dy-static-file-server-dynamic-sidecar-compose-spec",
+    "name": "dy-static-file-server-dynamic-sidecar-compose-spec",
     "type": "dynamic",
-    "version": "1.0.1"
+    "version": "1.0.6"
   },
   "jupyter-base-notebook": {
     "description": "Jupyter notebook",
@@ -132,7 +132,7 @@
     "key": "simcore/services/dynamic/kember-viewer",
     "name": "kember-viewer",
     "type": "dynamic",
-    "version": "2.13.1"
+    "version": "2.14.0"
   },
   "mapcore-widget": {
     "description": "Interactive maps reveal the anatomy and functional relationships of the autonomic nerves and the organs that they innervate. 2D and 3D maps render spatial dynamics, connectivity, and physiology across a range of species and nerve-organ systems.",
@@ -150,7 +150,7 @@
     "key": "simcore/services/dynamic/mattward-viewer",
     "name": "mattward-viewer",
     "type": "dynamic",
-    "version": "3.0.4"
+    "version": "3.0.5"
   },
   "opencor": {
     "description": "OpenCOR is a cross-platform modelling environment, which can be used to organise, edit, simulate and analyse CellML and SED-ML files.",
