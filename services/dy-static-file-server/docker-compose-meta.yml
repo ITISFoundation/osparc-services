@@ -41,11 +41,11 @@ services:
           {"displayOrder": 5, "label": "Boolean field", "description": "Boolean field
           with a default value", "type": "boolean", "defaultValue": false}, "boolean_field":
           {"displayOrder": 6, "label": "Boolean field", "description": "Empty boolean
-          field", "type": "boolean"}, "number_field_filled": {"displayOrder": 3, "label":
+          field", "type": "boolean"}, "number_field_filled": {"displayOrder": 7, "label":
           "Number field", "description": "Number field with a default value", "type":
-          "number", "defaultValue": 1.12}, "number_field": {"displayOrder": 4, "label":
+          "number", "defaultValue": 1.12}, "number_field": {"displayOrder": 8, "label":
           "Number field", "description": "Empty number field", "type": "number"},
-          "file_field": {"displayOrder": 2, "label": "File field", "description":
+          "file_field": {"displayOrder": 9, "label": "File field", "description":
           "Empty filed field", "type": "data:*/*", "fileToKeyMap": {"input_file":
           "file_field"}}}}'
         io.simcore.integration-version: '{"integration-version": "1.0.0"}'
@@ -83,11 +83,11 @@ services:
           {"displayOrder": 5, "label": "Boolean field", "description": "Boolean field
           with a default value", "type": "boolean", "defaultValue": false}, "boolean_field":
           {"displayOrder": 6, "label": "Boolean field", "description": "Empty boolean
-          field", "type": "boolean"}, "number_field_filled": {"displayOrder": 3, "label":
+          field", "type": "boolean"}, "number_field_filled": {"displayOrder": 7, "label":
           "Number field", "description": "Number field with a default value", "type":
-          "number", "defaultValue": 1.12}, "number_field": {"displayOrder": 4, "label":
+          "number", "defaultValue": 1.12}, "number_field": {"displayOrder": 8, "label":
           "Number field", "description": "Empty number field", "type": "number"},
-          "file_field": {"displayOrder": 2, "label": "File field", "description":
+          "file_field": {"displayOrder": 9, "label": "File field", "description":
           "Empty filed field", "type": "data:*/*", "fileToKeyMap": {"input_file":
           "file_field"}}}}'
         io.simcore.integration-version: '{"integration-version": "1.0.0"}'

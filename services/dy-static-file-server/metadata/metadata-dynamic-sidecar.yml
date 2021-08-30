@@ -44,18 +44,18 @@ inputs:
     description: Empty boolean field
     type: boolean
   number_field_filled:
-    displayOrder: 3
+    displayOrder: 7
     label: Number field
     description: Number field with a default value
     type: number
     defaultValue: 1.12
   number_field:
-    displayOrder: 4
+    displayOrder: 8
     label: Number field
     description: Empty number field
     type: number
   file_field:
-    displayOrder: 2
+    displayOrder: 9
     label: File field
     description: Empty filed field
     type: data:*/*
