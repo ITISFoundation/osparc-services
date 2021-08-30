@@ -1,0 +1,10 @@
+{
+    "string_field_filled": "some_string",
+    "string_field": "",
+    "integer_field_filled": 1,
+    "integer_field": 0,
+    "boolean_field_filled": true,
+    "boolean_field": false,
+    "number_field_filled": 3.13,
+    "number_field": 0.0001
+}

@@ -73,8 +73,23 @@ def metadata_dir(project_slug_dir: Path) -> Path:
         "metadata-dynamic-sidecar-compose-spec.yml",
     ],
 )
-def metadata_file(metadata_dir: Path, request) -> Path:
-    metadata_file = metadata_dir / request.param
+def metadata_file_name(request) -> str:
+    return request.param
+
+
+@pytest.fixture(scope="function")
+def inputs_file_name_part(metadata_file_name: str) -> str:
+    name_part = (
+        metadata_file_name.replace("metadata-", "")
+        .replace("metadata", "")
+        .replace(".yml", "")
+    )
+    return "" if len(name_part) == 0 else f"_{name_part}"
+
+
+@pytest.fixture(scope="function")
+def metadata_file(metadata_dir: Path, metadata_file_name: str) -> Path:
+    metadata_file = metadata_dir / metadata_file_name
     assert metadata_file.exists()
     return metadata_file
 

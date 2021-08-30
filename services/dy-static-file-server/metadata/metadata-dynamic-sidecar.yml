@@ -9,5 +9,56 @@ authors:
   - name: Sylvain Anderegg
     email: anderegg@itis.swiss
     affiliation: IT'IS Foundation
-inputs: {}
+inputs:
+  string_field_filled:
+    displayOrder: 1
+    label: String field
+    description: String field with a default value
+    type: string
+    defaultValue: some value
+  string_field:
+    displayOrder: 2
+    label: String field
+    description: Empty string field
+    type: string
+  integer_field_filled:
+    displayOrder: 3
+    label: Integer field
+    description: Integer field with a default value
+    type: integer
+    defaultValue: 100
+  integer_field:
+    displayOrder: 4
+    label: Integer field
+    description: Empty integer field
+    type: integer
+  boolean_field_filled:
+    displayOrder: 5
+    label: Boolean field
+    description: Boolean field with a default value
+    type: boolean
+    defaultValue: false
+  boolean_field:
+    displayOrder: 6
+    label: Boolean field
+    description: Empty boolean field
+    type: boolean
+  number_field_filled:
+    displayOrder: 3
+    label: Number field
+    description: Number field with a default value
+    type: number
+    defaultValue: 1.12
+  number_field:
+    displayOrder: 4
+    label: Number field
+    description: Empty number field
+    type: number
+  file_field:
+    displayOrder: 2
+    label: File field
+    description: Empty filed field
+    type: data:*/*
+    fileToKeyMap:
+      input_file: file_field
 outputs: {}
