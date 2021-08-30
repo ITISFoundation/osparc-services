@@ -60,5 +60,32 @@ inputs:
     description: Empty filed field
     type: data:*/*
     fileToKeyMap:
-      input_file: file_field
-outputs: {}
+      test_file: file_field
+outputs:
+  string_field:
+    displayOrder: 2
+    label: String field
+    description: Empty string field
+    type: string
+  integer_field:
+    displayOrder: 4
+    label: Integer field
+    description: Empty integer field
+    type: integer
+  boolean_field:
+    displayOrder: 6
+    label: Boolean field
+    description: Empty boolean field
+    type: boolean
+  number_field:
+    displayOrder: 8
+    label: Number field
+    description: Empty number field
+    type: number
+  file_field:
+    displayOrder: 9
+    label: File field
+    description: Empty filed field
+    type: data:*/*
+    fileToKeyMap:
+      test_file: file_field

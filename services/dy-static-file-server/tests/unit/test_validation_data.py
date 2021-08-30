@@ -123,6 +123,8 @@ def test_validation_data_follows_definition(
             "inputs_dynamic-sidecar.json",
             "inputs_dynamic-sidecar-compose-spec.json",
             "outputs.json",
+            "outputs_dynamic-sidecar.json",
+            "outputs_dynamic-sidecar-compose-spec.json",
             ".gitkeep",
         ]:
             continue

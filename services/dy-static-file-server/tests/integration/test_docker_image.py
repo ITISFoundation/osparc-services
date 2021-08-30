@@ -77,6 +77,12 @@ def test_validate_docker_io_simcore_labels(
     image_labels = docker_image.labels
     # get io labels
     io_simcore_labels = _convert_to_simcore_labels(image_labels)
+    
+    print(image_labels)
+    print(io_simcore_labels)
+    print(osparc_service_labels_jsonschema)
+    print("|"* 40)
+
     # validate schema
     try:
         jsonschema.validate(io_simcore_labels, osparc_service_labels_jsonschema)
