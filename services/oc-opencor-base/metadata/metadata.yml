@@ -32,12 +32,3 @@ outputs:
     type: data:application/json
     fileToKeyMap:
       output_data.json: output_1
-  
-
-
-"pattern": "^(number|integer|boolean|string|data:([^/\\s,]+/[^/\\s,]+|\\[[^/\\s,]+/[^/\\s,]+(,[^/\\s]+/[^/,\\s]+)*\\]))$",
-              "description": "data type expected on this input glob matching for data type is allowed",
-              "examples": [
-                "number",
-                "boolean",
-                "data:*/*",
