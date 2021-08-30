@@ -30,35 +30,29 @@ services:
         io.simcore.contact: '{"contact": "anderegg@itis.swiss"}'
         io.simcore.description: '{"description": "Modern test dynamic service (with
           dynamic sidecar)"}'
-        io.simcore.inputs: '{"inputs": {"string_field_filled": {"displayOrder": 1,
-          "label": "String field", "description": "String field with a default value",
-          "type": "string", "defaultValue": "some value"}, "string_field": {"displayOrder":
-          2, "label": "String field", "description": "Empty string field", "type":
-          "string"}, "integer_field_filled": {"displayOrder": 3, "label": "Integer
-          field", "description": "Integer field with a default value", "type": "integer",
-          "defaultValue": 100}, "integer_field": {"displayOrder": 4, "label": "Integer
-          field", "description": "Empty integer field", "type": "integer"}, "boolean_field_filled":
-          {"displayOrder": 5, "label": "Boolean field", "description": "Boolean field
-          with a default value", "type": "boolean", "defaultValue": false}, "boolean_field":
-          {"displayOrder": 6, "label": "Boolean field", "description": "Empty boolean
-          field", "type": "boolean"}, "number_field_filled": {"displayOrder": 7, "label":
-          "Number field", "description": "Number field with a default value", "type":
-          "number", "defaultValue": 1.12}, "number_field": {"displayOrder": 8, "label":
-          "Number field", "description": "Empty number field", "type": "number"},
-          "file_field": {"displayOrder": 9, "label": "File field", "description":
-          "Empty filed field", "type": "data:*/*", "fileToKeyMap": {"test_file": "file_field"}}}}'
+        io.simcore.inputs: '{"inputs": {"string_input": {"displayOrder": 1, "label":
+          "String input", "description": "Test input string with default value", "type":
+          "string", "defaultValue": "lorem ipsum"}, "integer_input": {"displayOrder":
+          2, "label": "Integer input", "description": "Integer field with a default
+          value", "type": "integer", "defaultValue": 100}, "boolean_input": {"displayOrder":
+          3, "label": "Boolean input", "description": "Boolean field with a default
+          value", "type": "boolean", "defaultValue": false}, "number_input": {"displayOrder":
+          4, "label": "Number input", "description": "Number field with a default
+          value", "type": "number", "defaultValue": 1.12}, "file_input": {"displayOrder":
+          5, "label": "File input", "description": "Empty file input", "type": "data:*/*",
+          "fileToKeyMap": {"test_file": "file_input"}}}}'
         io.simcore.integration-version: '{"integration-version": "1.0.0"}'
         io.simcore.key: '{"key": "simcore/services/dynamic/dy-static-file-server-dynamic-sidecar"}'
         io.simcore.name: '{"name": "dy-static-file-server-dynamic-sidecar"}'
-        io.simcore.outputs: '{"outputs": {"string_field": {"displayOrder": 2, "label":
-          "String field", "description": "Empty string field", "type": "string"},
-          "integer_field": {"displayOrder": 4, "label": "Integer field", "description":
-          "Empty integer field", "type": "integer"}, "boolean_field": {"displayOrder":
-          6, "label": "Boolean field", "description": "Empty boolean field", "type":
-          "boolean"}, "number_field": {"displayOrder": 8, "label": "Number field",
-          "description": "Empty number field", "type": "number"}, "file_field": {"displayOrder":
-          9, "label": "File field", "description": "Empty filed field", "type": "data:*/*",
-          "fileToKeyMap": {"test_file": "file_field"}}}}'
+        io.simcore.outputs: '{"outputs": {"string_output": {"displayOrder": 1, "label":
+          "String output", "description": "String value from input", "type": "string"},
+          "integer_output": {"displayOrder": 2, "label": "Integer output", "description":
+          "Integer value from input", "type": "integer"}, "boolean_output": {"displayOrder":
+          3, "label": "Boolean output", "description": "Boolean value from input",
+          "type": "boolean"}, "number_output": {"displayOrder": 4, "label": "Number
+          output", "description": "Number value from input", "type": "number"}, "file_output":
+          {"displayOrder": 5, "label": "File output", "description": "File from input",
+          "type": "data:*/*", "fileToKeyMap": {"test_file": "file_output"}}}}'
         io.simcore.type: '{"type": "dynamic"}'
         io.simcore.version: '{"version": "1.0.6"}'
         org.label-schema.build-date: ${BUILD_DATE}
@@ -79,35 +73,29 @@ services:
         io.simcore.contact: '{"contact": "anderegg@itis.swiss"}'
         io.simcore.description: '{"description": "Modern test dynamic service providing
           a docker-compose specificaiton file (with dynamic sidecar and compose-spec)"}'
-        io.simcore.inputs: '{"inputs": {"string_field_filled": {"displayOrder": 1,
-          "label": "String field", "description": "String field with a default value",
-          "type": "string", "defaultValue": "some value"}, "string_field": {"displayOrder":
-          2, "label": "String field", "description": "Empty string field", "type":
-          "string"}, "integer_field_filled": {"displayOrder": 3, "label": "Integer
-          field", "description": "Integer field with a default value", "type": "integer",
-          "defaultValue": 100}, "integer_field": {"displayOrder": 4, "label": "Integer
-          field", "description": "Empty integer field", "type": "integer"}, "boolean_field_filled":
-          {"displayOrder": 5, "label": "Boolean field", "description": "Boolean field
-          with a default value", "type": "boolean", "defaultValue": false}, "boolean_field":
-          {"displayOrder": 6, "label": "Boolean field", "description": "Empty boolean
-          field", "type": "boolean"}, "number_field_filled": {"displayOrder": 7, "label":
-          "Number field", "description": "Number field with a default value", "type":
-          "number", "defaultValue": 1.12}, "number_field": {"displayOrder": 8, "label":
-          "Number field", "description": "Empty number field", "type": "number"},
-          "file_field": {"displayOrder": 9, "label": "File field", "description":
-          "Empty filed field", "type": "data:*/*", "fileToKeyMap": {"test_file": "file_field"}}}}'
+        io.simcore.inputs: '{"inputs": {"string_input": {"displayOrder": 1, "label":
+          "String input", "description": "Test input string with default value", "type":
+          "string", "defaultValue": "lorem ipsum"}, "integer_input": {"displayOrder":
+          2, "label": "Integer input", "description": "Integer field with a default
+          value", "type": "integer", "defaultValue": 100}, "boolean_input": {"displayOrder":
+          3, "label": "Boolean input", "description": "Boolean field with a default
+          value", "type": "boolean", "defaultValue": false}, "number_input": {"displayOrder":
+          4, "label": "Number input", "description": "Number field with a default
+          value", "type": "number", "defaultValue": 1.12}, "file_input": {"displayOrder":
+          5, "label": "File input", "description": "Empty file input", "type": "data:*/*",
+          "fileToKeyMap": {"test_file": "file_input"}}}}'
         io.simcore.integration-version: '{"integration-version": "1.0.0"}'
         io.simcore.key: '{"key": "simcore/services/dynamic/dy-static-file-server-dynamic-sidecar-compose-spec"}'
         io.simcore.name: '{"name": "dy-static-file-server-dynamic-sidecar-compose-spec"}'
-        io.simcore.outputs: '{"outputs": {"string_field": {"displayOrder": 2, "label":
-          "String field", "description": "Empty string field", "type": "string"},
-          "integer_field": {"displayOrder": 4, "label": "Integer field", "description":
-          "Empty integer field", "type": "integer"}, "boolean_field": {"displayOrder":
-          6, "label": "Boolean field", "description": "Empty boolean field", "type":
-          "boolean"}, "number_field": {"displayOrder": 8, "label": "Number field",
-          "description": "Empty number field", "type": "number"}, "file_field": {"displayOrder":
-          9, "label": "File field", "description": "Empty filed field", "type": "data:*/*",
-          "fileToKeyMap": {"test_file": "file_field"}}}}'
+        io.simcore.outputs: '{"outputs": {"string_output": {"displayOrder": 1, "label":
+          "String output", "description": "String value from input", "type": "string"},
+          "integer_output": {"displayOrder": 2, "label": "Integer output", "description":
+          "Integer value from input", "type": "integer"}, "boolean_output": {"displayOrder":
+          3, "label": "Boolean output", "description": "Boolean value from input",
+          "type": "boolean"}, "number_output": {"displayOrder": 4, "label": "Number
+          output", "description": "Number value from input", "type": "number"}, "file_output":
+          {"displayOrder": 5, "label": "File output", "description": "File from input",
+          "type": "data:*/*", "fileToKeyMap": {"test_file": "file_output"}}}}'
         io.simcore.type: '{"type": "dynamic"}'
         io.simcore.version: '{"version": "1.0.6"}'
         org.label-schema.build-date: ${BUILD_DATE}
