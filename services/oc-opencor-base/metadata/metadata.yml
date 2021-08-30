@@ -32,5 +32,4 @@ outputs:
     type: data:application/json
     fileToKeyMap:
       output_data.json: output_1
-
   
