@@ -24,7 +24,10 @@ export COMPOSE_INPUT_DIR  := ./validation/input
 export COMPOSE_OUTPUT_DIR := .tmp/output
 
 APP_NAME := dy-static-file-server
-LOCAL_REGISTRY = registry:5000/simcore/services/dynamic
+LOCAL_REGISTRY_HOST = registry:5000
+LOCAL_REGISTRY_ENDPOINT = ${LOCAL_REGISTRY_HOST}/v2
+DYNAMIC_SIMORE_PATH = simcore/services/dynamic
+LOCAL_REGISTRY = ${LOCAL_REGISTRY_HOST}/${DYNAMIC_SIMORE_PATH}
 
 _yq = docker run --rm -i -v ${PWD}:/workdir mikefarah/yq:3.3.4 yq
 
@@ -177,10 +180,10 @@ publish-local:  ## push to local throw away registry to test integration
 	) echo done
 
 	# list transfered image tags from local registry
-	@curl -s registry:5000/v2/_catalog | jq '.repositories'
-	@curl -s http://registry:5000/v2/simcore/services/dynamic/dy-static-file-server/tags/list?n=50 | jq '.'
-	@curl -s http://registry:5000/v2/simcore/services/dynamic/dy-static-file-server-dynamic-sidecar/tags/list?n=50 | jq '.'
-	@curl -s http://registry:5000/v2/simcore/services/dynamic/dy-static-file-server-dynamic-sidecar-compose-spec/tags/list?n=50 | jq '.'
+	@curl --silent ${LOCAL_REGISTRY_ENDPOINT}/_catalog | jq '.repositories'
+	@curl --silent ${LOCAL_REGISTRY_ENDPOINT}/${DYNAMIC_SIMORE_PATH}/dy-static-file-server/tags/list?n=50 | jq '.'
+	@curl --silent ${LOCAL_REGISTRY_ENDPOINT}/${DYNAMIC_SIMORE_PATH}/dy-static-file-server-dynamic-sidecar/tags/list?n=50 | jq '.'
+	@curl --silent ${LOCAL_REGISTRY_ENDPOINT}/${DYNAMIC_SIMORE_PATH}/dy-static-file-server-dynamic-sidecar-compose-spec/tags/list?n=50 | jq '.'
 
 
 # DEVELOPMENT ----------------------------------------
