@@ -91,7 +91,7 @@ def get_path_from_env(env_var_name: str) -> Path:
     path = Path(str_path)
     if not path.is_dir():
         raise ValueError(f"{env_var_name}={str_path} is not a valid dir path")
-    if path.exists():
+    if not path.exists():
         raise ValueError(f"{env_var_name}={str_path} does not exist")
     return path
 
@@ -145,12 +145,14 @@ def main() -> None:
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
-    input_dir = get_path_from_env("INPUT_ENV_VAR_NAME")
-    output_dir = get_path_from_env("OUTPUT_ENV_VAR_NAME")
+    input_dir = get_path_from_env("DY_SIDECAR_PATH_INPUTS")
+    output_dir = get_path_from_env("DY_SIDECAR_PATH_OUTPUTS")
 
     folder_monitor = FolderMirror(input_dir, output_dir)
     folder_monitor.start()
     folder_monitor.join()
+
+    logger.info("%s main exited", FolderMirror.__name__)
 
 
 if __name__ == "__main__":

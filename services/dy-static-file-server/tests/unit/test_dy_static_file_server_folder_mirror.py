@@ -9,6 +9,7 @@ from types import ModuleType
 import pytest
 import time
 import hashlib
+from unittest.mock import patch
 
 # UTILS
 
@@ -92,6 +93,12 @@ def dy_static_file_server(src_dir: Path) -> ModuleType:
     return dy_static_file_server
 
 
+@pytest.fixture
+def env_vars(monkeypatch, input_dir: Path, output_dir: Path) -> None:
+    monkeypatch.setenv("DY_SIDECAR_PATH_INPUTS", str(input_dir))
+    monkeypatch.setenv("DY_SIDECAR_PATH_OUTPUTS", str(output_dir))
+
+
 # TESTS
 
 
@@ -145,3 +152,13 @@ def test_folder_mirror_join(
     folder_mirror.join()
 
     th.join()
+
+
+def test_folder_mirror_main(
+    dy_static_file_server: ModuleType, input_dir: Path, output_dir: Path, env_vars: None
+) -> None:
+
+    from dy_static_file_server import folder_mirror
+
+    with patch.object(folder_mirror.FolderMirror, "join", return_value=None):
+        folder_mirror.main()
