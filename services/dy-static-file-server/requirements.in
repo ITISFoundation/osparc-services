@@ -1,3 +1,7 @@
+
+# the application's requirements need to be pulled in
+--constraint requirements_app.txt
+
 # tools
 pyyaml
 

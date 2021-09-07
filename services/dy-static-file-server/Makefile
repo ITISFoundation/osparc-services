@@ -45,13 +45,14 @@ _yq = docker run --rm -i -v ${PWD}:/workdir mikefarah/yq:3.3.4 yq
 	$@/bin/pip3 install \
 		pip-tools
 
-requirements.txt: .venv requirements.in
+requirements.txt requirements_app.txt: .venv requirements.in
 	# freezes requirements
 	$</bin/pip-compile --upgrade --build-isolation --output-file $@ $(word 2, $^)
 
-devenv: .venv requirements.txt ## create a python virtual environment with tools to dev, run and tests cookie-cutter
+devenv: .venv requirements.txt requirements_app.txt ## create a python virtual environment with tools to dev, run and tests cookie-cutter
 	# installing extra tools
 	@$</bin/pip3 install -r  $(word 2,$^)
+	@$</bin/pip3 install -r  $(word 3,$^)
 	# your dev environment contains
 	@$</bin/pip3 list
 	@echo "To activate the virtual environment, run 'source $</bin/activate'"

@@ -11,8 +11,21 @@ LABEL maintainer=sanderegg
 COPY docker/custom/nginx.conf /etc/nginx/nginx.conf
 COPY docker/custom/boot.sh /boot.sh
 
-COPY src/dy_static_file_server/hello-world.txt /www/hello-world.txt
-RUN mkdir -p /www/inputs-outputs
+# RUN apt-get update &&  \
+#     apt-get install -y software-properties-common && \
+#     add-apt-repository ppa:deadsnakes/ppa \
+#     apt-get install -y python3-9 && \
+#     apt-get install -y python3-pip 
+
+RUN python3 --version
+
+# add python app requirements
+COPY requirements_app.txt /tmp/requirements_app.txt
+RUN pip3 install -r /tmp/requirements_app.txt
+
+COPY static-content/hello-world.txt /www/hello-world.txt
+RUN mkdir -p /www/inputs
+RUN mkdir -p /www/outputs
 
 ENV NGINX_SERVER_ROOT="/www"
 
