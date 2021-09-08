@@ -3,7 +3,7 @@ FROM nginx:1.21.0-alpine as base
 #
 #  USAGE:
 #     cd services/dy-static-file-server
-#     docker build -f Dockerfile -t dy-static-file-server:prod --target production ../../
+#     docker build -f docker/custom/Dockerfile -t dy-static-file-server:prod  .
 #     docker run dy-static-file-server:prod
 #
 
@@ -12,13 +12,16 @@ COPY docker/custom/nginx.conf /etc/nginx/nginx.conf
 COPY docker/custom/boot.sh /boot.sh
 
 RUN apk add --update --no-cache "python3=3.8.10-r0" py3-pip
-RUN pip3 install --upgrade pip
+RUN pip3 install --upgrade pip virtualenv
+
+RUN mkdir -p /venv
+RUN python3 -m venv /venv
 
 # add python app requirements
 COPY requirements_app.txt /tmp/requirements_app.txt
-RUN python3 --version
-RUN pip list
-RUN pip3 install --ignore-installed -r /tmp/requirements_app.txt
+RUN /venv/bin/python3 --version
+RUN /venv/bin/pip list
+RUN /venv/bin/pip3 install -r /tmp/requirements_app.txt
 
 COPY static-content/hello-world.txt /www/hello-world.txt
 RUN mkdir -p /www/inputs
