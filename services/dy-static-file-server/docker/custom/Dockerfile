@@ -11,13 +11,8 @@ LABEL maintainer=sanderegg
 COPY docker/custom/nginx.conf /etc/nginx/nginx.conf
 COPY docker/custom/boot.sh /boot.sh
 
-# RUN apt-get update &&  \
-#     apt-get install -y software-properties-common && \
-#     add-apt-repository ppa:deadsnakes/ppa \
-#     apt-get install -y python3-9 && \
-#     apt-get install -y python3-pip 
-
-RUN python3 --version
+RUN apk add --update --no-cache "python3=3.8.10-r0" py3-pip
+RUN pip3 install --upgrade pip
 
 # add python app requirements
 COPY requirements_app.txt /tmp/requirements_app.txt

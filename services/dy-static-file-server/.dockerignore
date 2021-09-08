@@ -1,3 +1,5 @@
 *
 !src/
 !docker/
+!static-content/
+!requirements_app.txt
