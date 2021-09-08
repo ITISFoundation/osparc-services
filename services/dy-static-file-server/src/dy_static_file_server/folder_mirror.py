@@ -1,14 +1,14 @@
 # TODO: have a watcher doing all the watching
 import hashlib
-import os
-from pdb import set_trace
-import time
 import logging
+import os
+import time
 from pathlib import Path
-from typing import Optional, List, Dict
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler, DirModifiedEvent
 from threading import Thread
+from typing import Dict, List, Optional
+
+from watchdog.events import DirModifiedEvent, FileSystemEventHandler
+from watchdog.observers import Observer
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +51,7 @@ def _checksum(file: Path) -> str:
 
 
 def _chunked_copy(input_file: Path, output_file: Path, chunk_size: int = 8192) -> None:
+    logger.info("Copy %s -> %s", input_file, output_file)
     # ensure output destination diretory exists
     output_file.parent.mkdir(parents=True, exist_ok=True)
     with open(input_file, "rb") as in_f, open(output_file, "wb") as out_f:
@@ -61,6 +62,7 @@ def _chunked_copy(input_file: Path, output_file: Path, chunk_size: int = 8192) -
 
 
 def sync_directories_content(input_dir: Path, output_dir: Path) -> None:
+    logger.info("Running directory sync")
     files_in_input_dir = _list_files_in_dir(input_dir)
     files_in_output_dir = _list_files_in_dir(output_dir)
 
@@ -147,6 +149,8 @@ def main() -> None:
 
     input_dir = get_path_from_env("DY_SIDECAR_PATH_INPUTS")
     output_dir = get_path_from_env("DY_SIDECAR_PATH_OUTPUTS")
+    if input_dir == output_dir:
+        raise ValueError(f"Inputs and outputs directories match {input_dir}")
 
     folder_monitor = FolderMirror(input_dir, output_dir)
     folder_monitor.start()

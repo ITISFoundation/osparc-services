@@ -1,15 +1,15 @@
 # pylint: disable=redefined-outer-name
 # pylint: disable=unused-argument
+import hashlib
+import sys
+import time
 from pathlib import Path
 from threading import Thread
-from typing import Dict
-
-import sys
 from types import ModuleType
-import pytest
-import time
-import hashlib
+from typing import Dict
 from unittest.mock import patch
+
+import pytest
 
 # UTILS
 
@@ -99,6 +99,12 @@ def env_vars(monkeypatch, input_dir: Path, output_dir: Path) -> None:
     monkeypatch.setenv("DY_SIDECAR_PATH_OUTPUTS", str(output_dir))
 
 
+@pytest.fixture
+def same_input_and_output_dir(monkeypatch, tmp_dir: Path) -> None:
+    monkeypatch.setenv("DY_SIDECAR_PATH_INPUTS", str(tmp_dir))
+    monkeypatch.setenv("DY_SIDECAR_PATH_OUTPUTS", str(tmp_dir))
+
+
 # TESTS
 
 
@@ -162,3 +168,14 @@ def test_folder_mirror_main(
 
     with patch.object(folder_mirror.FolderMirror, "join", return_value=None):
         folder_mirror.main()
+
+
+def test_folder_mirror_main(
+    dy_static_file_server: ModuleType, tmp_dir: Path, same_input_and_output_dir: None
+) -> None:
+
+    from dy_static_file_server import folder_mirror
+
+    with pytest.raises(ValueError) as exec:  # pylint: disable=redefined-builtin
+        folder_mirror.main()
+    assert exec.value.args[0] == f"Inputs and outputs directories match {tmp_dir}"

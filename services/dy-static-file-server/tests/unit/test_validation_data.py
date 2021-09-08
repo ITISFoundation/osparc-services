@@ -6,7 +6,6 @@ from pathlib import Path
 from typing import Dict, Iterator, Optional
 
 import pytest
-
 import yaml
 
 
