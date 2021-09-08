@@ -22,8 +22,13 @@ COPY static-content/hello-world.txt /www/hello-world.txt
 RUN mkdir -p /www/inputs
 RUN mkdir -p /www/outputs
 
+RUN mkdir -p /workdir
+COPY src/dy_static_file_server /workdir/dy_static_file_server
+
 ENV NGINX_SERVER_ROOT="/www"
 
 FROM base as production
+
+WORKDIR /workdir/dy_static_file_server
 
 CMD [ "/bin/sh", "/boot.sh" ]

@@ -24,4 +24,5 @@ else
     echo "Nginx will serve from ${NGINX_SERVER_ROOT}, nothing to do"
 fi
 
-exec nginx -g "daemon off;"
+exec python3 folder_mirror.py &
+exec nginx -g "daemon off;" 
