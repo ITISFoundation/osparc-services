@@ -52,8 +52,8 @@ requirements: .venv
 
 devenv: .venv requirements ## create a python virtual environment with tools to dev, run and tests cookie-cutter
 	# installing extra tools from: $(word 3,$^), $(word 2,$^)
-	@$</bin/pip3 install -r  $(word 3,$^)
-	@$</bin/pip3 install -r  $(word 2,$^)
+	@$</bin/pip3 install -r requirements.txt
+	@$</bin/pip3 install -r requirements_app.txt
 	# your dev environment contains
 	@$</bin/pip3 list
 	@echo "To activate the virtual environment, run 'source $</bin/activate'"
