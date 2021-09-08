@@ -19,8 +19,6 @@ RUN python3 -m venv /venv
 
 # add python app requirements
 COPY requirements_app.txt /tmp/requirements_app.txt
-RUN /venv/bin/python3 --version
-RUN /venv/bin/pip list
 RUN /venv/bin/pip3 install -r /tmp/requirements_app.txt
 
 COPY static-content/hello-world.txt /www/hello-world.txt
