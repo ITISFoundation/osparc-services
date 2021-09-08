@@ -18,7 +18,7 @@ RUN pip3 install --upgrade pip
 COPY requirements_app.txt /tmp/requirements_app.txt
 RUN python3 --version
 RUN pip list
-RUN pip3 install -r /tmp/requirements_app.txt
+RUN pip3 install --ignore-installed -r /tmp/requirements_app.txt
 
 COPY static-content/hello-world.txt /www/hello-world.txt
 RUN mkdir -p /www/inputs
