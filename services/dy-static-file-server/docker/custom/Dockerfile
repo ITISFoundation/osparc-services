@@ -16,6 +16,8 @@ RUN pip3 install --upgrade pip
 
 # add python app requirements
 COPY requirements_app.txt /tmp/requirements_app.txt
+RUN python3 --version
+RUN pip list
 RUN pip3 install -r /tmp/requirements_app.txt
 
 COPY static-content/hello-world.txt /www/hello-world.txt
