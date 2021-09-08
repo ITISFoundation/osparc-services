@@ -50,9 +50,9 @@ requirements.txt requirements_app.txt: .venv requirements.in
 	$</bin/pip-compile --upgrade --build-isolation --output-file $@ $(word 2, $^)
 
 devenv: .venv requirements.txt requirements_app.txt ## create a python virtual environment with tools to dev, run and tests cookie-cutter
-	# installing extra tools
-	@$</bin/pip3 install -r  $(word 2,$^)
+	# installing extra tools from: $(word 3,$^), $(word 2,$^)
 	@$</bin/pip3 install -r  $(word 3,$^)
+	@$</bin/pip3 install -r  $(word 2,$^)
 	# your dev environment contains
 	@$</bin/pip3 list
 	@echo "To activate the virtual environment, run 'source $</bin/activate'"
