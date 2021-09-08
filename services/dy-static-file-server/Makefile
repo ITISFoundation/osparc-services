@@ -50,7 +50,7 @@ requirements: .venv
 	$</bin/pip-compile --upgrade --build-isolation --output-file requirements.txt requirements.in 
 	$</bin/pip-compile --upgrade --build-isolation --output-file requirements_app.txt requirements_app.in 
 
-devenv: .venv requirements.txt requirements_app.txt ## create a python virtual environment with tools to dev, run and tests cookie-cutter
+devenv: .venv requirements ## create a python virtual environment with tools to dev, run and tests cookie-cutter
 	# installing extra tools from: $(word 3,$^), $(word 2,$^)
 	@$</bin/pip3 install -r  $(word 3,$^)
 	@$</bin/pip3 install -r  $(word 2,$^)
