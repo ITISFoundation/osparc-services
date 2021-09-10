@@ -29,7 +29,7 @@ services:
           "affiliation": "IT''IS Foundation"}]}'
         io.simcore.contact: '{"contact": "anderegg@itis.swiss"}'
         io.simcore.description: '{"description": "Modern test dynamic service (with
-          dynamic sidecar)"}'
+          dynamic sidecar). When inputs change, these will be copied to the outputs."}'
         io.simcore.inputs: '{"inputs": {"string_input": {"displayOrder": 1, "label":
           "String input", "description": "Test input string with default value", "type":
           "string", "defaultValue": "lorem ipsum"}, "integer_input": {"displayOrder":
@@ -72,7 +72,8 @@ services:
           "affiliation": "IT''IS Foundation"}]}'
         io.simcore.contact: '{"contact": "anderegg@itis.swiss"}'
         io.simcore.description: '{"description": "Modern test dynamic service providing
-          a docker-compose specificaiton file (with dynamic sidecar and compose-spec)"}'
+          a docker-compose specificaiton file (with dynamic sidecar and compose-spec).
+          When inputs change, these will be copied to the outputs."}'
         io.simcore.inputs: '{"inputs": {"string_input": {"displayOrder": 1, "label":
           "String input", "description": "Test input string with default value", "type":
           "string", "defaultValue": "lorem ipsum"}, "integer_input": {"displayOrder":
