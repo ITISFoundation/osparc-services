@@ -64,9 +64,9 @@ def create_files_in_input(input_dir: Path) -> None:
     file_two.write_text("other stuff here")
 
 
-def remove_file_from_input(input_dir: Path) -> None:
-    file_one = input_dir / "first_file.txt"
-    file_one.unlink()
+def remova_all_files_from_input(input_dir: Path) -> None:
+    for file in _list_files_in_dir(input_dir).values():
+        file.unlink()
 
 
 # FIXTURES
@@ -135,7 +135,7 @@ def test_folder_mirror(
     assert_same_dir_content(input_dir, output_dir)
 
     # remove a file from input
-    remove_file_from_input(input_dir)
+    remova_all_files_from_input(input_dir)
     time.sleep(0.25)
     assert_same_dir_content(input_dir, output_dir)
 
