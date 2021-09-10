@@ -2,4 +2,4 @@
 !src/
 !docker/
 !static-content/
-!requirements_app.txt
+!requirements/base.txt
