@@ -64,6 +64,11 @@ def create_files_in_input(input_dir: Path) -> None:
     file_two.write_text("other stuff here")
 
 
+def remove_file_from_input(input_dir: Path) -> None:
+    file_one = input_dir / "first_file.txt"
+    file_one.unlink()
+
+
 # FIXTURES
 
 
@@ -127,8 +132,11 @@ def test_folder_mirror(
 
     #  let the threads copy and sync the files
     time.sleep(0.25)
+    assert_same_dir_content(input_dir, output_dir)
 
-    # TODO: check same directory strucutre
+    # remove a file from input
+    remove_file_from_input(input_dir)
+    time.sleep(0.25)
     assert_same_dir_content(input_dir, output_dir)
 
     folder_mirror.stop()

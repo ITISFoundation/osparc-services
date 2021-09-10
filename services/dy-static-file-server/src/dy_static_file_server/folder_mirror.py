@@ -71,6 +71,7 @@ def sync_directories_content(input_dir: Path, output_dir: Path) -> None:
         output_dir, files_in_output_dir
     )
 
+    # copy new files if they do not exist
     for file_name in input_relative_mapping:
         input_file = input_relative_mapping[file_name]
         # where to expect the output file
@@ -83,6 +84,14 @@ def sync_directories_content(input_dir: Path, output_dir: Path) -> None:
         if _checksum(input_file) == _checksum(expected_output_file):
             _chunked_copy(input_file, expected_output_file)
             continue
+
+    # remove files not existing files form outputs
+    files_to_remove = set(output_relative_mapping.keys()) - set(
+        input_relative_mapping.keys()
+    )
+    for relative_key in files_to_remove:
+        file_path: Path = output_relative_mapping[relative_key]
+        file_path.unlink()
 
 
 def get_path_from_env(env_var_name: str) -> Path:
