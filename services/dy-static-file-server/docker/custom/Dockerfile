@@ -32,7 +32,7 @@ RUN /venv/bin/pip3 install -r /tmp/requirements.txt
 
 COPY static-content/hello-world.txt /www/hello-world.txt
 
-RUN mkdir -p ${INPUT_DIR}} && \
+RUN mkdir -p ${INPUT_DIR} && \
     mkdir -p ${OUTPUT_DIR} && \
     mkdir -p ${WORKDIR}
 
