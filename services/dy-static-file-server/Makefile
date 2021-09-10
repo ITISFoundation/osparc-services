@@ -24,7 +24,7 @@ export COMPOSE_INPUT_DIR  := ./validation/input
 export COMPOSE_OUTPUT_DIR := .tmp/output
 
 APP_NAME := dy-static-file-server
-LOCAL_REGISTRY_HOST = registry:5000
+LOCAL_REGISTRY_HOST ?= registry:5000
 LOCAL_REGISTRY_ENDPOINT = ${LOCAL_REGISTRY_HOST}/v2
 DYNAMIC_SIMORE_PATH = simcore/services/dynamic
 LOCAL_REGISTRY = ${LOCAL_REGISTRY_HOST}/${DYNAMIC_SIMORE_PATH}
