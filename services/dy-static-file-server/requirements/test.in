@@ -1,6 +1,6 @@
 
 # the application's requirements need to be pulled in
---constraint requirements/base.txt
+--constraint base.txt
 
 # tools
 pyyaml
