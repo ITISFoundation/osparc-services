@@ -1,13 +1,13 @@
 # pylint: disable=redefined-outer-name
 # pylint: disable=unused-argument
 import hashlib
-import sys
 import time
 from pathlib import Path
 from threading import Thread
 from types import ModuleType
 from typing import Dict
 from unittest.mock import patch
+from _pytest.monkeypatch import MonkeyPatch
 
 import pytest
 
@@ -73,11 +73,6 @@ def remova_all_files_from_input(input_dir: Path) -> None:
 
 
 @pytest.fixture
-def tmp_dir(tmp_path) -> Path:
-    return Path(tmp_path)
-
-
-@pytest.fixture
 def input_dir(tmp_dir) -> Path:
     return _ensure_dir(tmp_dir / "input_dir")
 
@@ -88,24 +83,13 @@ def output_dir(tmp_dir) -> Path:
 
 
 @pytest.fixture
-def dy_static_file_server(src_dir: Path) -> ModuleType:
-    # allow to search for the module
-    # insert at 1, 0 is the script path (or '' in REPL)
-    sys.path.insert(1, str(src_dir))
-
-    import dy_static_file_server
-
-    return dy_static_file_server
-
-
-@pytest.fixture
-def env_vars(monkeypatch, input_dir: Path, output_dir: Path) -> None:
+def env_vars(monkeypatch: MonkeyPatch, input_dir: Path, output_dir: Path) -> None:
     monkeypatch.setenv("DY_SIDECAR_PATH_INPUTS", str(input_dir))
     monkeypatch.setenv("DY_SIDECAR_PATH_OUTPUTS", str(output_dir))
 
 
 @pytest.fixture
-def same_input_and_output_dir(monkeypatch, tmp_dir: Path) -> None:
+def same_input_and_output_dir(monkeypatch: MonkeyPatch, tmp_dir: Path) -> None:
     monkeypatch.setenv("DY_SIDECAR_PATH_INPUTS", str(tmp_dir))
     monkeypatch.setenv("DY_SIDECAR_PATH_OUTPUTS", str(tmp_dir))
 
