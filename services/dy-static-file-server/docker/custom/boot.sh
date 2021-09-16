@@ -25,7 +25,7 @@ else
 fi
 
 # ensure some random data is created in /workdir
-exec /venv/bin/python ensure_random_workdir_data.py &
+/venv/bin/python ensure_random_workdir_data.py
 
 # keep mirroring running in the background
 exec /venv/bin/python folder_mirror.py &

@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import List
 import uuid
 
-TARGET_DIRECTORY = Path("/workdir")
+TARGET_DIRECTORY = Path("/workdir/generated-data")
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +38,7 @@ def ensure_random_data(target_dir: Path) -> None:
 
 
 def main() -> None:
+    TARGET_DIRECTORY.mkdir(parents=True, exist_ok=True)
     ensure_random_data(TARGET_DIRECTORY)
 
 

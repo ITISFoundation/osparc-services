@@ -6,7 +6,7 @@ services:
           "affiliation": "IT''IS Foundation"}]}'
         io.simcore.contact: '{"contact": "anderegg@itis.swiss"}'
         io.simcore.description: '{"description": "Legacy test dynamic service (starts using original director-v0). 
-          The /workdir directory is populated if no content is present."}'
+          The /workdir/generated-data directory is populated if no content is present."}'
         io.simcore.inputs: '{"inputs": {}}'
         io.simcore.integration-version: '{"integration-version": "1.0.0"}'
         io.simcore.key: '{"key": "simcore/services/dynamic/dy-static-file-server"}'
@@ -30,7 +30,7 @@ services:
         io.simcore.contact: '{"contact": "anderegg@itis.swiss"}'
         io.simcore.description: '{"description": "Modern test dynamic service (with
           dynamic sidecar). When inputs change, these will be copied to the outputs. 
-          The /workdir directory is populated if no content is present."}'
+          The /workdir/generated-data directory is populated if no content is present."}'
         io.simcore.inputs: '{"inputs": {"string_input": {"displayOrder": 1, "label":
           "String input", "description": "Test input string with default value", "type":
           "string", "defaultValue": "lorem ipsum"}, "integer_input": {"displayOrder":
@@ -61,7 +61,7 @@ services:
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: ${VCS_URL}
         simcore.service.paths-mapping: '{"outputs_path": "/www/outputs", "inputs_path":
-          "/www/inputs"}, "state_paths": ["/workdir"]}'
+          "/www/inputs"}, "state_paths": ["/workdir"/generated-data]}'
         simcore.service.settings: '[{"name": "resources", "type": "Resources", "value":
           {"mem_limit":17179869184, "cpu_limit": 1000000000}}, {"name": "ports", "type":
           "int", "value": 80}, {"name": "constraints", "type": "string", "value":
@@ -75,7 +75,7 @@ services:
         io.simcore.description: '{"description": "Modern test dynamic service providing
           a docker-compose specificaiton file (with dynamic sidecar and compose-spec).
           When inputs change, these will be copied to the outputs. 
-          The /workdir directory is populated if no content is present."}'
+          The /workdir/generated-data directory is populated if no content is present."}'
         io.simcore.inputs: '{"inputs": {"string_input": {"displayOrder": 1, "label":
           "String input", "description": "Test input string with default value", "type":
           "string", "defaultValue": "lorem ipsum"}, "integer_input": {"displayOrder":
@@ -108,7 +108,7 @@ services:
         simcore.service.compose-spec: ${DOCKER_COMPOSE_SPECIFICATION}
         simcore.service.container-http-entrypoint: dy-static-file-server-dynamic-sidecar-compose-spec
         simcore.service.paths-mapping: '{"outputs_path": "/www/outputs", "inputs_path":
-          "/www/inputs", "state_paths": ["/workdir"]}'
+          "/www/inputs", "state_paths": ["/workdir/generated-data"]}'
         simcore.service.settings: '[{"name": "resources", "type": "Resources", "value":
           {"mem_limit":17179869184, "cpu_limit": 1000000000}}, {"name": "ports", "type":
           "int", "value": 80}, {"name": "constraints", "type": "string", "value":
