@@ -1,11 +1,11 @@
 # TODO: have a watcher doing all the watching
-import hashlib
 import logging
+import json
 import os
 import time
 from pathlib import Path
 from threading import Thread
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from watchdog.events import DirModifiedEvent, FileSystemEventHandler
 from watchdog.observers import Observer
@@ -21,77 +21,39 @@ class UnifyingEventHandler(FileSystemEventHandler):
 
     def on_any_event(self, event: DirModifiedEvent):
         super().on_any_event(event)
-        sync_directories_content(self.input_dir, self.output_dir)
+        remap_input_to_output(self.input_dir, self.output_dir)
 
 
 def _list_files_in_dir(path: Path) -> List[Path]:
     return [x for x in path.rglob("*") if x.is_file()]
 
 
-def _relative_file_names_mapping(
-    containing_dir: Path, files: List[Path]
-) -> Dict[str, Path]:
-    containing_dir_str = str(containing_dir)
-
-    def _relative_file_name(file: Path) -> str:
-        return str(file).replace(containing_dir_str, "").strip("/")
-
-    return {_relative_file_name(f): f for f in files}
-
-
-def _checksum(file: Path) -> str:
-    with open(file, "rb") as f:
-        file_hash = hashlib.md5()
-        chunk = f.read(8192)
-        while chunk:
-            file_hash.update(chunk)
-            chunk = f.read(8192)
-
-    return file_hash.hexdigest()
-
-
-def _chunked_copy(input_file: Path, output_file: Path, chunk_size: int = 8192) -> None:
-    logger.info("Copy %s -> %s", input_file, output_file)
-    # ensure output destination diretory exists
-    output_file.parent.mkdir(parents=True, exist_ok=True)
-    with open(input_file, "rb") as in_f, open(output_file, "wb") as out_f:
-        chunk = in_f.read(chunk_size)
-        while chunk:
-            out_f.write(chunk)
-            chunk = in_f.read(chunk_size)
-
-
-def sync_directories_content(input_dir: Path, output_dir: Path) -> None:
+def remap_input_to_output(input_dir: Path, output_dir: Path) -> None:
     logger.info("Running directory sync")
-    files_in_input_dir = _list_files_in_dir(input_dir)
     files_in_output_dir = _list_files_in_dir(output_dir)
 
-    input_relative_mapping = _relative_file_names_mapping(input_dir, files_in_input_dir)
-    output_relative_mapping = _relative_file_names_mapping(
-        output_dir, files_in_output_dir
+    # remove all presnet files in outputs
+    for output_file in files_in_output_dir:
+        output_file.unlink()
+
+    # move file to correct path
+    input_file: Path = input_dir / "file_input" / "test_file"
+    output_file_path: Path = output_dir / "file_output" / "test_file"
+    output_file_path.parent.mkdir(parents=True, exist_ok=True)
+    output_file_path.write_bytes(input_file.read_bytes())
+
+    # rewrite key_values.json
+    inputs_key_values_file = input_dir / "key_values.json"
+    inputs_key_values = json.loads(inputs_key_values_file.read_text())
+    outputs_key_values = {
+        k.replace("_input", "_output"): v["value"] for k, v in inputs_key_values.items()
+    }
+    outputs_key_values["file_output"] = f"{output_file_path}"
+
+    outputs_key_values_file = output_dir / "key_values.json"
+    outputs_key_values_file.write_text(
+        json.dumps(outputs_key_values, sort_keys=True, indent=4)
     )
-
-    # copy new files if they do not exist
-    for file_name in input_relative_mapping:
-        input_file = input_relative_mapping[file_name]
-        # where to expect the output file
-        expected_output_file = output_dir / file_name
-
-        if input_file not in output_relative_mapping:
-            _chunked_copy(input_file, expected_output_file)
-            continue
-
-        if _checksum(input_file) == _checksum(expected_output_file):
-            _chunked_copy(input_file, expected_output_file)
-            continue
-
-    # remove files not existing files form outputs
-    files_to_remove = set(output_relative_mapping.keys()) - set(
-        input_relative_mapping.keys()
-    )
-    for relative_key in files_to_remove:
-        file_path: Path = output_relative_mapping[relative_key]
-        file_path.unlink()
 
 
 def get_path_from_env(env_var_name: str) -> Path:
@@ -107,7 +69,7 @@ def get_path_from_env(env_var_name: str) -> Path:
     return path
 
 
-class FolderMirror:
+class InputsObserver:
     def __init__(self, input_dir: Path, output_dir: Path):
         self.input_dir: Path = input_dir
         self.output_dir: Path = output_dir
@@ -161,15 +123,15 @@ def main() -> None:
     if input_dir == output_dir:
         raise ValueError(f"Inputs and outputs directories match {input_dir}")
 
-    folder_monitor = FolderMirror(input_dir, output_dir)
-    folder_monitor.start()
+    inputs_objserver = InputsObserver(input_dir, output_dir)
+    inputs_objserver.start()
 
     # manually trigger once when it starts
-    # syncs inputs and outputs before continuing to monitor
-    sync_directories_content(input_dir=input_dir, output_dir=output_dir)
-    folder_monitor.join()
+    # remaps inputs to outputs before continuing
+    remap_input_to_output(input_dir=input_dir, output_dir=output_dir)
+    inputs_objserver.join()
 
-    logger.info("%s main exited", FolderMirror.__name__)
+    logger.info("%s main exited", InputsObserver.__name__)
 
 
 if __name__ == "__main__":

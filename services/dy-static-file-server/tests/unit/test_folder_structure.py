@@ -27,7 +27,7 @@ expected_files = (
     "requirements/test.txt",
     "static-content/hello-world.txt",
     "src/dy_static_file_server/__init__.py",
-    "src/dy_static_file_server/folder_mirror.py",
+    "src/dy_static_file_server/inputs_to_outputs.py",
     "Makefile",
     "VERSION",
     "README.md",
