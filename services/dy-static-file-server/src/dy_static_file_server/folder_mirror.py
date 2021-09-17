@@ -163,6 +163,10 @@ def main() -> None:
 
     folder_monitor = FolderMirror(input_dir, output_dir)
     folder_monitor.start()
+
+    # manually trigger once when it starts
+    # syncs inputs and outputs before continuing to monitor
+    sync_directories_content(input_dir=input_dir, output_dir=output_dir)
     folder_monitor.join()
 
     logger.info("%s main exited", FolderMirror.__name__)

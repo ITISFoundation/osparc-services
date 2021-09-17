@@ -57,6 +57,26 @@ def test_main(mock_target_directory: None) -> None:
     assert len(_files_in_path(ensure_random_workdir_data.TARGET_DIRECTORY)) > 0
 
 
+def test_main_with_prior_content(mock_target_directory: None) -> None:
+    from dy_static_file_server import ensure_random_workdir_data
+
+    assert ensure_random_workdir_data.TARGET_DIRECTORY != EXPECTED_DATA_PATH
+
+    assert len(_files_in_path(ensure_random_workdir_data.TARGET_DIRECTORY)) == 0
+
+    ensure_random_workdir_data.main()
+    generated_files = _files_in_path(ensure_random_workdir_data.TARGET_DIRECTORY)
+    assert len(_files_in_path(ensure_random_workdir_data.TARGET_DIRECTORY)) == len(
+        generated_files
+    )
+
+    ensure_random_workdir_data.main()
+
+    assert len(_files_in_path(ensure_random_workdir_data.TARGET_DIRECTORY)) == len(
+        generated_files
+    )
+
+
 def test_no_file_changes(mock_target_directory: None) -> None:
     from dy_static_file_server import ensure_random_workdir_data
 
