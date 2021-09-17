@@ -81,7 +81,7 @@ def test_validation_data_follows_definition(
                     ), f"file to key map for {key} has an incorrectly set {mapped_value}, it should be equal to {key}"
                     filename_to_look_for = filename
                     assert (
-                        validation_folder / filename_to_look_for
+                        validation_folder / mapped_value / filename_to_look_for
                     ).exists(), (
                         f"{filename_to_look_for} is missing from {validation_folder}"
                     )
@@ -104,8 +104,9 @@ def test_validation_data_follows_definition(
             }
             if not "data:" in label_cfg[key]["type"]:
                 # check the type is correct
+                _value = value["value"] if isinstance(value, dict) else value
                 assert isinstance(
-                    value, label2types[label_cfg[key]["type"]]
+                    _value, label2types[label_cfg[key]["type"]]
                 ), f"{value} has not the expected type {label2types[label_cfg[key]['type']]}"
 
     if (
@@ -127,6 +128,9 @@ def test_validation_data_follows_definition(
             ".gitkeep",
         ]:
             continue
+        if not path.is_file():
+            continue
+
         assert path.is_file(), f"{path} is not a file!"
         filename = path.name
         # this filename shall be available as a key in the labels somewhere
