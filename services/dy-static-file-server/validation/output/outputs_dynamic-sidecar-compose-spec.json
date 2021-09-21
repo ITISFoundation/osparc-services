@@ -1,0 +1,7 @@
+{
+    "boolean_output": false,
+    "file_output": "{{OUTPUTS_FULL_PATH}}/file_output/test_file",
+    "integer_output": 100,
+    "number_output": 1.12,
+    "string_output": "lorem ipsum"
+}

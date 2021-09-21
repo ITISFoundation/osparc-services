@@ -24,4 +24,9 @@ else
     echo "Nginx will serve from ${NGINX_SERVER_ROOT}, nothing to do"
 fi
 
-exec nginx -g "daemon off;"
+# ensure some random data is created in /workdir
+/venv/bin/python ensure_random_workdir_data.py
+
+# keep mirroring running in the background
+exec /venv/bin/python folder_mirror.py &
+exec nginx -g "daemon off;" 

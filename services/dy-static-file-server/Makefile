@@ -24,6 +24,10 @@ export COMPOSE_INPUT_DIR  := ./validation/input
 export COMPOSE_OUTPUT_DIR := .tmp/output
 
 APP_NAME := dy-static-file-server
+LOCAL_REGISTRY_HOST ?= registry:5000
+LOCAL_REGISTRY_ENDPOINT = ${LOCAL_REGISTRY_HOST}/v2
+DYNAMIC_SIMORE_PATH = simcore/services/dynamic
+LOCAL_REGISTRY = ${LOCAL_REGISTRY_HOST}/${DYNAMIC_SIMORE_PATH}
 
 _yq = docker run --rm -i -v ${PWD}:/workdir mikefarah/yq:3.3.4 yq
 
@@ -41,13 +45,15 @@ _yq = docker run --rm -i -v ${PWD}:/workdir mikefarah/yq:3.3.4 yq
 	$@/bin/pip3 install \
 		pip-tools
 
-requirements.txt: .venv requirements.in
+requirements: .venv
 	# freezes requirements
-	$</bin/pip-compile --upgrade --build-isolation --output-file $@ $(word 2, $^)
+	$</bin/pip-compile --upgrade --build-isolation --output-file requirements/test.txt requirements/test.in 
+	$</bin/pip-compile --upgrade --build-isolation --output-file requirements/base.txt requirements/base.in 
 
-devenv: .venv requirements.txt ## create a python virtual environment with tools to dev, run and tests cookie-cutter
-	# installing extra tools
-	@$</bin/pip3 install -r  $(word 2,$^)
+devenv: .venv requirements ## create a python virtual environment with tools to dev, run and tests cookie-cutter
+	# installing extra tools from: $(word 3,$^), $(word 2,$^)
+	@$</bin/pip3 install -r requirements/test.txt
+	@$</bin/pip3 install -r requirements/base.txt
 	# your dev environment contains
 	@$</bin/pip3 list
 	@echo "To activate the virtual environment, run 'source $</bin/activate'"
@@ -169,7 +175,17 @@ version-integration-patch version-integration-minor version-integration-major: v
 	@$(call _bumpversion,$<,version-integration-)
 
 
+publish-local:  ## push to local throw away registry to test integration
+	$(foreach service,$(SERVICES_LIST),\
+		docker tag local/$(service):production $(LOCAL_REGISTRY)/$(service):${DOCKER_IMAGE_TAG} && \
+		docker push $(LOCAL_REGISTRY)/$(service):${DOCKER_IMAGE_TAG} && \
+	) echo done
 
+	# list transfered image tags from local registry
+	@curl --silent ${LOCAL_REGISTRY_ENDPOINT}/_catalog | jq '.repositories'
+	@curl --silent ${LOCAL_REGISTRY_ENDPOINT}/${DYNAMIC_SIMORE_PATH}/dy-static-file-server/tags/list?n=50 | jq '.'
+	@curl --silent ${LOCAL_REGISTRY_ENDPOINT}/${DYNAMIC_SIMORE_PATH}/dy-static-file-server-dynamic-sidecar/tags/list?n=50 | jq '.'
+	@curl --silent ${LOCAL_REGISTRY_ENDPOINT}/${DYNAMIC_SIMORE_PATH}/dy-static-file-server-dynamic-sidecar-compose-spec/tags/list?n=50 | jq '.'
 
 
 # DEVELOPMENT ----------------------------------------

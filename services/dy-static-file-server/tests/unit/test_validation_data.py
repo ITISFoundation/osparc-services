@@ -6,7 +6,6 @@ from pathlib import Path
 from typing import Dict, Iterator, Optional
 
 import pytest
-
 import yaml
 
 
@@ -17,6 +16,7 @@ def port_type() -> str:
 
 @pytest.fixture
 def label_cfg(metadata_file: Path, port_type: str) -> Dict:
+    print(f"label_cfg from path {metadata_file}")
     ports_type = f"{port_type}s"
     with metadata_file.open() as fp:
         cfg = yaml.safe_load(fp)
@@ -30,9 +30,14 @@ def validation_folder(validation_dir: Path, port_type: str) -> Path:
 
 
 @pytest.fixture
-def validation_cfg(validation_dir: Path, port_type: str) -> Optional[Dict]:
-    validation_file = validation_dir / \
-        port_type / (f"{port_type}s.json")
+def validation_cfg(
+    validation_dir: Path, port_type: str, inputs_file_name_part: str
+) -> Optional[Dict]:
+    validation_file = (
+        validation_dir / port_type / (f"{port_type}s{inputs_file_name_part}.json")
+    )
+    print(f"validation_cfg from path {validation_file}")
+    print(inputs_file_name_part)
     if validation_file.exists():
         with validation_file.open() as fp:
             return json.load(fp)
@@ -53,11 +58,10 @@ def _find_key_in_cfg(filename: str, value: Dict) -> Iterator[str]:
                 yield result
 
 
-@pytest.mark.parametrize("port_type", [
-    "input",
-    "output"
-])
-def test_validation_data_follows_definition(label_cfg: Dict, validation_cfg: Dict, validation_folder: Path):
+@pytest.mark.parametrize("port_type", ["input", "output"])
+def test_validation_data_follows_definition(
+    label_cfg: Dict, validation_cfg: Dict, validation_folder: Path, metadata_file: Path
+):
     for key, value in label_cfg.items():
         assert "type" in value
 
@@ -72,13 +76,21 @@ def test_validation_data_follows_definition(label_cfg: Dict, validation_cfg: Dic
                 # ...or there is a mapping
                 assert len(value["fileToKeyMap"]) > 0
                 for filename, mapped_value in value["fileToKeyMap"].items():
-                    assert mapped_value == key, f"file to key map for {key} has an incorrectly set {mapped_value}, it should be equal to {key}"
+                    assert (
+                        mapped_value == key
+                    ), f"file to key map for {key} has an incorrectly set {mapped_value}, it should be equal to {key}"
                     filename_to_look_for = filename
-                    assert (validation_folder / filename_to_look_for).exists(
-                    ), f"{filename_to_look_for} is missing from {validation_folder}"
+                    assert (
+                        validation_folder / mapped_value / filename_to_look_for
+                    ).exists(), (
+                        f"{filename_to_look_for} is missing from {validation_folder}"
+                    )
             else:
-                assert (validation_folder / filename_to_look_for).exists(
-                ), f"{filename_to_look_for} is missing from {validation_folder}"
+                assert (
+                    validation_folder / filename_to_look_for
+                ).exists(), (
+                    f"{filename_to_look_for} is missing from {validation_folder}"
+                )
 
     if validation_cfg:
         for key, value in validation_cfg.items():
@@ -88,16 +100,37 @@ def test_validation_data_follows_definition(label_cfg: Dict, validation_cfg: Dic
                 "number": (float, int),
                 "integer": int,
                 "boolean": bool,
-                "string": str
+                "string": str,
             }
             if not "data:" in label_cfg[key]["type"]:
                 # check the type is correct
-                assert isinstance(value, label2types[label_cfg[key]["type"]]
-                                  ), f"{value} has not the expected type {label2types[label_cfg[key]['type']]}"
+                _value = value["value"] if isinstance(value, dict) else value
+                assert isinstance(
+                    _value, label2types[label_cfg[key]["type"]]
+                ), f"{value} has not the expected type {label2types[label_cfg[key]['type']]}"
+
+    if (
+        metadata_file.name == "metadata.yml"
+        and len(label_cfg) == 0
+        and len(validation_cfg) == 0
+    ):
+        print(f"Skipping tests for empty configuration on {metadata_file}")
+        return
 
     for path in validation_folder.glob("**/*"):
-        if path.name in ["inputs.json", "outputs.json", ".gitkeep"]:
+        if path.name in [
+            "inputs.json",
+            "inputs_dynamic-sidecar.json",
+            "inputs_dynamic-sidecar-compose-spec.json",
+            "outputs.json",
+            "outputs_dynamic-sidecar.json",
+            "outputs_dynamic-sidecar-compose-spec.json",
+            ".gitkeep",
+        ]:
             continue
+        if not path.is_file():
+            continue
+
         assert path.is_file(), f"{path} is not a file!"
         filename = path.name
         # this filename shall be available as a key in the labels somewhere

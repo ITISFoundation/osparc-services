@@ -50,6 +50,7 @@ def osparc_service_labels_jsonschema(tmp_path) -> Dict:
 
 @pytest.fixture(scope="function")
 def metadata_labels(metadata_file: Path) -> Dict:
+    print(f"metadata_file path {metadata_file}")
     with metadata_file.open() as fp:
         metadata = yaml.safe_load(fp)
         return metadata
@@ -61,6 +62,7 @@ def metadata_labels(metadata_file: Path) -> Dict:
 def test_docker_io_simcore_labels_against_files(
     docker_image: docker.models.images.Image, metadata_labels: Dict
 ):
+    print(f"docker_image {docker_image}")
     image_labels = docker_image.labels
     io_simcore_labels = _convert_to_simcore_labels(image_labels)
     # check files are identical
@@ -75,6 +77,12 @@ def test_validate_docker_io_simcore_labels(
     image_labels = docker_image.labels
     # get io labels
     io_simcore_labels = _convert_to_simcore_labels(image_labels)
+    
+    print(image_labels)
+    print(io_simcore_labels)
+    print(osparc_service_labels_jsonschema)
+    print("|"* 40)
+
     # validate schema
     try:
         jsonschema.validate(io_simcore_labels, osparc_service_labels_jsonschema)

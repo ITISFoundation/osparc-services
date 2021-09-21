@@ -1,3 +1,5 @@
 *
 !src/
 !docker/
+!static-content/
+!requirements/base.txt
