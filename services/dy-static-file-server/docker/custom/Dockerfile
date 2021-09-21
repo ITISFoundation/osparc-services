@@ -1,5 +1,5 @@
 # TODO: Please set your custom image here and adapt the Dockerfile/entrypoint.sh accordingly
-FROM nginx:1.21.0-alpine as base 
+FROM nginx:1.21.0-alpine as production 
 #
 #  USAGE:
 #     cd services/dy-static-file-server
@@ -12,7 +12,7 @@ ARG INPUT_DIR="/www/inputs"
 ARG OUTPUT_DIR="/www/outputs"
 ARG WORKDIR="/workdir"
 
-LABEL maintainer=sanderegg
+LABEL maintainer=GitHK
 COPY docker/custom/nginx.conf /etc/nginx/nginx.conf
 COPY docker/custom/boot.sh /boot.sh
 
@@ -39,8 +39,6 @@ RUN mkdir -p ${INPUT_DIR} && \
 COPY src/dy_static_file_server ${WORKDIR}/dy_static_file_server
 
 ENV NGINX_SERVER_ROOT="/www"
-
-FROM base as production
 
 WORKDIR ${WORKDIR}/dy_static_file_server
 
