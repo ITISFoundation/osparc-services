@@ -20,7 +20,7 @@ services:
         org.label-schema.vcs-url: ${VCS_URL}
         simcore.service.settings: '[{"name": "resources", "type": "Resources", "value":
           {"mem_limit":17179869184, "cpu_limit": 1000000000}}, {"name": "ports", "type":
-          "int", "value": 80}, {"name": "constraints", "type": "string", "value":
+          "int", "value": 8000}, {"name": "constraints", "type": "string", "value":
           ["node.platform.os == linux"]}]'
   dy-static-file-server-dynamic-sidecar:
     build:
@@ -64,7 +64,7 @@ services:
           "/www/inputs", "state_paths": ["/workdir/generated-data"]}'
         simcore.service.settings: '[{"name": "resources", "type": "Resources", "value":
           {"mem_limit":17179869184, "cpu_limit": 1000000000}}, {"name": "ports", "type":
-          "int", "value": 80}, {"name": "constraints", "type": "string", "value":
+          "int", "value": 8000}, {"name": "constraints", "type": "string", "value":
           ["node.platform.os == linux"]}]'
   dy-static-file-server-dynamic-sidecar-compose-spec:
     build:
@@ -111,6 +111,6 @@ services:
           "/www/inputs", "state_paths": ["/workdir/generated-data"]}'
         simcore.service.settings: '[{"name": "resources", "type": "Resources", "value":
           {"mem_limit":17179869184, "cpu_limit": 1000000000}}, {"name": "ports", "type":
-          "int", "value": 80}, {"name": "constraints", "type": "string", "value":
+          "int", "value": 8000}, {"name": "constraints", "type": "string", "value":
           ["node.platform.os == linux"]}]'
 version: '3.7'
