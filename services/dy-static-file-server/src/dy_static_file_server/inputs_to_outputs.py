@@ -39,8 +39,9 @@ def remap_input_to_output(input_dir: Path, output_dir: Path) -> None:
     # move file to correct path
     input_file: Path = input_dir / "file_input" / "test_file"
     output_file_path: Path = output_dir / "file_output" / "test_file"
-    output_file_path.parent.mkdir(parents=True, exist_ok=True)
-    output_file_path.write_bytes(input_file.read_bytes())
+    if input_file.is_file():
+        output_file_path.parent.mkdir(parents=True, exist_ok=True)
+        output_file_path.write_bytes(input_file.read_bytes())
 
     # rewrite key_values.json
     inputs_key_values_file = input_dir / "key_values.json"
@@ -48,7 +49,8 @@ def remap_input_to_output(input_dir: Path, output_dir: Path) -> None:
     outputs_key_values = {
         k.replace("_input", "_output"): v["value"] for k, v in inputs_key_values.items()
     }
-    outputs_key_values["file_output"] = f"{output_file_path}"
+    if input_file.is_file():
+        outputs_key_values["file_output"] = f"{output_file_path}"
 
     outputs_key_values_file = output_dir / "key_values.json"
     outputs_key_values_file.write_text(
@@ -125,10 +127,6 @@ def main() -> None:
 
     inputs_objserver = InputsObserver(input_dir, output_dir)
     inputs_objserver.start()
-
-    # manually trigger once when it starts
-    # remaps inputs to outputs before continuing
-    remap_input_to_output(input_dir=input_dir, output_dir=output_dir)
     inputs_objserver.join()
 
     logger.info("%s main exited", InputsObserver.__name__)
