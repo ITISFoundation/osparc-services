@@ -1,17 +1,18 @@
-import logging
 import random
 from pathlib import Path
 from typing import List
 import uuid
+import grp, pwd
+import getpass
+import os
 
 TARGET_DIRECTORY = Path("/workdir/generated-data")
-
-logger = logging.getLogger(__name__)
 
 
 def make_random_file(target_dir: Path) -> None:
     file_path = target_dir / f"{uuid.uuid4()}.txt"
     file_path.write_text("no random data here")
+    print(f"Created {file_path}")
 
 
 def get_files_in_directory(directory: Path) -> List[Path]:
@@ -23,14 +24,26 @@ def is_content_present(directory: Path) -> bool:
     return len(get_files_in_directory(directory)) > 0
 
 
+def print_user_and_directory_info() -> None:
+    user = getpass.getuser()
+    groups = [g.gr_name for g in grp.getgrall() if user in g.gr_mem]
+    gid = pwd.getpwnam(user).pw_gid
+    groups.append(grp.getgrgid(gid).gr_name)
+
+    print(f"User {user}, groups {groups}")
+    os.system("ls -lah /workdir")
+
+
 def ensure_random_data(target_dir: Path) -> None:
     target_dir.mkdir(parents=True, exist_ok=True)
 
+    print_user_and_directory_info()
+
+    print(f"Creating {target_dir} if missing")
+
     if is_content_present(target_dir):
-        logger.info(
-            "Skipping content genration. Already detected %s",
-            get_files_in_directory(target_dir),
-        )
+        files = get_files_in_directory(target_dir)
+        print(f"Skipping content genration. Already detected: {files}")
         return
 
     for _ in range(random.randint(1, 10)):
@@ -38,7 +51,6 @@ def ensure_random_data(target_dir: Path) -> None:
 
 
 def main() -> None:
-    TARGET_DIRECTORY.mkdir(parents=True, exist_ok=True)
     ensure_random_data(TARGET_DIRECTORY)
 
 
