@@ -1,4 +1,3 @@
-# TODO: have a watcher doing all the watching
 import logging
 import json
 import os
@@ -9,6 +8,12 @@ from typing import List, Optional
 
 from watchdog.events import DirModifiedEvent, FileSystemEventHandler
 from watchdog.observers import Observer
+
+# at runtime dy_static_file_server is not a module
+try:
+    from index_html_generator import generate_index
+except ModuleNotFoundError:
+    from .index_html_generator import generate_index
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +27,8 @@ class UnifyingEventHandler(FileSystemEventHandler):
     def on_any_event(self, event: DirModifiedEvent):
         super().on_any_event(event)
         remap_input_to_output(self.input_dir, self.output_dir)
+        # alway regenerate index
+        generate_index()
 
 
 def _list_files_in_dir(path: Path) -> List[Path]:
@@ -124,6 +131,9 @@ def main() -> None:
     output_dir = get_path_from_env("DY_SIDECAR_PATH_OUTPUTS")
     if input_dir == output_dir:
         raise ValueError(f"Inputs and outputs directories match {input_dir}")
+
+    # make sure index exists before the monitor starts
+    generate_index()
 
     inputs_objserver = InputsObserver(input_dir, output_dir)
     inputs_objserver.start()
