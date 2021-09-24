@@ -46,7 +46,7 @@ def _get_index_content() -> str:
             
             <br>
             <br>* Last recreated {utc_time_stamp}
-            <br>* Content will be created if there is a change in the ports or the status directory.
+            <br>* Content is recrated if there is a change in the inputs directory.
             <br>* Page is refreshed every {refres_interval} seconds.
         </body>
     </html>
