@@ -3,6 +3,7 @@ from typing import List
 from textwrap import dedent
 from datetime import datetime
 from pathlib import Path
+from functools import lru_cache
 
 DATETIME_FORMAT = "%d/%m/%Y %H:%M:%S"
 
@@ -15,6 +16,7 @@ def _get_dir_files(dir_path: Path) -> List[str]:
     ]
 
 
+@lru_cache()
 def _get_server_root() -> Path:
     return Path(os.environ["SERVER_ROOT"])
 
@@ -24,9 +26,8 @@ def get_index_path() -> Path:
 
 
 def get_last_change_timestamp(str_path: str) -> str:
-    return datetime.fromtimestamp(Path(str_path).stat().st_mtime).strftime(
-        DATETIME_FORMAT
-    )
+    file_path = _get_server_root() / str_path.strip("/")
+    return datetime.fromtimestamp(file_path.stat().st_mtime).strftime(DATETIME_FORMAT)
 
 
 def _get_index_content() -> str:
