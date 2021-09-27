@@ -4,6 +4,10 @@ from textwrap import dedent
 from datetime import datetime
 from pathlib import Path
 
+DATETIME_FORMAT = "%d/%m/%Y %H:%M:%S"
+
+REFRESH_INTERVAL: int = 5
+
 
 def _get_dir_files(dir_path: Path) -> List[str]:
     return [
@@ -19,6 +23,12 @@ def get_index_path() -> Path:
     return Path(f"{_get_server_root()}/index.html")
 
 
+def get_last_change_timestamp(str_path: str) -> str:
+    return datetime.fromtimestamp(Path(str_path).stat().st_mtime).strftime(
+        DATETIME_FORMAT
+    )
+
+
 def _get_index_content() -> str:
     """
     Generates index.html content.
@@ -28,26 +38,31 @@ def _get_index_content() -> str:
 
     files = _get_dir_files(_get_server_root())
 
-    rendered_file_list = "\n".join([f'<a href="{x}">{x}</a> <br>' for x in files])
+    rendered_file_list = "\n".join(
+        [
+            f'<li>{get_last_change_timestamp(x)} <a href="{x}">{x}</a></li>'
+            for x in files
+        ]
+    )
 
-    utc_time_stamp = datetime.utcnow().strftime("%m/%d/%Y, %H:%M:%S")
-
-    refres_interval: int = 5
+    utc_time_stamp = datetime.utcnow().strftime(DATETIME_FORMAT)
 
     rendered_page = f"""
     <html>
         <head>
-            <meta http-equiv="refresh" content="1">
+            <meta http-equiv="refresh" content="{REFRESH_INTERVAL}">
         </head>
         <body>
             <h1>Listing files</h1> <br>
-
-            {rendered_file_list}
+            
+            <ul>
+                {rendered_file_list}
+            </ul>
             
             <br>
             <br>* Last recreated {utc_time_stamp}
             <br>* Content is recrated if there is a change in the inputs directory.
-            <br>* Page is refreshed every {refres_interval} seconds.
+            <br>* Page is refreshed every {REFRESH_INTERVAL} seconds.
         </body>
     </html>
     """
