@@ -9,7 +9,7 @@ from typing import List, Optional
 from watchdog.events import DirModifiedEvent, FileSystemEventHandler
 from watchdog.observers import Observer
 
-# when not testing `dy_static_file_server` directory is not detected 
+# when not testing `dy_static_file_server` directory is not detected
 # as a module; relative imports will not work
 try:
     from index_html_generator import generate_index
@@ -121,10 +121,6 @@ class InputsObserver:
             raise RuntimeError(f"{self.__class__.__name__} was not started")
 
 
-def is_boot_mode_legacy() -> bool:
-    return False
-
-
 def main() -> None:
     logging.basicConfig(
         level=logging.INFO,
@@ -132,8 +128,14 @@ def main() -> None:
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
-    input_dir = get_path_from_env("DY_SIDECAR_PATH_INPUTS")
-    output_dir = get_path_from_env("DY_SIDECAR_PATH_OUTPUTS")
+    is_legacy = os.environ.get("SIMCORE_NODE_BASEPATH", None) is not None
+
+    input_dir = get_path_from_env(
+        "INPUT_FOLDER" if is_legacy else "DY_SIDECAR_PATH_INPUTS"
+    )
+    output_dir = get_path_from_env(
+        "OUTPUT_FOLDER" if is_legacy else "DY_SIDECAR_PATH_OUTPUTS"
+    )
     if input_dir == output_dir:
         raise ValueError(f"Inputs and outputs directories match {input_dir}")
 
