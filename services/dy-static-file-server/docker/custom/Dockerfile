@@ -34,8 +34,12 @@ RUN pip3 install --upgrade \
     pip \
     virtualenv
 
-RUN mkdir -p /venv
-RUN python3 -m venv /venv
+
+# create and activate virtual environment
+RUN mkdir -p /venv && \
+    python3 -m venv /opt/venv
+ENV PATH="/venv/bin:$PATH"
+
 
 # add additional directories
 RUN mkdir -p ${WORKDIR} && chown ${SC_USER_NAME}:${SC_USER_NAME} ${WORKDIR} && \
@@ -45,7 +49,7 @@ COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} docker/custom/*.sh /docker
 
 # add python app requirements
 COPY requirements/base.txt /tmp/requirements.txt
-RUN /venv/bin/pip3 install -r /tmp/requirements.txt
+RUN pip3 install -r /tmp/requirements.txt
 
 COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} static-content/hello-world.txt /www/hello-world.txt
 COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} src/dy_static_file_server ${WORKDIR}/dy_static_file_server

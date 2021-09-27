@@ -14,7 +14,24 @@ echo   User    : "$(id "$(whoami)")"
 echo   Workdir : "$(pwd)"
 
 
+# adapt to be compatible for legacy boot mode
+if [ -n "$SIMCORE_NODE_BASEPATH" ]; then
+    echo "Boot mode: LEGACY"
+    echo "Creating ${INPUT_FOLDER} and ${OUTPUT_FOLDER}"
+    mkdir -p "${INPUT_FOLDER}"
+    mkdir -p "${OUTPUT_FOLDER}"
+    echo "SERVER_ROOT: ${SERVER_ROOT}"
+    echo "SIMCORE_NODE_BASEPATH: ${SIMCORE_NODE_BASEPATH}"
+    echo "Creating ${SERVER_ROOT}${SIMCORE_NODE_BASEPATH} and changin ownership to $SC_USER_NAME"
+    mkdir -p "${SERVER_ROOT}${SIMCORE_NODE_BASEPATH}"
+    chown -R "$SC_USER_NAME" "${SERVER_ROOT}${SIMCORE_NODE_BASEPATH}"
+else 
+    echo "Boot mode: DYNAMIC-SIDECAR"
+fi
+
+
 # expect input/output folders to be mounted
+#TODO: determine if legacy boot more and based on that do stuff like creating 
 stat "${INPUT_FOLDER}" > /dev/null 2>&1 || \
         (echo "ERROR: You must mount '${INPUT_FOLDER}' to deduce user and group ids" && exit 1)
 stat "${OUTPUT_FOLDER}" > /dev/null 2>&1 || \
