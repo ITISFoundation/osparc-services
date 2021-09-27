@@ -15,7 +15,6 @@ expected_files = (
     "metadata/metadata-dynamic-sidecar-compose-spec.yml",
     "metadata/metadata-dynamic-sidecar.yml",
     "metadata/metadata.yml",
-    "docker/custom:nginx.conf",
     "docker/custom:boot.sh",
     "docker/custom:Dockerfile",
     "tools:update_compose_labels.py",

@@ -130,6 +130,12 @@ def create_files_in_input(key_values_json_inputs_content: str) -> Callable:
     return _callable
 
 
+@pytest.fixture
+def ensure_index_html(env_server_root: Path) -> None:
+    index_html = env_server_root / "index.html"
+    index_html.write_text("<html>index.html</html>")
+
+
 # TESTS
 
 
@@ -163,6 +169,7 @@ def test_folder_mirror(
     output_dir: Path,
     create_files_in_input: Callable,
     key_values_json_outputs_content: str,
+    ensure_index_html: None,
 ) -> None:
     from dy_static_file_server.inputs_to_outputs import InputsObserver
 

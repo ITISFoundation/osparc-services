@@ -1,4 +1,3 @@
-# TODO: have a watcher doing all the watching
 import logging
 import json
 import os
@@ -9,6 +8,13 @@ from typing import List, Optional
 
 from watchdog.events import DirModifiedEvent, FileSystemEventHandler
 from watchdog.observers import Observer
+
+# when not testing `dy_static_file_server` directory is not detected
+# as a module; relative imports will not work
+try:
+    from index_html_generator import generate_index
+except ModuleNotFoundError:
+    from .index_html_generator import generate_index
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +28,8 @@ class UnifyingEventHandler(FileSystemEventHandler):
     def on_any_event(self, event: DirModifiedEvent):
         super().on_any_event(event)
         remap_input_to_output(self.input_dir, self.output_dir)
+        # alway regenerate index
+        generate_index()
 
 
 def _list_files_in_dir(path: Path) -> List[Path]:
@@ -39,8 +47,9 @@ def remap_input_to_output(input_dir: Path, output_dir: Path) -> None:
     # move file to correct path
     input_file: Path = input_dir / "file_input" / "test_file"
     output_file_path: Path = output_dir / "file_output" / "test_file"
-    output_file_path.parent.mkdir(parents=True, exist_ok=True)
-    output_file_path.write_bytes(input_file.read_bytes())
+    if input_file.is_file():
+        output_file_path.parent.mkdir(parents=True, exist_ok=True)
+        output_file_path.write_bytes(input_file.read_bytes())
 
     # rewrite key_values.json
     inputs_key_values_file = input_dir / "key_values.json"
@@ -48,7 +57,8 @@ def remap_input_to_output(input_dir: Path, output_dir: Path) -> None:
     outputs_key_values = {
         k.replace("_input", "_output"): v["value"] for k, v in inputs_key_values.items()
     }
-    outputs_key_values["file_output"] = f"{output_file_path}"
+    if input_file.is_file():
+        outputs_key_values["file_output"] = f"{output_file_path}"
 
     outputs_key_values_file = output_dir / "key_values.json"
     outputs_key_values_file.write_text(
@@ -118,17 +128,22 @@ def main() -> None:
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
-    input_dir = get_path_from_env("DY_SIDECAR_PATH_INPUTS")
-    output_dir = get_path_from_env("DY_SIDECAR_PATH_OUTPUTS")
+    is_legacy = os.environ.get("SIMCORE_NODE_BASEPATH", None) is not None
+
+    input_dir = get_path_from_env(
+        "INPUT_FOLDER" if is_legacy else "DY_SIDECAR_PATH_INPUTS"
+    )
+    output_dir = get_path_from_env(
+        "OUTPUT_FOLDER" if is_legacy else "DY_SIDECAR_PATH_OUTPUTS"
+    )
     if input_dir == output_dir:
         raise ValueError(f"Inputs and outputs directories match {input_dir}")
 
+    # make sure index exists before the monitor starts
+    generate_index()
+
     inputs_objserver = InputsObserver(input_dir, output_dir)
     inputs_objserver.start()
-
-    # manually trigger once when it starts
-    # remaps inputs to outputs before continuing
-    remap_input_to_output(input_dir=input_dir, output_dir=output_dir)
     inputs_objserver.join()
 
     logger.info("%s main exited", InputsObserver.__name__)

@@ -2,7 +2,7 @@ name: dy-static-file-server
 key: simcore/services/dynamic/dy-static-file-server
 type: dynamic
 integration-version: 1.0.0
-version: 1.0.7
+version: 2.0.0
 description: Legacy test dynamic service (starts using original director-v0). The /workdir/generated-data directory is populated if no content is present.
 contact: anderegg@itis.swiss
 authors:

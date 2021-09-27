@@ -8,25 +8,17 @@ echo   User    : "$(id "$(whoami)")"
 echo   Workdir : "$(pwd)"
 echo   Env      : "$(env)"
 
+echo "/workdir content"
+ls -lah
 
-if [ -n "${SIMCORE_NODE_BASEPATH+set}" ]
-then
-    echo
-    echo moving website to "${NGINX_SERVER_ROOT}${SIMCORE_NODE_BASEPATH}"...
-    echo
+echo "ensure some random data is created in /workdir/generated-data content"
+python3 ensure_random_workdir_data.py
 
-    mkdir -p "${NGINX_SERVER_ROOT}${SIMCORE_NODE_BASEPATH}"
-    mv "${NGINX_SERVER_ROOT}"/*.txt "${NGINX_SERVER_ROOT}${SIMCORE_NODE_BASEPATH}"
+echo "/workdir/generated-data content"
+ls -lah /workdir/generated-data/
 
-    echo "Nginx will serve from ${NGINX_SERVER_ROOT}${SIMCORE_NODE_BASEPATH}"
-    
-else
-    echo "Nginx will serve from ${NGINX_SERVER_ROOT}, nothing to do"
-fi
+echo "starting background inputs->ouputs mapping when inputs change"
+python3 inputs_to_outputs.py &
 
-# ensure some random data is created in /workdir
-/venv/bin/python ensure_random_workdir_data.py
-
-# keep mirroring running in the background
-exec /venv/bin/python folder_mirror.py &
-exec nginx -g "daemon off;" 
+echo "booting static-web-server"
+exec static-web-server
