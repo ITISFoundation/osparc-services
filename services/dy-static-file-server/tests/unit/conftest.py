@@ -22,8 +22,9 @@ def server_root(tmp_dir) -> Path:
 
 
 @pytest.fixture
-def env_server_root(monkeypatch: MonkeyPatch, server_root: Path) -> None:
+def env_server_root(monkeypatch: MonkeyPatch, server_root: Path) -> Path:
     monkeypatch.setenv("SERVER_ROOT", f"{server_root}")
+    return server_root
 
 
 @pytest.fixture
