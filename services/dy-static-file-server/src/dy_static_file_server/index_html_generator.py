@@ -18,7 +18,12 @@ def _get_dir_files(dir_path: Path) -> List[str]:
 
 @lru_cache()
 def _get_server_root() -> Path:
-    return Path(os.environ["SERVER_ROOT"])
+    if os.environ.get("SIMCORE_NODE_BASEPATH", None) is None:
+        return Path(os.environ["SERVER_ROOT"])
+
+    # when in legacy boot mode
+    node_base_path = os.environ["SIMCORE_NODE_BASEPATH"].strip("/")
+    return Path(os.environ["SERVER_ROOT"]) / node_base_path
 
 
 def get_index_path() -> Path:
