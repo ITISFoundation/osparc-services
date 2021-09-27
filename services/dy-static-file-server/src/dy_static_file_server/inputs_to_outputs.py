@@ -9,7 +9,8 @@ from typing import List, Optional
 from watchdog.events import DirModifiedEvent, FileSystemEventHandler
 from watchdog.observers import Observer
 
-# at runtime dy_static_file_server is not a module
+# when not testing `dy_static_file_server` directory is not detected 
+# as a module; relative imports will not work
 try:
     from index_html_generator import generate_index
 except ModuleNotFoundError:
@@ -118,6 +119,10 @@ class InputsObserver:
             self._thread.join()
         else:
             raise RuntimeError(f"{self.__class__.__name__} was not started")
+
+
+def is_boot_mode_legacy() -> bool:
+    return False
 
 
 def main() -> None:
