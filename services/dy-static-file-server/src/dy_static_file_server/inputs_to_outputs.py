@@ -36,9 +36,17 @@ def _list_files_in_dir(path: Path) -> List[Path]:
     return [x for x in path.rglob("*") if x.is_file()]
 
 
+def _format_files(files: List[Path]) -> str:
+    return "\n".join(map(str, files))
+
+
 def remap_input_to_output(input_dir: Path, output_dir: Path) -> None:
     logger.info("Running directory sync")
+    files_in_input_dir = _list_files_in_dir(input_dir)
     files_in_output_dir = _list_files_in_dir(output_dir)
+
+    logger.info("Files in '%s':\n%s", input_dir, _format_files(files_in_input_dir))
+    logger.info("Files in '%s':\n%s", output_dir, _format_files(files_in_output_dir))
 
     # remove all presnet files in outputs
     for output_file in files_in_output_dir:
