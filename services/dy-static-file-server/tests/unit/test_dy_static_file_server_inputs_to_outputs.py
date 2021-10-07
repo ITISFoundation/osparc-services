@@ -233,3 +233,46 @@ def test_folder_mirror_main(
     with pytest.raises(ValueError) as exec:  # pylint: disable=redefined-builtin
         inputs_to_outputs.main()
     assert exec.value.args[0] == f"Inputs and outputs directories match {tmp_dir}"
+
+
+def test_wait_for_paths_to_be_present_on_disk_fails(
+    dy_static_file_server: ModuleType, tmp_dir: Path
+) -> None:
+    from dy_static_file_server import inputs_to_outputs
+
+    path_one = tmp_dir / "a_dir"
+    path_two = tmp_dir / "a_file.txt"
+
+    # pylint: disable=redefined-builtin
+    with pytest.raises(inputs_to_outputs.CouldNotDetectFilesException) as exec:
+        # pylint: disable=protected-access
+        inputs_to_outputs._wait_for_paths_to_be_present_on_disk(
+            path_one, path_two, basedir=tmp_dir, check_interval=0.01
+        )
+    assert exec.value.args[0] == "Did not find expected files on disk!"
+
+
+def test_wait_for_paths_to_be_present_on_disk_ok(
+    dy_static_file_server: ModuleType, tmp_dir: Path
+) -> None:
+    from dy_static_file_server import inputs_to_outputs
+
+    path_one = tmp_dir / "a_dir"
+    path_two = tmp_dir / "a_file.txt"
+
+    def create_files(path_one: Path, path_two: Path) -> None:
+        # wait for _wait_for_paths_to_be_present_on_disk to start
+        # before creating paths
+        time.sleep(0.1)
+        path_one.mkdir(parents=True, exist_ok=True)
+        path_two.write_text("something is going here")
+
+    th = Thread(target=create_files, args=(path_one, path_two), daemon=True)
+    th.start()
+
+    # pylint: disable=protected-access
+    inputs_to_outputs._wait_for_paths_to_be_present_on_disk(
+        path_one, path_two, basedir=tmp_dir, check_interval=0.01
+    )
+
+    th.join()

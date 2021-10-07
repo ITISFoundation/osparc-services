@@ -1,3 +1,4 @@
+import logging
 import os
 from typing import List
 from textwrap import dedent
@@ -8,6 +9,8 @@ from functools import lru_cache
 DATETIME_FORMAT = "%d/%m/%Y %H:%M:%S"
 
 REFRESH_INTERVAL: int = 5
+
+logger = logging.getLogger(__name__)
 
 
 def _get_dir_files(dir_path: Path) -> List[str]:
@@ -80,4 +83,4 @@ def generate_index() -> None:
     index_html_path.touch()
 
     index_html_path.write_text(_get_index_content())
-    print(f"Regenerated {index_html_path}")
+    logger.info("Regenerated %s", index_html_path)
