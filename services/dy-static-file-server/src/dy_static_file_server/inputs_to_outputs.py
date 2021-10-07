@@ -41,14 +41,10 @@ def _list_files_in_dir(path: Path) -> List[Path]:
     return [x for x in path.rglob("*") if x.is_file()]
 
 
-def _run_and_log_result(command: str) -> None:
-    split_command = command.split(" ")
+def _log_files_in_path(path: Path) -> None:
+    split_command = f"ls -lah {path}".split(" ")
     command_result = check_output(split_command).decode("utf-8")
-    logger.info("Result for:\n`%s` \n%s", command, command_result)
-
-
-def _format_files(files: List[Path]) -> str:
-    return "\n".join(map(str, files))
+    logger.info("Files in '%s':\n%s", path, command_result)
 
 
 def _wait_for_paths_to_be_present_on_disk(
@@ -73,7 +69,7 @@ def _wait_for_paths_to_be_present_on_disk(
             return
         time.sleep(check_interval)
 
-    _run_and_log_result(f"ls -lah {basedir}")
+    _log_files_in_path(basedir)
     raise CouldNotDetectFilesException("Did not find expected files on disk!")
 
 
@@ -89,11 +85,8 @@ def remap_input_to_output(input_dir: Path, output_dir: Path) -> None:
         input_file, inputs_key_values_file, basedir=input_dir
     )
 
-    files_in_input_dir = _list_files_in_dir(input_dir)
-    files_in_output_dir = _list_files_in_dir(output_dir)
-
-    logger.info("Files in '%s':\n%s", input_dir, _format_files(files_in_input_dir))
-    logger.info("Files in '%s':\n%s", output_dir, _format_files(files_in_output_dir))
+    _log_files_in_path(input_dir)
+    _log_files_in_path(output_dir)
 
     # remove all presnet files in outputs
     files_in_output_dir = _list_files_in_dir(output_dir)
