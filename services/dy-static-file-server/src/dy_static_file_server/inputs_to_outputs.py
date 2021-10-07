@@ -5,7 +5,7 @@ import time
 from pathlib import Path
 from threading import Thread
 from typing import List, Optional
-
+from subprocess import check_output
 from watchdog.events import DirModifiedEvent, FileSystemEventHandler
 from watchdog.observers import Observer
 
@@ -19,6 +19,10 @@ except ModuleNotFoundError:
 logger = logging.getLogger(__name__)
 
 
+class CouldNotDetectFilesException(Exception):
+    pass
+
+
 class UnifyingEventHandler(FileSystemEventHandler):
     def __init__(self, input_dir: Path, output_dir: Path):
         super().__init__()
@@ -27,6 +31,7 @@ class UnifyingEventHandler(FileSystemEventHandler):
 
     def on_any_event(self, event: DirModifiedEvent):
         super().on_any_event(event)
+        logger.info("Detected event: %s", event)
         remap_input_to_output(self.input_dir, self.output_dir)
         # alway regenerate index
         generate_index()
@@ -36,23 +41,62 @@ def _list_files_in_dir(path: Path) -> List[Path]:
     return [x for x in path.rglob("*") if x.is_file()]
 
 
+def _run_and_log_result(command: str) -> None:
+    split_command = command.split(" ")
+    command_result = check_output(split_command).decode("utf-8")
+    logger.info("Result for:\n`%s` \n%s", command, command_result)
+
+
+def _wait_for_paths_to_be_present_on_disk(
+    *paths: Path,
+    basedir: Path,
+    check_interval: float = 0.1,
+    max_attempts: int = 100,
+) -> None:
+    total_run_time = max_attempts * check_interval
+    logger.info(
+        "Will check for %s seconds every %s seconds", total_run_time, check_interval
+    )
+
+    for _ in range(max_attempts):
+        paths_are_not_missing = True
+        for path in paths:
+            if not path.exists():
+                paths_are_not_missing = False
+        logger.info("Are paths present? %s", paths_are_not_missing)
+
+        if paths_are_not_missing:
+            return
+        time.sleep(check_interval)
+
+    _run_and_log_result(f"ls -lah {basedir}")
+    raise CouldNotDetectFilesException("Did not find expected files on disk!")
+
+
 def remap_input_to_output(input_dir: Path, output_dir: Path) -> None:
     logger.info("Running directory sync")
-    files_in_output_dir = _list_files_in_dir(output_dir)
+
+    input_file: Path = input_dir / "file_input" / "test_file"
+    inputs_key_values_file = input_dir / "key_values.json"
+
+    # When IO is slower the files may not already be present at the destination.
+    # Poll files to see when they are present or raise an error if missing
+    _wait_for_paths_to_be_present_on_disk(
+        input_file, inputs_key_values_file, basedir=input_dir
+    )
 
     # remove all presnet files in outputs
+    files_in_output_dir = _list_files_in_dir(output_dir)
     for output_file in files_in_output_dir:
         output_file.unlink()
 
     # move file to correct path
-    input_file: Path = input_dir / "file_input" / "test_file"
     output_file_path: Path = output_dir / "file_output" / "test_file"
     if input_file.is_file():
         output_file_path.parent.mkdir(parents=True, exist_ok=True)
         output_file_path.write_bytes(input_file.read_bytes())
 
     # rewrite key_values.json
-    inputs_key_values_file = input_dir / "key_values.json"
     inputs_key_values = json.loads(inputs_key_values_file.read_text())
     outputs_key_values = {
         k.replace("_input", "_output"): v["value"] for k, v in inputs_key_values.items()
