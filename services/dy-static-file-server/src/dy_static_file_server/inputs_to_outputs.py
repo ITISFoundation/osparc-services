@@ -47,6 +47,10 @@ def _run_and_log_result(command: str) -> None:
     logger.info("Result for:\n`%s` \n%s", command, command_result)
 
 
+def _format_files(files: List[Path]) -> str:
+    return "\n".join(map(str, files))
+
+
 def _wait_for_paths_to_be_present_on_disk(
     *paths: Path,
     basedir: Path,
@@ -84,6 +88,12 @@ def remap_input_to_output(input_dir: Path, output_dir: Path) -> None:
     _wait_for_paths_to_be_present_on_disk(
         input_file, inputs_key_values_file, basedir=input_dir
     )
+
+    files_in_input_dir = _list_files_in_dir(input_dir)
+    files_in_output_dir = _list_files_in_dir(output_dir)
+
+    logger.info("Files in '%s':\n%s", input_dir, _format_files(files_in_input_dir))
+    logger.info("Files in '%s':\n%s", output_dir, _format_files(files_in_output_dir))
 
     # remove all presnet files in outputs
     files_in_output_dir = _list_files_in_dir(output_dir)

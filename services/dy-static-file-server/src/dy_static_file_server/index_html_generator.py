@@ -80,6 +80,7 @@ def _get_index_content() -> str:
 
 def generate_index() -> None:
     index_html_path = get_index_path()
+    index_html_path.touch()
 
     index_html_path.write_text(_get_index_content())
     logger.info("Regenerated %s", index_html_path)
