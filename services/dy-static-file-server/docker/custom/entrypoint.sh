@@ -31,7 +31,6 @@ fi
 
 
 # expect input/output folders to be mounted
-#TODO: determine if legacy boot more and based on that do stuff like creating 
 stat "${INPUT_FOLDER}" > /dev/null 2>&1 || \
         (echo "ERROR: You must mount '${INPUT_FOLDER}' to deduce user and group ids" && exit 1)
 stat "${OUTPUT_FOLDER}" > /dev/null 2>&1 || \

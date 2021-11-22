@@ -13,7 +13,7 @@ services:
         io.simcore.name: '{"name": "dy-static-file-server"}'
         io.simcore.outputs: '{"outputs": {}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "2.0.2"}'
+        io.simcore.version: '{"version": "2.0.3"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
@@ -55,7 +55,7 @@ services:
           {"displayOrder": 5, "label": "File output", "description": "File from input",
           "type": "data:*/*", "fileToKeyMap": {"test_file": "file_output"}}}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "2.0.2"}'
+        io.simcore.version: '{"version": "2.0.3"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
@@ -100,7 +100,7 @@ services:
           {"displayOrder": 5, "label": "File output", "description": "File from input",
           "type": "data:*/*", "fileToKeyMap": {"test_file": "file_output"}}}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "2.0.2"}'
+        io.simcore.version: '{"version": "2.0.3"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
@@ -109,6 +109,7 @@ services:
         simcore.service.container-http-entrypoint: dy-static-file-server-dynamic-sidecar-compose-spec
         simcore.service.paths-mapping: '{"outputs_path": "/www/outputs", "inputs_path":
           "/www/inputs", "state_paths": ["/workdir/generated-data"]}'
+        simcore.service.restart-policy: on-inputs-downloaded
         simcore.service.settings: '[{"name": "resources", "type": "Resources", "value":
           {"mem_limit":17179869184, "cpu_limit": 1000000000}}, {"name": "ports", "type":
           "int", "value": 8080}, {"name": "constraints", "type": "string", "value":
