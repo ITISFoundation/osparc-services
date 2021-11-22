@@ -35,4 +35,4 @@ default_context:
     project_slug:              'dy-static-file-server'
     project_type:              'computational'
     release_date:              '2021'
-    version:                   '2.0.2'
+    version:                   '2.0.3'
