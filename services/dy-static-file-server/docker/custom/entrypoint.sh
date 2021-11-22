@@ -79,12 +79,12 @@ else
     adduser -u "$HOST_USERID" -G "$CONT_GROUPNAME" -D -s /bin/sh "$SC_USER_NAME"
 
     echo "Changing group properties of files around from $SC_USER_ID to group $CONT_GROUPNAME"
-    find / -prune -o -group "$SC_USER_ID" -print
-    find / -prune -o -group "$SC_USER_ID" -exec chgrp -h "$CONT_GROUPNAME" {} \;
+    find / -path /var/log/nginx -prune -o -group "$SC_USER_ID" -print
+    find / -path /var/log/nginx -prune -o -group "$SC_USER_ID" -exec chgrp -h "$CONT_GROUPNAME" {} \;
     # change user property of files already around
     echo "Changing ownership properties of files around from $SC_USER_ID to group $CONT_GROUPNAME"
-    find / -prune -o -user "$SC_USER_ID" -exec chown -h "$SC_USER_NAME" {} \;
-    find / -prune -o -user "$SC_USER_ID" -print
+    find / -path /var/log/nginx -prune -o -user "$SC_USER_ID" -exec chown -h "$SC_USER_NAME" {} \;
+    find / -path /var/log/nginx -prune -o -user "$SC_USER_ID" -print
 fi
 
 echo "Starting $* ..."
