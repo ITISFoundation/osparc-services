@@ -187,6 +187,13 @@ publish-local:  ## push to local throw away registry to test integration
 	@curl --silent ${LOCAL_REGISTRY_ENDPOINT}/${DYNAMIC_SIMORE_PATH}/dy-static-file-server-dynamic-sidecar/tags/list?n=50 | jq '.'
 	@curl --silent ${LOCAL_REGISTRY_ENDPOINT}/${DYNAMIC_SIMORE_PATH}/dy-static-file-server-dynamic-sidecar-compose-spec/tags/list?n=50 | jq '.'
 
+.PHONY: publish-1.0.5
+publish-1.0.5:	## push to local registry
+	$(foreach service,$(SERVICES_LIST),\
+		docker pull $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):1.0.5 && \
+		docker tag itisfoundation/$(service):1.0.5 $(LOCAL_REGISTRY)/$(service):1.0.5 && \
+		docker push $(LOCAL_REGISTRY)/$(service):1.0.5 && \
+	) echo done
 
 # DEVELOPMENT ----------------------------------------
 # NOTE: since using docker-compose would create the folders automatically but as root user, which is inconvenient
