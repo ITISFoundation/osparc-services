@@ -7,6 +7,6 @@ variable "SLEEPER_VERSION" {
 }
 
 target "sleeper" {
-    tags = ["${DOCKER_REGISTRY}/volume-sync:latest","${DOCKER_REGISTRY}/volume-sync:${SLEEPER_VERSION}"]
+    tags = ["${DOCKER_REGISTRY}/sleeper:latest","${DOCKER_REGISTRY}/sleeper:${SLEEPER_VERSION}"]
     output = ["type=registry"]
 }
