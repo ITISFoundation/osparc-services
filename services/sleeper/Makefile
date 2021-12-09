@@ -64,22 +64,27 @@ docker-compose-meta.yml: $(metatada)
 	# Injects metadata from $< as labels
 	@.venv/bin/python3 tools/update_compose_labels.py --compose $@ --metadata $<
 
+
+DOCKER_TARGET_PLATFORMS ?= linux/amd64
+comma := ,
+
 define _docker_compose_build
 export DOCKER_BUILD_TARGET=$(if $(findstring -devel,$@),development,$(if $(findstring -cache,$@),cache,production)); \
-$(if $(findstring -x,$@),\
-	docker buildx > /dev/null; export DOCKER_CLI_EXPERIMENTAL=enabled; docker buildx bake  --file docker-compose-build.yml --file docker-compose-meta.yml $(if $(findstring -nc,$@),--no-cache,);,\
-	$(if $(findstring -kit,$@),export DOCKER_BUILDKIT=1;export COMPOSE_DOCKER_CLI_BUILD=1;,) \
-	docker-compose --file docker-compose-build.yml --file docker-compose-meta.yml build $(if $(findstring -nc,$@),--no-cache,);\
-)
+docker buildx bake  \
+	$(if $(findstring $(comma),$(DOCKER_TARGET_PLATFORMS)),,--set *.output="type=docker$(comma)push=false") \
+	$(if $(push),--push,) \
+	$(if $(push),--file docker-bake.hcl,) --file docker-compose-build.yml \
+	--file docker-compose-meta.yml \
+	 $(if $(target),$(target),) \
+	$(if $(findstring -nc,$@),--no-cache,);
 endef
 
 
 
 # DOCKER ----------------------------------- 
-.PHONY: build build-devel build-kit-devel build-x build-devel-x
-build build-devel build-kit build-kit-devel build-x build-devel-x: docker-compose-build.yml docker-compose-meta.yml service.cli/run ## builds images, -devel in development mode, -kit using docker buildkit, -x using docker buildX (if installed)
+.PHONY: build build-devel
+build build-devel: docker-compose-build.yml docker-compose-meta.yml service.cli/run ## builds images, -devel in development mode, -kit using docker buildkit, -x using docker buildX (if installed)
 	# building image local/${DOCKER_IMAGE_NAME}...
-	docker-compose --help
 	@$(call _docker_compose_build)
 
 define show-meta
