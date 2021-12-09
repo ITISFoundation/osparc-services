@@ -20,6 +20,10 @@ RUN apt-get update --fix-missing && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# for ARM architecture this helps a lot VS building packages
+ENV PIP_EXTRA_INDEX_URL=https://www.piwheels.org/simple
+
+
 
 # -------------------------- Build stage -------------------
 # Installs build/package management tools and third party dependencies
