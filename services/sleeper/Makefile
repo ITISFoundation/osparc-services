@@ -75,7 +75,7 @@ docker buildx bake  \
 	--set sleeper.platform=$(DOCKER_TARGET_PLATFORMS) \
 	)\
 	$(if $(findstring $(comma),$(DOCKER_TARGET_PLATFORMS)),,--set *.output="type=docker$(comma)push=false") \
-	$(if $(push),--push,) \
+	$(if $(push),sleeper.push,) \
 	$(if $(push),--file docker-bake.hcl,) --file docker-compose-build.yml \
 	--file docker-compose-meta.yml \
 	 $(if $(target),$(target),) \

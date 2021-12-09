@@ -91,3 +91,9 @@ jobs:
           DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
         run: |
           make build push=1
+      - name: build image for multi-arch
+        if: github.event_name == 'pull_request'
+        env:
+          DOCKER_TARGET_PLATFORMS: linux/amd64,linux/arm/v7,linux/arm64
+        run: |
+          make build
