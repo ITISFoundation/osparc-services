@@ -1,4 +1,6 @@
-FROM nvidia/cuda:10.0-base-ubuntu18.04 as base
+
+ARG BASE_IMAGE="nvidia/cuda:10.0-base-ubuntu18.04"
+FROM ${BASE_IMAGE} as base
 #
 #  USAGE:
 #     cd services/sleeper

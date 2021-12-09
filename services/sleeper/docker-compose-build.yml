@@ -6,15 +6,22 @@ services:
       context: ./
       dockerfile: docker/custom/Dockerfile
       target: production
+      args:
+        BASE_IMAGE: python:3.9-slim-buster
+
   sleeper-gpu:
     image: local/${DOCKER_IMAGE_NAME}-gpu:${DOCKER_BUILD_TARGET}
     build:
       context: ./
       dockerfile: docker/custom/Dockerfile
       target: production
+      args:
+        BASE_IMAGE: nvidia/cuda:10.0-base-ubuntu18.04
   sleeper-mpi:
     image: local/${DOCKER_IMAGE_NAME}-mpi:${DOCKER_BUILD_TARGET}
     build:
       context: ./
       dockerfile: docker/custom/Dockerfile
       target: production
+      args:
+        BASE_IMAGE: nvidia/cuda:10.0-base-ubuntu18.04

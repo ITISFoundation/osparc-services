@@ -71,6 +71,9 @@ comma := ,
 define _docker_compose_build
 export DOCKER_BUILD_TARGET=$(if $(findstring -devel,$@),development,$(if $(findstring -cache,$@),cache,production)); \
 docker buildx bake  \
+	$(if $(findstring -devel,$@),,\
+	--set sleeper.platform=$(DOCKER_TARGET_PLATFORMS) \
+	)\
 	$(if $(findstring $(comma),$(DOCKER_TARGET_PLATFORMS)),,--set *.output="type=docker$(comma)push=false") \
 	$(if $(push),--push,) \
 	$(if $(push),--file docker-bake.hcl,) --file docker-compose-build.yml \
@@ -89,7 +92,7 @@ build build-devel: docker-compose-build.yml docker-compose-meta.yml service.cli/
 
 define show-meta
 	$(foreach iid,$(shell docker images */$(1):* -q | sort | uniq),\
-		docker image inspect $(iid) | jq '.[0] | .RepoTags, .ContainerConfig.Labels, .Config.Labels';)
+		docker image inspect $(iid) | jq '.[0] | .RepoTags, .ContainerConfig.Labels, .Config.Labels, .Architecture';)
 endef
 
 info-build: ## displays info on the built image
