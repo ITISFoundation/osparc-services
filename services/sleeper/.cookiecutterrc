@@ -16,23 +16,22 @@
 #
 
 default_context:
-
-    _extensions:               ['jinja2_time.TimeExtension']
-    _template:                 'gh:ITISFoundation/cookiecutter-osparc-service'
-    author_affiliation:        'ITIS Foundation'
-    author_email:              'neagu@itis.swiss'
-    author_name:               'Andrei Neagu'
-    contact_email:             'neagu@itis.swiss'
-    default_docker_registry:   'itisfoundation'
-    docker_base:               'python:3.7'
-    git_username:              'Andrei Neagu'
-    number_of_inputs:          '2'
-    number_of_outputs:         '2'
-    project_git_repo:          'https://github.com/ITISFoundation/osparc-services.git'
-    project_name:              'sleeper'
-    project_package_name:      'sleeper'
-    project_short_description: 'A service which awaits for time to pass used for system validation.'
-    project_slug:              'sleeper'
-    project_type:              'computational'
-    release_date:              '2020'
-    version:                   '2.0.1'
+    _extensions: ["jinja2_time.TimeExtension"]
+    _template: "gh:ITISFoundation/cookiecutter-osparc-service"
+    author_affiliation: "ITIS Foundation"
+    author_email: "neagu@itis.swiss"
+    author_name: "Andrei Neagu"
+    contact_email: "neagu@itis.swiss"
+    default_docker_registry: "itisfoundation"
+    docker_base: "python:3.7"
+    git_username: "Andrei Neagu"
+    number_of_inputs: "2"
+    number_of_outputs: "2"
+    project_git_repo: "https://github.com/ITISFoundation/osparc-services.git"
+    project_name: "sleeper"
+    project_package_name: "sleeper"
+    project_short_description: "A service which awaits for time to pass used for system validation."
+    project_slug: "sleeper"
+    project_type: "computational"
+    release_date: "2020"
+    version: "2.1.1"
