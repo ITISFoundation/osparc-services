@@ -1,4 +1,6 @@
-FROM nvidia/cuda:10.0-base-ubuntu18.04 as base
+
+ARG BASE_IMAGE="nvidia/cuda:10.0-base-ubuntu18.04"
+FROM ${BASE_IMAGE} as base
 #
 #  USAGE:
 #     cd services/sleeper
@@ -17,6 +19,10 @@ RUN apt-get update --fix-missing && \
     apt-get install -y wget bzip2 ca-certificates curl git python3 python3-pip jq && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
+
+# for ARM architecture this helps a lot VS building packages
+ENV PIP_EXTRA_INDEX_URL=https://www.piwheels.org/simple
+
 
 
 # -------------------------- Build stage -------------------
