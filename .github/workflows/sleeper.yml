@@ -86,6 +86,7 @@ jobs:
           driver: docker-container # a must for multi-arch buildsplatform
       - name: build and deploy image for multi-arch
         if: github.event_name == 'push'
+        working-directory: "services/sleeper"
         env:
           DOCKER_TARGET_PLATFORMS: linux/amd64,linux/arm/v7,linux/arm64
           DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
@@ -93,6 +94,7 @@ jobs:
           make build push=1
       - name: build image for multi-arch
         if: github.event_name == 'pull_request'
+        working-directory: "services/sleeper"
         env:
           DOCKER_TARGET_PLATFORMS: linux/amd64,linux/arm/v7,linux/arm64
         run: |
