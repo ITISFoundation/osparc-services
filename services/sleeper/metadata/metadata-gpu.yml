@@ -2,7 +2,7 @@ name: sleeper-gpu
 key: simcore/services/comp/itis/sleeper-gpu
 type: computational
 integration-version: 1.0.0
-version: 2.1.1
+version: 2.1.3
 description: A service which awaits for time to pass, two times.
 contact: neagu@itis.swiss
 authors:
@@ -58,4 +58,3 @@ outputs:
     description: Interval is generated in range [1-9]
     type: integer
     unit: second
-  
