@@ -2,7 +2,7 @@ name: sleeper
 key: simcore/services/comp/itis/sleeper
 type: computational
 integration-version: 1.0.0
-version: 2.1.3
+version: 2.1.4
 description: A service which awaits for time to pass, two times.
 contact: maiz@itis.swiss
 authors:
