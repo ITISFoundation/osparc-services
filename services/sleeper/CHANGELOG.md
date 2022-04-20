@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Inputs and Outputs follow new unit schema
 ### Added
-- Constraints added to inputs
+- Constraint added to "Sleep interval" input
 
 
 ## [2.1.1] - 2020-02-24
