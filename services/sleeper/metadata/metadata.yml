@@ -2,7 +2,7 @@ name: sleeper
 key: simcore/services/comp/itis/sleeper
 type: computational
 integration-version: 1.0.0
-version: 2.1.3
+version: 2.1.4
 description: A service which awaits for time to pass, two times.
 contact: maiz@itis.swiss
 authors:
@@ -26,10 +26,15 @@ inputs:
   input_2:
     displayOrder: 2
     label: Sleep interval
-    description: Choose an amount of time to sleep
-    type: integer
-    unit: second
+    description: Choose an amount of time to sleep in range [0-5]
     defaultValue: 2
+    type: ref_contentSchema
+    contentSchema:
+      title: Sleep interval
+      type: integer
+      x_unit: second
+      minimum: 0
+      maximum: 5
   input_3:
     displayOrder: 3
     label: Fail after sleep
@@ -40,10 +45,12 @@ inputs:
     displayOrder: 4
     label: Distance to bed
     description: It will first walk the distance to bed
-    type: integer
-    unit: meter
     defaultValue: 0
-
+    type: ref_contentSchema
+    contentSchema:
+      title: Distance to bed
+      type: integer
+      x_unit: meter
 outputs:
   output_1:
     displayOrder: 1
@@ -56,6 +63,8 @@ outputs:
     displayOrder: 2
     label: Random sleep interval
     description: Interval is generated in range [1-9]
-    type: integer
-    unit: second
-  
+    type: ref_contentSchema
+    contentSchema:
+      title: Random sleep interval
+      type: integer
+      x_unit: second

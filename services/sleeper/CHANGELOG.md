@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [2.1.4] - 2022-04-20
+### Changed
+- Inputs and Outputs follow new unit schema
+### Added
+- Constraint added to "Sleep interval" input
+
+
 ## [2.1.1] - 2020-02-24
 ### Added
 - Fourth input added, "Distance to bed" (meters). Before sleeping, it will walk this distance
