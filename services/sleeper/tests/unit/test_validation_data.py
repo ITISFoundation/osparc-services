@@ -85,6 +85,7 @@ def test_validation_data_follows_definition(
                 "integer": int,
                 "boolean": bool,
                 "string": str,
+                "ref_contentSchema": object,
             }
             if not "data:" in label_cfg[key]["type"]:
                 # check the type is correct
