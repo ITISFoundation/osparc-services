@@ -25,9 +25,9 @@ jobs:
     strategy:
       matrix:
         python: [3.8]
-        os: [ubuntu-18.04]
+        os: [ubuntu-20.04]
         node: [10]
-        docker_buildx: [v0.5.1]
+        docker_buildx: [v0.8.1]
       fail-fast: false
     steps:
       - uses: actions/checkout@v2
