@@ -30,8 +30,8 @@ RUN apk add --update --no-cache \
     py3-pip \
     su-exec
 RUN pip3 install --upgrade \
-    pip \
-    virtualenv
+    pip==21.3.1 \
+    virtualenv==20.10.0
 
 
 # create and activate virtual environment
