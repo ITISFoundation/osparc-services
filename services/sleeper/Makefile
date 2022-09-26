@@ -24,6 +24,10 @@ export COMPOSE_INPUT_DIR := ./validation/input
 export COMPOSE_OUTPUT_DIR := .tmp/output
 
 APP_NAME := sleeper
+LOCAL_REGISTRY_HOST ?= registry:5000
+LOCAL_REGISTRY_ENDPOINT = ${LOCAL_REGISTRY_HOST}/v2
+COMP_ITIS_PATH = simcore/services/comp/itis
+LOCAL_REGISTRY = ${LOCAL_REGISTRY_HOST}/${COMP_ITIS_PATH}
 
 # ENVIRON ----------------------------------
 .PHONY: devenv
@@ -60,27 +64,34 @@ docker-compose-meta.yml: $(metatada)
 	# Injects metadata from $< as labels
 	@.venv/bin/python3 tools/update_compose_labels.py --compose $@ --metadata $<
 
+
+DOCKER_TARGET_PLATFORMS ?= linux/amd64
+comma := ,
+
 define _docker_compose_build
 export DOCKER_BUILD_TARGET=$(if $(findstring -devel,$@),development,$(if $(findstring -cache,$@),cache,production)); \
-$(if $(findstring -x,$@),\
-	docker buildx > /dev/null; export DOCKER_CLI_EXPERIMENTAL=enabled; docker buildx bake  --file docker-compose-build.yml --file docker-compose-meta.yml $(if $(findstring -nc,$@),--no-cache,);,\
-	$(if $(findstring -kit,$@),export DOCKER_BUILDKIT=1;export COMPOSE_DOCKER_CLI_BUILD=1;,) \
-	docker-compose --file docker-compose-build.yml --file docker-compose-meta.yml build $(if $(findstring -nc,$@),--no-cache,);\
-)
+docker buildx bake  \
+	$(if $(findstring -devel,$@),,\
+	--set sleeper.platform=$(DOCKER_TARGET_PLATFORMS) \
+	)\
+	$(if $(findstring $(comma),$(DOCKER_TARGET_PLATFORMS)),,--set *.output="type=docker$(comma)push=false") \
+	$(if $(push),--file docker-bake.hcl,) --file docker-compose-build.yml \
+	--file docker-compose-meta.yml \
+	 $(if $(target),$(target),) \
+	$(if $(findstring -nc,$@),--no-cache,);
 endef
 
 
 
 # DOCKER ----------------------------------- 
-.PHONY: build build-devel build-kit-devel build-x build-devel-x
-build build-devel build-kit build-kit-devel build-x build-devel-x: docker-compose-build.yml docker-compose-meta.yml service.cli/run ## builds images, -devel in development mode, -kit using docker buildkit, -x using docker buildX (if installed)
+.PHONY: build build-devel
+build build-devel: docker-compose-build.yml docker-compose-meta.yml service.cli/run ## builds images, -devel in development mode, -kit using docker buildkit, -x using docker buildX (if installed)
 	# building image local/${DOCKER_IMAGE_NAME}...
-	docker-compose --help
 	@$(call _docker_compose_build)
 
 define show-meta
 	$(foreach iid,$(shell docker images */$(1):* -q | sort | uniq),\
-		docker image inspect $(iid) | jq '.[0] | .RepoTags, .ContainerConfig.Labels, .Config.Labels';)
+		docker image inspect $(iid) | jq '.[0] | .RepoTags, .ContainerConfig.Labels, .Config.Labels, .Architecture';)
 endef
 
 info-build: ## displays info on the built image
@@ -156,6 +167,19 @@ pull-latest pull-version: ## pull service from registry
 version-integration-patch version-integration-minor version-integration-major: versioning/integration.cfg ## integration versioning as patch (bug fixes not affecting API/handling), minor/major (backwards-compatible/INcompatible API changes)
 	@$(call _bumpversion,$<,version-integration-)
 
+
+.PHONY: publish-local
+publish-local:	## push to local registry
+	docker tag local/$(DOCKER_IMAGE_NAME):production $(LOCAL_REGISTRY)/$(DOCKER_IMAGE_NAME):${DOCKER_IMAGE_TAG}
+	docker push $(LOCAL_REGISTRY)/$(DOCKER_IMAGE_NAME):${DOCKER_IMAGE_TAG}
+	@curl --silent ${LOCAL_REGISTRY_ENDPOINT}/_catalog | jq '.repositories'
+	@curl --silent $(LOCAL_REGISTRY_ENDPOINT)/${COMP_ITIS_PATH}/$(DOCKER_IMAGE_NAME)/tags/list?n=50 | jq '.'
+
+.PHONY: publish-1.0.0
+publish-1.0.0:	## push to local registry
+	docker pull $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):1.0.0
+	docker tag itisfoundation/$(DOCKER_IMAGE_NAME):1.0.0 $(LOCAL_REGISTRY)/$(DOCKER_IMAGE_NAME):1.0.0
+	docker push $(LOCAL_REGISTRY)/$(DOCKER_IMAGE_NAME):1.0.0
 
 # DEVELOPMENT ---------------------------------------- 
 # NOTE: since using docker-compose would create the folders automatically but as root user, which is inconvenient

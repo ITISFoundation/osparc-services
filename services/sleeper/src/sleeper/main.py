@@ -50,6 +50,16 @@ def test_gpu_cuda_code() -> None:
     # search the history for the CUDA implementation
 
 
+def walk_to_bed(
+    amount_to_walk: int = 0
+) -> None:
+    if amount_to_walk > 0:
+        print(f"So tired, I first need to walk {amount_to_walk} meters to bed")
+        for step in range(2*amount_to_walk):
+            print(f"Step {step+1}")
+            time.sleep(0.5)
+
+
 def sleep_with_payload(
     amount_to_sleep: int, target_payload: Optional[Callable] = None
 ) -> None:
@@ -59,7 +69,7 @@ def sleep_with_payload(
     """
     print(f"Will sleep for {amount_to_sleep} seconds")
     for seconds in range(amount_to_sleep):
-        print(f"[PROGRESS] {seconds + 1}/{amount_to_sleep}...")
+        print(f"[PROGRESS] {seconds + 1}/{amount_to_sleep}")
 
         start = time.time()
         if target_payload:
@@ -78,11 +88,14 @@ def main() -> None:
     1 and 9 will be used.
 
     INPUT_3 will cause this script to fail after sleeping.
+
+    Before sleeping, it will walk first the distance given in INPUT_4.
     """
 
     file_with_int_number = Path(get_from_environ("INPUT_1"))
     sleep_interval = int(get_from_environ("INPUT_2", get_random_sleep()))
     fail_after_sleep = cast_bool(get_from_environ("INPUT_3", "false"))
+    walk_distance = int(get_from_environ("INPUT_4", 0))
     output_folder = Path(get_from_environ("OUTPUT_FOLDER"))
     # if the service needs to confirm GPU is working
     enforce_gpu_support = get_from_environ("DOCKER_RESOURCE_VRAM") is not None
@@ -106,6 +119,10 @@ def main() -> None:
 
     if enforce_mpi_support:
         sleep_payload_function = test_mpi_code
+
+    walk_to_bed(
+        amount_to_walk=walk_distance
+    )
 
     sleep_with_payload(
         amount_to_sleep=amount_to_sleep, target_payload=sleep_payload_function

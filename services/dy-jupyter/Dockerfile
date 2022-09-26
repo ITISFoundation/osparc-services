@@ -54,11 +54,12 @@ RUN pip install --upgrade pip && \
 ENV PYTHONPATH=/home/jovyan/handlers
 # ----------------------------------------------------------------
 # install simcore-sdk
-# git checkout `git rev-list -1 --before="2021-01-20T07:29:28Z" master`
-RUN pip install git+https://github.com/ITISFoundation/osparc-simcore.git@7bc926ce5#subdirectory=packages/service-library &&\
-    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@7bc926ce5#subdirectory=packages/simcore-sdk &&\
-    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@7bc926ce5#subdirectory=services/storage/client-sdk/python &&\
-    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@7bc926ce5#subdirectory=packages/postgres-database &&\
+
+RUN pip install git+https://github.com/ITISFoundation/osparc-simcore.git@a208dce53a2f779195a878fda1cd59ec8532bf8e#subdirectory=packages/service-library &&\
+    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@a208dce53a2f779195a878fda1cd59ec8532bf8e#subdirectory=packages/models-library &&\
+    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@a208dce53a2f779195a878fda1cd59ec8532bf8e#subdirectory=packages/simcore-sdk &&\
+    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@a208dce53a2f779195a878fda1cd59ec8532bf8e#subdirectory=services/storage/client-sdk/python &&\
+    pip install git+https://github.com/ITISFoundation/osparc-simcore.git@a208dce53a2f779195a878fda1cd59ec8532bf8e#subdirectory=packages/postgres-database &&\
     pip install blackfynn
 
 ENV NOTEBOOK_URL="notebooks/notebook.ipynb"

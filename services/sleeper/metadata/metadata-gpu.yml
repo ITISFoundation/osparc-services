@@ -2,8 +2,8 @@ name: sleeper-gpu
 key: simcore/services/comp/itis/sleeper-gpu
 type: computational
 integration-version: 1.0.0
-version: 2.0.2
-description: A service which awaits for time to pass.
+version: 2.1.4
+description: A service which awaits for time to pass, two times.
 contact: neagu@itis.swiss
 authors:
   - name: "Manuel Guidon"
@@ -26,16 +26,31 @@ inputs:
   input_2:
     displayOrder: 2
     label: Sleep interval
-    description: Choose an amount of time to sleep
-    type: integer
+    description: Choose an amount of time to sleep in range [0-5]
     defaultValue: 2
+    type: ref_contentSchema
+    contentSchema:
+      title: Sleep interval
+      type: integer
+      x_unit: second
+      minimum: 0
+      maximum: 5
   input_3:
     displayOrder: 3
     label: Fail after sleep
     description: If set to true will cause service to fail after it sleeps
     type: boolean
     defaultValue: false
-
+  input_4:
+    displayOrder: 4
+    label: Distance to bed
+    description: It will first walk the distance to bed
+    defaultValue: 0
+    type: ref_contentSchema
+    contentSchema:
+      title: Distance to bed
+      type: integer
+      x_unit: meter
 outputs:
   output_1:
     displayOrder: 1
@@ -48,5 +63,8 @@ outputs:
     displayOrder: 2
     label: Random sleep interval
     description: Interval is generated in range [1-9]
-    type: integer
-  
+    type: ref_contentSchema
+    contentSchema:
+      title: Random sleep interval
+      type: integer
+      x_unit: second

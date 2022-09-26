@@ -12,7 +12,8 @@ USER $NB_USER
 COPY --chown=jovyan:users src/requirements.txt .
 # TODO: tmp workaround for https://github.com/pypa/pip/issues/6197
 ENV VIRTUAL_VENV=/home/jovyan/.venv
-RUN python -m venv ${VIRTUAL_VENV} &&\    
+RUN python -m venv ${VIRTUAL_VENV} &&\
+    ${VIRTUAL_VENV}/bin/pip --no-cache-dir install --upgrade pip~=21.2.3 wheel setuptools && \
     ${VIRTUAL_VENV}/bin/pip --no-cache-dir install -r requirements.txt
 
 

@@ -1,0 +1,18 @@
+
+# the application's requirements need to be pulled in
+--constraint base.txt
+
+# tools
+pyyaml
+
+# tests
+coverage
+docker
+jsonschema
+pytest
+pytest-cookies
+pytest-cov
+pytest-instafail
+pytest-mock
+pytest-sugar
+pyyaml

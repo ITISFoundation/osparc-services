@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+  dy-static-file-server:
+    image: local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}
+    build:
+      context: ./
+      dockerfile: docker/custom/Dockerfile
+      target: production
+
+  dy-static-file-server-dynamic-sidecar:
+    image: local/${DOCKER_IMAGE_NAME}-dynamic-sidecar:${DOCKER_BUILD_TARGET}
+    build:
+      context: ./
+      dockerfile: docker/custom/Dockerfile
+      target: production
+    
+  dy-static-file-server-dynamic-sidecar-compose-spec:
+    image: local/${DOCKER_IMAGE_NAME}-dynamic-sidecar-compose-spec:${DOCKER_BUILD_TARGET}
+    build:
+      context: ./
+      dockerfile: docker/custom/Dockerfile
+      target: production

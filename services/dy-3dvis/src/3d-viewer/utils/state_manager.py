@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
-""" Tries to pull the node data from S3. Will return error code unless the --silent flag is on and only a warning will be output.
+""" Tries to pull the node data from S3. Will return error code.
 
-    Usage python state_puller.py PATH_OR_FILE --silent
+    Usage python state_puller.py PATH_OR_FILE
 :return: error code
 """
 
@@ -16,7 +16,6 @@ from enum import IntEnum
 from pathlib import Path
 
 from simcore_sdk.node_data import data_manager
-from simcore_sdk.node_ports import exceptions
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger(__file__ if __name__ == "__main__" else __name__)
@@ -32,14 +31,18 @@ def state_path() -> Path:
     assert path != "undefined", "SIMCORE_NODE_APP_STATE_PATH is not defined!"
     return Path(path)
 
+async def push_pull_state(path, op_type) -> None:
+    if op_type == "pull":
+        if not await data_manager.is_file_present_in_storage(path):
+            log.info("File '%s' is not present in storage service, will skip.", str(path))
+            return
+    await getattr(data_manager, op_type)(path)
 
 def main(args=None) -> int:
     try:
         parser = argparse.ArgumentParser(description=__doc__)
         parser.add_argument("--path", help="The folder or file to get for the node",
                             type=Path, default=state_path(), required=False)
-        parser.add_argument("--silent", help="The script will silently fail if the flag is on",
-                            default=False, const=True, action="store_const", required=False)
         parser.add_argument("type", help="push or pull",
                             choices=["push", "pull"])
         options = parser.parse_args(args)
@@ -48,19 +51,13 @@ def main(args=None) -> int:
 
         # push or pull state
         start_time = time.clock()
-        loop.run_until_complete(getattr(data_manager, options.type)(options.path))
+        loop.run_until_complete(push_pull_state(options.path, options.type))
         end_time = time.clock()
         log.info("time to %s: %.2fseconds", options.type, end_time - start_time)
         return ExitCode.SUCCESS
 
-    except exceptions.S3InvalidPathError:
-        if options.silent:
-            log.warning("Could not %s state from S3 for %s", options.type, options.path)
-            return ExitCode.SUCCESS
+    except Exception: # pylint: disable=broad-except
         log.exception("Could not %s state from S3 for %s", options.type, options.path)
-        return ExitCode.FAIL
-    except:  # pylint: disable=bare-except
-        log.exception("Unexpected error when %s state from/to S3 for %s", options.type, options.path)
         return ExitCode.FAIL
 
 

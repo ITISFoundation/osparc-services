@@ -36,7 +36,7 @@ fi
 # try to pull data from S3
 echo
 echo "trying to download previous state..."
-python utils/state_manager.py pull --path "${SIMCORE_NODE_APP_STATE_PATH}" --silent
+python utils/state_manager.py pull --path "${SIMCORE_NODE_APP_STATE_PATH}"
 echo "...DONE"
 echo
 

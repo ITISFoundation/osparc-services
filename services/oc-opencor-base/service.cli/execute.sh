@@ -28,13 +28,5 @@ else
     ./OpenCOR/pythonshell opencor.py ${MODEL_URL//\"} > $OUTPUT_FOLDER/output_data.json
 fi
 
-# # then retrieve the output and move it to the $OUTPUT_FOLDER
-# # as defined in the output labels
-# # For example: cp output.csv $OUTPUT_FOLDER or to $OUTPUT_FOLDER/outputs.json using jq
-# #TODO: Replace following
-# cat > "${OUTPUT_FOLDER}"/outputs.json << EOF
-# {
-#     "output_1":"some_stuff"
-# }
-# EOF
+
 

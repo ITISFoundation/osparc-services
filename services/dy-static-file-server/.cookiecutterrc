@@ -1,0 +1,38 @@
+# This file exists so you can easily regenerate your project.
+#
+# `cookiepatcher` is a convenient shim around `cookiecutter`
+# for regenerating projects (it will generate a .cookiecutterrc
+# automatically for any template). To use it:
+#
+#    pip install cookiepatcher
+#    cookiepatcher gh:itisfoundation/cookiecutter-osparc-service project-path
+#
+# See:
+#    https://pypi.python.org/pypi/cookiepatcher
+#
+# Alternatively, you can run:
+#
+#    cookiecutter --overwrite-if-exists --config-file=project-path/.cookiecutterrc gh:itisfoundation/cookiecutter-osparc-service
+#
+
+default_context:
+
+    _extensions:               ['jinja2_time.TimeExtension']
+    _template:                 'gh:ITISFoundation/cookiecutter-osparc-service'
+    author_affiliation:        "IT'IS Foundation"
+    author_email:              'anderegg@itis.swiss'
+    author_name:               'Sylvain Anderegg'
+    contact_email:             'anderegg@itis.swiss'
+    default_docker_registry:   'itisfoundation'
+    docker_base:               'custom:special-image'
+    git_username:              'sanderegg'
+    number_of_inputs:          '0'
+    number_of_outputs:         '0'
+    project_git_repo:          'https://github.com/ITISFoundation/dy-static-file-server'
+    project_name:              'dy-static-file-server'
+    project_package_name:      'dy_static_file_server'
+    project_short_description: 'Dynamic service for testing purpose'
+    project_slug:              'dy-static-file-server'
+    project_type:              'computational'
+    release_date:              '2021'
+    version:                   '2.0.4'

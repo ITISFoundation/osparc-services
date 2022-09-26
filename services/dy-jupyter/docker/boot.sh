@@ -3,10 +3,13 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+echo
+echo "current directory is ${PWD}"
+
 # BOOTING application ---------------------------------------------
 echo "Booting application ..."
-echo "  User    :`id $(whoami)`"
-echo "  Workdir :`pwd`"
+echo "  User    :$(id "$(whoami)")"
+echo "  Workdir :$(pwd)"
 
 
 if [ -v CREATE_DUMMY_TABLE ] && [ "${CREATE_DUMMY_TABLE}" = "1" ]

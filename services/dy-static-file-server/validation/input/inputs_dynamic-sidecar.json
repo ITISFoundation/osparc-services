@@ -1,0 +1,22 @@
+{
+    "string_input": {
+        "key": "string_input",
+        "value": "lorem ipsum"
+    },
+    "integer_input": {
+        "key": "integer_input",
+        "value": 100
+    },
+    "boolean_input": {
+        "key": "boolean_input",
+        "value": false
+    },
+    "number_input": {
+        "key": "number_input",
+        "value": 1.12
+    },
+    "file_input": {
+        "key": "file_input",
+        "value": "{{INPUTS_FULL_PATH}}/file_input"
+    }
+}
