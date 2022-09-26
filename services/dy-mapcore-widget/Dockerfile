@@ -25,15 +25,16 @@ RUN pip3 install --upgrade pip wheel setuptools
 
 # ----------------------------------------------------------------
 # install simcore-sdk
+#git checkout `git rev-list -1 --before="2021-04-14T07:11:53Z" master`
 RUN apt-get update && apt-get install -y \
     g++ \
     git \
     python3-dev \
     postgresql-server-dev-10 && \
-    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/service-library &&\
-    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
-    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python &&\
-    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/postgres-database
+    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@d13285adb#subdirectory=packages/service-library &&\
+    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@d13285adb#subdirectory=packages/simcore-sdk &&\
+    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@d13285adb#subdirectory=services/storage/client-sdk/python &&\
+    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@d13285adb#subdirectory=packages/postgres-database
 RUN curl -sL https://deb.nodesource.com/setup_14.x |  bash -
 RUN  apt -y install nodejs
 

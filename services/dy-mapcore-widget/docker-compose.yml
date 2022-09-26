@@ -16,7 +16,7 @@ services:
         io.simcore.contact: '{"contact": "maiz@itis.swiss"}'
         io.simcore.inputs: '{"inputs": {}}'
         io.simcore.outputs: '{"outputs": {}}'
-        simcore.service.settings: '[{"name": "resources", "type": "Resources", "value": {"mem_limit":17179869184, "cpu_limit": 4000000000}}, {"name": "ports", "type": "int", "value": 4000}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
+        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 4000}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
         org.label-schema.schema-version: "1.0"
         org.label-schema.build-date: "${BUILD_DATE}"
         org.label-schema.vcs-url: "${VCS_URL}"

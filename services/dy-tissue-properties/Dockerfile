@@ -24,15 +24,16 @@ RUN pip3 install --upgrade pip wheel setuptools
 
 # ----------------------------------------------------------------
 # install simcore-sdk
+# git checkout `git rev-list -1 --before="2020-07-29T12:38:45Z" master`
 RUN apk add --no-cache --virtual .build-deps \
     g++ \
     git \
     python3-dev \
     postgresql-dev && \
-    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/service-library &&\
-    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/simcore-sdk &&\
-    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=services/storage/client-sdk/python &&\
-    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@master#subdirectory=packages/postgres-database &&\
+    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@4159b895f#subdirectory=packages/service-library &&\
+    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@4159b895f#subdirectory=packages/simcore-sdk &&\
+    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@4159b895f#subdirectory=services/storage/client-sdk/python &&\
+    pip install --no-cache-dir git+https://github.com/ITISFoundation/osparc-simcore.git@4159b895f#subdirectory=packages/postgres-database &&\
     apk del --no-cache .build-deps
 
 

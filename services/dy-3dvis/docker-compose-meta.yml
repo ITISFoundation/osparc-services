@@ -26,8 +26,8 @@ services:
         simcore.service.settings: '[ {"name": "ports", "type": "int", "value": ${SERVER_PORT}},
           {"name": "constraints", "type": "string", "value": ["node.platform.os ==
           linux"]}, {"name": "resources", "type": "resources", "value": { "Limits":
-          { "NanoCPUs": 4000000000, "MemoryBytes": 17179869184 }, "Reservations":
-          { "NanoCPUs": 100000000, "MemoryBytes": 536870912 } } } ]'
+          { "NanoCPUs": 1000000000, "MemoryBytes": 4294967296 }, "Reservations":
+          { "NanoCPUs": 1000000000, "MemoryBytes": 4294967296 } } } ]'
   3d-viewer-gpu:
     build:
       labels:
@@ -55,7 +55,7 @@ services:
         simcore.service.settings: '[ {"name": "ports", "type": "int", "value": ${SERVER_PORT}},
           {"name": "constraints", "type": "string", "value": [ "node.platform.os ==
           linux" ]}, {"name": "Resources", "type": "Resources", "value": { "Limits":
-          { "NanoCPUs": 4000000000, "MemoryBytes": 17179869184 }, "Reservations":
-          { "NanoCPUs": 100000000, "MemoryBytes": 536870912, "GenericResources": [
+          { "NanoCPUs": 1000000000, "MemoryBytes": 4294967296 }, "Reservations":
+          { "NanoCPUs": 1000000000, "MemoryBytes": 4294967296, "GenericResources": [
           { "DiscreteResourceSpec": { "Kind": "VRAM", "Value": 1 } } ] } } } ]'
 version: '3.7'

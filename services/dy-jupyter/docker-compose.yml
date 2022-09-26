@@ -29,14 +29,6 @@ services:
         simcore.service.settings: '[
           {"name": "ports", "type": "int", "value": 8888},
           {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]},
-          {"name": "resources", "type": "resources", "value":
-          {
-          "Limits": {
-          "NanoCPUs": 4000000000,
-          "MemoryBytes": 8589934592
-          }
-          }
-          }
           ]'
         # simcore.service.bootsettings: '[
         #   {"name": "entry_point", "type": "string", "value": "?token=simcore"}]'
@@ -75,14 +67,6 @@ services:
         simcore.service.settings: '[
           {"name": "ports", "type": "int", "value": 8888},
           {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]},
-          {"name": "resources", "type": "resources", "value":
-          {
-          "Limits": {
-          "NanoCPUs": 4000000000,
-          "MemoryBytes": 8589934592
-          }
-          }
-          }
           ]'
         # simcore.service.bootsettings: '[
         #   {"name": "entry_point", "type": "string", "value": "?token=${NOTEBOOK_TOKEN}"}]'
@@ -121,14 +105,6 @@ services:
         simcore.service.settings: '[
           {"name": "ports", "type": "int", "value": 8888},
           {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]},
-          {"name": "resources", "type": "resources", "value":
-          {
-          "Limits": {
-          "NanoCPUs": 4000000000,
-          "MemoryBytes": 8589934592
-          }
-          }
-          }
           ]'
         # simcore.service.bootsettings: '[
         #   {"name": "entry_point", "type": "string", "value": "?token=${NOTEBOOK_TOKEN}"}]'
