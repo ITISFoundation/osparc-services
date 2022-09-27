@@ -36,14 +36,18 @@ devenv: .venv
 .venv: ## Creates a python virtual environment with dev tools (pip, pylint, ...)
 	python3 -m venv .venv
 	.venv/bin/pip3 install --upgrade pip wheel setuptools
-	.venv/bin/pip3 install pylint black cookiecutter
+	.venv/bin/pip3 install pylint black cookiecutter semver
 	.venv/bin/pip3 install -r scripts/auto-doc/requirements.txt
 	@echo "To activate the venv, execute 'source .venv/bin/activate'"
 
 
 .PHONY: toc
 toc: .venv ## Updates README.txt with a ToC of all services
-	@.venv/bin/python ${CURDIR}/scripts/auto-doc/create-toc.py
+	@.venv/bin/python ${CURDIR}/scripts/auto-doc/create-toc.py 
+
+.PHONY: resource-upgrade-stubs
+resource-upgrade-stubs: toc ## retag images
+	@.venv/bin/python ${CURDIR}/scripts/resources/create_update_stubs.py --toc=${CURDIR}/toc.json
 
 
 .PHONY: clean
