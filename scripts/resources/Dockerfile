@@ -1,8 +1,8 @@
-FROM itisfoundation/cc-rabbit-0d:3.0.4 as cc-rabbit-0d
+FROM itisfoundation/cc-0d-viewer:3.0.4 as cc-0d-viewer
 
-FROM itisfoundation/cc-rabbit-1d:3.0.4 as cc-rabbit-1d
+FROM itisfoundation/cc-1d-viewer:3.0.4 as cc-1d-viewer
 
-FROM itisfoundation/cc-rabbit-2d:3.0.5 as cc-rabbit-2d
+FROM itisfoundation/cc-2d-viewer:3.0.5 as cc-2d-viewer
 
 FROM itisfoundation/csv-table:1.0.0 as csv-table
 

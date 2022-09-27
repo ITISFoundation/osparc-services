@@ -1,31 +1,31 @@
 version: '3.6'
 services:
-  cc-rabbit-0d:
-    image: registry:5000/simcore/services/dynamic/cc-rabbit-0d:3.0.5
+  cc-0d-viewer:
+    image: registry:5000/simcore/services/dynamic/cc-0d-viewer:3.0.5
     build:
       context: .
       dockerfile: Dockerfile
-      target: cc-rabbit-0d
+      target: cc-0d-viewer
       labels:
         io.simcore.version: '{"version": "3.0.5"}'
         simcore.service.settings: '[{"name": "ports", "type": "int", "value": 8888}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
 
-  cc-rabbit-1d:
-    image: registry:5000/simcore/services/dynamic/cc-rabbit-1d:3.0.5
+  cc-1d-viewer:
+    image: registry:5000/simcore/services/dynamic/cc-1d-viewer:3.0.5
     build:
       context: .
       dockerfile: Dockerfile
-      target: cc-rabbit-1d
+      target: cc-1d-viewer
       labels:
         io.simcore.version: '{"version": "3.0.5"}'
         simcore.service.settings: '[{"name": "ports", "type": "int", "value": 8888}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
 
-  cc-rabbit-2d:
-    image: registry:5000/simcore/services/dynamic/cc-rabbit-2d:3.0.6
+  cc-2d-viewer:
+    image: registry:5000/simcore/services/dynamic/cc-2d-viewer:3.0.6
     build:
       context: .
       dockerfile: Dockerfile
-      target: cc-rabbit-2d
+      target: cc-2d-viewer
       labels:
         io.simcore.version: '{"version": "3.0.6"}'
         simcore.service.settings: '[{"name": "ports", "type": "int", "value": 8888}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
@@ -38,38 +38,8 @@ services:
       target: csv-table
       labels:
         io.simcore.version: '{"version": "1.0.1"}'
-        simcore.service.settings: '[{"name": "resources", "type": "Resources", "value": {"cpu_limit": 4000000000, "mem_limit": 17179869184}}, {"name": "ports", "type": "int", "value": 4000}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
-
-  dy-static-file-server:
-    image: registry:5000/simcore/services/dynamic/dy-static-file-server:2.0.5
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: dy-static-file-server
-      labels:
-        io.simcore.version: '{"version": "2.0.5"}'
-        simcore.service.settings: '[{"name": "resources", "type": "Resources", "value": {"cpu_limit": 10000000, "mem_limit": 268435456}}, {"name": "ports", "type": "int", "value": 8080}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
-
-  dy-static-file-server-dynamic-sidecar:
-    image: registry:5000/simcore/services/dynamic/dy-static-file-server-dynamic-sidecar:2.0.5
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: dy-static-file-server-dynamic-sidecar
-      labels:
-        io.simcore.version: '{"version": "2.0.5"}'
-        simcore.service.settings: '[{"name": "resources", "type": "Resources", "value": {"cpu_limit": 10000000, "mem_limit": 268435456}}, {"name": "ports", "type": "int", "value": 8080}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
-
-  dy-static-file-server-dynamic-sidecar-compose-spec:
-    image: registry:5000/simcore/services/dynamic/dy-static-file-server-dynamic-sidecar-compose-spec:2.0.5
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: dy-static-file-server-dynamic-sidecar-compose-spec
-      labels:
-        io.simcore.version: '{"version": "2.0.5"}'
-        simcore.service.settings: '[{"name": "resources", "type": "Resources", "value": {"cpu_limit": 10000000, "mem_limit": 268435456}}, {"name": "ports", "type": "int", "value": 8080}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
-
+        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 4000}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
+  
   jupyter-base-notebook:
     image: registry:5000/simcore/services/dynamic/jupyter-base-notebook:2.14.1
     build:
@@ -78,17 +48,8 @@ services:
       target: jupyter-base-notebook
       labels:
         io.simcore.version: '{"version": "2.14.1"}'
-        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 8888}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}, {"name": "resources", "type": "resources", "value": {"Limits": {"MemoryBytes": 8589934592, "NanoCPUs": 4000000000}}}]'
+        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 8888}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
 
-  jupyter-neuron:
-    image: registry:5000/simcore/services/dynamic/jupyter-neuron:1.1.1
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: jupyter-neuron
-      labels:
-        io.simcore.version: '{"version": "1.1.1"}'
-        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 8888}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}, {"name": "resources", "type": "resources", "value": {"Limits": {"MemoryBytes": 8388608, "NanoCPUs": 4000000000}}}]'
 
   jupyter-r-notebook:
     image: registry:5000/simcore/services/dynamic/jupyter-r-notebook:2.14.1
@@ -98,7 +59,7 @@ services:
       target: jupyter-r-notebook
       labels:
         io.simcore.version: '{"version": "2.14.1"}'
-        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 8888}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}, {"name": "resources", "type": "resources", "value": {"Limits": {"MemoryBytes": 8589934592, "NanoCPUs": 4000000000}}}]'
+        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 8888}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
 
   jupyter-scipy-notebook:
     image: registry:5000/simcore/services/dynamic/jupyter-scipy-notebook:2.14.1
@@ -108,7 +69,7 @@ services:
       target: jupyter-scipy-notebook
       labels:
         io.simcore.version: '{"version": "2.14.1"}'
-        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 8888}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}, {"name": "resources", "type": "resources", "value": {"Limits": {"MemoryBytes": 8589934592, "NanoCPUs": 4000000000}}}]'
+        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 8888}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
 
   kember:
     image: registry:5000/simcore/services/dynamic/kember:2.14.1
@@ -128,7 +89,7 @@ services:
       target: mapcore-widget
       labels:
         io.simcore.version: '{"version": "0.1.25"}'
-        simcore.service.settings: '[{"name": "resources", "type": "Resources", "value": {"cpu_limit": 4000000000, "mem_limit": 17179869184}}, {"name": "ports", "type": "int", "value": 4000}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
+        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 4000}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
 
   mattward-dash:
     image: registry:5000/simcore/services/dynamic/mattward-dash:3.0.6
@@ -148,7 +109,7 @@ services:
       target: raw-graphs
       labels:
         io.simcore.version: '{"version": "2.11.2"}'
-        simcore.service.settings: '[{"name": "resources", "type": "Resources", "value": {"cpu_limit": 4000000000, "mem_limit": 17179869184}}, {"name": "ports", "type": "int", "value": 4000}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
+        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 4000}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
 
   raw-graphs-table:
     image: registry:5000/simcore/services/dynamic/raw-graphs-table:2.11.2
@@ -158,17 +119,7 @@ services:
       target: raw-graphs-table
       labels:
         io.simcore.version: '{"version": "2.11.2"}'
-        simcore.service.settings: '[{"name": "resources", "type": "Resources", "value": {"cpu_limit": 4000000000, "mem_limit": 17179869184}}, {"name": "ports", "type": "int", "value": 4000}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
-
-  server:
-    image: registry:5000/simcore/services/dynamic/server:0.1.2
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: server
-      labels:
-        io.simcore.version: '{"version": "0.1.2"}'
-        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 9090}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}, {"name": "env", "type": "string", "value": ["CS_S4L_HOSTNAME=modeler_xrpc-worker_%service_uuid%"]}]'
+        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 4000}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
 
   tissue-properties:
     image: registry:5000/simcore/services/dynamic/tissue-properties:1.0.2
@@ -178,4 +129,4 @@ services:
       target: tissue-properties
       labels:
         io.simcore.version: '{"version": "1.0.2"}'
-        simcore.service.settings: '[{"name": "resources", "type": "Resources", "value": {"cpu_limit": 4000000000, "mem_limit": 17179869184}}, {"name": "ports", "type": "int", "value": 4000}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
+        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 4000}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
