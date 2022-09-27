@@ -13,6 +13,7 @@ dir_path = Path(os.path.dirname(os.path.realpath(__file__)))
 
 
 TAB = "  "
+TABSTOP = "\t"
 O_BRACKET = "{"
 C_BRACKET = "}"
 QUOTE = "\""
@@ -24,6 +25,7 @@ def create_update_stubs(toc: str):
     """Create a Dockerfile + docker-compose as a  basis"""
     compose_spec: List[str] = []
     dockerfile: List[str] = []
+    makefile: list[str] = []
 
     with open("toc.json") as json_file:
         data = json.load(json_file)
@@ -57,11 +59,21 @@ def create_update_stubs(toc: str):
                     f"FROM itisfoundation{SLASH}{key}:{old_version} as {key}")
                 dockerfile.append("")
 
+                makefile.append(f'{key}:')
+                makefile.append(f"{TABSTOP}docker-compose build {key}")
+                makefile.append(f"{TABSTOP}docker push registry:5000/simcore/services/dynamic/{key}:{new_version}")
+
+                makefile.append(" ")
+
     with open(dir_path / "docker-compose.yml", 'w') as f:
         f.write("\n".join(compose_spec))
 
     with open(dir_path / "Dockerfile", 'w') as f:
         f.write("\n".join(dockerfile))
+
+    with open(dir_path / "Makefile", 'w') as f:
+        f.write("\n".join(makefile))
+
 
 if __name__ == '__main__':
     create_update_stubs()

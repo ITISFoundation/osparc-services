@@ -90,12 +90,12 @@ services:
         io.simcore.version: '{"version": "2.14.1"}'
         simcore.service.settings: '[{"name": "ports", "type": "int", "value": 8888}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}, {"name": "resources", "type": "resources", "value": {"Limits": {"MemoryBytes": 8589934592, "NanoCPUs": 4000000000}}}]'
 
-  kember:
-    image: registry:5000/simcore/services/dynamic/kember:2.14.1
+  kember-viewer:
+    image: registry:5000/simcore/services/dynamic/kember-viewer:2.14.1
     build:
       context: .
       dockerfile: Dockerfile
-      target: kember
+      target: kember-viewer
       labels:
         io.simcore.version: '{"version": "2.14.1"}'
         simcore.service.settings: '[{"name": "ports", "type": "int", "value": 8888}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
@@ -110,12 +110,12 @@ services:
         io.simcore.version: '{"version": "0.1.25"}'
         simcore.service.settings: '[{"name": "ports", "type": "int", "value": 4000}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
 
-  mattward-dash:
-    image: registry:5000/simcore/services/dynamic/mattward-dash:3.0.6
+  mattward-viewer:
+    image: registry:5000/simcore/services/dynamic/mattward-viewer:3.0.6
     build:
       context: .
       dockerfile: Dockerfile
-      target: mattward-dash
+      target: mattward-viewer
       labels:
         io.simcore.version: '{"version": "3.0.6"}'
         simcore.service.settings: '[{"name": "ports", "type": "int", "value": 8888}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'

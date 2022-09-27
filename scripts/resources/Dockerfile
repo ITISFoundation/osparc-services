@@ -24,16 +24,14 @@ FROM itisfoundation/jupyter-r-notebook:2.14.0 as jupyter-r-notebook
 
 FROM itisfoundation/jupyter-scipy-notebook:2.14.0 as jupyter-scipy-notebook
 
-FROM itisfoundation/kember:2.14.0 as kember
+FROM itisfoundation/kember-viewer:2.14.0 as kember-viewer
 
 FROM itisfoundation/mapcore-widget:0.1.24 as mapcore-widget
 
-FROM itisfoundation/mattward-dash:3.0.5 as mattward-dash
+FROM itisfoundation/mattward-viewer:3.0.5 as mattward-viewer
 
 FROM itisfoundation/raw-graphs:2.11.1 as raw-graphs
 
 FROM itisfoundation/raw-graphs-table:2.11.1 as raw-graphs-table
-
-FROM itisfoundation/server:0.1.1 as server
 
 FROM itisfoundation/tissue-properties:1.0.1 as tissue-properties
