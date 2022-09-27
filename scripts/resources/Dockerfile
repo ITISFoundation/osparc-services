@@ -1,3 +1,7 @@
+FROM itisfoundation/3d-viewer:3.0.3 as threed-viewer
+
+FROM itisfoundation/3d-viewer-gpu:3.0.3 as threed-viewer-gpu
+
 FROM itisfoundation/cc-0d-viewer:3.0.4 as cc-0d-viewer
 
 FROM itisfoundation/cc-1d-viewer:3.0.4 as cc-1d-viewer

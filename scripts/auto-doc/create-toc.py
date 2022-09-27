@@ -71,7 +71,6 @@ def parse_repo():
 
                 for service_name, service in content["services"].items():
                     info = {}
-
                     if "image" in service:
                         new_image = service["image"]
                         prev_image = services_info[service_name].get("image")
@@ -109,7 +108,7 @@ def parse_repo():
                                 try:
                                     settings_list = json.loads(service["build"]["labels"]["simcore.service.settings"].encode("utf8"))
                                 except json.JSONDecodeError as e:
-                                    print(f"Could not decode: {settings_list} for {service_name}") 
+                                    print(f"Could not decode: {service['build']['labels']['simcore.service.settings']} for {service_name}") 
                                     print(e)
                                     continue
                                 info["simcore.service.settings"] = settings_list

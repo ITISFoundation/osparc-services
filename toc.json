@@ -1,4 +1,86 @@
 {
+  "3d-viewer": {
+    "description": "Paraview Web-based Visualizer",
+    "dockerfile": "dy-3dvis/docker/custom/Dockerfile",
+    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
+    "key": "simcore/services/dynamic/3d-viewer",
+    "name": "3d-viewer",
+    "simcore.service.settings": [
+      {
+        "name": "ports",
+        "type": "int",
+        "value": "${SERVER_PORT:-80}"
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      },
+      {
+        "name": "resources",
+        "type": "resources",
+        "value": {
+          "Limits": {
+            "MemoryBytes": 17179869184,
+            "NanoCPUs": 4000000000
+          },
+          "Reservations": {
+            "MemoryBytes": 536870912,
+            "NanoCPUs": 100000000
+          }
+        }
+      }
+    ],
+    "type": "dynamic",
+    "version": "3.0.3"
+  },
+  "3d-viewer-gpu": {
+    "description": "Paraview Web-based Visualizer",
+    "dockerfile": "dy-3dvis/docker/custom/Dockerfile",
+    "image": "local/${DOCKER_IMAGE_NAME}-gpu:${DOCKER_BUILD_TARGET}",
+    "key": "simcore/services/dynamic/3d-viewer-gpu",
+    "name": "3d-viewer-gpu",
+    "simcore.service.settings": [
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 80
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      },
+      {
+        "name": "Resources",
+        "type": "Resources",
+        "value": {
+          "Limits": {
+            "MemoryBytes": 17179869184,
+            "NanoCPUs": 4000000000
+          },
+          "Reservations": {
+            "GenericResources": [
+              {
+                "DiscreteResourceSpec": {
+                  "Kind": "VRAM",
+                  "Value": 1
+                }
+              }
+            ],
+            "MemoryBytes": 536870912,
+            "NanoCPUs": 100000000
+          }
+        }
+      }
+    ],
+    "type": "dynamic",
+    "version": "3.0.3"
+  },
   "cardiac_myocyte_grandi": {
     "description": "This is the mouse cardiac myocyte electrophysiology model from Eleonora Grandi at UC Davis.",
     "dockerfile": "ma-myocyteele/docker/custom/Dockerfile",
@@ -505,27 +587,6 @@
     "image": "${DOCKER_REGISTRY}/modeler-webserver:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/modeler-webserver",
     "name": "modeler",
-    "simcore.service.settings": [
-      {
-        "name": "ports",
-        "type": "int",
-        "value": 9090
-      },
-      {
-        "name": "constraints",
-        "type": "string",
-        "value": [
-          "node.platform.os == linux"
-        ]
-      },
-      {
-        "name": "env",
-        "type": "string",
-        "value": [
-          "CS_S4L_HOSTNAME=modeler_xrpc-worker_%service_uuid%"
-        ]
-      }
-    ],
     "type": "dynamic",
     "version": "0.1.1"
   },

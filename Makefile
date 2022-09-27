@@ -46,7 +46,7 @@ toc: .venv ## Updates README.txt with a ToC of all services
 	@.venv/bin/python ${CURDIR}/scripts/auto-doc/create-toc.py 
 
 .PHONY: resource-upgrade-stubs
-resource-upgrade-stubs: toc ## retag images
+resource-upgrade-stubs: ## retag images
 	@.venv/bin/python ${CURDIR}/scripts/resources/create_update_stubs.py --toc=${CURDIR}/toc.json
 
 

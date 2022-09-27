@@ -1,5 +1,24 @@
 version: '3.6'
 services:
+  3d-viewer:
+    image: registry:5000/simcore/services/dynamic/3d-viewer:3.0.4
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: threed-viewer
+      labels:
+        io.simcore.version: '{"version": "3.0.4"}'
+        simcore.service.settings: '[{"name": "ports", "type": "int", "value": "${SERVER_PORT:-80}"}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}, {"name": "resources", "type": "resources", "value": {"Limits": {"MemoryBytes": 17179869184, "NanoCPUs": 4000000000}, "Reservations": {"MemoryBytes": 536870912, "NanoCPUs": 100000000}}}]'
+
+  3d-viewer-gpu:
+    image: registry:5000/simcore/services/dynamic/3d-viewer-gpu:3.0.4
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: threed-viewer-gpu
+      labels:
+        io.simcore.version: '{"version": "3.0.4"}'
+        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 80}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}, {"name": "Resources", "type": "Resources", "value": {"Limits": {"MemoryBytes": 17179869184, "NanoCPUs": 4000000000}, "Reservations": {"GenericResources": [{"DiscreteResourceSpec": {"Kind": "VRAM", "Value": 1}}], "MemoryBytes": 536870912, "NanoCPUs": 100000000}}}]'
   cc-0d-viewer:
     image: registry:5000/simcore/services/dynamic/cc-0d-viewer:3.0.5
     build:
@@ -48,7 +67,7 @@ services:
       target: jupyter-base-notebook
       labels:
         io.simcore.version: '{"version": "2.14.1"}'
-        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 8888}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
+        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 8888}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}, {"name": "resources", "type": "resources", "value": {"Limits": {"MemoryBytes": 8589934592, "NanoCPUs": 4000000000}}}]'
 
 
   jupyter-r-notebook:
@@ -69,7 +88,7 @@ services:
       target: jupyter-scipy-notebook
       labels:
         io.simcore.version: '{"version": "2.14.1"}'
-        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 8888}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}]'
+        simcore.service.settings: '[{"name": "ports", "type": "int", "value": 8888}, {"name": "constraints", "type": "string", "value": ["node.platform.os == linux"]}, {"name": "resources", "type": "resources", "value": {"Limits": {"MemoryBytes": 8589934592, "NanoCPUs": 4000000000}}}]'
 
   kember:
     image: registry:5000/simcore/services/dynamic/kember:2.14.1

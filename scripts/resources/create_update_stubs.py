@@ -46,8 +46,11 @@ def create_update_stubs(toc: str):
                 compose_spec.append(f"{3*TAB}labels:")
                 compose_spec.append(
                     f"{4*TAB}io.simcore.version: '{O_BRACKET}{QUOTE}version{QUOTE}: {QUOTE}{new_version}{QUOTE}{C_BRACKET}'")
-                compose_spec.append(
-                    f"{4*TAB}simcore.service.settings: '{json.dumps(service[settings_key])}'")
+                if settings_key in service:
+                    compose_spec.append(
+                        f"{4*TAB}simcore.service.settings: '{json.dumps(service[settings_key])}'")
+                else:
+                    print(f"{service} does not have {settings_key}")
                 compose_spec.append("")
 
                 dockerfile.append(
