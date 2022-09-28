@@ -1,4 +1,5 @@
 import json
+from tkinter import PhotoImage
 
 from typing import List
 
@@ -25,8 +26,12 @@ def create_update_stubs(toc: str):
     """Create a Dockerfile + docker-compose as a  basis"""
     compose_spec: List[str] = []
     dockerfile: List[str] = []
-    makefile: list[str] = []
+    makefile: List[str] = []
+    makefile_phony: str = ""
+    makefile_publish_all: List[str] = []
 
+    makefile_phony = ".PHONY: "
+    makefile_publish_all = ["publish_all:"]
     with open("toc.json") as json_file:
         data = json.load(json_file)
         compose_spec.append("version: '3.6'")
@@ -63,7 +68,11 @@ def create_update_stubs(toc: str):
                 makefile.append(f"{TABSTOP}docker-compose build {key}")
                 makefile.append(f"{TABSTOP}docker push registry:5000/simcore/services/dynamic/{key}:{new_version}")
 
+                makefile_phony += f"{key} "
+                makefile_publish_all.append(f"{TABSTOP}docker tag registry:5000/simcore/services/dynamic/{key}:{new_version} itisfoundation/{key}:{new_version}")
+                makefile_publish_all.append(f"{TABSTOP}docker push itisfoundation/{key}:{new_version}")
                 makefile.append(" ")
+                makefile_publish_all.append(" ")
 
     with open(dir_path / "docker-compose.yml", 'w') as f:
         f.write("\n".join(compose_spec))
@@ -72,7 +81,11 @@ def create_update_stubs(toc: str):
         f.write("\n".join(dockerfile))
 
     with open(dir_path / "Makefile", 'w') as f:
+        f.write(makefile_phony)
+        f.write(2*"\n")
         f.write("\n".join(makefile))
+        f.write(2*"\n")
+        f.write("\n".join(makefile_publish_all))
 
 
 if __name__ == '__main__':
