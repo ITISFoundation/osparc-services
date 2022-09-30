@@ -7,7 +7,7 @@ import semver
 
 import click
 
-import os 
+import os
 
 from pathlib import Path
 dir_path = Path(os.path.dirname(os.path.realpath(__file__)))
@@ -20,10 +20,11 @@ C_BRACKET = "}"
 QUOTE = "\""
 SLASH = "/"
 
+
 @click.command()
 @click.option('--toc', help='File containing all servcies in this repo')
 def create_update_stubs(toc: str):
-    """Create a Dockerfile + docker-compose as a  basis"""
+    """Create a Dockerfile + docker-compose + Makefile as a basis to manually change labels in the images"""
     compose_spec: List[str] = []
     dockerfile: List[str] = []
     makefile: List[str] = []
@@ -66,11 +67,14 @@ def create_update_stubs(toc: str):
 
                 makefile.append(f'{key}:')
                 makefile.append(f"{TABSTOP}docker-compose build {key}")
-                makefile.append(f"{TABSTOP}docker push registry:5000/simcore/services/dynamic/{key}:{new_version}")
+                makefile.append(
+                    f"{TABSTOP}docker push registry:5000/simcore/services/dynamic/{key}:{new_version}")
 
                 makefile_phony += f"{key} "
-                makefile_publish_all.append(f"{TABSTOP}docker tag registry:5000/simcore/services/dynamic/{key}:{new_version} itisfoundation/{key}:{new_version}")
-                makefile_publish_all.append(f"{TABSTOP}docker push itisfoundation/{key}:{new_version}")
+                makefile_publish_all.append(
+                    f"{TABSTOP}docker tag registry:5000/simcore/services/dynamic/{key}:{new_version} itisfoundation/{key}:{new_version}")
+                makefile_publish_all.append(
+                    f"{TABSTOP}docker push itisfoundation/{key}:{new_version}")
                 makefile.append(" ")
                 makefile_publish_all.append(" ")
 
