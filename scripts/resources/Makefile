@@ -1,4 +1,4 @@
-.PHONY: 3d-viewer 3d-viewer-gpu cc-rabbit-0d cc-rabbit-1d cc-rabbit-2d csv-table dy-static-file-server dy-static-file-server-dynamic-sidecar dy-static-file-server-dynamic-sidecar-compose-spec jupyter-base-notebook jupyter-neuron jupyter-r-notebook jupyter-scipy-notebook kember mapcore-widget mattward-dash raw-graphs raw-graphs-table server tissue-properties 
+.PHONY: 3d-viewer 3d-viewer-gpu cc-0d-viewer cc-1d-viewer cc-2d-viewer csv-table jupyter-base-notebook jupyter-r-notebook jupyter-scipy-notebook kember mapcore-widget mattward-dash raw-graphs raw-graphs-table server tissue-properties
 
 3d-viewer:
 	docker-compose build 3d-viewer
