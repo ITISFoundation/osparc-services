@@ -2,9 +2,37 @@
   "3d-viewer": {
     "description": "Paraview Web-based Visualizer",
     "dockerfile": "dy-3dvis/docker/custom/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
+    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/dynamic/3d-viewer",
     "name": "3d-viewer",
+    "simcore.service.settings": [
+      {
+        "name": "ports",
+        "type": "int",
+        "value": "${SERVER_PORT:-80}"
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      },
+      {
+        "name": "resources",
+        "type": "resources",
+        "value": {
+          "Limits": {
+            "MemoryBytes": 17179869184,
+            "NanoCPUs": 4000000000
+          },
+          "Reservations": {
+            "MemoryBytes": 536870912,
+            "NanoCPUs": 100000000
+          }
+        }
+      }
+    ],
     "type": "dynamic",
     "version": "3.0.3"
   },
@@ -14,13 +42,49 @@
     "image": "local/${DOCKER_IMAGE_NAME}-gpu:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/dynamic/3d-viewer-gpu",
     "name": "3d-viewer-gpu",
+    "simcore.service.settings": [
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 80
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      },
+      {
+        "name": "Resources",
+        "type": "Resources",
+        "value": {
+          "Limits": {
+            "MemoryBytes": 17179869184,
+            "NanoCPUs": 4000000000
+          },
+          "Reservations": {
+            "GenericResources": [
+              {
+                "DiscreteResourceSpec": {
+                  "Kind": "VRAM",
+                  "Value": 1
+                }
+              }
+            ],
+            "MemoryBytes": 536870912,
+            "NanoCPUs": 100000000
+          }
+        }
+      }
+    ],
     "type": "dynamic",
     "version": "3.0.3"
   },
   "cardiac_myocyte_grandi": {
     "description": "This is the mouse cardiac myocyte electrophysiology model from Eleonora Grandi at UC Davis.",
     "dockerfile": "ma-myocyteele/docker/custom/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
+    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/comp/cardiac_myocyte_grandi",
     "name": "cardiac_myocyte_grandi",
     "type": "computational",
@@ -32,6 +96,20 @@
     "image": "${DOCKER_REGISTRY}/cc-0d-viewer:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/cc-0d-viewer",
     "name": "0D cardiac model viewer",
+    "simcore.service.settings": [
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 8888
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      }
+    ],
     "type": "dynamic",
     "version": "3.0.4"
   },
@@ -41,6 +119,20 @@
     "image": "${DOCKER_REGISTRY}/cc-1d-viewer:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/cc-1d-viewer",
     "name": "1D cardiac model viewer",
+    "simcore.service.settings": [
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 8888
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      }
+    ],
     "type": "dynamic",
     "version": "3.0.4"
   },
@@ -50,6 +142,20 @@
     "image": "${DOCKER_REGISTRY}/cc-2d-viewer:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/cc-2d-viewer",
     "name": "2D cardiac model viewer",
+    "simcore.service.settings": [
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 8888
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      }
+    ],
     "type": "dynamic",
     "version": "3.0.5"
   },
@@ -59,35 +165,123 @@
     "image": "${DOCKER_REGISTRY}/csv-table:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/csv-table",
     "name": "CSV Table viewer",
+    "simcore.service.settings": [
+      {
+        "name": "resources",
+        "type": "Resources",
+        "value": {
+          "cpu_limit": 4000000000,
+          "mem_limit": 17179869184
+        }
+      },
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 4000
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      }
+    ],
     "type": "dynamic",
     "version": "1.0.0"
   },
   "dy-static-file-server": {
-    "description": "Legacy test dynamic service (starts using original director-v0)",
+    "description": "Legacy test dynamic service (starts using original director-v0). The /workdir/generated-data directory is populated if no content is present.",
     "dockerfile": "dy-static-file-server/docker/custom/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
+    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/dynamic/dy-static-file-server",
     "name": "dy-static-file-server",
+    "simcore.service.settings": [
+      {
+        "name": "resources",
+        "type": "Resources",
+        "value": {
+          "cpu_limit": 10000000,
+          "mem_limit": 268435456
+        }
+      },
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 8080
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      }
+    ],
     "type": "dynamic",
-    "version": "1.0.6"
+    "version": "2.0.4"
   },
   "dy-static-file-server-dynamic-sidecar": {
-    "description": "Modern test dynamic service (with dynamic sidecar)",
+    "description": "Modern test dynamic service (with dynamic sidecar). Changes to the inputs will be forwarded to the outputs. The /workdir/generated-data directory is populated if no content is present.",
     "dockerfile": "dy-static-file-server/docker/custom/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-dynamic-sidecar:${DOCKER_IMAGE_TAG}",
+    "image": "local/${DOCKER_IMAGE_NAME}-dynamic-sidecar:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/dynamic/dy-static-file-server-dynamic-sidecar",
     "name": "dy-static-file-server-dynamic-sidecar",
+    "simcore.service.settings": [
+      {
+        "name": "resources",
+        "type": "Resources",
+        "value": {
+          "cpu_limit": 10000000,
+          "mem_limit": 268435456
+        }
+      },
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 8080
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      }
+    ],
     "type": "dynamic",
-    "version": "1.0.6"
+    "version": "2.0.4"
   },
   "dy-static-file-server-dynamic-sidecar-compose-spec": {
-    "description": "Modern test dynamic service providing a docker-compose specificaiton file (with dynamic sidecar and compose-spec)",
+    "description": "Modern test dynamic service providing a docker-compose specification file (with dynamic sidecar and compose-spec). Changes to the inputs will be forwarded to the outputs. The /workdir/generated-data directory is populated if no content is present.",
     "dockerfile": "dy-static-file-server/docker/custom/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-dynamic-sidecar-compose-spec:${DOCKER_IMAGE_TAG}",
+    "image": "local/${DOCKER_IMAGE_NAME}-dynamic-sidecar-compose-spec:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/dynamic/dy-static-file-server-dynamic-sidecar-compose-spec",
     "name": "dy-static-file-server-dynamic-sidecar-compose-spec",
+    "simcore.service.settings": [
+      {
+        "name": "resources",
+        "type": "Resources",
+        "value": {
+          "cpu_limit": 10000000,
+          "mem_limit": 268435456
+        }
+      },
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 8080
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      }
+    ],
     "type": "dynamic",
-    "version": "1.0.6"
+    "version": "2.0.4"
   },
   "jupyter-base-notebook": {
     "description": "Jupyter notebook",
@@ -95,6 +289,30 @@
     "image": "${DOCKER_REGISTRY}/jupyter-base-notebook:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/jupyter-base-notebook",
     "name": "jupyter-base-notebook",
+    "simcore.service.settings": [
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 8888
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      },
+      {
+        "name": "resources",
+        "type": "resources",
+        "value": {
+          "Limits": {
+            "MemoryBytes": 8589934592,
+            "NanoCPUs": 4000000000
+          }
+        }
+      }
+    ],
     "type": "dynamic",
     "version": "2.14.0"
   },
@@ -104,6 +322,30 @@
     "image": "${DOCKER_REGISTRY}/jupyter-neuron:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/jupyter-neuron",
     "name": "jupyter-neuron",
+    "simcore.service.settings": [
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 8888
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      },
+      {
+        "name": "resources",
+        "type": "resources",
+        "value": {
+          "Limits": {
+            "MemoryBytes": 8388608,
+            "NanoCPUs": 4000000000
+          }
+        }
+      }
+    ],
     "type": "dynamic",
     "version": "1.1.0"
   },
@@ -113,6 +355,30 @@
     "image": "${DOCKER_REGISTRY}/jupyter-r-notebook:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/jupyter-r-notebook",
     "name": "jupyter-r-notebook",
+    "simcore.service.settings": [
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 8888
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      },
+      {
+        "name": "resources",
+        "type": "resources",
+        "value": {
+          "Limits": {
+            "MemoryBytes": 8589934592,
+            "NanoCPUs": 4000000000
+          }
+        }
+      }
+    ],
     "type": "dynamic",
     "version": "2.14.0"
   },
@@ -122,6 +388,30 @@
     "image": "${DOCKER_REGISTRY}/jupyter-scipy-notebook:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/jupyter-scipy-notebook",
     "name": "jupyter-scipy-notebook",
+    "simcore.service.settings": [
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 8888
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      },
+      {
+        "name": "resources",
+        "type": "resources",
+        "value": {
+          "Limits": {
+            "MemoryBytes": 8589934592,
+            "NanoCPUs": 4000000000
+          }
+        }
+      }
+    ],
     "type": "dynamic",
     "version": "2.14.0"
   },
@@ -131,6 +421,20 @@
     "image": "${DOCKER_REGISTRY}/kember-viewer:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/kember-viewer",
     "name": "kember-viewer",
+    "simcore.service.settings": [
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 8888
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      }
+    ],
     "type": "dynamic",
     "version": "2.14.0"
   },
@@ -140,6 +444,28 @@
     "image": "${DOCKER_REGISTRY}/mapcore-widget:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/mapcore-widget",
     "name": "Mapcore Flatmap",
+    "simcore.service.settings": [
+      {
+        "name": "resources",
+        "type": "Resources",
+        "value": {
+          "cpu_limit": 4000000000,
+          "mem_limit": 17179869184
+        }
+      },
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 4000
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      }
+    ],
     "type": "dynamic",
     "version": "0.1.24"
   },
@@ -149,13 +475,27 @@
     "image": "${DOCKER_REGISTRY}/mattward-viewer:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/mattward-viewer",
     "name": "mattward-viewer",
+    "simcore.service.settings": [
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 8888
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      }
+    ],
     "type": "dynamic",
     "version": "3.0.5"
   },
   "opencor": {
     "description": "OpenCOR is a cross-platform modelling environment, which can be used to organise, edit, simulate and analyse CellML and SED-ML files.",
     "dockerfile": "oc-opencor-base/docker/custom/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
+    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/comp/opencor",
     "name": "OpenCOR",
     "type": "computational",
@@ -164,7 +504,7 @@
   "opencorservice_demo": {
     "description": "opencorservice_demo",
     "dockerfile": "oc-guytonmodel/docker/ubuntu/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
+    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/comp/opencorservice_demo",
     "name": "opencorservice_demo",
     "type": "computational",
@@ -173,7 +513,7 @@
   "pmr_mrg": {
     "description": "Creates a simulation of the MRG fiber based on the model found on the PMR https://models.physiomeproject.org/e/5f7/mcintyre_richardson_grill_model_2001.cellml/view",
     "dockerfile": "oc-pmrmrg/docker/ubuntu/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
+    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/comp/pmr_mrg",
     "name": "pmr_mrg",
     "type": "computational",
@@ -185,6 +525,28 @@
     "image": "${DOCKER_REGISTRY}/raw-graphs:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/raw-graphs",
     "name": "2D plot",
+    "simcore.service.settings": [
+      {
+        "name": "resources",
+        "type": "Resources",
+        "value": {
+          "cpu_limit": 4000000000,
+          "mem_limit": 17179869184
+        }
+      },
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 4000
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      }
+    ],
     "type": "dynamic",
     "version": "2.11.1"
   },
@@ -194,6 +556,28 @@
     "image": "${DOCKER_REGISTRY}/raw-graphs-table:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/raw-graphs-table",
     "name": "Table view",
+    "simcore.service.settings": [
+      {
+        "name": "resources",
+        "type": "Resources",
+        "value": {
+          "cpu_limit": 4000000000,
+          "mem_limit": 17179869184
+        }
+      },
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 4000
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      }
+    ],
     "type": "dynamic",
     "version": "2.11.1"
   },
@@ -209,29 +593,106 @@
   "sleeper": {
     "description": "A service which awaits for time to pass, two times.",
     "dockerfile": "sleeper/docker/custom/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
+    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/comp/itis/sleeper",
     "name": "sleeper",
+    "simcore.service.settings": [
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      },
+      {
+        "name": "resources",
+        "type": "resources",
+        "value": {
+          "Limits": {
+            "MemoryBytes": 134217728,
+            "NanoCPUs": 100000000
+          }
+        }
+      }
+    ],
     "type": "computational",
-    "version": "2.1.1"
+    "version": "2.1.4"
   },
   "sleeper-gpu": {
     "description": "A service which awaits for time to pass.",
     "dockerfile": "sleeper/docker/custom/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-gpu:${DOCKER_IMAGE_TAG}",
+    "image": "local/${DOCKER_IMAGE_NAME}-gpu:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/comp/itis/sleeper-gpu",
     "name": "sleeper-gpu",
+    "simcore.service.settings": [
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      },
+      {
+        "name": "Resources",
+        "type": "Resources",
+        "value": {
+          "Limits": {
+            "MemoryBytes": 134217728,
+            "NanoCPUs": 100000000
+          },
+          "Reservations": {
+            "GenericResources": [
+              {
+                "DiscreteResourceSpec": {
+                  "Kind": "VRAM",
+                  "Value": 1
+                }
+              }
+            ]
+          }
+        }
+      }
+    ],
     "type": "computational",
-    "version": "2.1.1"
+    "version": "2.1.4"
   },
   "sleeper-mpi": {
     "description": "A service which awaits for time to pass.",
     "dockerfile": "sleeper/docker/custom/Dockerfile",
-    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-mpi:${DOCKER_IMAGE_TAG}",
+    "image": "local/${DOCKER_IMAGE_NAME}-mpi:${DOCKER_BUILD_TARGET}",
     "key": "simcore/services/comp/itis/sleeper-mpi",
     "name": "sleeper-mpi",
+    "simcore.service.settings": [
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      },
+      {
+        "name": "Resources",
+        "type": "Resources",
+        "value": {
+          "Limits": {
+            "MemoryBytes": 134217728,
+            "NanoCPUs": 100000000
+          },
+          "Reservations": {
+            "GenericResources": [
+              {
+                "DiscreteResourceSpec": {
+                  "Kind": "MPI",
+                  "Value": 1
+                }
+              }
+            ]
+          }
+        }
+      }
+    ],
     "type": "computational",
-    "version": "2.1.1"
+    "version": "2.1.4"
   },
   "tissue-properties": {
     "description": "Tissue properties compiled in an extensive, critical literature review by the ITIS Foundation. Visit [itis.swiss/database](https://itis.swiss/database) for additional information, e.g., on tissue parameter variability/uncertainty, quality assurance, and the explored sources. Please use the following citation when referring to the database: Hasgall PA, Di Gennaro F, Baumgartner C, Neufeld E, Lloyd B, Gosselin MC, Payne D, Klingenb\u00f6ck A, Kuster N, ITIS Database for thermal and electromagnetic parameters of biological tissues, Version 4.0, May 15, 2018, DOI: 10.13099/VIP21000-04-0. [itis.swiss/database](https://itis.swiss/database). Powered by [csv-to-html-table](https://github.com/derekeder/csv-to-html-table)",
@@ -239,6 +700,28 @@
     "image": "${DOCKER_REGISTRY}/tissue-properties:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/tissue-properties",
     "name": "Tissue properties",
+    "simcore.service.settings": [
+      {
+        "name": "resources",
+        "type": "Resources",
+        "value": {
+          "cpu_limit": 4000000000,
+          "mem_limit": 17179869184
+        }
+      },
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 4000
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      }
+    ],
     "type": "dynamic",
     "version": "1.0.1"
   }

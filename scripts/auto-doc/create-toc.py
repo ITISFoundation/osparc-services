@@ -12,6 +12,7 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional
+from unittest import result
 
 import yaml
 from pytablewriter import MarkdownTableWriter
@@ -42,6 +43,7 @@ def parse_repo():
     docker_files = defaultdict(dict)
     version_files = defaultdict(dict)
     services_info = defaultdict(dict)
+    dockerfile_label_infos = defaultdict(dict)
 
     for base, _dirs, files in os.walk(services_dir):
         base = Path(base)
@@ -69,7 +71,6 @@ def parse_repo():
 
                 for service_name, service in content["services"].items():
                     info = {}
-
                     if "image" in service:
                         new_image = service["image"]
                         prev_image = services_info[service_name].get("image")
@@ -101,6 +102,16 @@ def parse_repo():
                                 info[key] = json.loads(
                                     service["build"]["labels"][f"io.simcore.{key}"]
                                 )[key]
+                            # dynamic service have an additional key: "simcore.service.settings"
+                            settings_key = "simcore.service.settings"
+                            if settings_key in service["build"]["labels"]:
+                                try:
+                                    settings_list = json.loads(service["build"]["labels"]["simcore.service.settings"].encode("utf8"))
+                                except json.JSONDecodeError as e:
+                                    print(f"Could not decode: {service['build']['labels']['simcore.service.settings']} for {service_name}") 
+                                    print(e)
+                                    continue
+                                info["simcore.service.settings"] = settings_list
 
                     services_info[service_name].update(info)
 
