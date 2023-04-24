@@ -12,6 +12,10 @@ import plotly.tools as tls
 import plotly.graph_objs as go
 from flask import Flask, Blueprint, Response
 import asyncio
+import logging 
+
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
 
 DEVEL_MODE = False
 if DEVEL_MODE:
@@ -36,24 +40,26 @@ app = dash.Dash(__name__,
 
 bp = Blueprint('myBlueprint', __name__)
 
+
 @app.callback(
     [
         Output('graph-1', 'figure'),
         Output('graph-2', 'figure')
     ],
     [
-        Input('reload-button', 'n_clicks')
+    Input('interval-component', 'n_intervals')
+        #Input('reload-button', 'n_clicks')
     ]
 )
-def plot_graphs(_n_clicks) -> List[go.Figure]:
-    if INPUTS_EXIST:
-        print("Inputs have been found, plotting them...")
+def plot_graphs(n) -> List[go.Figure]:
+    if check_inputs():
+        print("Inputs have been found, plotting them...", flush=False)
         figs = [
             plot_ach_icns(),
             plot_heart_rate()
         ]
     else:
-        print("No inputs found, showing empty graph")
+        print("No inputs found, showing empty graph", flush=False)
         figs = [get_empty_graph() for i in range(2)]
     return figs
 
@@ -68,27 +74,19 @@ def healthcheck():
 #---------------------------------------------------------#
 # Get and process inputs
 
-INPUT_1 = IN_PARENT_DIR.joinpath("input_1/SAN_icnsach.txt")
-INPUT_2 = IN_PARENT_DIR.joinpath("input_2/SAN_alloutputs_icnsach.txt")
-INPUTS_EXIST = INPUT_1.exists() and INPUT_2.exists()
-print(f"This is IN_PARENT_DIR: {IN_PARENT_DIR}")
-print(os.listdir(IN_PARENT_DIR))
+def check_inputs():
+    INPUT_1 = IN_PARENT_DIR.joinpath("input_1/SAN_icnsach.txt")
+    INPUT_2 = IN_PARENT_DIR.joinpath("input_2/SAN_alloutputs_icnsach.txt")
+    INPUTS_EXIST = INPUT_1.exists() and INPUT_2.exists()
+    print(f"This is IN_PARENT_DIR: {IN_PARENT_DIR}")
+    print(os.listdir(IN_PARENT_DIR))
+    return INPUTS_EXIST
 
 def get_input_array(input_path: Path, id: int) -> np.ndarray:
     input = np.loadtxt(input_path)
     return input[:, id]
+ 
 
-if INPUTS_EXIST: 
-    tach = get_input_array(INPUT_2, 0)/1e3  # time
-    vmach = get_input_array(INPUT_2, 15) # voltage
-
-    tcach = get_input_array(INPUT_1, 0)/1e3 # time
-    cch = get_input_array(INPUT_1, 5) # Ach
-    icns = get_input_array(INPUT_1, 6)  # icns
-
-    # calculate heart rates
-    loc,_ = find_peaks( vmach , prominence=0.01, width=20 )
-    HR = 60./np.diff(loc) * 1000
 
 #---------------------------------------------------------#
 # Plot data 
@@ -101,6 +99,10 @@ def plot_ach_icns() -> go.Figure:
     #axs3[0].plot( tcach, cch, 'g' )
     #axs3[0].plot( tcach, icns, 'b' )
     #axs3[0].set_ylim( [0, 150] )
+    INPUT_1 = IN_PARENT_DIR.joinpath("input_1/SAN_icnsach.txt")
+    tcach = get_input_array(INPUT_1, 0)/1e3 # time
+    cch = get_input_array(INPUT_1, 5) # Ach
+    icns = get_input_array(INPUT_1, 6)  # icns
     fig = create_graphs([tcach, tcach], [cch, icns], trace_names=["Ach", "Icns"], 
                         xLabel='Time (sec)', yLabel="")
     fig.update_yaxes(range=[0,150])
@@ -112,6 +114,14 @@ def plot_heart_rate() -> go.Figure:
     #axs3[1].plot( loc[1:]*0.001, HR, 'm')
     #axs3[1].set_xlabel('Time (sec)', fontsize=20)
     #axs3[1].set_ylabel('AP firing rate [bpm]', fontsize=20)
+
+    INPUT_2 = IN_PARENT_DIR.joinpath("input_2/SAN_alloutputs_icnsach.txt")
+    tach = get_input_array(INPUT_2, 0)/1e3  # time
+    vmach = get_input_array(INPUT_2, 15) # voltage
+
+    # calculate heart rates
+    loc,_ = find_peaks( vmach , prominence=0.01, width=20 )
+    HR = 60./np.diff(loc) * 1000
     fig = create_graphs([loc[1:]*0.001], [HR], trace_names=["bpm"],
                         xLabel='Time (sec)', yLabel='AP firing rate [bpm]')
     return fig
@@ -200,12 +210,22 @@ def get_empty_graph(xLabel='x', yLabel='y'):
 empty_graph_1 = get_empty_graph(X_LABEL_TIME_SEC, Y_LABEL_1)
 empty_graph_2 = get_empty_graph(X_LABEL_TIME_SEC, Y_LABEL_2)
 
+
+# app.layout = html.Div(children=[
+#     html.Button('Reload', id='reload-button', style=dcc_input_button),
+#     dcc.Graph(id='graph-1', figure=empty_graph_1),
+#     dcc.Graph(id='graph-2', figure=empty_graph_2),
+# ], style=osparc_style)
 app.layout = html.Div(children=[
-    html.Button('Reload', id='reload-button', style=dcc_input_button),
     dcc.Graph(id='graph-1', figure=empty_graph_1),
     dcc.Graph(id='graph-2', figure=empty_graph_2),
-], style=osparc_style)
-
+            dcc.Interval(
+            id='interval-component',
+            interval=1*5000, # in milliseconds
+            n_intervals=0
+        )
+], style=osparc_style
+)
 
 def create_graphs(x_data: list, y_data: list, trace_names:list, xLabel="x", yLabel="y") -> go.Figure:
     data = [go.Scatter(x=x, y=y, name = n)
