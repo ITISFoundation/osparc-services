@@ -1,0 +1,16 @@
+version: '3.7'
+services:
+  ans-model-viewer:
+    image: simcore/services/dynamic/ans-model-viewer:1.0.0
+    ports:
+      - "8888:8888"
+    environment:
+      - DY_SIDECAR_PATH_INPUTS=/home/jovyan/validation/inputs
+      - DY_SIDECAR_PATH_OUTPUTS=/home/jovyan/validation/outputs
+      - DY_BOOT_OPTION_BOOT_MODE=0
+      - DY_SIDECAR_PATH/home/jovyan/work/workspace
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ${PWD}/validation/workspace:/home/jovyan/work/workspace
+      - ${PWD}/validation/inputs:/home/jovyan/validation/inputs
+      - ${PWD}/validation/outputs:/home/jovyan/validation/outputs

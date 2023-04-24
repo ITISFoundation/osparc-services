@@ -1,0 +1,34 @@
+name: ANS model viewer
+key: simcore/services/dynamic/ans-model-viewer
+type: dynamic
+integration-version: 1.0.0
+version: 1.0.0
+description: ANS model viewer
+contact: iavarone@itis.swiss
+thumbnail: https://github.com/ITISFoundation/osparc-assets/blob/cb43207b6be2f4311c93cd963538d5718b41a023/assets/default-thumbnail-cookiecutter-osparc-service.png?raw=true
+authors:
+  - name: Elisabetta Iavarone
+    email: iavarone@itis.swiss
+    affiliation: IT'IS Foundation
+inputs:
+  input_1:
+    displayOrder: 1
+    label: ICNS and Ach
+    description: File containing Ach and ICNSs inputs
+    type: data:*/*
+    fileToKeyMap:
+      SAN_icnsach.txt: input_1
+  input_2:
+    displayOrder: 2
+    label: Outputs HR
+    description: Inputs used to calculate heart rate
+    type: data:*/*
+    fileToKeyMap:
+      SAN_alloutputs_icnsach.txt: input_2 
+outputs:
+  output_1:
+    displayOrder: 1
+    label: Dummy output
+    description: Optional output for testing
+    type: string
+  
