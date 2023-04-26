@@ -1,8 +1,8 @@
 # Order is important. The last matching pattern has the most precedence.
 
 # files and folders recursively
-/api/                                             @sanderegg, @pcrespov
-/ci/                                             @sanderegg, @pcrespov
+/api/                                             @sanderegg @pcrespov
+/ci/                                              @sanderegg @pcrespov
 
 /services/dy-2Dgraph                              @sanderegg
 /services/dy-2Dgraph/use-cases/cc/cc-oned         @sanderegg
@@ -17,10 +17,11 @@
 /services/dy-dash/cc-rabbit-0d                    @odeimaiz
 /services/dy-dash/cc-rabbit-1d                    @odeimaiz
 /services/dy-dash/mattward-dash                   @odeimaiz
+/services/dy-dash/ans-model-viewer                @elisabettai 
 
-/services/dy-jupyter                              @sanderegg, @pcrespov
+/services/dy-jupyter                              @sanderegg @pcrespov
 
-/services/dy-jupyter-extensions                   @sanderegg, @pcrespov
+/services/dy-jupyter-extensions                   @sanderegg @pcrespov
 /services/dy-jupyter-extensions/neuron            @mguidon
 
 /services/dy-modeling                             @sanderegg
