@@ -1,0 +1,53 @@
+name: Github-CI Push/PR ans-model-viewer
+
+on:
+  push:
+  pull_request:
+
+env:
+  # secrets can be set in settings/secrets on github
+  DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+jobs:
+  build:
+    name: building ans-model-viewer
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        python: [3.9]
+        os: [ubuntu-22.04]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v3
+      - name: setup python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
+      - name: show versions
+        run: ./.github/show_system_versions.bash
+      - name: set owner variable
+        run: echo "OWNER=${GITHUB_REPOSITORY%/*}" >> $GITHUB_ENV
+      - name: set docker image tag
+        if: github.ref != 'refs/heads/master'
+        run: echo "DOCKER_IMAGE_TAG=${GITHUB_REF##*/}" >> $GITHUB_ENV
+      - name: get current image if available
+        run: make pull-latest || true
+      - name: build
+        run: |
+          make VERSION
+          make build
+          make info-build
+      - name: test
+        run: make tests
+      - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        name: push
+        run: |
+          ./.github/dockerhub_login.bash
+          make push
+      - if: github.event_name == 'push' && github.ref != 'refs/heads/master'
+        name: push
+        run: |
+          ./.github/dockerhub_login.bash
+          make push-version
