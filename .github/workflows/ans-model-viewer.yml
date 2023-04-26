@@ -55,11 +55,11 @@ jobs:
         working-directory: services/dy-dash/ans-model-viewer/
         name: push
         run: |
-          ./ci/helpers/dockerhub_login.bash
+          ./../../../ci/helpers/dockerhub_login.bash
           make push
       - if: github.event_name == 'push' && github.ref != 'refs/heads/master'
         working-directory: services/dy-dash/ans-model-viewer/
         name: push
         run: |
-          ./ci/helpers/dockerhub_login.bash
+          ./../../../ci/helpers/dockerhub_login.bash
           make push-version
