@@ -2,7 +2,15 @@ name: Github-CI Push/PR ans-model-viewer
 
 on:
   push:
+    paths: 
+      - ".github/workflows/ans-model-viewer.yml"
+      - "services/dy-dash/ans-model-viewer/**"
+      - "!**.md" 
   pull_request:
+    paths: 
+      - ".github/workflows/ans-model-viewer.yml"
+      - "services/dy-dash/ans-model-viewer/**"
+      - "!**.md"
 
 env:
   # secrets can be set in settings/secrets on github
@@ -33,19 +41,24 @@ jobs:
         if: github.ref != 'refs/heads/master'
         run: echo "DOCKER_IMAGE_TAG=${GITHUB_REF##*/}" >> $GITHUB_ENV
       - name: get current image if available
+        working-directory: services/dy-dash/ans-model-viewer/
         run: make pull-latest || true
       - name: build
+        working-directory: services/dy-dash/ans-model-viewer/
         run: |
           make build
           make info-build
       - name: test
+        working-directory: services/dy-dash/ans-model-viewer/
         run: make tests
       - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        working-directory: services/dy-dash/ans-model-viewer/
         name: push
         run: |
           ./.github/dockerhub_login.bash
           make push
       - if: github.event_name == 'push' && github.ref != 'refs/heads/master'
+        working-directory: services/dy-dash/ans-model-viewer/
         name: push
         run: |
           ./.github/dockerhub_login.bash
