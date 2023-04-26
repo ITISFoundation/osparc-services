@@ -13,18 +13,14 @@ authors:
 inputs:
   input_1:
     displayOrder: 1
-    label: ICNS and Ach
-    description: File containing Ach and ICNSs inputs
+    label: Data array 1 
+    description: If san-model, use SAN_iscnsach.txt file. If vm-model, use VM_ap_icnsach.txt
     type: data:*/*
-    fileToKeyMap:
-      SAN_icnsach.txt: input_1
   input_2:
     displayOrder: 2
     label: Outputs HR
-    description: Inputs used to calculate heart rate
+    description: If san-model, use SAN_alloutputs_icnsach.txt file. If vm-model, use VM_ca_icnsach.txt
     type: data:*/*
-    fileToKeyMap:
-      SAN_alloutputs_icnsach.txt: input_2 
 outputs:
   output_1:
     displayOrder: 1

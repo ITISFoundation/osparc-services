@@ -1,0 +1,16 @@
+restart-policy: no-restart
+settings:
+  - name: ports
+    type: int
+    value: 8888
+  - name: Resources
+    type: Resources
+    value:
+      Limits:
+        NanoCPUs: 1000000000 # 1 CPU 
+        MemoryBytes: 2147483648 # 2 Gigabytes
+paths-mapping:
+  inputs_path: /home/jovyan/work/inputs
+  outputs_path: /home/jovyan/work/outputs
+  state_paths:
+    - /home/jovyan/work/workspace

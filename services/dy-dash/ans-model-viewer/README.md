@@ -1,26 +1,31 @@
-# ans-model-viewer
+# SAN and VM model viewer
 
-ANS model viewer
+Interactive graph viewer for the Sinoatrial Model Viewer (san-model) and Ventricular Myocardium model viewer (vm-model) provided by UC Davis. 
 
 ## Usage
 
-```console
-$ make help
+To build and test locally:
 
-$ make build
-$ make info-build
-$ make tests
-```
+1. Open terminal and do:
+    ```console
+    $ make help
+    $ make build
+    $ make run-local-san (or make run-local-vm)
+    ```
+2. Open url http://0.0.0.0:8888/ to display the graph
 
-## Workflow
+Additionally, it can be tested in a local deployment of o²S²PARC by pushing it to the local registry with `publish-local`.
 
-1. The source code shall be copied to the [src](ans-model-viewer/src/ans_model_viewer) folder.
-2. The [Dockerfile](ans-model-viewer/src/Dockerfile) shall be modified to compile the source code.
-3. The [.osparc](.osparc) is the configuration folder and source of truth for metadata: describes service info and expected inputs/outputs of the service.
-4. The [execute](ans-model-viewer/service.cli/execute) shell script shall be modified to run the service using the expected inputs and retrieve the expected outputs.
-5. The test input/output shall be copied to [validation](ans-model-viewer/validation).
-6. The service docker image may be built and tested as ``make build tests`` (see usage above)
-7. Optional: if your code requires specific CPU/RAM resources, edit [runtime.yml](.osparc/runtime.yml). In doubt, leave it as default.
+## How it works
+The graphs are created using plotly-dash, all the logic is in the [app.py](../ans-model-viewer/src/ans_model_viewer/app.py) file. When the app is launched:
+1. It checks if ".txt" files are provided in the two input ports
+2. If inputs are provided, it checks the filename to choose which plotting functions to use (thanks to python multispatch library)
+3. Display the plots using dash/plotly
+
+To ensure that plots get updated when the input changes, the [Dash Interval Component](https://dash.plotly.com/live-updates) is used, that performs the steps above every 5 seconds.
+
+## Additional information
+The service was used using the [cookiecutter-osparc-service](https://github.com/ITISFoundation/cookiecutter-osparc-service/) with adaption for dynamic services taken from [jupyter-mah](https://github.com/ITISFoundation/jupyter-math).
 
 ## Have an issue or question?
 Please open an issue [in this repository](https://github.com/ITISFoundation/cookiecutter-osparc-service/issues/).

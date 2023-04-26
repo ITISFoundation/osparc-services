@@ -74,9 +74,13 @@ test tests:  ## runs validation tests
 	@$(OSPARC_DIR)/bin/ooil.bash test .
 
 # RUN-----------------------------------------------------------------
-.PHONY: run-local
-run-local:	## runs image with local configuration
-	docker-compose --file docker-compose-local.yml up
+.PHONY: run-local-san
+run-local-san:	## runs image with local configuration for san-model inputs
+	docker-compose --file docker-compose-local-san.yml up
+
+.PHONY: run-local-vm
+run-local-vm:	## runs image with local configuration for vm-model inputs
+	docker-compose --file docker-compose-local-vm.yml up
 
 # PUBLISHING -----------------------------------------------------------------
 

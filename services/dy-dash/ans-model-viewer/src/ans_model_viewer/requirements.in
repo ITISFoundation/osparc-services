@@ -2,3 +2,4 @@ dash
 plotly
 numpy
 scipy
+multipledispatch

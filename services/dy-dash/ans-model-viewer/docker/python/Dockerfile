@@ -27,7 +27,7 @@ WORKDIR /home/${SC_USER_NAME}
 # copy src code and requirements
 COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} src/ans_model_viewer src/ans_model_viewer
 
-RUN pip --no-cache install pip-tools && \
+RUN pip install pip-tools && \
   pip-compile --build-isolation --output-file src/ans_model_viewer/requirements.txt src/ans_model_viewer/requirements.in  && \
   pip --no-cache install -r src/ans_model_viewer/requirements.txt && \
   rm src/ans_model_viewer/requirements.in
@@ -41,13 +41,14 @@ ENV PATH="/home/${SC_USER_NAME}/service.cli:${PATH}"
 
 # ------------------------------------------------------------------------------------
 #TODO:
-# uncomment and provide a healtchecker if possible
-# HEALTHCHECK --interval=30s \
-#             --timeout=120s \
-#             --start-period=30s \
-#             --retries=3 \
-#             CMD ["healthchecker app"]
+#uncomment and provide a healtchecker if possible
+HEALTHCHECK --interval=30s \
+             --timeout=120s \
+             --start-period=30s \
+             --retries=3 \
+             CMD ["healthchecker app"]
 # ------------------------------------------------------------------------------------
+
 EXPOSE 8888
 
 ENTRYPOINT [ "/bin/bash", "docker/entrypoint.bash"]
