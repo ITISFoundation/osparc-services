@@ -34,7 +34,7 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
       - name: show versions
-        run: ./.github/show_system_versions.bash
+        run: ./ci/helpers/show_system_versions.bash
       - name: set owner variable
         run: echo "OWNER=${GITHUB_REPOSITORY%/*}" >> $GITHUB_ENV
       - name: set docker image tag
@@ -55,11 +55,11 @@ jobs:
         working-directory: services/dy-dash/ans-model-viewer/
         name: push
         run: |
-          ./.github/dockerhub_login.bash
+          ./ci/helpers/dockerhub_login.bash
           make push
       - if: github.event_name == 'push' && github.ref != 'refs/heads/master'
         working-directory: services/dy-dash/ans-model-viewer/
         name: push
         run: |
-          ./.github/dockerhub_login.bash
+          ./ci/helpers/dockerhub_login.bash
           make push-version
