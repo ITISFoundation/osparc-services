@@ -1,90 +1,34 @@
 {
-  "3d-viewer": {
-    "description": "Paraview Web-based Visualizer",
-    "dockerfile": "dy-3dvis/docker/custom/Dockerfile",
-    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
-    "key": "simcore/services/dynamic/3d-viewer",
-    "name": "3d-viewer",
+  "ans-model-viewer": {
+    "description": "ANS model viewer",
+    "dockerfile": "dy-dash/ans-model-viewer/docker/python/Dockerfile",
+    "image": "simcore/services/dynamic/ans-model-viewer:1.0.0",
+    "key": "simcore/services/dynamic/ans-model-viewer",
+    "name": "ANS model viewer",
     "simcore.service.settings": [
       {
         "name": "ports",
         "type": "int",
-        "value": "${SERVER_PORT:-80}"
-      },
-      {
-        "name": "constraints",
-        "type": "string",
-        "value": [
-          "node.platform.os == linux"
-        ]
-      },
-      {
-        "name": "resources",
-        "type": "resources",
-        "value": {
-          "Limits": {
-            "MemoryBytes": 17179869184,
-            "NanoCPUs": 4000000000
-          },
-          "Reservations": {
-            "MemoryBytes": 536870912,
-            "NanoCPUs": 100000000
-          }
-        }
-      }
-    ],
-    "type": "dynamic",
-    "version": "3.0.3"
-  },
-  "3d-viewer-gpu": {
-    "description": "Paraview Web-based Visualizer",
-    "dockerfile": "dy-3dvis/docker/custom/Dockerfile",
-    "image": "local/${DOCKER_IMAGE_NAME}-gpu:${DOCKER_BUILD_TARGET}",
-    "key": "simcore/services/dynamic/3d-viewer-gpu",
-    "name": "3d-viewer-gpu",
-    "simcore.service.settings": [
-      {
-        "name": "ports",
-        "type": "int",
-        "value": 80
-      },
-      {
-        "name": "constraints",
-        "type": "string",
-        "value": [
-          "node.platform.os == linux"
-        ]
+        "value": 8888
       },
       {
         "name": "Resources",
         "type": "Resources",
         "value": {
           "Limits": {
-            "MemoryBytes": 17179869184,
-            "NanoCPUs": 4000000000
-          },
-          "Reservations": {
-            "GenericResources": [
-              {
-                "DiscreteResourceSpec": {
-                  "Kind": "VRAM",
-                  "Value": 1
-                }
-              }
-            ],
-            "MemoryBytes": 536870912,
-            "NanoCPUs": 100000000
+            "MemoryBytes": 2147483648,
+            "NanoCPUs": 1000000000
           }
         }
       }
     ],
     "type": "dynamic",
-    "version": "3.0.3"
+    "version": "1.0.0"
   },
   "cardiac_myocyte_grandi": {
     "description": "This is the mouse cardiac myocyte electrophysiology model from Eleonora Grandi at UC Davis.",
     "dockerfile": "ma-myocyteele/docker/custom/Dockerfile",
-    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
+    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/comp/cardiac_myocyte_grandi",
     "name": "cardiac_myocyte_grandi",
     "type": "computational",
@@ -193,7 +137,7 @@
   "dy-static-file-server": {
     "description": "Legacy test dynamic service (starts using original director-v0). The /workdir/generated-data directory is populated if no content is present.",
     "dockerfile": "dy-static-file-server/docker/custom/Dockerfile",
-    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
+    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/dy-static-file-server",
     "name": "dy-static-file-server",
     "simcore.service.settings": [
@@ -224,7 +168,7 @@
   "dy-static-file-server-dynamic-sidecar": {
     "description": "Modern test dynamic service (with dynamic sidecar). Changes to the inputs will be forwarded to the outputs. The /workdir/generated-data directory is populated if no content is present.",
     "dockerfile": "dy-static-file-server/docker/custom/Dockerfile",
-    "image": "local/${DOCKER_IMAGE_NAME}-dynamic-sidecar:${DOCKER_BUILD_TARGET}",
+    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-dynamic-sidecar:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/dy-static-file-server-dynamic-sidecar",
     "name": "dy-static-file-server-dynamic-sidecar",
     "simcore.service.settings": [
@@ -255,7 +199,7 @@
   "dy-static-file-server-dynamic-sidecar-compose-spec": {
     "description": "Modern test dynamic service providing a docker-compose specification file (with dynamic sidecar and compose-spec). Changes to the inputs will be forwarded to the outputs. The /workdir/generated-data directory is populated if no content is present.",
     "dockerfile": "dy-static-file-server/docker/custom/Dockerfile",
-    "image": "local/${DOCKER_IMAGE_NAME}-dynamic-sidecar-compose-spec:${DOCKER_BUILD_TARGET}",
+    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-dynamic-sidecar-compose-spec:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/dy-static-file-server-dynamic-sidecar-compose-spec",
     "name": "dy-static-file-server-dynamic-sidecar-compose-spec",
     "simcore.service.settings": [
@@ -495,7 +439,7 @@
   "opencor": {
     "description": "OpenCOR is a cross-platform modelling environment, which can be used to organise, edit, simulate and analyse CellML and SED-ML files.",
     "dockerfile": "oc-opencor-base/docker/custom/Dockerfile",
-    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
+    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/comp/opencor",
     "name": "OpenCOR",
     "type": "computational",
@@ -504,7 +448,7 @@
   "opencorservice_demo": {
     "description": "opencorservice_demo",
     "dockerfile": "oc-guytonmodel/docker/ubuntu/Dockerfile",
-    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
+    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/comp/opencorservice_demo",
     "name": "opencorservice_demo",
     "type": "computational",
@@ -513,7 +457,7 @@
   "pmr_mrg": {
     "description": "Creates a simulation of the MRG fiber based on the model found on the PMR https://models.physiomeproject.org/e/5f7/mcintyre_richardson_grill_model_2001.cellml/view",
     "dockerfile": "oc-pmrmrg/docker/ubuntu/Dockerfile",
-    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
+    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/comp/pmr_mrg",
     "name": "pmr_mrg",
     "type": "computational",
@@ -587,13 +531,34 @@
     "image": "${DOCKER_REGISTRY}/modeler-webserver:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/dynamic/modeler-webserver",
     "name": "modeler",
+    "simcore.service.settings": [
+      {
+        "name": "ports",
+        "type": "int",
+        "value": 9090
+      },
+      {
+        "name": "constraints",
+        "type": "string",
+        "value": [
+          "node.platform.os == linux"
+        ]
+      },
+      {
+        "name": "env",
+        "type": "string",
+        "value": [
+          "CS_S4L_HOSTNAME=modeler_xrpc-worker_%service_uuid%"
+        ]
+      }
+    ],
     "type": "dynamic",
     "version": "0.1.1"
   },
   "sleeper": {
     "description": "A service which awaits for time to pass, two times.",
     "dockerfile": "sleeper/docker/custom/Dockerfile",
-    "image": "local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}",
+    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/comp/itis/sleeper",
     "name": "sleeper",
     "simcore.service.settings": [
@@ -621,7 +586,7 @@
   "sleeper-gpu": {
     "description": "A service which awaits for time to pass.",
     "dockerfile": "sleeper/docker/custom/Dockerfile",
-    "image": "local/${DOCKER_IMAGE_NAME}-gpu:${DOCKER_BUILD_TARGET}",
+    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-gpu:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/comp/itis/sleeper-gpu",
     "name": "sleeper-gpu",
     "simcore.service.settings": [
@@ -659,7 +624,7 @@
   "sleeper-mpi": {
     "description": "A service which awaits for time to pass.",
     "dockerfile": "sleeper/docker/custom/Dockerfile",
-    "image": "local/${DOCKER_IMAGE_NAME}-mpi:${DOCKER_BUILD_TARGET}",
+    "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-mpi:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/comp/itis/sleeper-mpi",
     "name": "sleeper-mpi",
     "simcore.service.settings": [

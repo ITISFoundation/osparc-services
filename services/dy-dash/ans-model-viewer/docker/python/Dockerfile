@@ -40,8 +40,6 @@ COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} service.cli/ service.cli/
 ENV PATH="/home/${SC_USER_NAME}/service.cli:${PATH}"
 
 # ------------------------------------------------------------------------------------
-#TODO:
-#uncomment and provide a healtchecker if possible
 HEALTHCHECK --interval=30s \
              --timeout=120s \
              --start-period=30s \
