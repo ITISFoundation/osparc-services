@@ -36,7 +36,6 @@ jobs:
         run: make pull-latest || true
       - name: build
         run: |
-          make VERSION
           make build
           make info-build
       - name: test
