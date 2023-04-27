@@ -85,9 +85,9 @@ def serve_index():
     plot_graphs(1)
     return app.layout
 
-@bp.route("/healthcheck")
-def healthcheck():
-    return Response("healthy", status=200, mimetype='application/json')
+# @bp.route("/healthcheck")
+# def healthcheck():
+#     return Response("healthy", status=200, mimetype='application/json')
 
 #---------------------------------------------------------#
 # Check if expected inputs are in the input ports, get and process them

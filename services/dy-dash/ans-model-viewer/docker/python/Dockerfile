@@ -40,11 +40,11 @@ COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} service.cli/ service.cli/
 ENV PATH="/home/${SC_USER_NAME}/service.cli:${PATH}"
 
 # ------------------------------------------------------------------------------------
-HEALTHCHECK --interval=30s \
-             --timeout=120s \
-             --start-period=30s \
-             --retries=3 \
-             CMD ["healthchecker app"]
+# HEALTHCHECK --interval=30s \
+#              --timeout=120s \
+#              --start-period=30s \
+#              --retries=3 \
+#              CMD ["healthchecker app"]
 # ------------------------------------------------------------------------------------
 
 EXPOSE 8888
