@@ -20,9 +20,9 @@ default_context:
     _output_dir:               '/home/iavarone/repos/osparc-services/services/dy-dash'
     _template:                 'gh:elisabettai/cookiecutter-osparc-service'
     author_affiliation:        "IT'IS Foundation"
-    author_email:              'iavarone@itis.swiss'
+    author_email:              '18575092+elisabettai@users.noreply.github.com'
     author_name:               'Elisabetta Iavarone'
-    contact_email:             'iavarone@itis.swiss'
+    contact_email:             '18575092+elisabettai@users.noreply.github.com'
     default_docker_registry:   'itisfoundation'
     docker_base:               'python:3.10-slim'
     git_repo:                  'github'
