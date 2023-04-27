@@ -45,7 +45,7 @@ app.layout = html.Div(style=osparc_style,
     dcc.Graph(id='graph-2'),
             dcc.Interval(
             id='interval-component',
-            interval=1*5000, # in milliseconds
+            interval=1*20000, # in milliseconds
             n_intervals=0
         )
 ]

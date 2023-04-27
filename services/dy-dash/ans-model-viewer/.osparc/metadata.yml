@@ -1,11 +1,11 @@
-name: ANS model viewer
+name: SAN/VM model viewer
 key: simcore/services/dynamic/ans-model-viewer
 type: dynamic
 integration-version: 1.0.0
 version: 1.0.0
-description: ANS model viewer
+description: Graph viewer for the Sinoatrial Node (SAN) model and the Ventricular Myocardium (VM) model
 contact: iavarone@itis.swiss
-thumbnail: https://github.com/ITISFoundation/osparc-assets/blob/cb43207b6be2f4311c93cd963538d5718b41a023/assets/default-thumbnail-cookiecutter-osparc-service.png?raw=true
+thumbnail: https://github.com/ITISFoundation/osparc-assets/blob/d87c7d2efaff723e67d043a24f8be204dcaddcf9/assets/ans-viewer-thumbnail.gif?raw=true
 authors:
   - name: Elisabetta Iavarone
     email: iavarone@itis.swiss
