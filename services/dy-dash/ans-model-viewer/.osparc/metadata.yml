@@ -18,7 +18,7 @@ inputs:
     type: data:*/*
   input_2:
     displayOrder: 2
-    label: Outputs HR
+    label: Data array 2
     description: If san-model, use SAN_alloutputs_icnsach.txt file. If vm-model, use VM_ca_icnsach.txt
     type: data:*/*
 outputs:
