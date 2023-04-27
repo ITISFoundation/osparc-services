@@ -1,0 +1,6 @@
+version: "3.7"
+services:
+  ans-model-viewer:
+    build:
+      dockerfile: docker/python/Dockerfile
+      target: production

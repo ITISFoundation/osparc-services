@@ -1,0 +1,30 @@
+name: SAN/VM model viewer
+key: simcore/services/dynamic/ans-model-viewer
+type: dynamic
+integration-version: 1.0.0
+version: 1.0.0
+description: Graph viewer for the Sinoatrial Node (SAN) model and the Ventricular Myocardium (VM) model
+contact: iavarone@itis.swiss
+thumbnail: https://github.com/ITISFoundation/osparc-assets/blob/d87c7d2efaff723e67d043a24f8be204dcaddcf9/assets/ans-viewer-thumbnail.gif?raw=true
+authors:
+  - name: Elisabetta Iavarone
+    email: iavarone@itis.swiss
+    affiliation: IT'IS Foundation
+inputs:
+  input_1:
+    displayOrder: 1
+    label: Data array 1 
+    description: If san-model, use SAN_iscnsach.txt file. If vm-model, use VM_ap_icnsach.txt
+    type: data:*/*
+  input_2:
+    displayOrder: 2
+    label: Data array 2
+    description: If san-model, use SAN_alloutputs_icnsach.txt file. If vm-model, use VM_ca_icnsach.txt
+    type: data:*/*
+outputs:
+  output_1:
+    displayOrder: 1
+    label: Dummy output
+    description: Optional output for testing
+    type: string
+  
