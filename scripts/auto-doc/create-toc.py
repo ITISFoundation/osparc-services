@@ -106,7 +106,7 @@ def parse_repo():
                             settings_key = "simcore.service.settings"
                             if settings_key in service["build"]["labels"]:
                                 try:
-                                    settings_list = json.loads(service["build"]["labels"]["simcore.service.settings"].encode("utf8"))
+                                    settings_list = json.loads(json.dumps(service["build"]["labels"]["simcore.service.settings"]))
                                 except json.JSONDecodeError as e:
                                     print(f"Could not decode: {service['build']['labels']['simcore.service.settings']} for {service_name}") 
                                     print(e)
