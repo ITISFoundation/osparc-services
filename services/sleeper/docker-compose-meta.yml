@@ -33,7 +33,7 @@ services:
           "contentSchema": {"title": "Random sleep interval", "type": "integer", "x_unit":
           "second"}}}}'
         io.simcore.type: '{"type": "computational"}'
-        io.simcore.version: '{"version": "2.1.4"}'
+        io.simcore.version: '{"version": "2.1.5"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}

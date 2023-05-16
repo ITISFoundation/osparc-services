@@ -67,16 +67,16 @@ def sleep_with_payload(
     Used for validating different types of payloads based on their
     resource requirements.
     """
-    print(f"Will sleep for {amount_to_sleep} seconds")
+    print(f"Will sleep for {amount_to_sleep} seconds", flush=True)
     for seconds in range(amount_to_sleep):
-        print(f"[PROGRESS] {seconds + 1}/{amount_to_sleep}")
+        print(f"[PROGRESS] {seconds + 1}/{amount_to_sleep}", flush=True)
 
         start = time.time()
         if target_payload:
             target_payload()
         # take into account the runtime of the target_payload
         time_to_sleep = max(0.0, 1.0 - (time.time() - start))
-        print(f"Remaining sleep time {time_to_sleep}")
+        print(f"Remaining sleep time {time_to_sleep:.2f}", flush=True)
 
         time.sleep(time_to_sleep)
 

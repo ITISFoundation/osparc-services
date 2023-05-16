@@ -23,7 +23,7 @@ jobs:
     strategy:
       matrix:
         python: [3.8]
-        os: [ubuntu-18.04]
+        os: [ubuntu-22.04]
         node: [10]
       fail-fast: false
     steps:
