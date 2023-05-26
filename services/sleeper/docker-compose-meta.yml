@@ -13,9 +13,9 @@ services:
           with int number", "description": "Pick a file containing only one integer",
           "type": "data:text/plain", "fileToKeyMap": {"single_number.txt": "input_1"}},
           "input_2": {"displayOrder": 2, "label": "Sleep interval", "description":
-          "Choose an amount of time to sleep in range [0-5]", "defaultValue": 2, "type":
-          "ref_contentSchema", "contentSchema": {"title": "Sleep interval", "type":
-          "integer", "x_unit": "second", "minimum": 0, "maximum": 5}}, "input_3":
+          "Choose an amount of time to sleep in range [0-65]", "defaultValue": 2,
+          "type": "ref_contentSchema", "contentSchema": {"title": "Sleep interval",
+          "type": "integer", "x_unit": "second", "minimum": 0, "maximum": 65}}, "input_3":
           {"displayOrder": 3, "label": "Fail after sleep", "description": "If set
           to true will cause service to fail after it sleeps", "type": "boolean",
           "defaultValue": false}, "input_4": {"displayOrder": 4, "label": "Distance
@@ -33,7 +33,7 @@ services:
           "contentSchema": {"title": "Random sleep interval", "type": "integer", "x_unit":
           "second"}}}}'
         io.simcore.type: '{"type": "computational"}'
-        io.simcore.version: '{"version": "2.1.5"}'
+        io.simcore.version: '{"version": "2.1.6"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
