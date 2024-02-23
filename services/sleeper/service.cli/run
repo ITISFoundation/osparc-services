@@ -18,6 +18,8 @@ INPUT_3=$(< "$json_input" jq '.input_3')
 export INPUT_3
 INPUT_4=$(< "$json_input" jq '.input_4')
 export INPUT_4
+INPUT_5=$(< "$json_input" jq '.input_5')
+export INPUT_5
 
 exec execute.sh
         
