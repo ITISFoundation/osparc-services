@@ -5,7 +5,7 @@ FROM ${BASE_IMAGE} as base
 #  USAGE:
 #     cd services/sleeper
 #     docker build -f Dockerfile -t sleeper:prod --target production ../../
-#     docker run sleeper:prod
+#       docker run sleeper:prod
 #
 
 LABEL maintainer=sanderegg
@@ -39,8 +39,11 @@ RUN --mount=type=cache,target=/var/cache/apt,mode=0755,sharing=private \
     && apt-get update \
     && apt-get install -y --no-install-recommends \
     jq \
+    gosu \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*;
+    && rm -rf /var/lib/apt/lists/* \
+    # verify that the binary works
+    && gosu nobody true
 
 # Define an argument that dictates whether to run the installation commands
 ARG INSTALL_EXTRAS=false
