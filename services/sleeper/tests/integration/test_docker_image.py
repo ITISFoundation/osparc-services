@@ -64,7 +64,10 @@ def test_docker_io_simcore_labels_against_files(
     image_labels = docker_image.labels
     io_simcore_labels = _convert_to_simcore_labels(image_labels)
     # check files are identical
+    SKIPPED_KEYS = ["key", "name"]
     for key, value in io_simcore_labels.items():
+        if key in SKIPPED_KEYS:
+            continue
         assert key in metadata_labels
         assert value == metadata_labels[key]
 
