@@ -1,6 +1,7 @@
 import os
 import json
 import random
+import string
 import time
 import subprocess
 
@@ -58,10 +59,25 @@ def walk_to_bed(amount_to_walk: int = 0) -> None:
             time.sleep(0.5)
 
 
+def generate_random_words(word_length, total_length):
+    words = []
+    while total_length > 0:
+        word = "".join(
+            random.choices(
+                string.ascii_lowercase + string.ascii_uppercase, k=word_length
+            )
+        )
+        spacer = " " if total_length > word_length else ""
+        words.append(word + spacer)
+        total_length -= word_length + len(spacer)
+    return "".join(words)
+
+
 def dream(output_folder: Path, dream_size_bytes: int) -> None:
     output_3_file = output_folder / "dream.txt"
     with output_3_file.open("wb") as fp:
-        fp.write(f"I am a {dream_size_bytes} dream".encode())
+        psychedelic_content = generate_random_words(6, dream_size_bytes).encode()
+        fp.write(psychedelic_content)
         fp.truncate(dream_size_bytes)
     print(f"What a dream! it was {dream_size_bytes}!! Amazing!")
 
