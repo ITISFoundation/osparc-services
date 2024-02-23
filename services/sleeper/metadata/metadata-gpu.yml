@@ -51,6 +51,16 @@ inputs:
       title: Distance to bed
       type: integer
       x_unit: meter
+  input_5:
+    displayOrder: 5
+    label: Dream of the night
+    description: It will dream a big dream
+    defaultValue: 0
+    type: ref_contentSchema
+    contentSchema:
+      title: Dream of the night
+      type: integer
+      x_unit: bytes
 outputs:
   output_1:
     displayOrder: 1
@@ -68,3 +78,10 @@ outputs:
       title: Random sleep interval
       type: integer
       x_unit: second
+  output_3:
+    displayOrder: 3
+    label: Dream output
+    description: Contains some random data representing a dream
+    type: "data/text/plain"
+    fileToKeyMap:
+      dream_output.txt: output_3
