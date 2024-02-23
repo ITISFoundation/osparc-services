@@ -83,6 +83,6 @@ outputs:
     displayOrder: 3
     label: Dream output
     description: Contains some random data representing a dream
-    type: "data/text/plain"
+    type: "data:text/plain"
     fileToKeyMap:
-      dream_output.txt: output_3
+      dream.txt: output_3
