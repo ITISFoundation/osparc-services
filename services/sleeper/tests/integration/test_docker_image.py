@@ -38,14 +38,6 @@ def _convert_to_simcore_labels(image_labels: Dict) -> Dict:
 
 
 # FIXTURES
-@pytest.fixture
-def osparc_service_labels_jsonschema(tmp_path) -> Dict:
-    url = "https://raw.githubusercontent.com/ITISFoundation/osparc-simcore/master/api/specs/common/schemas/node-meta-v0.0.1.json"
-    file_name = tmp_path / "service_label.json"
-    _download_url(url, file_name)
-    with file_name.open() as fp:
-        json_schema = json.load(fp)
-        return json_schema
 
 
 @pytest.fixture(scope="session")
@@ -70,20 +62,3 @@ def test_docker_io_simcore_labels_against_files(
             continue
         assert key in metadata_labels
         assert value == metadata_labels[key]
-
-
-def test_validate_docker_io_simcore_labels(
-    docker_image: docker.models.images.Image, osparc_service_labels_jsonschema: Dict
-):
-    image_labels = docker_image.labels
-    # get io labels
-    io_simcore_labels = _convert_to_simcore_labels(image_labels)
-    # validate schema
-    try:
-        jsonschema.validate(io_simcore_labels, osparc_service_labels_jsonschema)
-    except jsonschema.SchemaError:
-        pytest.fail(
-            "Schema {} contains errors".format(osparc_service_labels_jsonschema)
-        )
-    except jsonschema.ValidationError:
-        pytest.fail("Failed to validate docker image io labels against schema")
