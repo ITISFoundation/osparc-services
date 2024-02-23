@@ -34,6 +34,8 @@ jobs:
           python-version: ${{ matrix.python }}
           cache: "pip"
           cache-dependency-path: "**/requirements.txt"
+      - name: install uv
+        uses: yezz123/setup-uv@v1        
       - name: show versions
         run: ./ci/helpers/show_system_versions.bash
       - name: set owner variable
