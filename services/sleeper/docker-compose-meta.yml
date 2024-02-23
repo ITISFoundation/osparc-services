@@ -39,7 +39,7 @@ services:
           "Contains some random data representing a dream", "type": "data/text/plain",
           "fileToKeyMap": {"dream_output.txt": "output_3"}}}}'
         io.simcore.type: '{"type": "computational"}'
-        io.simcore.version: '{"version": "2.1.6"}'
+        io.simcore.version: '{"version": "2.2.0"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
@@ -87,7 +87,7 @@ services:
           "Contains some random data representing a dream", "type": "data/text/plain",
           "fileToKeyMap": {"dream_output.txt": "output_3"}}}}'
         io.simcore.type: '{"type": "computational"}'
-        io.simcore.version: '{"version": "2.1.6"}'
+        io.simcore.version: '{"version": "2.2.0"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
@@ -137,7 +137,7 @@ services:
           "Contains some random data representing a dream", "type": "data/text/plain",
           "fileToKeyMap": {"dream_output.txt": "output_3"}}}}'
         io.simcore.type: '{"type": "computational"}'
-        io.simcore.version: '{"version": "2.1.6"}'
+        io.simcore.version: '{"version": "2.2.0"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}

@@ -1,6 +1,6 @@
 type: computational
 integration-version: 1.0.0
-version: 2.1.6
+version: 2.2.0
 description: A service which awaits for time to pass, two times.
 contact: maiz@itis.swiss
 authors:
