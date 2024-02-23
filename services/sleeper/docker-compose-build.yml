@@ -7,7 +7,7 @@ services:
       dockerfile: docker/custom/Dockerfile
       target: production
       args:
-        BASE_IMAGE: python:3.9-slim-buster
+        BASE_IMAGE: python:3.11-slim
 
   sleeper-gpu:
     image: local/${DOCKER_IMAGE_NAME}-gpu:${DOCKER_BUILD_TARGET}
@@ -16,7 +16,8 @@ services:
       dockerfile: docker/custom/Dockerfile
       target: production
       args:
-        BASE_IMAGE: nvidia/cuda:10.0-base-ubuntu18.04
+        INSTALL_EXTRAS: true
+        BASE_IMAGE: nvidia/cuda:12.3.1-base-ubuntu22.04
   sleeper-mpi:
     image: local/${DOCKER_IMAGE_NAME}-mpi:${DOCKER_BUILD_TARGET}
     build:
@@ -24,4 +25,5 @@ services:
       dockerfile: docker/custom/Dockerfile
       target: production
       args:
-        BASE_IMAGE: nvidia/cuda:10.0-base-ubuntu18.04
+        INSTALL_EXTRAS: true
+        BASE_IMAGE: nvidia/cuda:12.3.1-base-ubuntu22.04
