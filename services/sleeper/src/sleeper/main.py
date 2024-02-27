@@ -1,6 +1,7 @@
 import os
 import json
 import random
+import string
 import time
 import subprocess
 
@@ -24,7 +25,7 @@ def cast_bool(value: str) -> bool:
 
 
 def ensure_sleep_policy(sleep_interval: int) -> int:
-    """If the sleep interval is negative a value 
+    """If the sleep interval is negative a value
     in range [1:9] is returned, otherwise the original
     value"""
     return sleep_interval if sleep_interval >= 0 else get_random_sleep()
@@ -50,14 +51,35 @@ def test_gpu_cuda_code() -> None:
     # search the history for the CUDA implementation
 
 
-def walk_to_bed(
-    amount_to_walk: int = 0
-) -> None:
+def walk_to_bed(amount_to_walk: int = 0) -> None:
     if amount_to_walk > 0:
         print(f"So tired, I first need to walk {amount_to_walk} meters to bed")
-        for step in range(2*amount_to_walk):
+        for step in range(2 * amount_to_walk):
             print(f"Step {step+1}")
             time.sleep(0.5)
+
+
+def generate_random_words(word_length, total_length):
+    words = []
+    while total_length > 0:
+        word = "".join(
+            random.choices(
+                string.ascii_lowercase + string.ascii_uppercase, k=word_length
+            )
+        )
+        spacer = " " if total_length > word_length else ""
+        words.append(word + spacer)
+        total_length -= word_length + len(spacer)
+    return "".join(words)
+
+
+def dream(output_folder: Path, dream_size_bytes: int) -> None:
+    output_3_file = output_folder / "dream.txt"
+    with output_3_file.open("wb") as fp:
+        psychedelic_content = generate_random_words(6, dream_size_bytes).encode()
+        fp.write(psychedelic_content)
+        fp.truncate(dream_size_bytes)
+    print(f"What a dream! it was {dream_size_bytes}!! Amazing!")
 
 
 def sleep_with_payload(
@@ -83,8 +105,8 @@ def sleep_with_payload(
 
 def main() -> None:
     """
-    Will sleep a random amount between INPUT_1 and INPUT_2 values. If 
-    these are not provided or are negative random values between 
+    Will sleep a random amount between INPUT_1 and INPUT_2 values. If
+    these are not provided or are negative random values between
     1 and 9 will be used.
 
     INPUT_3 will cause this script to fail after sleeping.
@@ -96,6 +118,7 @@ def main() -> None:
     sleep_interval = int(get_from_environ("INPUT_2", get_random_sleep()))
     fail_after_sleep = cast_bool(get_from_environ("INPUT_3", "false"))
     walk_distance = int(get_from_environ("INPUT_4", 0))
+    dream_size_bytes = int(get_from_environ("INPUT_5", 0))
     output_folder = Path(get_from_environ("OUTPUT_FOLDER"))
     # if the service needs to confirm GPU is working
     enforce_gpu_support = get_from_environ("DOCKER_RESOURCE_VRAM") is not None
@@ -120,21 +143,21 @@ def main() -> None:
     if enforce_mpi_support:
         sleep_payload_function = test_mpi_code
 
-    walk_to_bed(
-        amount_to_walk=walk_distance
-    )
+    walk_to_bed(amount_to_walk=walk_distance)
 
     sleep_with_payload(
         amount_to_sleep=amount_to_sleep, target_payload=sleep_payload_function
     )
 
     # writing program outputs
-    output_3_file = output_folder / "single_number.txt"
-    output_3_file.write_text(str(get_random_sleep()))
+    output_1_file = output_folder / "single_number.txt"
+    output_1_file.write_text(str(get_random_sleep()))
 
     output_json_content = {"output_2": get_random_sleep()}
     output_json = output_folder / "outputs.json"
     output_json.write_text(json.dumps(output_json_content))
+
+    dream(output_folder, dream_size_bytes)
 
     # Last step should be to fail
     if fail_after_sleep:

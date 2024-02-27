@@ -1,4 +1,3 @@
-
 #!/bin/sh
 #---------------------------------------------------------------
 # AUTO-GENERATED CODE, do not modify this will be overwritten!!!
@@ -9,15 +8,16 @@ set -o nounset
 IFS=$(printf '\n\t')
 cd "$(dirname "$0")"
 json_input=$INPUT_FOLDER/inputs.json
-        
+
 INPUT_1=$INPUT_FOLDER/single_number.txt
 export INPUT_1
-INPUT_2=$(< "$json_input" jq '.input_2')
+INPUT_2=$(jq <"$json_input" '.input_2')
 export INPUT_2
-INPUT_3=$(< "$json_input" jq '.input_3')
+INPUT_3=$(jq <"$json_input" '.input_3')
 export INPUT_3
-INPUT_4=$(< "$json_input" jq '.input_4')
+INPUT_4=$(jq <"$json_input" '.input_4')
 export INPUT_4
+INPUT_5=$(jq <"$json_input" '.input_5')
+export INPUT_5
 
 exec execute.sh
-        

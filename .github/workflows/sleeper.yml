@@ -22,25 +22,22 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python: [3.8]
+        python: [3.11]
         os: [ubuntu-22.04]
-        node: [10]
+        node: [16]
       fail-fast: false
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: setup python environment
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
+          cache: "pip"
+          cache-dependency-path: "**/requirements.txt"
+      - name: install uv
+        uses: yezz123/setup-uv@v1        
       - name: show versions
         run: ./ci/helpers/show_system_versions.bash
-      - uses: actions/cache@v2
-        name: getting cached data
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
       - name: set owner variable
         run: echo "OWNER=${GITHUB_REPOSITORY%/*}" >> $GITHUB_ENV
       - name: set docker image tag
@@ -74,13 +71,13 @@ jobs:
           make push-version
       - name: set up QEMU
         id: qemu
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v3
         with:
           image: tonistiigi/binfmt:latest
           platforms: all
       - name: setup docker buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v3
         with:
           version: ${{ matrix.docker_buildx }}
           driver: docker-container # a must for multi-arch buildsplatform

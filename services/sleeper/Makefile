@@ -32,24 +32,22 @@ LOCAL_REGISTRY = ${LOCAL_REGISTRY_HOST}/${COMP_ITIS_PATH}
 # ENVIRON ----------------------------------
 .PHONY: devenv
 .venv:
-	python3 -m venv $@
+	uv venv $@
 	# upgrading package managers
-	$@/bin/pip3 install --upgrade \
+	uv pip install --upgrade \
 		pip \
 		wheel \
 		setuptools
-	# tooling
-	$@/bin/pip3 install pip-tools
 
 requirements.txt: .venv requirements.in
 	# freezes requirements
-	$</bin/pip-compile --upgrade --build-isolation --output-file $@ $(word2, $^)
+	uv pip compile --upgrade --build-isolation $(word 2, $^) --output-file $@ 
 
 devenv: .venv requirements.txt ## create a python virtual environment with tools to dev, run and tests cookie-cutter
 	# installing extra tools
-	@$</bin/pip3 install -r  $(word 2,$^)
+	uv pip install -r  $(word 2,$^)
 	# your dev environment contains
-	@$</bin/pip3 list
+	@$</bin/pip list
 	@echo "To activate the virtual environment, run 'source $</bin/activate'"
 
 

@@ -1,8 +1,6 @@
-name: sleeper
-key: simcore/services/comp/itis/sleeper
 type: computational
 integration-version: 1.0.0
-version: 2.1.6
+version: 2.2.0
 description: A service which awaits for time to pass, two times.
 contact: maiz@itis.swiss
 authors:
@@ -15,6 +13,9 @@ authors:
   - name: "Andrei Neagu"
     email: neagu@itis.swiss
     affiliation: "IT'IS Foundation"
+  - name: "Sylvain Anderegg"
+    email: anderegg@itis.swiss
+    affiliation: "IT'IS Foundation"
 inputs:
   input_1:
     displayOrder: 1
@@ -26,7 +27,7 @@ inputs:
   input_2:
     displayOrder: 2
     label: Sleep interval
-    description: Choose an amount of time to sleep in range [0-65]
+    description: Choose an amount of time to sleep in range [0:]
     defaultValue: 2
     type: ref_contentSchema
     contentSchema:
@@ -34,7 +35,6 @@ inputs:
       type: integer
       x_unit: second
       minimum: 0
-      maximum: 65
   input_3:
     displayOrder: 3
     label: Fail after sleep
@@ -51,6 +51,17 @@ inputs:
       title: Distance to bed
       type: integer
       x_unit: meter
+  input_5:
+    displayOrder: 5
+    label: Dream (or nightmare) of the night
+    description: Defines the size of the dream that will be generated [0:]
+    defaultValue: 0
+    type: ref_contentSchema
+    contentSchema:
+      title: Dream of the night
+      type: integer
+      x_unit: bytes
+      minimum: 0
 outputs:
   output_1:
     displayOrder: 1
@@ -68,3 +79,10 @@ outputs:
       title: Random sleep interval
       type: integer
       x_unit: second
+  output_3:
+    displayOrder: 3
+    label: Dream output
+    description: Contains some random data representing a dream
+    type: "data:text/plain"
+    fileToKeyMap:
+      dream.txt: output_3
