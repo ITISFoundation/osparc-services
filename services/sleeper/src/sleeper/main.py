@@ -73,13 +73,13 @@ def generate_random_words(word_length, total_length):
     return "".join(words)
 
 
-def dream(output_folder: Path, dream_size_bytes: int) -> None:
+def dream(output_folder: Path, dream_size_byte: int) -> None:
     output_3_file = output_folder / "dream.txt"
     with output_3_file.open("wb") as fp:
-        psychedelic_content = generate_random_words(6, dream_size_bytes).encode()
+        psychedelic_content = generate_random_words(6, dream_size_byte).encode()
         fp.write(psychedelic_content)
-        fp.truncate(dream_size_bytes)
-    print(f"What a dream! it was {dream_size_bytes}!! Amazing!")
+        fp.truncate(dream_size_byte)
+    print(f"What a dream! it was {dream_size_byte}!! Amazing!")
 
 
 def sleep_with_payload(
@@ -118,7 +118,7 @@ def main() -> None:
     sleep_interval = int(get_from_environ("INPUT_2", get_random_sleep()))
     fail_after_sleep = cast_bool(get_from_environ("INPUT_3", "false"))
     walk_distance = int(get_from_environ("INPUT_4", 0))
-    dream_size_bytes = int(get_from_environ("INPUT_5", 0))
+    dream_size_byte = int(get_from_environ("INPUT_5", 0))
     output_folder = Path(get_from_environ("OUTPUT_FOLDER"))
     # if the service needs to confirm GPU is working
     enforce_gpu_support = get_from_environ("DOCKER_RESOURCE_VRAM") is not None
@@ -157,7 +157,7 @@ def main() -> None:
     output_json = output_folder / "outputs.json"
     output_json.write_text(json.dumps(output_json_content))
 
-    dream(output_folder, dream_size_bytes)
+    dream(output_folder, dream_size_byte)
 
     # Last step should be to fail
     if fail_after_sleep:

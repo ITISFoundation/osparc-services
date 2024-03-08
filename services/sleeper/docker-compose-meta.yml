@@ -25,7 +25,7 @@ services:
           "meter"}}, "input_5": {"displayOrder": 5, "label": "Dream (or nightmare)
           of the night", "description": "Defines the size of the dream that will be
           generated [0:]", "defaultValue": 0, "type": "ref_contentSchema", "contentSchema":
-          {"title": "Dream of the night", "type": "integer", "x_unit": "bytes", "minimum":
+          {"title": "Dream of the night", "type": "integer", "x_unit": "byte", "minimum":
           0}}}}'
         io.simcore.integration-version: '{"integration-version": "1.0.0"}'
         io.simcore.key: '{"key": "simcore/services/comp/itis/sleeper"}'
@@ -40,7 +40,7 @@ services:
           "Contains some random data representing a dream", "type": "data:text/plain",
           "fileToKeyMap": {"dream.txt": "output_3"}}}}'
         io.simcore.type: '{"type": "computational"}'
-        io.simcore.version: '{"version": "2.2.0"}'
+        io.simcore.version: '{"version": "2.2.1"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
@@ -74,7 +74,7 @@ services:
           "meter"}}, "input_5": {"displayOrder": 5, "label": "Dream (or nightmare)
           of the night", "description": "Defines the size of the dream that will be
           generated [0:]", "defaultValue": 0, "type": "ref_contentSchema", "contentSchema":
-          {"title": "Dream of the night", "type": "integer", "x_unit": "bytes", "minimum":
+          {"title": "Dream of the night", "type": "integer", "x_unit": "byte", "minimum":
           0}}}}'
         io.simcore.integration-version: '{"integration-version": "1.0.0"}'
         io.simcore.key: '{"key": "simcore/services/comp/itis/sleeper-gpu"}'
@@ -89,7 +89,7 @@ services:
           "Contains some random data representing a dream", "type": "data:text/plain",
           "fileToKeyMap": {"dream.txt": "output_3"}}}}'
         io.simcore.type: '{"type": "computational"}'
-        io.simcore.version: '{"version": "2.2.0"}'
+        io.simcore.version: '{"version": "2.2.1"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
@@ -125,7 +125,7 @@ services:
           "meter"}}, "input_5": {"displayOrder": 5, "label": "Dream (or nightmare)
           of the night", "description": "Defines the size of the dream that will be
           generated [0:]", "defaultValue": 0, "type": "ref_contentSchema", "contentSchema":
-          {"title": "Dream of the night", "type": "integer", "x_unit": "bytes", "minimum":
+          {"title": "Dream of the night", "type": "integer", "x_unit": "byte", "minimum":
           0}}}}'
         io.simcore.integration-version: '{"integration-version": "1.0.0"}'
         io.simcore.key: '{"key": "simcore/services/comp/itis/sleeper-mpi"}'
@@ -140,7 +140,7 @@ services:
           "Contains some random data representing a dream", "type": "data:text/plain",
           "fileToKeyMap": {"dream.txt": "output_3"}}}}'
         io.simcore.type: '{"type": "computational"}'
-        io.simcore.version: '{"version": "2.2.0"}'
+        io.simcore.version: '{"version": "2.2.1"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
