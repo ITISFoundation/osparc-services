@@ -60,7 +60,7 @@ inputs:
     contentSchema:
       title: Dream of the night
       type: integer
-      x_unit: bytes
+      x_unit: byte
       minimum: 0
 outputs:
   output_1:
