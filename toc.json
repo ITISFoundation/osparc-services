@@ -76,7 +76,7 @@
     "name": "dy-static-file-server",
     "simcore.service.settings": "[{\"name\": \"resources\", \"type\": \"Resources\", \"value\": {\"mem_limit\":268435456, \"cpu_limit\": 10000000}}, {\"name\": \"ports\", \"type\": \"int\", \"value\": 8080}, {\"name\": \"constraints\", \"type\": \"string\", \"value\": [\"node.platform.os == linux\"]}]",
     "type": "dynamic",
-    "version": "2.0.6"
+    "version": "2.0.7"
   },
   "dy-static-file-server-dynamic-sidecar": {
     "description": "Modern test dynamic service (with dynamic sidecar). Changes to the inputs will be forwarded to the outputs. The /workdir/generated-data directory is populated if no content is present.",
@@ -86,7 +86,7 @@
     "name": "dy-static-file-server-dynamic-sidecar",
     "simcore.service.settings": "[{\"name\": \"resources\", \"type\": \"Resources\", \"value\": {\"mem_limit\":268435456, \"cpu_limit\": 10000000}}, {\"name\": \"ports\", \"type\": \"int\", \"value\": 8080}, {\"name\": \"constraints\", \"type\": \"string\", \"value\": [\"node.platform.os == linux\"]}]",
     "type": "dynamic",
-    "version": "2.0.6"
+    "version": "2.0.7"
   },
   "dy-static-file-server-dynamic-sidecar-compose-spec": {
     "description": "Modern test dynamic service providing a docker-compose specification file (with dynamic sidecar and compose-spec). Changes to the inputs will be forwarded to the outputs. The /workdir/generated-data directory is populated if no content is present.",
@@ -96,7 +96,7 @@
     "name": "dy-static-file-server-dynamic-sidecar-compose-spec",
     "simcore.service.settings": "[{\"name\": \"resources\", \"type\": \"Resources\", \"value\": {\"mem_limit\":268435456, \"cpu_limit\": 10000000}}, {\"name\": \"ports\", \"type\": \"int\", \"value\": 8080}, {\"name\": \"constraints\", \"type\": \"string\", \"value\": [\"node.platform.os == linux\"]}]",
     "type": "dynamic",
-    "version": "2.0.6"
+    "version": "2.0.7"
   },
   "jupyter-base-notebook": {
     "description": "Jupyter notebook",
