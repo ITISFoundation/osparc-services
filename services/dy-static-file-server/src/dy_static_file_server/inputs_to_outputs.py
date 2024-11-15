@@ -38,7 +38,7 @@ def _list_files_in_dir(path: Path) -> List[Path]:
     return [x for x in path.rglob("*") if x.is_file()]
 
 
-def _get_directory_state(directory: Path) -> dict[Path, Tuple[str, float]]:
+def _get_directory_state(directory: Path) -> Dict[Path, Tuple[str, float]]:
     return {p: _get_file_info(p) for p in _list_files_in_dir(directory)}
 
 
