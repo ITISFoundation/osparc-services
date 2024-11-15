@@ -11,7 +11,7 @@ services:
         io.simcore.name: '{"name": "dy-static-file-server"}'
         io.simcore.outputs: '{"outputs": {}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "2.0.5"}'
+        io.simcore.version: '{"version": "2.0.6"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
@@ -29,7 +29,7 @@ services:
         io.simcore.name: '{"name": "dy-static-file-server-dynamic-sidecar"}'
         io.simcore.outputs: '{"outputs": {"string_output": {"displayOrder": 1, "label": "String output", "description": "String value from input", "type": "string"}, "integer_output": {"displayOrder": 2, "label": "Integer output", "description": "Integer value from input", "type": "integer"}, "boolean_output": {"displayOrder": 3, "label": "Boolean output", "description": "Boolean value from input", "type": "boolean"}, "number_output": {"displayOrder": 4, "label": "Number output", "description": "Number value from input", "type": "number"}, "file_output": {"displayOrder": 5, "label": "File output", "description": "File from input", "type": "data:*/*", "fileToKeyMap": {"test_file": "file_output"}}}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "2.0.5"}'
+        io.simcore.version: '{"version": "2.0.6"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
@@ -48,7 +48,7 @@ services:
         io.simcore.name: '{"name": "dy-static-file-server-dynamic-sidecar-compose-spec"}'
         io.simcore.outputs: '{"outputs": {"string_output": {"displayOrder": 1, "label": "String output", "description": "String value from input", "type": "string"}, "integer_output": {"displayOrder": 2, "label": "Integer output", "description": "Integer value from input", "type": "integer"}, "boolean_output": {"displayOrder": 3, "label": "Boolean output", "description": "Boolean value from input", "type": "boolean"}, "number_output": {"displayOrder": 4, "label": "Number output", "description": "Number value from input", "type": "number"}, "file_output": {"displayOrder": 5, "label": "File output", "description": "File from input", "type": "data:*/*", "fileToKeyMap": {"test_file": "file_output"}}}}'
         io.simcore.type: '{"type": "dynamic"}'
-        io.simcore.version: '{"version": "2.0.5"}'
+        io.simcore.version: '{"version": "2.0.6"}'
         org.label-schema.build-date: ${BUILD_DATE}
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
