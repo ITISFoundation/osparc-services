@@ -209,6 +209,19 @@ async def test_folder_mirror(
     await ports_monitor.stop()
 
 
+async def _assert_on_change_completed(
+    caplog: pytest.LogCaptureFixture, *, expected_count: int
+):
+    async for attempt in AsyncRetrying(
+        wait=wait_fixed(0.1),
+        stop=stop_after_delay(2),
+        reraise=True,
+        retry=retry_if_exception_type(AssertionError),
+    ):
+        with attempt:
+            assert caplog.text.count("on_change completed") == 1
+
+
 @pytest.mark.asyncio
 async def test_folder_mirror_main(
     caplog: pytest.LogCaptureFixture,
@@ -233,13 +246,12 @@ async def test_folder_mirror_main(
 
     create_files_in_input(input_dir)
 
-    async for attempt in AsyncRetrying(
-        wait=wait_fixed(0.1),
-        stop=stop_after_delay(10),
-        reraise=True,
-        retry=retry_if_exception_type(AssertionError),
-    ):
-        with attempt:
-            assert "on_change completed" in caplog.text
+    # wait a bit to trigger the check a few times
+    await asyncio.sleep(1)
+    await _assert_on_change_completed(caplog, expected_count=1)
+
+    # touch file in inputs await for another event
+    (input_dir / "file_input" / "test_file").touch()
+    await _assert_on_change_completed(caplog, expected_count=2)
 
     await ports_monitor.stop()
