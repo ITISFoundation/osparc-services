@@ -45,10 +45,11 @@ _yq = docker run --rm -i -v ${PWD}:/workdir mikefarah/yq:3.3.4 yq
 	$@/bin/pip3 install \
 		pip-tools
 
+.PHONY: requirements
 requirements: .venv
 	# freezes requirements
-	$</bin/pip-compile --upgrade --build-isolation --output-file requirements/test.txt requirements/test.in 
 	$</bin/pip-compile --upgrade --build-isolation --output-file requirements/base.txt requirements/base.in 
+	$</bin/pip-compile --upgrade --build-isolation --output-file requirements/test.txt requirements/test.in 
 
 devenv: .venv requirements ## create a python virtual environment with tools to dev, run and tests cookie-cutter
 	# installing extra tools from: $(word 3,$^), $(word 2,$^)
@@ -73,7 +74,7 @@ export DOCKER_BUILD_TARGET=$(if $(findstring -devel,$@),development,$(if $(finds
 $(if $(findstring -x,$@),\
 	docker buildx > /dev/null; export DOCKER_CLI_EXPERIMENTAL=enabled; docker buildx bake  --file docker-compose-build.yml --file docker-compose-meta.yml $(if $(findstring -nc,$@),--no-cache,);,\
 	$(if $(findstring -kit,$@),export DOCKER_BUILDKIT=1;export COMPOSE_DOCKER_CLI_BUILD=1;,) \
-	docker-compose --file docker-compose-build.yml --file docker-compose-meta.yml build $(if $(findstring -nc,$@),--no-cache,) --parallel;\
+	docker compose --file docker-compose-build.yml --file docker-compose-meta.yml build $(if $(findstring -nc,$@),--no-cache,) --parallel;\
 )
 endef
 
