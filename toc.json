@@ -19,16 +19,6 @@
     "type": "dynamic",
     "version": "3.0.3"
   },
-  "ans-model-viewer": {
-    "description": "Graph viewer for the Sinoatrial Node (SAN) model and the Ventricular Myocardium (VM) model",
-    "dockerfile": "dy-dash/ans-model-viewer/docker/python/Dockerfile",
-    "image": "simcore/services/dynamic/ans-model-viewer:1.0.0",
-    "key": "simcore/services/dynamic/ans-model-viewer",
-    "name": "SAN/VM model viewer",
-    "simcore.service.settings": "[{\"name\": \"ports\", \"type\": \"int\", \"value\": 8888}, {\"name\": \"Resources\", \"type\": \"Resources\", \"value\": {\"Limits\": {\"NanoCPUs\": 1000000000, \"MemoryBytes\": 2147483648}}}]",
-    "type": "dynamic",
-    "version": "1.0.0"
-  },
   "cardiac_myocyte_grandi": {
     "description": "This is the mouse cardiac myocyte electrophysiology model from Eleonora Grandi at UC Davis.",
     "dockerfile": "ma-myocyteele/docker/custom/Dockerfile",
@@ -86,7 +76,7 @@
     "name": "dy-static-file-server",
     "simcore.service.settings": "[{\"name\": \"resources\", \"type\": \"Resources\", \"value\": {\"mem_limit\":268435456, \"cpu_limit\": 10000000}}, {\"name\": \"ports\", \"type\": \"int\", \"value\": 8080}, {\"name\": \"constraints\", \"type\": \"string\", \"value\": [\"node.platform.os == linux\"]}]",
     "type": "dynamic",
-    "version": "2.0.4"
+    "version": "2.0.6"
   },
   "dy-static-file-server-dynamic-sidecar": {
     "description": "Modern test dynamic service (with dynamic sidecar). Changes to the inputs will be forwarded to the outputs. The /workdir/generated-data directory is populated if no content is present.",
@@ -96,7 +86,7 @@
     "name": "dy-static-file-server-dynamic-sidecar",
     "simcore.service.settings": "[{\"name\": \"resources\", \"type\": \"Resources\", \"value\": {\"mem_limit\":268435456, \"cpu_limit\": 10000000}}, {\"name\": \"ports\", \"type\": \"int\", \"value\": 8080}, {\"name\": \"constraints\", \"type\": \"string\", \"value\": [\"node.platform.os == linux\"]}]",
     "type": "dynamic",
-    "version": "2.0.4"
+    "version": "2.0.6"
   },
   "dy-static-file-server-dynamic-sidecar-compose-spec": {
     "description": "Modern test dynamic service providing a docker-compose specification file (with dynamic sidecar and compose-spec). Changes to the inputs will be forwarded to the outputs. The /workdir/generated-data directory is populated if no content is present.",
@@ -106,7 +96,7 @@
     "name": "dy-static-file-server-dynamic-sidecar-compose-spec",
     "simcore.service.settings": "[{\"name\": \"resources\", \"type\": \"Resources\", \"value\": {\"mem_limit\":268435456, \"cpu_limit\": 10000000}}, {\"name\": \"ports\", \"type\": \"int\", \"value\": 8080}, {\"name\": \"constraints\", \"type\": \"string\", \"value\": [\"node.platform.os == linux\"]}]",
     "type": "dynamic",
-    "version": "2.0.4"
+    "version": "2.0.6"
   },
   "jupyter-base-notebook": {
     "description": "Jupyter notebook",
@@ -243,27 +233,27 @@
     "name": "sleeper",
     "simcore.service.settings": "[{ \"name\": \"constraints\", \"type\": \"string\", \"value\": [\"node.platform.os == linux\"]}, {\"name\": \"resources\", \"type\": \"resources\", \"value\": { \"Limits\": { \"NanoCPUs\": 100000000, \"MemoryBytes\": 134217728 }}}]",
     "type": "computational",
-    "version": "2.1.4"
+    "version": "2.2.1"
   },
   "sleeper-gpu": {
-    "description": "A service which awaits for time to pass.",
+    "description": "A service which awaits for time to pass, two times.",
     "dockerfile": "sleeper/docker/custom/Dockerfile",
     "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-gpu:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/comp/itis/sleeper-gpu",
     "name": "sleeper-gpu",
     "simcore.service.settings": "[{ \"name\": \"constraints\", \"type\": \"string\", \"value\": [\"node.platform.os == linux\"]},{\"name\": \"Resources\", \"type\": \"Resources\", \"value\": { \"Limits\": { \"NanoCPUs\": 100000000, \"MemoryBytes\": 134217728 }, \"Reservations\": { \"GenericResources\": [{\"DiscreteResourceSpec\": { \"Kind\": \"VRAM\", \"Value\": 1}}]}}}]",
     "type": "computational",
-    "version": "2.1.4"
+    "version": "2.2.1"
   },
   "sleeper-mpi": {
-    "description": "A service which awaits for time to pass.",
+    "description": "A service which awaits for time to pass, two times.",
     "dockerfile": "sleeper/docker/custom/Dockerfile",
     "image": "${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}-mpi:${DOCKER_IMAGE_TAG}",
     "key": "simcore/services/comp/itis/sleeper-mpi",
     "name": "sleeper-mpi",
     "simcore.service.settings": "[{ \"name\": \"constraints\", \"type\": \"string\", \"value\": [\"node.platform.os == linux\"]},{\"name\": \"Resources\", \"type\": \"Resources\", \"value\": { \"Limits\": { \"NanoCPUs\": 100000000, \"MemoryBytes\": 134217728 }, \"Reservations\": { \"GenericResources\": [{\"DiscreteResourceSpec\": { \"Kind\": \"MPI\", \"Value\": 1}}]}}}]",
     "type": "computational",
-    "version": "2.1.4"
+    "version": "2.2.1"
   },
   "tissue-properties": {
     "description": "Tissue properties compiled in an extensive, critical literature review by the ITIS Foundation. Visit [itis.swiss/database](https://itis.swiss/database) for additional information, e.g., on tissue parameter variability/uncertainty, quality assurance, and the explored sources. Please use the following citation when referring to the database: Hasgall PA, Di Gennaro F, Baumgartner C, Neufeld E, Lloyd B, Gosselin MC, Payne D, Klingenb\u00f6ck A, Kuster N, ITIS Database for thermal and electromagnetic parameters of biological tissues, Version 4.0, May 15, 2018, DOI: 10.13099/VIP21000-04-0. [itis.swiss/database](https://itis.swiss/database). Powered by [csv-to-html-table](https://github.com/derekeder/csv-to-html-table)",

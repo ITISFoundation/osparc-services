@@ -4,7 +4,7 @@ import json
 import logging
 import hashlib
 from pathlib import Path
-from typing import Tuple, Final
+from typing import Tuple, Final, List, Dict
 
 
 _logger = logging.getLogger(__name__)
@@ -34,11 +34,11 @@ def _get_file_info(filepath: Path) -> Tuple[str, float]:
     return file_hash, modification_time
 
 
-def _list_files_in_dir(path: Path) -> list[Path]:
+def _list_files_in_dir(path: Path) -> List[Path]:
     return [x for x in path.rglob("*") if x.is_file()]
 
 
-def _get_directory_state(directory: Path) -> dict[Path, Tuple[str, float]]:
+def _get_directory_state(directory: Path) -> Dict[Path, Tuple[str, float]]:
     return {p: _get_file_info(p) for p in _list_files_in_dir(directory)}
 
 
@@ -77,30 +77,34 @@ def remap_input_to_output(input_dir: Path, output_dir: Path) -> None:
 
 class PortsMonitor:
     def __init__(
-        self, input_dir: Path, output_dir: Path, *, monitor_interval: float = DEFAULT_MONITOR_WAIT_INTERVAL
+        self,
+        input_dir: Path,
+        output_dir: Path,
+        *,
+        monitor_interval: float = DEFAULT_MONITOR_WAIT_INTERVAL,
     ) -> None:
         self.input_dir: Path = input_dir
         self.output_dir: Path = output_dir
-        self.paths: set[Path] = {input_dir, output_dir}
+        self.to_observe: set[Path] = {input_dir}
         self.monitor_interval: float = monitor_interval
 
         self._monitor_task: asyncio.Task | None = None
         self._keep_running: bool = False
 
-    def _get_state(self) -> dict[Path, dict[Path, Tuple[str, float]]]:
-        """return aggravated state for all monitored paths"""
-        return {p: _get_directory_state(p) for p in self.paths}
+    def _get_observed_state(self) -> Dict[Path, Dict[Path, Tuple[str, float]]]:
+        """return aggravated state for all observed paths"""
+        return {p: _get_directory_state(p) for p in self.to_observe}
 
     async def _monitor(self) -> None:
 
         _logger.info("Started monitor")
-        previous_state = self._get_state()
+        previous_state = self._get_observed_state()
 
         while self._keep_running:
             await asyncio.sleep(self.monitor_interval)
 
             _logger.info("Checking")
-            current_state = self._get_state()
+            current_state = self._get_observed_state()
 
             if previous_state != current_state:
                 _logger.info("Change detected!")
