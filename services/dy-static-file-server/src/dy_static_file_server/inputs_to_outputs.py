@@ -97,8 +97,8 @@ class PortsMonitor:
 
     async def _monitor(self) -> None:
 
-        _logger.info("Started monitor")
-        previous_state = self._get_observed_state()
+        _logger.info("Started monitor on %s", self.to_observe)
+        previous_state = {}  # always trigger once  a sync
 
         while self._keep_running:
             await asyncio.sleep(self.monitor_interval)
