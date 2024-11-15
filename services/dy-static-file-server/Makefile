@@ -107,7 +107,6 @@ info-build: ## displays info on the built image
 tests-unit tests-integration: ## runs integration and unit tests
 	@.venv/bin/pytest -vv \
 		--basetemp=$(CURDIR)/tmp \
-		-vv -s --log-cli-level=DEBUG \
 		--exitfirst \
 		--failed-first \
 		--pdb \
