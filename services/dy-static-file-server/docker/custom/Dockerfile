@@ -7,7 +7,7 @@ FROM joseluisq/static-web-server:2.0.2-alpine as production
 #     docker run dy-static-file-server:prod
 #
 
-ARG PYTHON_VERSION="3.8.10-r0"
+ARG PYTHON_VERSION="3.8.15-r0"
 ARG WORKDIR="/workdir"
 
 ENV SC_BUILD_TARGET=production

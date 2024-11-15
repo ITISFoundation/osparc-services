@@ -18,7 +18,7 @@ import yaml
 # HELPERS
 def _download_url(url: str, file: Path):
     # Download the file from `url` and save it locally under `file_name`:
-    with urllib.request.urlopen(url) as response, file.open("wb") as out_file:
+    with urllib.request.urlopen(url, timeout=10) as response, file.open("wb") as out_file:
         shutil.copyfileobj(response, out_file)
     assert file.exists()
 
@@ -40,7 +40,7 @@ def _convert_to_simcore_labels(image_labels: Dict) -> Dict:
 # FIXTURES
 @pytest.fixture(scope="function")
 def osparc_service_labels_jsonschema(tmp_path) -> Dict:
-    url = "https://raw.githubusercontent.com/ITISFoundation/osparc-simcore/master/api/specs/common/schemas/node-meta-v0.0.1.json"
+    url = "https://raw.githubusercontent.com/ITISFoundation/osparc-simcore/master/api/specs/director/schemas/node-meta-v0.0.1-pydantic.json"
     file_name = tmp_path / "service_label.json"
     _download_url(url, file_name)
     with file_name.open() as fp:

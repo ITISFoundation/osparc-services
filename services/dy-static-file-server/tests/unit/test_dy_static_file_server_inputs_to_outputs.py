@@ -1,14 +1,16 @@
 # pylint: disable=redefined-outer-name
 # pylint: disable=unused-argument
 import hashlib
-import time
+import logging
+import asyncio
 from pathlib import Path
-from threading import Thread
 from types import ModuleType
 from typing import Callable, Dict, List
-from unittest.mock import patch
 from _pytest.monkeypatch import MonkeyPatch
-
+from tenacity import AsyncRetrying
+from tenacity.wait import wait_fixed
+from tenacity.stop import stop_after_delay
+from tenacity.retry import retry_if_exception_type
 import pytest
 
 # UTILS
@@ -41,7 +43,7 @@ def _checksum(file: Path) -> str:
     return file_hash.hexdigest()
 
 
-def assert_correct_transformation(
+def _assert_correct_transformation(
     input_dir: Path, output_dir: Path, key_values_json_outputs_content: str
 ) -> None:
     input_files = _list_files_in_dir(input_dir)
@@ -163,7 +165,20 @@ def test_can_import_module(dy_static_file_server: ModuleType) -> None:
     assert type(inputs_to_outputs) == ModuleType
 
 
-def test_folder_mirror(
+@pytest.mark.asyncio
+async def test_start_stop(
+    dy_static_file_server: ModuleType, input_dir: Path, output_dir: Path
+) -> None:
+    from dy_static_file_server.inputs_to_outputs import PortsMonitor
+
+    ports_monitor = PortsMonitor(input_dir, output_dir)
+
+    await ports_monitor.start()
+    await ports_monitor.stop()
+
+
+@pytest.mark.asyncio
+async def test_folder_mirror(
     dy_static_file_server: ModuleType,
     input_dir: Path,
     output_dir: Path,
@@ -171,108 +186,60 @@ def test_folder_mirror(
     key_values_json_outputs_content: str,
     ensure_index_html: None,
 ) -> None:
-    from dy_static_file_server.inputs_to_outputs import InputsObserver
+    from dy_static_file_server.inputs_to_outputs import PortsMonitor
 
-    inputs_observer = InputsObserver(input_dir, output_dir)
-    inputs_observer.start()
+    ports_monitor = PortsMonitor(input_dir, output_dir)
+    await ports_monitor.start()
 
-    # give background thread time to start and copy
-    time.sleep(0.01)
+    # let stuff start
+    await asyncio.sleep(0.2)
     create_files_in_input(input_dir)
-    time.sleep(0.25)
 
-    assert_correct_transformation(
-        input_dir, output_dir, key_values_json_outputs_content
-    )
+    async for attempt in AsyncRetrying(
+        wait=wait_fixed(0.1),
+        stop=stop_after_delay(10),
+        reraise=True,
+        retry=retry_if_exception_type(AssertionError),
+    ):
+        with attempt:
+            _assert_correct_transformation(
+                input_dir, output_dir, key_values_json_outputs_content
+            )
 
-    inputs_observer.stop()
+    await ports_monitor.stop()
 
 
-def test_folder_mirror_join(
-    dy_static_file_server: ModuleType, input_dir: Path, output_dir: Path
+@pytest.mark.asyncio
+async def test_folder_mirror_main(
+    caplog: pytest.LogCaptureFixture,
+    ensure_index_html: None,
+    create_files_in_input: Callable,
+    dy_static_file_server: ModuleType,
+    input_dir: Path,
+    output_dir: Path,
+    env_vars: None,
 ) -> None:
-    from dy_static_file_server.inputs_to_outputs import InputsObserver
+    caplog.set_level(logging.DEBUG)
+    caplog.clear()
 
-    inputs_observer = InputsObserver(input_dir, output_dir)
+    from dy_static_file_server.inputs_to_outputs import PortsMonitor
 
-    # raises error if not started
-    with pytest.raises(RuntimeError) as exec:  # pylint: disable=redefined-builtin
-        inputs_observer.join()
-    assert exec.value.args[0] == "InputsObserver was not started"
+    ports_monitor = PortsMonitor(input_dir, output_dir, monitor_interval=0.1)
+    await ports_monitor.start()
+    assert "on_change completed" not in caplog.text
 
-    # can be stopped from different thread while awaiting
-    def _stop_after_delay(inputs_observer: InputsObserver) -> None:
-        time.sleep(0.1)
-        inputs_observer.stop()
+    # wait for task to initialize
+    await asyncio.sleep(0.2)
 
-    th = Thread(target=_stop_after_delay, args=(inputs_observer,), daemon=True)
-    th.start()
+    create_files_in_input(input_dir)
 
-    inputs_observer.start()
-    inputs_observer.join()
+    async for attempt in AsyncRetrying(
+        wait=wait_fixed(0.1),
+        stop=stop_after_delay(10),
+        reraise=True,
+        retry=retry_if_exception_type(AssertionError),
+    ):
+        with attempt:
+            assert "on_change completed" in caplog.text
 
-    th.join()
-
-
-def test_folder_mirror_main(
-    dy_static_file_server: ModuleType, input_dir: Path, output_dir: Path, env_vars: None
-) -> None:
-
-    from dy_static_file_server import inputs_to_outputs
-
-    with patch.object(inputs_to_outputs.InputsObserver, "join", return_value=None):
-        inputs_to_outputs.main()
-
-
-def test_folder_mirror_main(
-    dy_static_file_server: ModuleType, tmp_dir: Path, same_input_and_output_dir: None
-) -> None:
-
-    from dy_static_file_server import inputs_to_outputs
-
-    with pytest.raises(ValueError) as exec:  # pylint: disable=redefined-builtin
-        inputs_to_outputs.main()
-    assert exec.value.args[0] == f"Inputs and outputs directories match {tmp_dir}"
-
-
-def test_wait_for_paths_to_be_present_on_disk_fails(
-    dy_static_file_server: ModuleType, tmp_dir: Path
-) -> None:
-    from dy_static_file_server import inputs_to_outputs
-
-    path_one = tmp_dir / "a_dir"
-    path_two = tmp_dir / "a_file.txt"
-
-    # pylint: disable=redefined-builtin
-    with pytest.raises(inputs_to_outputs.CouldNotDetectFilesException) as exec:
-        # pylint: disable=protected-access
-        inputs_to_outputs._wait_for_paths_to_be_present_on_disk(
-            path_one, path_two, basedir=tmp_dir, check_interval=0.01
-        )
-    assert exec.value.args[0] == "Did not find expected files on disk!"
-
-
-def test_wait_for_paths_to_be_present_on_disk_ok(
-    dy_static_file_server: ModuleType, tmp_dir: Path
-) -> None:
-    from dy_static_file_server import inputs_to_outputs
-
-    path_one = tmp_dir / "a_dir"
-    path_two = tmp_dir / "a_file.txt"
-
-    def create_files(path_one: Path, path_two: Path) -> None:
-        # wait for _wait_for_paths_to_be_present_on_disk to start
-        # before creating paths
-        time.sleep(0.1)
-        path_one.mkdir(parents=True, exist_ok=True)
-        path_two.write_text("something is going here")
-
-    th = Thread(target=create_files, args=(path_one, path_two), daemon=True)
-    th.start()
-
-    # pylint: disable=protected-access
-    inputs_to_outputs._wait_for_paths_to_be_present_on_disk(
-        path_one, path_two, basedir=tmp_dir, check_interval=0.01
-    )
-
-    th.join()
+    await ports_monitor.stop()
