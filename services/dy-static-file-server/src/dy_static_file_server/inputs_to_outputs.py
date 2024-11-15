@@ -4,7 +4,7 @@ import json
 import logging
 import hashlib
 from pathlib import Path
-from typing import Tuple, Final
+from typing import Tuple, Final, List, Dict
 
 
 _logger = logging.getLogger(__name__)
@@ -34,7 +34,7 @@ def _get_file_info(filepath: Path) -> Tuple[str, float]:
     return file_hash, modification_time
 
 
-def _list_files_in_dir(path: Path) -> list[Path]:
+def _list_files_in_dir(path: Path) -> List[Path]:
     return [x for x in path.rglob("*") if x.is_file()]
 
 
@@ -87,7 +87,7 @@ class PortsMonitor:
         self._monitor_task: asyncio.Task | None = None
         self._keep_running: bool = False
 
-    def _get_state(self) -> dict[Path, dict[Path, Tuple[str, float]]]:
+    def _get_state(self) -> Dict[Path, Dict[Path, Tuple[str, float]]]:
         """return aggravated state for all monitored paths"""
         return {p: _get_directory_state(p) for p in self.paths}
 
