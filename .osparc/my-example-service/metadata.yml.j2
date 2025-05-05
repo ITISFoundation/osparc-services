@@ -1,0 +1,56 @@
+name: {{ compose.services[service_name].build.labels["io.simcore.name"]["name"]}}
+thumbnail: {{""}}
+description: "{{ compose.services[service_name].build.labels["io.simcore.description"]["description"]}}"
+key: {{ compose.services[service_name].build.labels["io.simcore.key"]["key"]}}
+version: {{ desired_version }}
+integration-version: 2.0.0
+version_display: {{ desired_version }}
+type: dynamic
+authors:
+{% for author in compose.services[service_name].build.labels["io.simcore.authors"]["authors"] %}
+  - name: "{{ author.name }}"
+    email: "{{ author.email }}"
+    affiliation: "{{ author.affiliation }}"
+{% endfor %}
+contact: {{ compose.services[service_name].build.labels["io.simcore.authors"]["authors"][0]["email"]}}
+{% if compose.services[service_name].build.labels["io.simcore.inputs"]["inputs"] %}
+inputs:
+  {% for name, input_def in compose.services[service_name].build.labels["io.simcore.inputs"]["inputs"].items() %}
+  {{ name }}:
+    displayOrder: {{ input_def.displayOrder | float }}
+    label: "{{ input_def.label }}"
+    description: "{{ input_def.description }}"
+    type: "{{ input_def.type }}"
+  {% endfor %}
+{% else %}
+inputs: {}
+{% endif %}
+
+{% if compose.services[service_name].build.labels["io.simcore.outputs"]["outputs"] %}
+outputs:
+  {% for name, details in compose.services[service_name].build.labels["io.simcore.outputs"]["outputs"].items() %}
+  {{ name }}:
+    displayOrder: {{ details.displayOrder | float }}
+    label: "{{ details.label }}"
+    description: "{{ details.description }}"
+    type: "{{ details.type }}"
+    {% if details.fileToKeyMap %}
+    fileToKeyMap:
+      {% for file, key in details.fileToKeyMap.items() %}
+      {{ file }}: {{ key }}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+{% else %}
+outputs: {}
+{% endif %}
+
+boot-options:
+  boot_mode:
+    label: Boot mode
+    description: Boot mode
+    default: "0"
+    items:
+      "0":
+        label: default
+        description: default

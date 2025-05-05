@@ -1,0 +1,11 @@
+pre-commit
+black
+isort
+pylint
+ruff
+jinja2
+setuptools
+j2cli[yaml]
+simcore-models-library @ git+https://github.com/itisfoundation/osparc-simcore.git@master#subdirectory=packages/models-library
+simcore-service-integration @ git+https://github.com/itisfoundation/osparc-simcore.git@master#subdirectory=packages/service-integration
+simcore-common-library @ git+https://github.com/itisfoundation/osparc-simcore.git@master#subdirectory=packages/common-library
