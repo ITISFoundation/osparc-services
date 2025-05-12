@@ -1,15 +1,15 @@
-name: dy-tissue-properties
+name: tissue-properties
 
 on:
   push:
     paths:
-      - ".github/workflows/dy-tissue-properties.yml"
-      - "services/dy-tissue-properties/**"
+      - ".github/workflows/tissue-properties.yml"
+      - "services/tissue-properties/**"
       - "!**.md"
   pull_request:
     paths:
-      - ".github/workflows/dy-tissue-properties.yml"
-      - "services/dy-tissue-properties/**"
+      - ".github/workflows/tissue-properties.yml"
+      - "services/tissue-properties/**"
       - "!**.md"
 
 env:
@@ -20,7 +20,7 @@ env:
 
 jobs:
   build:
-    name: building dy-tissue-properties
+    name: building tissue-properties
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -52,24 +52,24 @@ jobs:
         name: set docker registry env
         run: echo ::set-env name=DOCKER_REGISTRY::itisfoundation
       - name: set dev environs
-        working-directory: services/dy-tissue-properties
+        working-directory: services/tissue-properties
         run: make .venv
       - name: get current image if available
-        working-directory: services/dy-tissue-properties
+        working-directory: services/tissue-properties
         run: make pull || true
       - name: build
-        working-directory: services/dy-tissue-properties
+        working-directory: services/tissue-properties
         run: |
           source .venv/bin/activate
           make build
       - name: test
-        working-directory: services/dy-tissue-properties
+        working-directory: services/tissue-properties
         run: |
           source .venv/bin/activate
           make test
       - if: github.event_name == 'push'
         name: deploy
-        working-directory: services/dy-tissue-properties
+        working-directory: services/tissue-properties
         run: |
           ./../../ci/helpers/dockerhub_login.bash
           make push

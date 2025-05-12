@@ -26,7 +26,7 @@
 
 /services/dy-modeling                             @sanderegg
 /services/dy-raw-graphs                           @odeimaiz
-/services/dy-tissue-properties                    @odeimaiz
+/services/tissue-properties                    @odeimaiz
 /services/dy-csv-table                            @odeimaiz
 /services/sleeper                                 @GitHK
 /services/dy-mapcore-widget                       @odeimaiz

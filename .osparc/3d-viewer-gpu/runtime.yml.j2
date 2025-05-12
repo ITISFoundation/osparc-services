@@ -1,0 +1,35 @@
+{% if compose.services[service_name].build.labels["simcore.service.settings"] %}
+settings:
+{% for setting in compose.services[service_name].build.labels["simcore.service.settings"] %}
+  - name: "{{ setting.name }}"
+    type: "{{ setting.type }}"
+    value:
+      {% if setting.value is mapping %}
+        {% for k, v in setting.value.items() %}
+      {{ k }}: {{ v }}
+        {% endfor %}
+      {% elif setting.value is iterable and not setting.value is string %}
+        {% for v in setting.value %}
+      - {{ v }}
+        {% endfor %}
+      {% else %}
+      {{ setting.value }}
+      {% endif %}
+{% endfor %}
+{% else %}
+settings: []
+{% endif %}
+paths-mapping: # Watch this carefully and potentially adjust
+  outputs_path: "/home/scu/output"
+  inputs_path: "/data"
+  state_paths: []
+compose-spec:
+  version: "3.7"
+  services:
+    {{ service_name }}:
+      image: $${SIMCORE_REGISTRY}/simcore/services/dynamic/{{ service_name }}:$${SERVICE_VERSION}
+      environment:
+        {% for key, value in compose.services[service_name].environment.items() %}
+        {{ key }}: "{{ value | replace('$${', '{{ ') | replace('}', '}') }}"
+        {% endfor %}
+container-http-entrypoint: {{ service_name }}

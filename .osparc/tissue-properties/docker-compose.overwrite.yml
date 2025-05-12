@@ -1,0 +1,6 @@
+services:
+  "tissue-properties":
+    build:
+      context: .
+      dockerfile: .osparc/tissue-properties/Dockerfile
+      target: production # Adjust this to match the dockerfile, might be 'production' or 'prod' or even no target at all

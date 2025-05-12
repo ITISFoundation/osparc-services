@@ -1,0 +1,25 @@
+settings:
+  - name: "ports"
+    type: "int"
+    value:
+      80
+  - name: "constraints"
+    type: "string"
+    value:
+      - node.platform.os == linux
+  - name: "Resources"
+    type: "Resources"
+    value:
+      Limits: {'NanoCPUs': 4000000000, 'MemoryBytes': 17179869184}
+      Reservations: {'NanoCPUs': 100000000, 'MemoryBytes': 536870912, 'GenericResources': [{'DiscreteResourceSpec': {'Kind': 'VRAM', 'Value': 1}}]}
+paths-mapping: # Watch this carefully and potentially adjust
+  outputs_path: "/home/scu/output"
+  inputs_path: "/data"
+  state_paths: []
+compose-spec:
+  version: "3.7"
+  services:
+    3d-viewer-gpu:
+      image: $${SIMCORE_REGISTRY}/simcore/services/dynamic/3d-viewer-gpu:$${SERVICE_VERSION}
+      environment:
+container-http-entrypoint: 3d-viewer-gpu

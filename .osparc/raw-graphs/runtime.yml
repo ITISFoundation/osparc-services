@@ -1,0 +1,27 @@
+settings:
+  - name: "resources"
+    type: "Resources"
+    value:
+      mem_limit: 17179869184
+      cpu_limit: 4000000000
+  - name: "ports"
+    type: "int"
+    value:
+      4000
+  - name: "constraints"
+    type: "string"
+    value:
+      - node.platform.os == linux
+paths-mapping: # Watch this carefully and potentially adjust
+  outputs_path: "/home/scu/output"
+  inputs_path: "/home/scu/input"
+  state_paths: []
+compose-spec:
+  version: "3.7"
+  services:
+    raw-graphs:
+      image: $${SIMCORE_REGISTRY}/simcore/services/dynamic/raw-graphs:$${SERVICE_VERSION}
+      environment:
+        SIMCORE_NODE_BASEPATH: "${SIMCORE_NODE_BASEPATH}"
+        RAWGRAPHS_INPUT_PATH: "${RAWGRAPHS_INPUT_PATH}"
+container-http-entrypoint: raw-graphs

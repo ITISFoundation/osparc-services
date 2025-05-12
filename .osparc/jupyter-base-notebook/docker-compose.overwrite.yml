@@ -1,0 +1,6 @@
+services:
+  "jupyter-base-notebook": # Add all service names here
+    build:
+      context: .
+      dockerfile: .osparc/jupyter-base-notebook/Dockerfile
+      target: production # Adjust this to match the dockerfile, might be 'production' or 'prod' or even no target at all

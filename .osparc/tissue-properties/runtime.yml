@@ -1,0 +1,28 @@
+settings:
+  - name: "resources"
+    type: "Resources"
+    value:
+      mem_limit: 17179869184
+      cpu_limit: 4000000000
+  - name: "ports"
+    type: "int"
+    value:
+      4000
+  - name: "constraints"
+    type: "string"
+    value:
+      - node.platform.os == linux
+paths-mapping: # Watch this carefully and potentially adjust
+  outputs_path: "/home/scu/output"
+  inputs_path: "/home/scu/input"
+  state_paths: []
+compose-spec:
+  version: "3.7"
+  services:
+    tissue-properties:
+      image: $${SIMCORE_REGISTRY}/simcore/services/dynamic/tissue-properties:$${SERVICE_VERSION}
+      environment:
+        SIMCORE_NODE_BASEPATH: "${SIMCORE_NODE_BASEPATH}"
+        TISSUEPROPS_INPUT_PATH: "${TISSUEPROPS_INPUT_PATH}"
+        TISSUEPROPS_OUTPUT_PATH: "${TISSUEPROPS_OUTPUT_PATH}"
+container-http-entrypoint: tissue-properties

@@ -1,0 +1,6 @@
+services:
+  "raw-graphs": # Add all service names here
+    build:
+      context: .
+      dockerfile: .osparc/raw-graphs/Dockerfile
+      target: production # Adjust this to match the dockerfile, might be 'production' or 'prod' or even no target at all

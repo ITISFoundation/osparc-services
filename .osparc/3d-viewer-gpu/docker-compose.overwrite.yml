@@ -1,0 +1,9 @@
+services:
+  "3d-viewer-gpu": # Add all service names here
+    build:
+      context: .
+      dockerfile: .osparc/3d-viewer-gpu/Dockerfile
+      target: production # Adjust this to match the dockerfile, might be 'production' or 'prod' or even no target at all
+      args:
+        BASE_IMAGE: kitware/paraviewweb:pv-v5.6.0-egl
+        VISUALIZER_VERSION: v3.1.6

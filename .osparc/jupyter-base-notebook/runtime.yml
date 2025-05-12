@@ -1,0 +1,18 @@
+settings:
+  - name: "ports"
+    type: "int"
+    value:
+      8888
+  - name: "constraints"
+    type: "string"
+    value:
+      - node.platform.os == linux
+  - name: "resources"
+    type: "resources"
+    value:
+      Limits: {'NanoCPUs': 4000000000, 'MemoryBytes': 8589934592}
+paths-mapping: # Watch this carefully and potentially adjust
+  outputs_path: "/home/jovyan/outputs"
+  inputs_path: "/home/jovyan/inputs"
+  state_paths: ["/home/jovyan/notebooks"]
+

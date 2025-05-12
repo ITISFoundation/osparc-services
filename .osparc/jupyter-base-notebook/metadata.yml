@@ -1,0 +1,46 @@
+name: jupyter-base-notebook
+thumbnail: 
+description: "Jupyter notebook"
+key: simcore/services/dynamic/jupyter-base-notebook
+version: 2.14.2
+integration-version: 2.0.0
+version_display: 2.14.2
+type: dynamic
+authors:
+  - name: "sanderegg"
+    email: "anderegg@itis.swiss"
+    affiliation: "ITIS Foundation"
+contact: anderegg@itis.swiss
+inputs:
+  input_1:
+    displayOrder: 0.0
+    label: "input 1"
+    description: "Input 1"
+    type: "data:*/*"
+  input_2:
+    displayOrder: 1.0
+    label: "input 2"
+    description: "Input 2"
+    type: "data:*/*"
+
+outputs:
+  output_1:
+    displayOrder: 0.0
+    label: "output 1"
+    description: "Output 1"
+    type: "data:*/*"
+  output_2:
+    displayOrder: 1.0
+    label: "output 2"
+    description: "Output 2"
+    type: "data:*/*"
+
+boot-options:
+  boot_mode:
+    label: Boot mode
+    description: Boot mode
+    default: "0"
+    items:
+      "0":
+        label: default
+        description: default

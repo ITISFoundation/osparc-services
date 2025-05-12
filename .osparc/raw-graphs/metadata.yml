@@ -1,0 +1,36 @@
+name: 2D plot
+thumbnail: 
+description: "2D plots powered by RAW Graphs"
+key: simcore/services/dynamic/raw-graphs
+version: 2.11.3
+integration-version: 2.0.0
+version_display: 2.11.3
+type: dynamic
+authors:
+  - name: "odeimaiz"
+    email: "maiz@itis.swiss"
+    affiliation: "ITIS Foundation"
+contact: maiz@itis.swiss
+inputs:
+  input_1:
+    displayOrder: 0.0
+    label: "input 1"
+    description: "Input 1"
+    type: "data:*/*"
+
+outputs:
+  output_1:
+    displayOrder: 0.0
+    label: "Output Graph"
+    description: "Output Graph"
+    type: "data:image/svg+xml"
+
+boot-options:
+  boot_mode:
+    label: Boot mode
+    description: Boot mode
+    default: "0"
+    items:
+      "0":
+        label: default
+        description: default

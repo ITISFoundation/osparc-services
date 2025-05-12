@@ -138,3 +138,6 @@ pytest.ini
 # pylint-profile output
 prof/
 !ci/**/build
+
+docker-compose.yml
+docker-compose.dev.yml
