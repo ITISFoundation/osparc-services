@@ -45,4 +45,3 @@ Collection of some open-source services for the osparc simcore platform:
 *Updated on 2024-11-15T10:33:51Z*
 
 <!-- TOC_END -->
-
