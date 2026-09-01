@@ -86,7 +86,7 @@ endef
 
 # DOCKER -----------------------------------
 .PHONY: build build-devel
-build build-devel: docker-compose-build.yml docker-compose-meta.yml service.cli/run ## builds images, -devel in development mode, -kit using docker buildkit, -x using docker buildX (if installed)
+build build-devel: docker-compose-build.yml docker-compose-meta.yml service.cli/run ## builds images, -devel in development mode
 	# building image local/${DOCKER_IMAGE_NAME}...
 	@$(call _docker_compose_build)
 
@@ -124,7 +124,7 @@ tests: tests-unit tests-integration ## runs unit and integration tests
 # PUBLISHING -----------------------------------
 define _bumpversion
 	# upgrades as $(subst $(1),,$@) version, commits and tags
-	@bump2version --verbose --list --config-file $(1) $(subst $(2),,$@)
+	@bump-my-version bump --verbose --config-file $(1) $(subst $(2),,$@)
 endef
 
 .PHONY: version-service-patch version-service-minor version-service-major
