@@ -6,17 +6,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-
 ## [2.3.0] - 2026-09-01
+### Added
+- New "snore" input: emits random log lines at a rate defined per second of sleep (disabled unless set)
 ### Changed
 - Uses Python 3.14, provisioned via `uv` (no more apt `python3`/`pip`)
 - `uv` installed via distroless image copy, pinned to `0.12.8`
 - Bumped GPU/MPI base image to `nvidia/cuda:13.3.1-base-ubuntu26.04`, now multi-arch (amd64+arm64)
 - Registry pushes use zstd compression and OCI image labels/annotations
 - Entrypoint ownership fixup now uses `fdfind` instead of `find`
-- Version bumping now uses `bump-my-version` with TOML config (replaces `bump2version`/`.cfg`)
+- Version bumping now uses `bump-my-version` with native TOML config (`versioning/*.toml`, replaces `bump2version`/`.cfg`)
+- `tools/run_creator.py`/`tools/update_compose_labels.py` are now self-contained `uv run --script` tools (no venv required)
 ### Removed
 - Legacy plain `docker tag`/`docker push` publish path and `linux/arm/v7` target
+- Deprecated `org.label-schema.*` labels (superseded by `org.opencontainers.image.*`)
+### Fixed
+- `-gpu`/`-mpi` containers failing to start on Ubuntu 26.04 base: pre-existing `ubuntu` user at uid 1000 collided with the host uid during entrypoint's `usermod`
+- `-gpu`/`-mpi` containers failing with `python: Permission denied`: uv's standalone Python interpreter wasn't copied into the production image alongside the venv
 
 ## [2.2.1] - 2024-03-08
 ### Changed
