@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Uses Python 3.14, provisioned via `uv` (no more apt `python3`/`pip`)
 - `uv` installed via distroless image copy, pinned to `0.12.8`
 - `-gpu`/`-mpi` variants now build from the same `python:${PYTHON_VERSION}-slim` image as the plain service (dropped `nvidia/cuda`): `nvidia-smi`/driver libs are injected by the NVIDIA Container Toolkit at runtime regardless of base image, and sleeper never links `cudart`/`cuBLAS` directly — this cuts the `-gpu`/`-mpi` image size by ~5x (~980MB → ~200MB)
-- `make up`'s `docker-compose.yml` now sets `DOCKER_RESOURCE_VRAM`/`DOCKER_RESOURCE_MPI` for `-gpu`/`-mpi` and requests an actual `nvidia` GPU reservation for `-gpu`, so these variants exercise their resource-specific code paths locally instead of silently no-op'ing
+- `make up`'s `docker-compose.yml` now sets `DOCKER_RESOURCE_VRAM`/`DOCKER_RESOURCE_MPI` for `-gpu`/`-mpi` and requests an actual `nvidia` GPU reservation for both `-gpu` and `-mpi`, so these variants exercise their resource-specific code paths locally instead of silently no-op'ing (a real `mpirun`-based MPI check was evaluated but rejected: `openmpi-bin` pulls ~112 transitive packages, nearly tripling every image's size)
 - Registry pushes use zstd compression and OCI image labels/annotations
 - Entrypoint ownership fixup now uses `fdfind` instead of `find`
 - Version bumping now uses `bump-my-version` with native TOML config (`versioning/*.toml`, replaces `bump2version`/`.cfg`)

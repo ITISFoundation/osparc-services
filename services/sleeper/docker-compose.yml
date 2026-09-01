@@ -35,6 +35,14 @@ services:
       - INPUT_FOLDER=/input/7848096d-20c2-4621-abcc-51c6ef9b0ecc
       - OUTPUT_FOLDER=/output/7848096d-20c2-4621-abcc-51c6ef9b0ecc
       - DOCKER_RESOURCE_MPI=1
+      - DOCKER_RESOURCE_VRAM=1
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
     volumes:
       # some defaults to test the service
       - ${COMPOSE_INPUT_DIR}:/input/7848096d-20c2-4621-abcc-51c6ef9b0ecc
