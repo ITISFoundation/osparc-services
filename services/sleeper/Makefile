@@ -43,7 +43,7 @@ devenv: .venv requirements.txt ## create a python virtual environment with tools
 	# installing extra tools
 	uv pip install -r  $(word 2,$^)
 	# your dev environment contains
-	@$</bin/pip list
+	@uv pip list
 	@echo "To activate the virtual environment, run 'source $</bin/activate'"
 
 
