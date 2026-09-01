@@ -1,6 +1,6 @@
 #!/bin/python
 
-""" Update a docker-compose file with json files in a path
+"""Update a docker-compose file with json files in a path
 
     Usage: python update_compose_labels --c docker-compose.yml -f folder/path
 
@@ -13,7 +13,6 @@ import logging
 import sys
 from enum import IntEnum
 from pathlib import Path
-from typing import Dict
 
 import yaml
 
@@ -26,32 +25,31 @@ class ExitCode(IntEnum):
     FAIL = 1
 
 
-def get_compose_file(compose_file: Path) -> Dict:
+def get_compose_file(compose_file: Path) -> dict:
     with compose_file.open() as filep:
         return yaml.safe_load(filep)
 
 
-def get_metadata_file(metadata_file: Path) -> Dict:
+def get_metadata_file(metadata_file: Path) -> dict:
     with metadata_file.open() as fp:
         return yaml.safe_load(fp)
 
 
-def stringify_metadata(metadata: Dict) -> Dict[str, str]:
+def stringify_metadata(metadata: dict) -> dict[str, str]:
     jsons = {}
     for key, value in metadata.items():
         jsons[f"io.simcore.{key}"] = json.dumps({key: value})
     return jsons
 
 
-def update_compose_labels(compose_cfg: Dict, metadata: Dict[str, str]) -> bool:
+def update_compose_labels(compose_cfg: dict, metadata: dict[str, str]) -> bool:
+    changed = False
     for service in compose_cfg["services"]:
-
         compose_labels = compose_cfg["services"][service]["build"]["labels"]
         changed = False
         for key, value in metadata.items():
-            if key in compose_labels:
-                if compose_labels[key] == value:
-                    continue
+            if key in compose_labels and compose_labels[key] == value:
+                continue
             compose_labels[key] = value
             changed = True
     return changed
@@ -94,7 +92,7 @@ def main(args=None) -> int:
         else:
             log.info("No update necessary")
         return ExitCode.SUCCESS
-    except:  # pylint: disable=bare-except
+    except:  # pylint: disable=bare-except  # noqa: E722
         log.exception("Unexpected error:")
         return ExitCode.FAIL
 

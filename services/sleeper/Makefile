@@ -33,17 +33,17 @@ LOCAL_REGISTRY = ${LOCAL_REGISTRY_HOST}/${COMP_ITIS_PATH}
 .PHONY: devenv
 .venv:
 	uv venv $@
-	
+
 
 requirements.txt: .venv requirements.in
 	# freezes requirements
-	uv pip compile --upgrade --build-isolation $(word 2, $^) --output-file $@ 
+	uv pip compile --upgrade --build-isolation $(word 2, $^) --output-file $@
 
 devenv: .venv requirements.txt ## create a python virtual environment with tools to dev, run and tests cookie-cutter
 	# installing extra tools
 	uv pip install -r  $(word 2,$^)
-	# your dev environment contains
-	@uv pip list
+	# Installing pre-commit hooks in current .git repo
+	@$</bin/pre-commit install
 	@echo "To activate the virtual environment, run 'source $</bin/activate'"
 
 
@@ -77,7 +77,7 @@ endef
 
 
 
-# DOCKER ----------------------------------- 
+# DOCKER -----------------------------------
 .PHONY: build build-devel
 build build-devel: docker-compose-build.yml docker-compose-meta.yml service.cli/run ## builds images, -devel in development mode, -kit using docker buildkit, -x using docker buildX (if installed)
 	# building image local/${DOCKER_IMAGE_NAME}...
@@ -100,7 +100,7 @@ info-build: ## displays info on the built image
 
 
 
-# TESTS----------------------------------- 
+# TESTS-----------------------------------
 .PHONY: tests tests-unit tests-integration
 tests-unit tests-integration: ## runs integration and unit tests
 	@.venv/bin/pytest -vv \
@@ -114,7 +114,7 @@ tests-unit tests-integration: ## runs integration and unit tests
 tests: tests-unit tests-integration ## runs unit and integration tests
 
 
-# PUBLISHING ----------------------------------- 
+# PUBLISHING -----------------------------------
 define _bumpversion
 	# upgrades as $(subst $(1),,$@) version, commits and tags
 	@bump2version --verbose --list --config-file $(1) $(subst $(2),,$@)
@@ -175,7 +175,7 @@ publish-1.0.0:	## push to local registry
 	docker tag itisfoundation/$(DOCKER_IMAGE_NAME):1.0.0 $(LOCAL_REGISTRY)/$(DOCKER_IMAGE_NAME):1.0.0
 	docker push $(LOCAL_REGISTRY)/$(DOCKER_IMAGE_NAME):1.0.0
 
-# DEVELOPMENT ---------------------------------------- 
+# DEVELOPMENT ----------------------------------------
 # NOTE: since using docker-compose would create the folders automatically but as root user, which is inconvenient
 define _clean_output_dirs
 	# cleaning output directory

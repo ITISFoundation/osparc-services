@@ -1,12 +1,12 @@
-import os
 import json
+import os
 import random
 import string
-import time
 import subprocess
-
+import time
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Optional, Callable
+from typing import Any
 
 
 def get_from_environ(key: str, default: Any = None) -> str:
@@ -55,7 +55,7 @@ def walk_to_bed(amount_to_walk: int = 0) -> None:
     if amount_to_walk > 0:
         print(f"So tired, I first need to walk {amount_to_walk} meters to bed")
         for step in range(2 * amount_to_walk):
-            print(f"Step {step+1}")
+            print(f"Step {step + 1}")
             time.sleep(0.5)
 
 
@@ -83,7 +83,7 @@ def dream(output_folder: Path, dream_size_byte: int) -> None:
 
 
 def sleep_with_payload(
-    amount_to_sleep: int, target_payload: Optional[Callable] = None
+    amount_to_sleep: int, target_payload: Callable | None = None
 ) -> None:
     """On each interaction will run the target_payload and then sleep
     Used for validating different types of payloads based on their
@@ -161,7 +161,7 @@ def main() -> None:
 
     # Last step should be to fail
     if fail_after_sleep:
-        raise Exception("Failing after sleep as requested")
+        raise RuntimeError("Failing after sleep as requested")
 
 
 if __name__ == "__main__":

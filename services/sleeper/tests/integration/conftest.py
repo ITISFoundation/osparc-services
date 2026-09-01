@@ -5,9 +5,9 @@
 import os
 from pathlib import Path
 
-import pytest
-
 import docker
+import docker.models.images
+import pytest
 
 
 @pytest.fixture

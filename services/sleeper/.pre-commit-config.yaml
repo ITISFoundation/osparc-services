@@ -1,4 +1,9 @@
 repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.0
+    hooks:
+      - id: gitleaks
+        name: "🔒 security · Detect hardcoded secrets"
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
     rev: v0.16.5
@@ -8,10 +13,22 @@ repos:
         args: [--fix]
       # Run the formatter.
       - id: ruff-format
+        name: "🐍 python · Format with Ruff"
   -   repo: https://github.com/pre-commit/pre-commit-hooks
       rev: v6.0.0
       hooks:
-      -   id: trailing-whitespace
-      -   id: end-of-file-fixer
-      -   id: check-yaml
-      -   id: check-added-large-files
+      - id: check-added-large-files
+        args: ["--maxkb=1024"]
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: check-json
+      - id: check-toml
+      - id: detect-private-key
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: detect-aws-credentials
+        args: [--allow-missing-credentials]
+      - id: debug-statements
+      - id: no-commit-to-branch

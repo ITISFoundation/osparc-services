@@ -2,11 +2,10 @@
 # pylint:disable=unused-argument
 # pylint:disable=redefined-outer-name
 import json
+from collections.abc import Generator
 from pathlib import Path
-from typing import Dict
 
 import pytest
-
 import yaml
 
 
@@ -16,7 +15,7 @@ def port_type() -> str:
 
 
 @pytest.fixture
-def label_cfg(metadata_file: Path, port_type: str) -> Dict:
+def label_cfg(metadata_file: Path, port_type: str) -> dict:
     ports_type = f"{port_type}s"
     with metadata_file.open() as fp:
         cfg = yaml.safe_load(fp)
@@ -30,7 +29,7 @@ def validation_folder(validation_dir: Path, port_type: str) -> Path:
 
 
 @pytest.fixture
-def validation_cfg(validation_dir: Path, port_type: str) -> Dict:
+def validation_cfg(validation_dir: Path, port_type: str) -> dict | None:
     validation_file = validation_dir / port_type / (f"{port_type}s.json")
     if validation_file.exists():
         with validation_file.open() as fp:
@@ -39,7 +38,7 @@ def validation_cfg(validation_dir: Path, port_type: str) -> Dict:
     return None
 
 
-def _find_key_in_cfg(filename: str, value: Dict) -> str:
+def _find_key_in_cfg(filename: str, value: dict) -> Generator[str, None, None]:
     for k, v in value.items():
         if k == filename:
             if isinstance(v, dict):
@@ -48,13 +47,12 @@ def _find_key_in_cfg(filename: str, value: Dict) -> str:
             else:
                 yield v
         elif isinstance(v, dict):
-            for result in _find_key_in_cfg(filename, v):
-                yield result
+            yield from _find_key_in_cfg(filename, v)
 
 
 @pytest.mark.parametrize("port_type", ["input", "output"])
 def test_validation_data_follows_definition(
-    label_cfg: Dict, validation_cfg: Dict, validation_folder: Path
+    label_cfg: dict, validation_cfg: dict, validation_folder: Path
 ):
     for key, value in label_cfg.items():
         assert "type" in value

@@ -6,12 +6,10 @@ import json
 import shutil
 import urllib.request
 from pathlib import Path
-from typing import Dict
-
-import pytest
 
 import docker
-import jsonschema
+import docker.models.images
+import pytest
 import yaml
 
 
@@ -23,7 +21,7 @@ def _download_url(url: str, file: Path):
     assert file.exists()
 
 
-def _convert_to_simcore_labels(image_labels: Dict) -> Dict:
+def _convert_to_simcore_labels(image_labels: dict) -> dict:
     io_simcore_labels = {}
     for key, value in image_labels.items():
         if str(key).startswith("io.simcore."):
@@ -41,7 +39,7 @@ def _convert_to_simcore_labels(image_labels: Dict) -> Dict:
 
 
 @pytest.fixture(scope="session")
-def metadata_labels(metadata_file: Path) -> Dict:
+def metadata_labels(metadata_file: Path) -> dict:
     with metadata_file.open() as fp:
         metadata = yaml.safe_load(fp)
         return metadata
@@ -51,7 +49,7 @@ def metadata_labels(metadata_file: Path) -> Dict:
 
 
 def test_docker_io_simcore_labels_against_files(
-    docker_image: docker.models.images.Image, metadata_labels: Dict
+    docker_image: docker.models.images.Image, metadata_labels: dict
 ):
     image_labels = docker_image.labels
     io_simcore_labels = _convert_to_simcore_labels(image_labels)

@@ -6,20 +6,21 @@ import filecmp
 import json
 import os
 import shutil
+from collections.abc import Iterator
 from pathlib import Path
 from pprint import pformat
-from typing import Dict
-
-import pytest
 
 import docker
+import docker.errors
+import docker.models.containers
+import pytest
 
 _FOLDER_NAMES = ["input", "output"]
 _CONTAINER_FOLDER = Path("/home/scu/data")
 
 
 @pytest.fixture
-def host_folders(temporary_path: Path) -> Dict:
+def host_folders(temporary_path: Path) -> dict:
     tmp_dir = temporary_path
 
     host_folders = {}
@@ -37,34 +38,35 @@ def host_folders(temporary_path: Path) -> Dict:
 
 
 @pytest.fixture
-def container_variables() -> Dict:
+def container_variables() -> dict:
     # of type INPUT_FOLDER=/home/scu/data/input
     env = {
-        "{}_FOLDER".format(str(folder).upper()): (_CONTAINER_FOLDER / folder).as_posix()
+        f"{str(folder).upper()}_FOLDER": (_CONTAINER_FOLDER / folder).as_posix()
         for folder in _FOLDER_NAMES
     }
     return env
 
 
 @pytest.fixture
-def validation_folders(validation_dir: Path) -> Dict:
+def validation_folders(validation_dir: Path) -> dict:
     return {folder: (validation_dir / folder) for folder in _FOLDER_NAMES}
 
 
 @pytest.fixture(params=["cpu", "gpu", "mpi"])
 def docker_container(
     request,
-    validation_folders: Dict,
-    host_folders: Dict,
+    validation_folders: dict,
+    host_folders: dict,
     docker_client: docker.DockerClient,
     docker_image_key: str,
-    container_variables: Dict,
-) -> docker.models.containers.Container:
+    container_variables: dict,
+) -> Iterator[docker.models.containers.Container]:
     # copy files to input folder, copytree needs to not have the input folder around.
     host_folders["input"].rmdir()
     shutil.copytree(validation_folders["input"], host_folders["input"])
     assert Path(host_folders["input"]).exists()
     # run the container (this may take some time)
+    container = None
     try:
         should_run_with_gpu_support = request.param == "gpu"
         if should_run_with_gpu_support:
@@ -77,7 +79,7 @@ def docker_container(
 
         volumes = {
             host_folders[folder]: {
-                "bind": container_variables["{}_FOLDER".format(str(folder).upper())]
+                "bind": container_variables[f"{str(folder).upper()}_FOLDER"]
             }
             for folder in _FOLDER_NAMES
         }
@@ -91,7 +93,6 @@ def docker_container(
         )
         response = container.wait()
         if response["StatusCode"] > 0:
-            logs = container.logs(timestamps=True)
             pytest.fail(
                 "The container stopped with exit code {}\n\n\ncommand:\n {}, \n\n\nlog:\n{}".format(
                     response["StatusCode"],
@@ -102,10 +103,10 @@ def docker_container(
                     ),
                 )
             )
-        else:
-            yield container
+        yield container
     except docker.errors.ContainerError as exc:
         # the container did not run correctly
+        assert container is not None
         pytest.fail(
             "The container stopped with exit code {}\n\n\ncommand:\n {}, \n\n\nlog:\n{}".format(
                 exc.exit_status,
@@ -118,10 +119,11 @@ def docker_container(
         )
     finally:
         # cleanup
-        container.remove()
+        if container:
+            container.remove()
 
 
-def _convert_to_simcore_labels(image_labels: Dict) -> Dict:
+def _convert_to_simcore_labels(image_labels: dict) -> dict:
     io_simcore_labels = {}
     for key, value in image_labels.items():
         if str(key).startswith("io.simcore."):
@@ -136,8 +138,8 @@ def _convert_to_simcore_labels(image_labels: Dict) -> Dict:
 
 
 def test_run_container(
-    validation_folders: Dict,
-    host_folders: Dict,
+    validation_folders: dict,
+    host_folders: dict,
     docker_container: docker.models.containers.Container,
 ):
     for folder in _FOLDER_NAMES:
@@ -148,17 +150,17 @@ def test_run_container(
             if not ".gitkeep" in x.name
         ]
         for file_name in list_of_files:
-            assert Path(
-                host_folders[folder] / file_name
-            ).exists(), "missing files in {}".format(host_folders[folder])
-        match, mismatch, errors = filecmp.cmpfiles(
+            assert Path(host_folders[folder] / file_name).exists(), (
+                f"missing files in {host_folders[folder]}"
+            )
+        _match, _mismatch, errors = filecmp.cmpfiles(
             host_folders[folder],
             validation_folders[folder],
             list_of_files,
             shallow=False,
         )
         # assert not mismatch, "wrong/incorrect files in {}".format(host_folders[folder])
-        assert not errors, "missing files in {}".format(host_folders[folder])
+        assert not errors, f"missing files in {host_folders[folder]}"
         # test if the files that are there are matching the ones that should be
         if folder != "input":
             list_of_files = [
@@ -167,19 +169,17 @@ def test_run_container(
                 if not ".gitkeep" in x.name
             ]
             for file_name in list_of_files:
-                assert Path(
-                    validation_folders[folder] / file_name
-                ).exists(), "{} is not present in {}".format(
-                    file_name, validation_folders[folder]
+                assert Path(validation_folders[folder] / file_name).exists(), (
+                    f"{file_name} is not present in {validation_folders[folder]}"
                 )
-            match, mismatch, errors = filecmp.cmpfiles(
+            _match, _mismatch, errors = filecmp.cmpfiles(
                 host_folders[folder],
                 validation_folders[folder],
                 list_of_files,
                 shallow=False,
             )
             # assert not mismatch, "wrong/incorrect generated files in {}".format(host_folders[folder])
-            assert not errors, "too many files in {}".format(host_folders[folder])
+            assert not errors, f"too many files in {host_folders[folder]}"
 
     # check the output is correct based on container labels
     output_cfg = {}
