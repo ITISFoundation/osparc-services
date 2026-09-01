@@ -173,12 +173,12 @@ docker-compose-configs = $(wildcard docker-compose.*yml)
 	# creating config for stack with 'local/$(DOCKER_IMAGE_NAME):$(patsubst .compose-%.yml,%,$@)' to $@
 	@export DOCKER_REGISTRY=local; \
 	export DOCKER_IMAGE_TAG=$(patsubst .compose-%.yml,%,$@); \
-	docker-compose -f docker-compose.yml $(if $(findstring -development,$@), -f docker-compose.devel.yml,) --log-level=ERROR config > $@
+	docker compose -f docker-compose.yml $(if $(findstring -development,$@), -f docker-compose.devel.yml,) --log-level=ERROR config > $@
 
 define _docker_compose_cli
 	$(eval docker_compose_path=.compose-$(if $(findstring devel,$@),development,production).yml)
 	$(MAKE) $(docker_compose_path)
-	@docker-compose -f $(docker_compose_path) $(1)
+	@docker compose -f $(docker_compose_path) $(1)
 endef
 
 
@@ -192,7 +192,7 @@ shell shell-devel: $(COMPOSE_INPUT_DIR) $(COMPOSE_OUTPUT_DIR) down ## Starts a s
 	$(call _docker_compose_cli,run --service-ports $(APP_NAME) /bin/sh)
 
 down: .compose-development.yml ## stops the service
-	@docker-compose -f $< down
+	@docker compose -f $< down
 
 
 
