@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 
+## [2.3.0] - 2026-09-01
+### Changed
+- Uses Python 3.14, provisioned via `uv` (no more apt `python3`/`pip`)
+- `uv` installed via distroless image copy, pinned to `0.12.8`
+- Bumped GPU/MPI base image to `nvidia/cuda:13.3.1-base-ubuntu26.04`, now multi-arch (amd64+arm64)
+- Registry pushes use zstd compression and OCI image labels/annotations
+- Entrypoint ownership fixup now uses `fdfind` instead of `find`
+- Version bumping now uses `bump-my-version` with TOML config (replaces `bump2version`/`.cfg`)
+### Removed
+- Legacy plain `docker tag`/`docker push` publish path and `linux/arm/v7` target
+
 ## [2.2.1] - 2024-03-08
 ### Changed
 - Unit of the "dream" input/output is now byte
@@ -74,4 +85,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - issue with print not formatting output properly
-
