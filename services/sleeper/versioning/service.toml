@@ -1,0 +1,18 @@
+[tool.bumpversion]
+current_version = "2.2.1"
+commit = false
+tag = false
+message = "service/kernel version: {current_version} → {new_version}"
+
+[[tool.bumpversion.files]]
+filename = "VERSION"
+
+[[tool.bumpversion.files]]
+filename = "metadata/metadata.yml"
+search = "version: {current_version}"
+replace = "version: {new_version}"
+
+[[tool.bumpversion.files]]
+filename = ".cookiecutterrc"
+search = 'version: "{current_version}"'
+replace = 'version: "{new_version}"'

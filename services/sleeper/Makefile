@@ -124,11 +124,11 @@ tests: tests-unit tests-integration ## runs unit and integration tests
 # PUBLISHING -----------------------------------
 define _bumpversion
 	# upgrades as $(subst $(1),,$@) version, commits and tags
-	@bump-my-version bump --verbose --config-file $(1) $(subst $(2),,$@)
+	@.venv/bin/bump-my-version bump --verbose --config-file $(1) $(subst $(2),,$@)
 endef
 
 .PHONY: version-service-patch version-service-minor version-service-major
-version-service-patch version-service-minor version-service-major: versioning/service.cfg ## kernel/service versioning as patch
+version-service-patch version-service-minor version-service-major: versioning/service.toml .venv ## kernel/service versioning as patch
 	@$(call _bumpversion,$<,version-service-)
 
 .PHONY: pull-latest pull-version
@@ -139,7 +139,7 @@ pull-latest pull-version: ## pull service from registry
 
 
 .PHONY: version-integration-patch version-integration-minor version-integration-major
-version-integration-patch version-integration-minor version-integration-major: versioning/integration.cfg ## integration versioning as patch (bug fixes not affecting API/handling), minor/major (backwards-compatible/INcompatible API changes)
+version-integration-patch version-integration-minor version-integration-major: versioning/integration.toml .venv ## integration versioning as patch (bug fixes not affecting API/handling), minor/major (backwards-compatible/INcompatible API changes)
 	@$(call _bumpversion,$<,version-integration-)
 
 
