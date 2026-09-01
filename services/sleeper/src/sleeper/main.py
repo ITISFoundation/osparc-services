@@ -59,9 +59,13 @@ def test_gpu_cuda_code() -> None:
 
 def walk_to_bed(amount_to_walk: int = 0) -> None:
     if amount_to_walk > 0:
-        print(f"So tired, I first need to walk {amount_to_walk} meters to bed")
-        for step in range(2 * amount_to_walk):
-            print(f"Step {step + 1}")
+        print(f"🥱 So tired, I first need to walk {amount_to_walk} meters to bed")
+        total_steps = 2 * amount_to_walk
+        for step in range(total_steps):
+            remaining_meters = amount_to_walk - (step + 1) * 0.5
+            print(
+                f"👣 Step {step + 1}/{total_steps} - {remaining_meters:.1f}m remaining"
+            )
             time.sleep(0.5)
 
 
@@ -90,9 +94,9 @@ def get_available_memory_bytes() -> int:
 
 
 def print_available_resources(enforce_gpu_support: bool = False) -> None:
-    print(f"Available CPUs: {get_available_cpus()}", flush=True)
+    print(f"🖥️  Available CPUs: {get_available_cpus()}", flush=True)
     print(
-        f"Available memory: {get_available_memory_bytes() / (1024**3):.2f} GiB",
+        f"🧠 Available memory: {get_available_memory_bytes() / (1024**3):.2f} GiB",
         flush=True,
     )
     if enforce_gpu_support and get_from_environ("DISABLE_GPU_FOR_TESTING") is None:
@@ -102,7 +106,10 @@ def print_available_resources(enforce_gpu_support: bool = False) -> None:
 def snore() -> None:
     """Logs a random snoring sound"""
     print(
-        random.choice(["Zzzz...", "Zzzzzz...", "Xrrrr...", "Hhhrrrr...", "Zzz-honk!"]),
+        "💤 "
+        + random.choice(
+            ["Zzzz...", "Zzzzzz...", "Xrrrr...", "Hhhrrrr...", "Zzz-honk!"]
+        ),
         flush=True,
     )
 
@@ -141,7 +148,7 @@ def sleep_with_payload(
 
     snore_rate: number of random snoring logs emitted per second of sleep (0 disables snoring)
     """
-    print(f"Will sleep for {amount_to_sleep} seconds", flush=True)
+    print(f"😴 Will sleep for {amount_to_sleep} seconds", flush=True)
     for seconds in range(amount_to_sleep):
         print(f"[PROGRESS] {seconds + 1}/{amount_to_sleep}", flush=True)
 
@@ -152,7 +159,13 @@ def sleep_with_payload(
             snore()
         # take into account the runtime of the target_payload
         time_to_sleep = max(0.0, 1.0 - (time.time() - start))
-        print(f"Remaining sleep time {time_to_sleep:.2f}", flush=True)
+        if time_to_sleep == 0.0:
+            print(
+                "⚠️  No remaining sleep time left this tick: "
+                "the payload and/or snoring took a full second or more!",
+                flush=True,
+            )
+        print(f"💤 Remaining sleep time: {time_to_sleep:.2f}s", flush=True)
 
         time.sleep(time_to_sleep)
 
