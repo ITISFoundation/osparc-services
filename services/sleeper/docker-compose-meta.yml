@@ -2,15 +2,18 @@ services:
   sleeper:
     build:
       labels:
-        io.simcore.authors: '{"authors": [{"name": "Manuel Guidon", "email": "guidon@itis.swiss",
+        io.simcore.authors:
+          '{"authors": [{"name": "Manuel Guidon", "email": "guidon@itis.swiss",
           "affiliation": "IT''IS Foundation"}, {"name": "Odei Maiz", "email": "maiz@itis.swiss",
           "affiliation": "IT''IS Foundation"}, {"name": "Andrei Neagu", "email": "neagu@itis.swiss",
           "affiliation": "IT''IS Foundation"}, {"name": "Sylvain Anderegg", "email":
           "anderegg@itis.swiss", "affiliation": "IT''IS Foundation"}]}'
         io.simcore.contact: '{"contact": "maiz@itis.swiss"}'
-        io.simcore.description: '{"description": "A service which awaits for time
+        io.simcore.description:
+          '{"description": "A service which awaits for time
           to pass, two times."}'
-        io.simcore.inputs: '{"inputs": {"input_1": {"displayOrder": 1, "label": "File
+        io.simcore.inputs:
+          '{"inputs": {"input_1": {"displayOrder": 1, "label": "File
           with int number", "description": "Pick a file containing only one integer",
           "type": "data:text/plain", "fileToKeyMap": {"single_number.txt": "input_1"}},
           "input_2": {"displayOrder": 2, "label": "Sleep interval", "description":
@@ -30,7 +33,8 @@ services:
         io.simcore.integration-version: '{"integration-version": "1.0.0"}'
         io.simcore.key: '{"key": "simcore/services/comp/itis/sleeper"}'
         io.simcore.name: '{"name": "sleeper"}'
-        io.simcore.outputs: '{"outputs": {"output_1": {"displayOrder": 1, "label":
+        io.simcore.outputs:
+          '{"outputs": {"output_1": {"displayOrder": 1, "label":
           "File containing one random integer", "description": "Integer is generated
           in range [1-9]", "type": "data:text/plain", "fileToKeyMap": {"single_number.txt":
           "output_1"}}, "output_2": {"displayOrder": 2, "label": "Random sleep interval",
@@ -42,30 +46,35 @@ services:
         io.simcore.type: '{"type": "computational"}'
         io.simcore.version: '{"version": "2.2.1"}'
         org.label-schema.build-date: ${BUILD_DATE}
-        org.label-schema.schema-version: '1.0'
+        org.label-schema.schema-version: "1.0"
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: https://github.com/ITISFoundation/osparc-services.git
         org.opencontainers.image.title: sleeper
         org.opencontainers.image.created: ${BUILD_DATE}
         org.opencontainers.image.source: ${VCS_URL}
         org.opencontainers.image.revision: ${VCS_REF}
-        org.opencontainers.image.description: 'A service which awaits for time to
-          pass, two times.'
-        simcore.service.settings: '[{ "name": "constraints", "type": "string", "value":
+        org.opencontainers.image.description:
+          "A service which awaits for time to
+          pass, two times."
+        simcore.service.settings:
+          '[{ "name": "constraints", "type": "string", "value":
           ["node.platform.os == linux"]}, {"name": "resources", "type": "resources",
           "value": { "Limits": { "NanoCPUs": 100000000, "MemoryBytes": 134217728 }}}]'
   sleeper-gpu:
     build:
       labels:
-        io.simcore.authors: '{"authors": [{"name": "Manuel Guidon", "email": "guidon@itis.swiss",
+        io.simcore.authors:
+          '{"authors": [{"name": "Manuel Guidon", "email": "guidon@itis.swiss",
           "affiliation": "IT''IS Foundation"}, {"name": "Odei Maiz", "email": "maiz@itis.swiss",
           "affiliation": "IT''IS Foundation"}, {"name": "Andrei Neagu", "email": "neagu@itis.swiss",
           "affiliation": "IT''IS Foundation"}, {"name": "Sylvain Anderegg", "email":
           "anderegg@itis.swiss", "affiliation": "IT''IS Foundation"}]}'
         io.simcore.contact: '{"contact": "maiz@itis.swiss"}'
-        io.simcore.description: '{"description": "A service which awaits for time
+        io.simcore.description:
+          '{"description": "A service which awaits for time
           to pass, two times."}'
-        io.simcore.inputs: '{"inputs": {"input_1": {"displayOrder": 1, "label": "File
+        io.simcore.inputs:
+          '{"inputs": {"input_1": {"displayOrder": 1, "label": "File
           with int number", "description": "Pick a file containing only one integer",
           "type": "data:text/plain", "fileToKeyMap": {"single_number.txt": "input_1"}},
           "input_2": {"displayOrder": 2, "label": "Sleep interval", "description":
@@ -85,7 +94,8 @@ services:
         io.simcore.integration-version: '{"integration-version": "1.0.0"}'
         io.simcore.key: '{"key": "simcore/services/comp/itis/sleeper-gpu"}'
         io.simcore.name: '{"name": "sleeper-gpu"}'
-        io.simcore.outputs: '{"outputs": {"output_1": {"displayOrder": 1, "label":
+        io.simcore.outputs:
+          '{"outputs": {"output_1": {"displayOrder": 1, "label":
           "File containing one random integer", "description": "Integer is generated
           in range [1-9]", "type": "data:text/plain", "fileToKeyMap": {"single_number.txt":
           "output_1"}}, "output_2": {"displayOrder": 2, "label": "Random sleep interval",
@@ -97,16 +107,18 @@ services:
         io.simcore.type: '{"type": "computational"}'
         io.simcore.version: '{"version": "2.2.1"}'
         org.label-schema.build-date: ${BUILD_DATE}
-        org.label-schema.schema-version: '1.0'
+        org.label-schema.schema-version: "1.0"
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: https://github.com/ITISFoundation/osparc-services.git
         org.opencontainers.image.title: sleeper-gpu
         org.opencontainers.image.created: ${BUILD_DATE}
         org.opencontainers.image.source: ${VCS_URL}
         org.opencontainers.image.revision: ${VCS_REF}
-        org.opencontainers.image.description: 'A service which awaits for time to
-          pass, two times.'
-        simcore.service.settings: '[{ "name": "constraints", "type": "string", "value":
+        org.opencontainers.image.description:
+          "A service which awaits for time to
+          pass, two times."
+        simcore.service.settings:
+          '[{ "name": "constraints", "type": "string", "value":
           ["node.platform.os == linux"]},{"name": "Resources", "type": "Resources",
           "value": { "Limits": { "NanoCPUs": 100000000, "MemoryBytes": 134217728 },
           "Reservations": { "GenericResources": [{"DiscreteResourceSpec": { "Kind":
@@ -114,15 +126,18 @@ services:
   sleeper-mpi:
     build:
       labels:
-        io.simcore.authors: '{"authors": [{"name": "Manuel Guidon", "email": "guidon@itis.swiss",
+        io.simcore.authors:
+          '{"authors": [{"name": "Manuel Guidon", "email": "guidon@itis.swiss",
           "affiliation": "IT''IS Foundation"}, {"name": "Odei Maiz", "email": "maiz@itis.swiss",
           "affiliation": "IT''IS Foundation"}, {"name": "Andrei Neagu", "email": "neagu@itis.swiss",
           "affiliation": "IT''IS Foundation"}, {"name": "Sylvain Anderegg", "email":
           "anderegg@itis.swiss", "affiliation": "IT''IS Foundation"}]}'
         io.simcore.contact: '{"contact": "maiz@itis.swiss"}'
-        io.simcore.description: '{"description": "A service which awaits for time
+        io.simcore.description:
+          '{"description": "A service which awaits for time
           to pass, two times."}'
-        io.simcore.inputs: '{"inputs": {"input_1": {"displayOrder": 1, "label": "File
+        io.simcore.inputs:
+          '{"inputs": {"input_1": {"displayOrder": 1, "label": "File
           with int number", "description": "Pick a file containing only one integer",
           "type": "data:text/plain", "fileToKeyMap": {"single_number.txt": "input_1"}},
           "input_2": {"displayOrder": 2, "label": "Sleep interval", "description":
@@ -142,7 +157,8 @@ services:
         io.simcore.integration-version: '{"integration-version": "1.0.0"}'
         io.simcore.key: '{"key": "simcore/services/comp/itis/sleeper-mpi"}'
         io.simcore.name: '{"name": "sleeper-mpi"}'
-        io.simcore.outputs: '{"outputs": {"output_1": {"displayOrder": 1, "label":
+        io.simcore.outputs:
+          '{"outputs": {"output_1": {"displayOrder": 1, "label":
           "File containing one random integer", "description": "Integer is generated
           in range [1-9]", "type": "data:text/plain", "fileToKeyMap": {"single_number.txt":
           "output_1"}}, "output_2": {"displayOrder": 2, "label": "Random sleep interval",
@@ -154,18 +170,20 @@ services:
         io.simcore.type: '{"type": "computational"}'
         io.simcore.version: '{"version": "2.2.1"}'
         org.label-schema.build-date: ${BUILD_DATE}
-        org.label-schema.schema-version: '1.0'
+        org.label-schema.schema-version: "1.0"
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: https://github.com/ITISFoundation/osparc-services.git
         org.opencontainers.image.title: sleeper-mpi
         org.opencontainers.image.created: ${BUILD_DATE}
         org.opencontainers.image.source: ${VCS_URL}
         org.opencontainers.image.revision: ${VCS_REF}
-        org.opencontainers.image.description: 'A service which awaits for time to
-          pass, two times.'
-        simcore.service.settings: '[{ "name": "constraints", "type": "string", "value":
+        org.opencontainers.image.description:
+          "A service which awaits for time to
+          pass, two times."
+        simcore.service.settings:
+          '[{ "name": "constraints", "type": "string", "value":
           ["node.platform.os == linux"]},{"name": "Resources", "type": "Resources",
           "value": { "Limits": { "NanoCPUs": 100000000, "MemoryBytes": 134217728 },
           "Reservations": { "GenericResources": [{"DiscreteResourceSpec": { "Kind":
           "MPI", "Value": 1}}]}}}]'
-version: '3.7'
+version: "3.7"

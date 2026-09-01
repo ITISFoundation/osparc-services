@@ -44,6 +44,7 @@ RUN --mount=type=cache,target=/var/cache/apt,mode=0755,sharing=private \
     && apt-get install -y --no-install-recommends \
     jq \
     gosu \
+    fd-find \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     # verify that the binary works

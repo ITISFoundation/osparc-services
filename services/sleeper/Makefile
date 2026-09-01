@@ -62,7 +62,6 @@ docker-compose-meta.yml: $(metatada)
 
 
 DOCKER_TARGET_PLATFORMS ?= linux/amd64
-DOCKER_GPU_TARGET_PLATFORMS ?= linux/amd64
 comma := ,
 
 define _docker_compose_build
@@ -74,9 +73,7 @@ docker buildx bake  \
 	--set *.annotations+="org.opencontainers.image.vendor=IT'IS Foundation" \
 	--set *.annotations+="org.opencontainers.image.licenses=MIT" \
 	$(if $(findstring -devel,$@),,\
-	--set sleeper.platform=$(DOCKER_TARGET_PLATFORMS) \
-	--set sleeper-gpu.platform=$(DOCKER_GPU_TARGET_PLATFORMS) \
-	--set sleeper-mpi.platform=$(DOCKER_GPU_TARGET_PLATFORMS) \
+	--set *.platform=$(DOCKER_TARGET_PLATFORMS) \
 	)\
 	$(if $(findstring $(comma),$(DOCKER_TARGET_PLATFORMS)),,--set *.output="type=docker$(comma)push=false") \
 	$(if $(push),--file docker-bake.hcl,) --file docker-compose-build.yml \

@@ -22,7 +22,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python: [3.11]
+        python: [3.14]
         os: [ubuntu-22.04]
         node: [16]
       fail-fast: false
@@ -35,7 +35,7 @@ jobs:
           cache: "pip"
           cache-dependency-path: "**/requirements.txt"
       - name: install uv
-        uses: yezz123/setup-uv@v1        
+        uses: yezz123/setup-uv@v1
       - name: show versions
         run: ./ci/helpers/show_system_versions.bash
       - name: set owner variable
@@ -57,18 +57,6 @@ jobs:
       - name: test
         working-directory: "services/sleeper"
         run: make tests
-      - if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        name: deploy
-        working-directory: "services/sleeper"
-        run: |
-          ./../../ci/helpers/dockerhub_login.bash
-          make push
-      - if: github.event_name == 'push' && github.ref != 'refs/heads/master'
-        name: deploy
-        working-directory: "services/sleeper"
-        run: |
-          ./../../ci/helpers/dockerhub_login.bash
-          make push-version
       - name: set up QEMU
         id: qemu
         uses: docker/setup-qemu-action@v3
@@ -81,11 +69,15 @@ jobs:
         with:
           version: ${{ matrix.docker_buildx }}
           driver: docker-container # a must for multi-arch buildsplatform
+      - if: github.event_name == 'push'
+        name: dockerhub login
+        working-directory: "services/sleeper"
+        run: ./../../ci/helpers/dockerhub_login.bash
       - name: build and deploy image for multi-arch
         if: github.event_name == 'push'
         working-directory: "services/sleeper"
         env:
-          DOCKER_TARGET_PLATFORMS: linux/amd64,linux/arm/v7,linux/arm64
+          DOCKER_TARGET_PLATFORMS: linux/amd64,linux/arm64
           DOCKER_REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
         run: |
           make build push=1
@@ -93,6 +85,6 @@ jobs:
         if: github.event_name == 'pull_request'
         working-directory: "services/sleeper"
         env:
-          DOCKER_TARGET_PLATFORMS: linux/amd64,linux/arm/v7,linux/arm64
+          DOCKER_TARGET_PLATFORMS: linux/amd64,linux/arm64
         run: |
           make build
