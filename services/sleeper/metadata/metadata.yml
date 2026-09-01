@@ -71,6 +71,7 @@ inputs:
     contentSchema:
       title: Snore rate
       type: integer
+      x_unit: "1/s"
       minimum: 0
 outputs:
   output_1:

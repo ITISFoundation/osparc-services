@@ -36,19 +36,24 @@ def test_mpi_code() -> None:
     print("MPI code checking is disabled")
 
 
+def get_gpu_info() -> str:
+    """Returns nvidia-smi's output"""
+    proc = subprocess.Popen(["nvidia-smi"], stdout=subprocess.PIPE)
+    stdout, _ = proc.communicate()
+    str_stdout = stdout.decode()
+    assert "NVIDIA-SMI" in str_stdout, str_stdout
+    assert proc.returncode == 0
+    return str_stdout
+
+
 def test_gpu_cuda_code() -> None:
-    """Prints the available GPU(s)/VRAM and does some computation on the GPU with CUDA"""
+    """Does some computation on the GPU with CUDA"""
     if get_from_environ("DISABLE_GPU_FOR_TESTING") is not None:
         print("GPU payload disabled for testing")
         return
 
     # if the command exists it can run on the hardware below
-    proc = subprocess.Popen(["nvidia-smi"], stdout=subprocess.PIPE)
-    stdout, _ = proc.communicate()
-    str_stdout = stdout.decode()
-    print(str_stdout, flush=True)
-    assert "NVIDIA-SMI" in str_stdout, str_stdout
-    assert proc.returncode == 0
+    get_gpu_info()
     # search the history for the CUDA implementation
 
 
@@ -84,12 +89,14 @@ def get_available_memory_bytes() -> int:
     return 0
 
 
-def print_available_resources() -> None:
+def print_available_resources(enforce_gpu_support: bool = False) -> None:
     print(f"Available CPUs: {get_available_cpus()}", flush=True)
     print(
         f"Available memory: {get_available_memory_bytes() / (1024**3):.2f} GiB",
         flush=True,
     )
+    if enforce_gpu_support and get_from_environ("DISABLE_GPU_FOR_TESTING") is None:
+        print(get_gpu_info(), flush=True)
 
 
 def snore() -> None:
@@ -182,7 +189,7 @@ def main() -> None:
     else:
         print(f"Could not find file {file_with_int_number}")
 
-    print_available_resources()
+    print_available_resources(enforce_gpu_support=enforce_gpu_support)
 
     amount_to_sleep = (
         ensure_sleep_policy(sleep_interval) + ensure_sleep_policy(sleep_from_file)
