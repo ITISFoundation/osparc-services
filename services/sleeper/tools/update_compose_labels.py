@@ -1,4 +1,8 @@
-#!/bin/python
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = ["pyyaml"]
+# ///
 
 """Update a docker-compose file with json files in a path
 

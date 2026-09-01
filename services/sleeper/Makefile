@@ -54,11 +54,11 @@ devenv: .venv requirements.txt ## create a python virtual environment with tools
 metatada = metadata/metadata.yml
 service.cli/run: $(metatada)
 	# Updates adapter script from metadata in $<
-	@.venv/bin/python tools/run_creator.py --metadata $< --runscript $@
+	@uv run --script tools/run_creator.py --metadata $< --runscript $@
 
 docker-compose-meta.yml: $(metatada)
 	# Injects metadata from $< as labels
-	@.venv/bin/python tools/update_compose_labels.py --compose $@ --metadata $<
+	@uv run --script tools/update_compose_labels.py --compose $@ --metadata $<
 
 
 DOCKER_TARGET_PLATFORMS ?= linux/amd64

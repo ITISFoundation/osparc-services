@@ -1,4 +1,8 @@
-#!/bin/python
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.11"
+# dependencies = ["pyyaml"]
+# ///
 
 """Creates a sh script that uses jq tool to retrieve variables
     to use in sh from a json file for use in an osparc service.

@@ -1,7 +1,6 @@
 # tools
 bump-my-version
 pre-commit
-pyyaml
 ruff
 
 # tests
@@ -14,3 +13,4 @@ pytest-cov
 pytest-instafail
 pytest-mock
 pytest-sugar
+pyyaml
