@@ -173,7 +173,7 @@ docker-compose-configs = $(wildcard docker-compose.*yml)
 	# creating config for stack with 'local/$(DOCKER_IMAGE_NAME):$(patsubst .compose-%.yml,%,$@)' to $@
 	@export DOCKER_REGISTRY=local; \
 	export DOCKER_IMAGE_TAG=$(patsubst .compose-%.yml,%,$@); \
-	docker compose -f docker-compose.yml $(if $(findstring -development,$@), -f docker-compose.devel.yml,) --log-level=ERROR config > $@
+	docker compose -f docker-compose.yml $(if $(findstring -development,$@), -f docker-compose.devel.yml,) config > $@
 
 define _docker_compose_cli
 	$(eval docker_compose_path=.compose-$(if $(findstring devel,$@),development,production).yml)
