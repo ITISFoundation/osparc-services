@@ -1,4 +1,3 @@
-version: "3.7"
 services:
   sleeper:
     image: local/${DOCKER_IMAGE_NAME}:${DOCKER_BUILD_TARGET}

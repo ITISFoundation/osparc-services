@@ -1,4 +1,3 @@
-version: "3.7"
 services:
   sleeper:
     # bypass normal start by going directly as root in starting folder
