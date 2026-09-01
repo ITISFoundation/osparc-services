@@ -59,6 +59,14 @@ def walk_to_bed(amount_to_walk: int = 0) -> None:
             time.sleep(0.5)
 
 
+def snore() -> None:
+    """Logs a random snoring sound"""
+    print(
+        random.choice(["Zzzz...", "Zzzzzz...", "Xrrrr...", "Hhhrrrr...", "Zzz-honk!"]),
+        flush=True,
+    )
+
+
 def generate_random_words(word_length, total_length):
     words = []
     while total_length > 0:
@@ -83,11 +91,15 @@ def dream(output_folder: Path, dream_size_byte: int) -> None:
 
 
 def sleep_with_payload(
-    amount_to_sleep: int, target_payload: Callable | None = None
+    amount_to_sleep: int,
+    target_payload: Callable | None = None,
+    snore_rate: int = 0,
 ) -> None:
     """On each interaction will run the target_payload and then sleep
     Used for validating different types of payloads based on their
     resource requirements.
+
+    snore_rate: number of random snoring logs emitted per second of sleep (0 disables snoring)
     """
     print(f"Will sleep for {amount_to_sleep} seconds", flush=True)
     for seconds in range(amount_to_sleep):
@@ -96,6 +108,8 @@ def sleep_with_payload(
         start = time.time()
         if target_payload:
             target_payload()
+        for _ in range(snore_rate):
+            snore()
         # take into account the runtime of the target_payload
         time_to_sleep = max(0.0, 1.0 - (time.time() - start))
         print(f"Remaining sleep time {time_to_sleep:.2f}", flush=True)
@@ -112,6 +126,9 @@ def main() -> None:
     INPUT_3 will cause this script to fail after sleeping.
 
     Before sleeping, it will walk first the distance given in INPUT_4.
+
+    INPUT_6 defines a snore rate: random logs emitted per second of sleep.
+    If not provided, no snoring happens.
     """
 
     file_with_int_number = Path(get_from_environ("INPUT_1"))
@@ -119,6 +136,7 @@ def main() -> None:
     fail_after_sleep = cast_bool(get_from_environ("INPUT_3", "false"))
     walk_distance = int(get_from_environ("INPUT_4", 0))
     dream_size_byte = int(get_from_environ("INPUT_5", 0))
+    snore_rate = int(get_from_environ("INPUT_6", 0))
     output_folder = Path(get_from_environ("OUTPUT_FOLDER"))
     # if the service needs to confirm GPU is working
     enforce_gpu_support = get_from_environ("DOCKER_RESOURCE_VRAM") is not None
@@ -146,7 +164,9 @@ def main() -> None:
     walk_to_bed(amount_to_walk=walk_distance)
 
     sleep_with_payload(
-        amount_to_sleep=amount_to_sleep, target_payload=sleep_payload_function
+        amount_to_sleep=amount_to_sleep,
+        target_payload=sleep_payload_function,
+        snore_rate=snore_rate,
     )
 
     # writing program outputs

@@ -9,7 +9,7 @@ set -o nounset
 IFS=$(printf '\n\t')
 cd "$(dirname "$0")"
 json_input=$INPUT_FOLDER/inputs.json
-        
+
 INPUT_1=$INPUT_FOLDER/single_number.txt
 export INPUT_1
 INPUT_2=$(< "$json_input" jq '.input_2')
@@ -20,6 +20,7 @@ INPUT_4=$(< "$json_input" jq '.input_4')
 export INPUT_4
 INPUT_5=$(< "$json_input" jq '.input_5')
 export INPUT_5
+INPUT_6=$(< "$json_input" jq '.input_6')
+export INPUT_6
 
 exec execute.sh
-        

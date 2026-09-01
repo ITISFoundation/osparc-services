@@ -11,6 +11,12 @@ current_dir = Path(sys.argv[0] if __name__ == "__main__" else __file__).resolve(
 
 
 @pytest.fixture(scope="session")
+def tests_dir() -> Path:
+    assert current_dir.exists()
+    return current_dir
+
+
+@pytest.fixture(scope="session")
 def validation_dir(project_slug_dir: Path) -> Path:
     validation_dir = project_slug_dir / "validation"
     assert validation_dir.exists()

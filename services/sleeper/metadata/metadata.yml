@@ -62,6 +62,16 @@ inputs:
       type: integer
       x_unit: byte
       minimum: 0
+  input_6:
+    displayOrder: 6
+    label: Snore rate
+    description: Number of random snoring logs emitted per second while sleeping. If unset, no snoring happens
+    defaultValue: 0
+    type: ref_contentSchema
+    contentSchema:
+      title: Snore rate
+      type: integer
+      minimum: 0
 outputs:
   output_1:
     displayOrder: 1
