@@ -12,17 +12,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Uses Python 3.14, provisioned via `uv` (no more apt `python3`/`pip`)
 - `uv` installed via distroless image copy, pinned to `0.12.8`
-- Bumped GPU/MPI base image to `nvidia/cuda:13.3.1-base-ubuntu26.04`, now multi-arch (amd64+arm64)
+- `-gpu`/`-mpi` variants now build from the same `python:${PYTHON_VERSION}-slim` image as the plain service (dropped `nvidia/cuda`): `nvidia-smi`/driver libs are injected by the NVIDIA Container Toolkit at runtime regardless of base image, and sleeper never links `cudart`/`cuBLAS` directly — this cuts the `-gpu`/`-mpi` image size by ~5x (~980MB → ~200MB)
+- `make up`'s `docker-compose.yml` now sets `DOCKER_RESOURCE_VRAM`/`DOCKER_RESOURCE_MPI` for `-gpu`/`-mpi` and requests an actual `nvidia` GPU reservation for `-gpu`, so these variants exercise their resource-specific code paths locally instead of silently no-op'ing
 - Registry pushes use zstd compression and OCI image labels/annotations
 - Entrypoint ownership fixup now uses `fdfind` instead of `find`
 - Version bumping now uses `bump-my-version` with native TOML config (`versioning/*.toml`, replaces `bump2version`/`.cfg`)
 - `tools/run_creator.py`/`tools/update_compose_labels.py` are now self-contained `uv run --script` tools (no venv required)
+- `make up`/`down`/`shell` now use `docker compose` (v2 plugin) instead of the deprecated `docker-compose` (v1) CLI
 ### Removed
 - Legacy plain `docker tag`/`docker push` publish path and `linux/arm/v7` target
 - Deprecated `org.label-schema.*` labels (superseded by `org.opencontainers.image.*`)
 ### Fixed
-- `-gpu`/`-mpi` containers failing to start on Ubuntu 26.04 base: pre-existing `ubuntu` user at uid 1000 collided with the host uid during entrypoint's `usermod`
-- `-gpu`/`-mpi` containers failing with `python: Permission denied`: uv's standalone Python interpreter wasn't copied into the production image alongside the venv
+- `-gpu`/`-mpi` containers failing to start on Ubuntu 26.04 base: pre-existing `ubuntu` user at uid 1000 collided with the host uid during entrypoint's `usermod` (moot since these variants no longer use an Ubuntu/CUDA base, see above)
+- `-gpu`/`-mpi` containers failing with `python: Permission denied`: uv's standalone Python interpreter wasn't copied into the production image alongside the venv (moot for the same reason)
 
 ## [2.2.1] - 2024-03-08
 ### Changed

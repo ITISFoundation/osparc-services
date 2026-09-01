@@ -17,7 +17,10 @@ services:
       dockerfile: docker/custom/Dockerfile
       target: production
       args:
-        BASE_IMAGE: nvidia/cuda:13.3.1-base-ubuntu26.04
+        # nvidia-smi/CUDA driver libs are injected by the NVIDIA Container Toolkit at
+        # runtime regardless of base image; no CUDA image needed since we never link
+        # against cudart/cuBLAS etc, so reuse the same slim image as sleeper.
+        BASE_IMAGE: python:${PYTHON_VERSION}-slim
         PYTHON_VERSION: ${PYTHON_VERSION}
   sleeper-mpi:
     image: local/${DOCKER_IMAGE_NAME}-mpi:${DOCKER_BUILD_TARGET}
@@ -26,5 +29,5 @@ services:
       dockerfile: docker/custom/Dockerfile
       target: production
       args:
-        BASE_IMAGE: nvidia/cuda:13.3.1-base-ubuntu26.04
+        BASE_IMAGE: python:${PYTHON_VERSION}-slim
         PYTHON_VERSION: ${PYTHON_VERSION}

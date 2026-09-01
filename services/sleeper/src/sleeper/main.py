@@ -37,7 +37,7 @@ def test_mpi_code() -> None:
 
 
 def test_gpu_cuda_code() -> None:
-    """Dose some computation on the GPU with CUDA"""
+    """Prints the available GPU(s)/VRAM and does some computation on the GPU with CUDA"""
     if get_from_environ("DISABLE_GPU_FOR_TESTING") is not None:
         print("GPU payload disabled for testing")
         return
@@ -46,6 +46,7 @@ def test_gpu_cuda_code() -> None:
     proc = subprocess.Popen(["nvidia-smi"], stdout=subprocess.PIPE)
     stdout, _ = proc.communicate()
     str_stdout = stdout.decode()
+    print(str_stdout, flush=True)
     assert "NVIDIA-SMI" in str_stdout, str_stdout
     assert proc.returncode == 0
     # search the history for the CUDA implementation
@@ -57,6 +58,38 @@ def walk_to_bed(amount_to_walk: int = 0) -> None:
         for step in range(2 * amount_to_walk):
             print(f"Step {step + 1}")
             time.sleep(0.5)
+
+
+def get_available_cpus() -> int:
+    """Returns the number of CPUs available to this process (cgroup/cpuset aware)"""
+    try:
+        return len(os.sched_getaffinity(0))
+    except AttributeError:
+        return os.cpu_count() or 1
+
+
+def get_available_memory_bytes() -> int:
+    """Returns the memory limit visible to this container, falling back to the host total"""
+    for cgroup_file in (
+        Path("/sys/fs/cgroup/memory.max"),  # cgroup v2
+        Path("/sys/fs/cgroup/memory/memory.limit_in_bytes"),  # cgroup v1
+    ):
+        if cgroup_file.is_file():
+            value = cgroup_file.read_text().strip()
+            if value.isdigit():
+                return int(value)
+    for line in Path("/proc/meminfo").read_text().splitlines():
+        if line.startswith("MemTotal:"):
+            return int(line.split()[1]) * 1024
+    return 0
+
+
+def print_available_resources() -> None:
+    print(f"Available CPUs: {get_available_cpus()}", flush=True)
+    print(
+        f"Available memory: {get_available_memory_bytes() / (1024**3):.2f} GiB",
+        flush=True,
+    )
 
 
 def snore() -> None:
@@ -148,6 +181,8 @@ def main() -> None:
         sleep_from_file = int(file_with_int_number.read_text().strip())
     else:
         print(f"Could not find file {file_with_int_number}")
+
+    print_available_resources()
 
     amount_to_sleep = (
         ensure_sleep_policy(sleep_interval) + ensure_sleep_policy(sleep_from_file)
