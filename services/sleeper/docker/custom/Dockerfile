@@ -31,7 +31,8 @@ ENV LANG=C.UTF-8
 
 # Turns off writing .pyc files; superfluous on an ephemeral container.
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    VIRTUAL_ENV=/home/scu/.venv
+    VIRTUAL_ENV=/home/scu/.venv \
+    UV_PYTHON_INSTALL_DIR=/opt/uv/python
 
 # Ensures that the python and pip executables used in the image will be
 # those from our virtualenv.
@@ -76,8 +77,12 @@ COPY --from=uv /uv /uvx /bin/
 # packages may be moved to production image easily by copying the venv.
 # uv provisions the interpreter itself: reuses the system Python on the
 # slim base image, downloads a standalone build on the CUDA-based images.
+# NOTE: on the standalone-build case, the venv's python is a symlink into
+# UV_PYTHON_INSTALL_DIR (outside VIRTUAL_ENV), so that folder is created
+# unconditionally here and copied alongside the venv into production below.
 RUN --mount=type=cache,mode=0755,target=/root/.cache/uv \
-    uv venv --python "${PYTHON_VERSION}" "${VIRTUAL_ENV}"
+    mkdir --parents "${UV_PYTHON_INSTALL_DIR}" \
+    && uv venv --python "${PYTHON_VERSION}" "${VIRTUAL_ENV}"
 
 # ------------------------------------------------------------------------------------
 
@@ -116,6 +121,8 @@ WORKDIR /home/${SC_USER_NAME}
 RUN chown -R ${SC_USER_NAME} /home/${SC_USER_NAME}
 # Starting from clean base image, copies pre-installed virtualenv from prod-only-deps
 COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} --from=build  ${VIRTUAL_ENV} ${VIRTUAL_ENV}
+# copies the standalone Python interpreter the venv above may symlink into (see build stage)
+COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} --from=build  ${UV_PYTHON_INSTALL_DIR} ${UV_PYTHON_INSTALL_DIR}
 
 # copy docker bootup scripts
 COPY --chown=${SC_USER_NAME}:${SC_USER_NAME} docker/custom/*.sh docker/

@@ -12,4 +12,4 @@ echo "Workdir : $(pwd)"
 echo "..."
 echo
 
-python3 main.py
+python main.py

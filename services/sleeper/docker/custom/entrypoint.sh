@@ -39,6 +39,17 @@ fi
 echo "$INFO" "setting correct user id/group id..."
 HOST_USERID=$(stat --format=%u "${INPUT_FOLDER}")
 HOST_GROUPID=$(stat --format=%g "${INPUT_FOLDER}")
+
+if [ "$HOST_USERID" -ne 0 ]; then
+    # some base images (e.g. Ubuntu >=24.04) ship a pre-existing user at uid 1000:
+    # remove it first since it may also own the group we are about to resolve/reuse below
+    CONFLICTING_USER=$(getent passwd "$HOST_USERID" | cut --delimiter=: --fields=1)
+    if [ -n "$CONFLICTING_USER" ] && [ "$CONFLICTING_USER" != "$SC_USER_NAME" ]; then
+        echo "$WARNING" "Removing pre-existing user '$CONFLICTING_USER' occupying uid $HOST_USERID..."
+        deluser "$CONFLICTING_USER"
+    fi
+fi
+
 CONT_GROUPNAME=$(getent group "${HOST_GROUPID}" | cut --delimiter=: --fields=1)
 if [ "$HOST_USERID" -eq 0 ]; then
     echo "$WARNING" "Folder mounted owned by root user... adding $SC_USER_NAME to root..."

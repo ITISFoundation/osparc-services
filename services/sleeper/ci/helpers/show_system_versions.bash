@@ -15,11 +15,6 @@ if command -v python; then
     python --version
 fi
 
-echo "------------------------------ python3 -----------------------------------"
-if command -v python3; then
-    python3 --version
-fi
-
 echo "------------------------------ docker -----------------------------------"
 if command -v docker; then
     docker version
