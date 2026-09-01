@@ -27,15 +27,15 @@ jobs:
         node: [16]
       fail-fast: false
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: setup python environment
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: ${{ matrix.python }}
           cache: "pip"
           cache-dependency-path: "**/requirements.txt"
       - name: install uv
-        uses: yezz123/setup-uv@v1
+        uses: astral-sh/setup-uv@20cfd1bf945f4377ade1205e4dbc17946fc9a30d # v10.0.1
       - name: show versions
         run: ./ci/helpers/show_system_versions.bash
       - name: set owner variable
@@ -59,13 +59,13 @@ jobs:
         run: make tests
       - name: set up QEMU
         id: qemu
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@1f40c72289eff860ee54a304f1438e3cff362e0a # v4.3.0
         with:
           image: tonistiigi/binfmt:latest
           platforms: all
       - name: setup docker buildx
         id: buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
         with:
           version: ${{ matrix.docker_buildx }}
           driver: docker-container # a must for multi-arch buildsplatform
