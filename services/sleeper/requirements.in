@@ -1,5 +1,7 @@
 # tools
+pre-commit
 pyyaml
+ruff
 
 # tests
 coverage
@@ -11,4 +13,3 @@ pytest-cov
 pytest-instafail
 pytest-mock
 pytest-sugar
-pyyaml

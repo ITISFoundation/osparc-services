@@ -10,6 +10,8 @@ binaryornot==0.6.0
     # via cookiecutter
 certifi==2026.7.22
     # via requests
+cfgv==3.5.0
+    # via pre-commit
 charset-normalizer==3.5.1
     # via requests
 click==8.5.0
@@ -20,8 +22,16 @@ coverage==7.16.0
     # via
     #   -r requirements.in
     #   pytest-cov
+distlib==0.4.3
+    # via virtualenv
 docker==7.2.0
     # via -r requirements.in
+filelock==3.32.5
+    # via
+    #   python-discovery
+    #   virtualenv
+identify==2.6.19
+    # via pre-commit
 idna==3.19
     # via requests
 iniconfig==2.3.0
@@ -38,12 +48,18 @@ markupsafe==3.0.3
     # via jinja2
 mdurl==0.1.2
     # via markdown-it-py
+nodeenv==1.10.0
+    # via pre-commit
 packaging==26.3
     # via pytest
+platformdirs==4.11.6
+    # via virtualenv
 pluggy==1.6.0
     # via
     #   pytest
     #   pytest-cov
+pre-commit==4.6.2
+    # via -r requirements.in
 pygments==2.21.0
     # via
     #   pytest
@@ -68,12 +84,15 @@ pytest-sugar==1.1.1
     # via -r requirements.in
 python-dateutil==2.9.0.post0
     # via arrow
+python-discovery==1.6.0
+    # via virtualenv
 python-slugify==8.0.4
     # via cookiecutter
 pyyaml==6.0.3
     # via
     #   -r requirements.in
     #   cookiecutter
+    #   pre-commit
 referencing==0.37.0
     # via
     #   jsonschema
@@ -88,6 +107,8 @@ rpds-py==2026.6.3
     # via
     #   jsonschema
     #   referencing
+ruff==0.16.5
+    # via -r requirements.in
 six==1.17.0
     # via python-dateutil
 termcolor==3.3.0
@@ -100,3 +121,5 @@ urllib3==2.7.0
     # via
     #   docker
     #   requests
+virtualenv==21.7.7
+    # via pre-commit
