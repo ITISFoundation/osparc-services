@@ -4,7 +4,7 @@ ARG PYTHON_VERSION=3.14
 
 FROM ghcr.io/astral-sh/uv:0.12.8 AS uv
 
-FROM ${BASE_IMAGE} as base
+FROM ${BASE_IMAGE} AS base
 #
 #  USAGE:
 #     cd services/sleeper
@@ -61,7 +61,7 @@ ENV UV_EXTRA_INDEX_URL=https://www.piwheels.org/simple
 # + /build             WORKDIR
 #
 
-FROM base as build
+FROM base AS build
 
 ARG PYTHON_VERSION
 
@@ -100,7 +100,7 @@ RUN cp -R src/sleeper/* /build/bin
 #    + docker [${SC_USER_NAME}:${SC_USER_NAME}]
 #    + service.cli [${SC_USER_NAME}:${SC_USER_NAME}]
 #
-FROM base as production
+FROM base AS production
 
 ENV SC_BUILD_TARGET=production \
     SC_BOOT_MODE=production
