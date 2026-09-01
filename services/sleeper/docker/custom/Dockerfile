@@ -1,5 +1,9 @@
 # syntax=docker/dockerfile:1
-ARG BASE_IMAGE="nvidia/cuda:12.0.0-base-ubuntu22.04"
+ARG BASE_IMAGE="nvidia/cuda:13.3.1-base-ubuntu26.04"
+ARG PYTHON_VERSION=3.14
+
+FROM ghcr.io/astral-sh/uv:0.12.8 AS uv
+
 FROM ${BASE_IMAGE} as base
 #
 #  USAGE:
@@ -45,22 +49,8 @@ RUN --mount=type=cache,target=/var/cache/apt,mode=0755,sharing=private \
     # verify that the binary works
     && gosu nobody true
 
-# Define an argument that dictates whether to run the installation commands
-ARG INSTALL_EXTRAS=false
-RUN --mount=type=cache,target=/var/cache/apt,mode=0755,sharing=private \
-    --mount=type=cache,target=/var/lib/apt,mode=0755,sharing=private \
-    if [ "$INSTALL_EXTRAS" = "true" ]; then \
-    set -eux \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends \
-    python3 \
-    python3-pip \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*; \
-    fi
-
 # for ARM architecture this helps a lot VS building packages
-ENV PIP_EXTRA_INDEX_URL=https://www.piwheels.org/simple
+ENV UV_EXTRA_INDEX_URL=https://www.piwheels.org/simple
 
 
 
@@ -72,21 +62,21 @@ ENV PIP_EXTRA_INDEX_URL=https://www.piwheels.org/simple
 
 FROM base as build
 
+ARG PYTHON_VERSION
+
 ENV SC_BUILD_TARGET=build
 
-# NOTE: install https://github.com/astral-sh/uv ultra-fast rust-based pip replacement
-RUN --mount=type=cache,mode=0755,target=/root/.cache/pip \
-    pip install uv~=0.1
+# NOTE: uv (https://github.com/astral-sh/uv) ultra-fast rust-based pip replacement,
+# copied from the official distroless image, pinned to a specific version
+# (see https://docs.astral.sh/uv/guides/integration/docker/#installing-uv)
+COPY --from=uv /uv /uvx /bin/
 
 # NOTE: python virtualenv is used here such that installed
-# packages may be moved to production image easily by copying the venv
-RUN uv venv "${VIRTUAL_ENV}"
-
-RUN --mount=type=cache,mode=0755,target=/root/.cache/pip \
-    uv pip install --upgrade  \
-    pip~=24.0  \
-    wheel \
-    setuptools
+# packages may be moved to production image easily by copying the venv.
+# uv provisions the interpreter itself: reuses the system Python on the
+# slim base image, downloads a standalone build on the CUDA-based images.
+RUN --mount=type=cache,mode=0755,target=/root/.cache/uv \
+    uv venv --python "${PYTHON_VERSION}" "${VIRTUAL_ENV}"
 
 # ------------------------------------------------------------------------------------
 

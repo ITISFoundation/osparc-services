@@ -45,6 +45,12 @@ services:
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: https://github.com/ITISFoundation/osparc-services.git
+        org.opencontainers.image.title: sleeper
+        org.opencontainers.image.created: ${BUILD_DATE}
+        org.opencontainers.image.source: ${VCS_URL}
+        org.opencontainers.image.revision: ${VCS_REF}
+        org.opencontainers.image.description: 'A service which awaits for time to
+          pass, two times.'
         simcore.service.settings: '[{ "name": "constraints", "type": "string", "value":
           ["node.platform.os == linux"]}, {"name": "resources", "type": "resources",
           "value": { "Limits": { "NanoCPUs": 100000000, "MemoryBytes": 134217728 }}}]'
@@ -94,6 +100,12 @@ services:
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: https://github.com/ITISFoundation/osparc-services.git
+        org.opencontainers.image.title: sleeper-gpu
+        org.opencontainers.image.created: ${BUILD_DATE}
+        org.opencontainers.image.source: ${VCS_URL}
+        org.opencontainers.image.revision: ${VCS_REF}
+        org.opencontainers.image.description: 'A service which awaits for time to
+          pass, two times.'
         simcore.service.settings: '[{ "name": "constraints", "type": "string", "value":
           ["node.platform.os == linux"]},{"name": "Resources", "type": "Resources",
           "value": { "Limits": { "NanoCPUs": 100000000, "MemoryBytes": 134217728 },
@@ -145,6 +157,12 @@ services:
         org.label-schema.schema-version: '1.0'
         org.label-schema.vcs-ref: ${VCS_REF}
         org.label-schema.vcs-url: https://github.com/ITISFoundation/osparc-services.git
+        org.opencontainers.image.title: sleeper-mpi
+        org.opencontainers.image.created: ${BUILD_DATE}
+        org.opencontainers.image.source: ${VCS_URL}
+        org.opencontainers.image.revision: ${VCS_REF}
+        org.opencontainers.image.description: 'A service which awaits for time to
+          pass, two times.'
         simcore.service.settings: '[{ "name": "constraints", "type": "string", "value":
           ["node.platform.os == linux"]},{"name": "Resources", "type": "Resources",
           "value": { "Limits": { "NanoCPUs": 100000000, "MemoryBytes": 134217728 },

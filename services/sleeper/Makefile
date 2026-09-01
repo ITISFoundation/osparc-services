@@ -19,6 +19,8 @@ export BUILD_DATE:=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
 export DOCKER_REGISTRY ?= itisfoundation
 export DOCKER_IMAGE_NAME ?= sleeper
 export DOCKER_IMAGE_TAG ?= $(shell cat VERSION)
+export SLEEPER_VERSION := $(DOCKER_IMAGE_TAG)
+export PYTHON_VERSION ?= 3.14
 
 export COMPOSE_INPUT_DIR := ./validation/input
 export COMPOSE_OUTPUT_DIR := .tmp/output
@@ -60,13 +62,21 @@ docker-compose-meta.yml: $(metatada)
 
 
 DOCKER_TARGET_PLATFORMS ?= linux/amd64
+DOCKER_GPU_TARGET_PLATFORMS ?= linux/amd64
 comma := ,
 
 define _docker_compose_build
 export DOCKER_BUILD_TARGET=$(if $(findstring -devel,$@),development,$(if $(findstring -cache,$@),cache,production)); \
 docker buildx bake  \
+	--set *.annotations+="org.opencontainers.image.created=$(BUILD_DATE)" \
+	--set *.annotations+="org.opencontainers.image.source=$(VCS_URL)" \
+	--set *.annotations+="org.opencontainers.image.revision=$(VCS_REF)" \
+	--set *.annotations+="org.opencontainers.image.vendor=IT'IS Foundation" \
+	--set *.annotations+="org.opencontainers.image.licenses=MIT" \
 	$(if $(findstring -devel,$@),,\
 	--set sleeper.platform=$(DOCKER_TARGET_PLATFORMS) \
+	--set sleeper-gpu.platform=$(DOCKER_GPU_TARGET_PLATFORMS) \
+	--set sleeper-mpi.platform=$(DOCKER_GPU_TARGET_PLATFORMS) \
 	)\
 	$(if $(findstring $(comma),$(DOCKER_TARGET_PLATFORMS)),,--set *.output="type=docker$(comma)push=false") \
 	$(if $(push),--file docker-bake.hcl,) --file docker-compose-build.yml \
@@ -124,33 +134,7 @@ endef
 version-service-patch version-service-minor version-service-major: versioning/service.cfg ## kernel/service versioning as patch
 	@$(call _bumpversion,$<,version-service-)
 
-.PHONY: push push-force push-version push-latest pull-latest pull-version tag-latest tag-version
-tag-latest tag-version:
-	docker tag local/$(DOCKER_IMAGE_NAME):production $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
-	docker tag local/$(DOCKER_IMAGE_NAME)-gpu:production $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-gpu:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
-	docker tag local/$(DOCKER_IMAGE_NAME)-mpi:production $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-mpi:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
-
-version_valid = $(shell test $$(echo $(DOCKER_IMAGE_TAG) | cut --fields=1 --delimiter=.) -gt 0 > /dev/null && echo "image version is valid")
-version_exists = $(shell DOCKER_CLI_EXPERIMENTAL=enabled docker manifest inspect $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG) > /dev/null && echo "image already exists on $(DOCKER_REGISTRY)")
-push push-force: ## pushes (resp. force) services to the registry if service not available in registry.
-	@$(if $(findstring force,$@),,\
-		$(if $(call version_valid),$(info version is valid), $(error $(DOCKER_IMAGE_TAG) is not a valid version (major>=1)))\
-		$(if $(call version_exists),$(error $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(DOCKER_IMAGE_TAG) already exists on $(DOCKER_REGISTRY)), $(info no version found on $(DOCKER_REGISTRY)))\
-		$(if $(call version_exists),$(error $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-gpu:$(DOCKER_IMAGE_TAG) already exists on $(DOCKER_REGISTRY)), $(info no version found on $(DOCKER_REGISTRY)))\
-		$(if $(call version_exists),$(error $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-mpi:$(DOCKER_IMAGE_TAG) already exists on $(DOCKER_REGISTRY)), $(info no version found on $(DOCKER_REGISTRY)))\
-	)
-	@$(MAKE) push-version;
-	@$(MAKE) push-latest;
-
-push-latest push-version: ## publish service to registry with latest/version tag
-	# pushing '$(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'...
-	@$(MAKE) tag-$(subst push-,,$@)
-	@docker push $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
-	# pushed '$(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'
-	@docker push $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-gpu:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
-	# pushed '$(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-gpu:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'
-	@docker push $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-mpi:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
-	# pushed '$(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-mpi:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)'
+.PHONY: pull-latest pull-version
 pull-latest pull-version: ## pull service from registry
 	@docker pull $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME):$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
 	@docker pull $(DOCKER_REGISTRY)/$(DOCKER_IMAGE_NAME)-gpu:$(if $(findstring version,$@),$(DOCKER_IMAGE_TAG),latest)
