@@ -33,11 +33,7 @@ LOCAL_REGISTRY = ${LOCAL_REGISTRY_HOST}/${COMP_ITIS_PATH}
 .PHONY: devenv
 .venv:
 	uv venv $@
-	# upgrading package managers
-	uv pip install --upgrade \
-		pip \
-		wheel \
-		setuptools
+	
 
 requirements.txt: .venv requirements.in
 	# freezes requirements
@@ -56,11 +52,11 @@ devenv: .venv requirements.txt ## create a python virtual environment with tools
 metatada = metadata/metadata.yml
 service.cli/run: $(metatada)
 	# Updates adapter script from metadata in $<
-	@.venv/bin/python3 tools/run_creator.py --metadata $< --runscript $@
+	@.venv/bin/python tools/run_creator.py --metadata $< --runscript $@
 
 docker-compose-meta.yml: $(metatada)
 	# Injects metadata from $< as labels
-	@.venv/bin/python3 tools/update_compose_labels.py --compose $@ --metadata $<
+	@.venv/bin/python tools/update_compose_labels.py --compose $@ --metadata $<
 
 
 DOCKER_TARGET_PLATFORMS ?= linux/amd64
